@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = [
     'title'            => 'Localizer for TYPO3',
-    'description'      => '',
+    'description'      => 'This extension provides a fully automated workflow and a graphical user interface for the well known Localization Manager (l10nmgr). While the L10nmgr still provides exports and imports of records and files, the Localizer will take care of all the necessary steps in between. Editors responsible for translations won\'t have to deal with any L10nmgr configurations anymore and as an administrator you create just one configuration per Localizer Project.',
     'category'         => 'module',
     'author'           => 'Jo Hasenau, Peter Russ',
     'author_email'     => 'jh@cybercraft.de, peter.russ@4many.net',
@@ -21,7 +21,7 @@ $EM_CONF[$_EXTKEY] = [
     'uploadfolder'     => '0',
     'createDirs'       => '',
     'clearCacheOnLoad' => 0,
-    'version'          => '8.0.0',
+    'version'          => '8.0.1',
     'constraints'      => [
         'depends'   => [
             'typo3'              => '8.7.0-8.7.99',
