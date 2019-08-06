@@ -19,66 +19,66 @@
             <div id="localizerContent"></div>
             <script type="text/javascript">
 
-				$(document).ready(function () {
+                $(document).ready(function () {
 
-					//Prepare jTable
-					$('#localizerContent').jtable({
-						                              title: 'LOCALIZER MANAGER',
-						                              paging: true,
-						                              pageSize: 2,
-						                              sorting: true,
-						                              defaultSorting: 'uid DESC',
-						                              actions: {
-							                              listAction: '###AJAX_CONTROLLER###&cmd=list',
-							                              updateAction: '###AJAX_CONTROLLER###&cmd=update',
-							                              deleteAction: '###AJAX_CONTROLLER###&cmd=delete'
-						                              },
-						                              fields: {
-							                              uid: {
-								                              title: 'UID',
-								                              key: true,
-								                              create: false,
-								                              edit: false
-							                              },
-							                              title: {
-								                              title: 'Title',
-								                              create: false,
-								                              edit: false
-							                              },
-							                              status: {
-								                              title: 'Status',
-								                              // type: 'checkbox',
-								                              create: false,
-								                              edit: false
-							                              },
-							                              tstamp: {
-								                              title: 'modified',
-								                              // type: 'date',
-								                              // displayFormat: 'YYYY-MM-DDTHH:mm:ss.sssZ',
-								                              create: false,
-								                              edit: false
-							                              },
-							                              filename: {
-								                              title: 'Filename',
-								                              create: false,
-								                              edit: false
-							                              },
-							                              language: {
-								                              title: 'Language',
-								                              create: false,
-								                              edit: false
-							                              },
-							                              connection: {
-								                              'title': 'Connection',
-								                              edit: false
-							                              }
-						                              }
-					                              });
+                    //Prepare jTable
+                    $('#localizerContent').jtable({
+                        title: 'LOCALIZER MANAGER',
+                        paging: true,
+                        pageSize: 2,
+                        sorting: true,
+                        defaultSorting: 'uid DESC',
+                        actions: {
+                            listAction: '###AJAX_CONTROLLER###&cmd=list',
+                            updateAction: '###AJAX_CONTROLLER###&cmd=update',
+                            deleteAction: '###AJAX_CONTROLLER###&cmd=delete'
+                        },
+                        fields: {
+                            uid: {
+                                title: 'UID',
+                                key: true,
+                                create: false,
+                                edit: false
+                            },
+                            title: {
+                                title: 'Title',
+                                create: false,
+                                edit: false
+                            },
+                            status: {
+                                title: 'Status',
+                                // type: 'checkbox',
+                                create: false,
+                                edit: false
+                            },
+                            tstamp: {
+                                title: 'modified',
+                                // type: 'date',
+                                // displayFormat: 'YYYY-MM-DDTHH:mm:ss.sssZ',
+                                create: false,
+                                edit: false
+                            },
+                            filename: {
+                                title: 'Filename',
+                                create: false,
+                                edit: false
+                            },
+                            language: {
+                                title: 'Language',
+                                create: false,
+                                edit: false
+                            },
+                            connection: {
+                                'title': 'Connection',
+                                edit: false
+                            }
+                        }
+                    });
 
-					//Load person list from server
-					$('#localizerContent').jtable('load');
+                    //Load person list from server
+                    $('#localizerContent').jtable('load');
 
-				});
+                });
             </script>
         </div>
     </div>

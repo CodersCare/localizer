@@ -358,26 +358,6 @@ class ApiCalls
     }
 
     /**
-     * @return bool
-     */
-    protected function doesLocalizerExist()
-    {
-        $doesExists = false;
-        $response = file_get_contents($this->url . '/whois');
-        if ($response !== '') {
-            $answer = json_decode($response, true);
-            if ($answer !== null) {
-                if (is_array($answer)) {
-                    if (isset($answer['name'])) {
-                        $doesExists = strtolower($answer['name']) === 'localizer api';
-                    }
-                }
-            }
-        }
-        return $doesExists;
-    }
-
-    /**
      * @param bool $asJson
      * @return string|array
      */
@@ -526,17 +506,90 @@ class ApiCalls
     }
 
     /**
+     * Stores 1 file into the local Localizer 'out' folder
+     *
+     * @param String $fileContent The content of the file you wish to send
      * @param String $fileName Name the file will have in the Localizer
      * @param string $source Source language of the file
      * @throws Exception This Exception contains details of an eventual error
      */
-    public function sendInstructions($fileName, $source)
+    protected function storeFileIntoLocalHotfolder($fileContent, $fileName, $source, $attachInstruction)
     {
-        $instructions = $this->getInstructions();
-        if (is_array($instructions)) {
-            $content = json_encode($instructions);
-            $instructionFilename = $fileName . '.localizer';
-            $this->sendFile($content, $instructionFilename, $source, false);
+        if ($this->checkAndCreateFolder($this->outFolder, 'outgoing') === true) {
+            $xmlPath = PATH_site . $this->outFolder . '/' . $fileName;
+            $zipPath = str_replace('.xml', '', $xmlPath) . '.zip';
+            $zipFile = fopen($zipPath, 'w') or new Exception('Can not create ZIP file');
+            $instructionFile = file_get_contents(ExtensionManagementUtility::extPath('localizer') . '/Resources/Private/Templates/Provider/instruction.xml');
+            if (file_exists($zipPath) && !empty($instructionFile)) {
+                $instructions = $this->getInstructions();
+                $sourceLocale = GeneralUtility::trimExplode('_', str_replace('-', '_', $source));
+                $targetLocale = GeneralUtility::trimExplode('_', str_replace('-', '_', $instructions['locales'][0]));
+                $sourceLanguage = strtolower($sourceLocale[0]);
+                $sourceCountry = $sourceLocale[1] ? strtolower($sourceLocale[1]) : strtolower($sourceLocale[0]);
+                $targetLanguage = strtolower($targetLocale[0]);
+                $targetCountry = $targetLocale[1] ? strtolower($targetLocale[1]) : strtolower($targetLocale[0]);
+                $markContentArray = [
+                    'DEADLINE'         => $instructions['deadline'],
+                    'FILE_NAME'        => $fileName,
+                    'PROJECT_CONTACT'  => $this->getBackendUser()->user['email'],
+                    'PROJECT_NAME'     => date('Y-m-d') . '_Typo3CMS_' . strtoupper($sourceLanguage) . '-' . strtoupper($targetLanguage),
+                    'PROJECT_SETTINGS' => $this->projectKey,
+                    'SOURCE_COUNTRY'   => $sourceCountry,
+                    'SOURCE_LANGUAGE'  => $sourceLanguage,
+                    'TARGET_COUNTRY'   => $targetCountry,
+                    'TARGET_LANGUAGE'  => $targetLanguage,
+                    'WORKFLOW'         => $this->workflow,
+                ];
+                $zip = new ZipArchive;
+                if ($zip->open($zipPath) === true) {
+                    if ($attachInstruction) {
+                        $instructionFileContent = GeneralUtility::makeInstance(MarkerBasedTemplateService::class)->substituteMarkerArray(
+                            $instructionFile,
+                            $markContentArray,
+                            '###|###',
+                            true,
+                            true
+                        );
+                        $zip->addFromString('instruction.xml', $instructionFileContent);
+                    }
+                    $zip->addFromString($fileName, $fileContent);
+                    $zip->close();
+                }
+            } else {
+                throw new Exception('Missing files for export into hotfolder');
+            }
+        }
+    }
+
+    /**
+     * Checks if the folders exist or can be created if they don't exist yet
+     * @param string $folder
+     * @param string $type
+     * @return bool
+     * @throws Exception
+     */
+    protected function checkAndCreateFolder($folder, $type)
+    {
+        if ($folder) {
+            $folder = PATH_site . '/' . $folder;
+            if (file_exists($folder) && is_writable($folder)) {
+                return true;
+            } else {
+                if (!file_exists($folder)) {
+                    GeneralUtility::mkdir_deep($folder);
+                    if (!file_exists($folder)) {
+                        $this->lastError = 'Path to ' . $type . ' folder could not be created.';
+                        throw new Exception($this->lastError);
+                    }
+                    return true;
+                } else {
+                    $this->lastError = 'Path to ' . $type . ' folder exists but is not writable.';
+                    throw new Exception($this->lastError);
+                }
+            }
+        } else {
+            $this->lastError = 'Path to ' . $type . ' folder is missing.';
+            throw new Exception($this->lastError);
         }
     }
 
@@ -627,90 +680,17 @@ class ApiCalls
     }
 
     /**
-     * Stores 1 file into the local Localizer 'out' folder
-     *
-     * @param String $fileContent The content of the file you wish to send
      * @param String $fileName Name the file will have in the Localizer
      * @param string $source Source language of the file
      * @throws Exception This Exception contains details of an eventual error
      */
-    protected function storeFileIntoLocalHotfolder($fileContent, $fileName, $source, $attachInstruction)
+    public function sendInstructions($fileName, $source)
     {
-        if ($this->checkAndCreateFolder($this->outFolder, 'outgoing') === true) {
-            $xmlPath = PATH_site . $this->outFolder . '/' . $fileName;
-            $zipPath = str_replace('.xml', '', $xmlPath) . '.zip';
-            $zipFile = fopen($zipPath, 'w') or new Exception('Can not create ZIP file');
-            $instructionFile = file_get_contents(ExtensionManagementUtility::extPath('localizer') . '/Resources/Private/Templates/Provider/instruction.xml');
-            if (file_exists($zipPath) && !empty($instructionFile)) {
-                $instructions = $this->getInstructions();
-                $sourceLocale = GeneralUtility::trimExplode('_', str_replace('-', '_', $source));
-                $targetLocale = GeneralUtility::trimExplode('_', str_replace('-', '_', $instructions['locales'][0]));
-                $sourceLanguage = strtolower($sourceLocale[0]);
-                $sourceCountry = $sourceLocale[1] ? strtolower($sourceLocale[1]) : strtolower($sourceLocale[0]);
-                $targetLanguage = strtolower($targetLocale[0]);
-                $targetCountry = $targetLocale[1] ? strtolower($targetLocale[1]) : strtolower($targetLocale[0]);
-                $markContentArray = [
-                    'DEADLINE'         => $instructions['deadline'],
-                    'FILE_NAME'        => $fileName,
-                    'PROJECT_CONTACT'  => $this->getBackendUser()->user['email'],
-                    'PROJECT_NAME'     => date('Y-m-d') . '_Typo3CMS_' . strtoupper($sourceLanguage) . '-' . strtoupper($targetLanguage),
-                    'PROJECT_SETTINGS' => $this->projectKey,
-                    'SOURCE_COUNTRY'   => $sourceCountry,
-                    'SOURCE_LANGUAGE'  => $sourceLanguage,
-                    'TARGET_COUNTRY'   => $targetCountry,
-                    'TARGET_LANGUAGE'  => $targetLanguage,
-                    'WORKFLOW'         => $this->workflow,
-                ];
-                $zip = new ZipArchive;
-                if ($zip->open($zipPath) === true) {
-                    if ($attachInstruction) {
-                        $instructionFileContent = GeneralUtility::makeInstance(MarkerBasedTemplateService::class)->substituteMarkerArray(
-                            $instructionFile,
-                            $markContentArray,
-                            '###|###',
-                            true,
-                            true
-                        );
-                        $zip->addFromString('instruction.xml', $instructionFileContent);
-                    }
-                    $zip->addFromString($fileName, $fileContent);
-                    $zip->close();
-                }
-            } else {
-                throw new Exception('Missing files for export into hotfolder');
-            }
-        }
-    }
-
-    /**
-     * Checks if the folders exist or can be created if they don't exist yet
-     * @param string $folder
-     * @param string $type
-     * @return bool
-     * @throws Exception
-     */
-    protected function checkAndCreateFolder($folder, $type)
-    {
-        if ($folder) {
-            $folder = PATH_site . '/' . $folder;
-            if (file_exists($folder) && is_writable($folder)) {
-                return true;
-            } else {
-                if (!file_exists($folder)) {
-                    GeneralUtility::mkdir_deep($folder);
-                    if (!file_exists($folder)) {
-                        $this->lastError = 'Path to ' . $type . ' folder could not be created.';
-                        throw new Exception($this->lastError);
-                    }
-                    return true;
-                } else {
-                    $this->lastError = 'Path to ' . $type . ' folder exists but is not writable.';
-                    throw new Exception($this->lastError);
-                }
-            }
-        } else {
-            $this->lastError = 'Path to ' . $type . ' folder is missing.';
-            throw new Exception($this->lastError);
+        $instructions = $this->getInstructions();
+        if (is_array($instructions)) {
+            $content = json_encode($instructions);
+            $instructionFilename = $fileName . '.localizer';
+            $this->sendFile($content, $instructionFilename, $source, false);
         }
     }
 
@@ -741,6 +721,26 @@ class ApiCalls
             return false;
         };
         return true;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function doesLocalizerExist()
+    {
+        $doesExists = false;
+        $response = file_get_contents($this->url . '/whois');
+        if ($response !== '') {
+            $answer = json_decode($response, true);
+            if ($answer !== null) {
+                if (is_array($answer)) {
+                    if (isset($answer['name'])) {
+                        $doesExists = strtolower($answer['name']) === 'localizer api';
+                    }
+                }
+            }
+        }
+        return $doesExists;
     }
 
 }

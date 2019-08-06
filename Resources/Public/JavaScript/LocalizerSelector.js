@@ -109,7 +109,7 @@ define(['jquery', 'bootstrap'], function ($) {
             function () {
                 $('.language-record-marker').removeClass('hover');
             },
-            function() {
+            function () {
                 $('[data-toggle="tooltip"]').tooltip('hide');
             }
         );

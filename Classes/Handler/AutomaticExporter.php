@@ -2,6 +2,7 @@
 
 namespace Localizationteam\Localizer\Handler;
 
+use Exception;
 use Localizationteam\Localizer\AddFileToMatrix;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
@@ -66,7 +67,7 @@ class AutomaticExporter extends AbstractCartHandler
 
     /**
      * @param $id
-     * @throws \Exception
+     * @throws Exception
      */
     public function init($id = 0)
     {
@@ -100,20 +101,24 @@ class AutomaticExporter extends AbstractCartHandler
     /**
      * @param $localizer
      */
-    protected function checkForScheduledRecords($localizer) {
+    protected function checkForScheduledRecords($localizer)
+    {
         $unfinishedButSentCarts = $this->automaticExportRepository->loadUnfinishedButSentCarts((int)$localizer['uid']);
         $alreadyHandledPages = [];
         foreach ($unfinishedButSentCarts as $cart) {
-            ArrayUtility::mergeRecursiveWithOverrule($alreadyHandledPages, $this->selectorRepository->loadAvailablePages(0, (int)$cart['uid']));
+            ArrayUtility::mergeRecursiveWithOverrule($alreadyHandledPages,
+                $this->selectorRepository->loadAvailablePages(0, (int)$cart['uid']));
         }
-        $pagesConfiguredForAutomaticExport = $this->automaticExportRepository->loadPagesConfiguredForAutomaticExport((int)$localizer['automatic_export_minimum_age'], array_keys($alreadyHandledPages));
+        $pagesConfiguredForAutomaticExport = $this->automaticExportRepository->loadPagesConfiguredForAutomaticExport((int)$localizer['automatic_export_minimum_age'],
+            array_keys($alreadyHandledPages));
         if (!empty($pagesConfiguredForAutomaticExport)) {
             foreach ($pagesConfiguredForAutomaticExport as $page) {
                 $translatableTables = $this->findTranslatableTables((int)$page['uid']);
                 $configuration = [
-                    'tables' => array_flip(array_keys($translatableTables))
+                    'tables' => array_flip(array_keys($translatableTables)),
                 ];
-                $recordsToBeExported = $this->selectorRepository->getRecordsOnPages((int)$page['uid'], [(int)$page['uid'] => 1], $translatableTables, $configuration);
+                $recordsToBeExported = $this->selectorRepository->getRecordsOnPages((int)$page['uid'],
+                    [(int)$page['uid'] => 1], $translatableTables, $configuration);
             }
         }
     }
@@ -122,7 +127,8 @@ class AutomaticExporter extends AbstractCartHandler
      * @param $pid
      * @return array
      */
-    protected function findTranslatableTables($pid) {
+    protected function findTranslatableTables($pid)
+    {
         $translatableTables = ['pages' => $GLOBALS['LANG']->sL($GLOBALS['TCA']['pages']['ctrl']['title'])];
         foreach (array_keys($GLOBALS['TCA']) as $table) {
             $recordExists = $this->getDatabaseConnection()
@@ -139,7 +145,8 @@ class AutomaticExporter extends AbstractCartHandler
         return $translatableTables;
     }
 
-    public function finish($time) {
+    public function finish($time)
+    {
 
     }
 

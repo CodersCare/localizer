@@ -56,7 +56,9 @@
                 <source>Allowed L10nmgr Configurations</source>
             </trans-unit>
             <trans-unit id="tx_localizer_settings.automatic_export_minimum_age">
-                <source>Minimum age of the latest change (min) after that a record will be scheduled for automatic export.</source>
+                <source>Minimum age of the latest change (min) after that a record will be scheduled for automatic
+                    export.
+                </source>
             </trans-unit>
             <trans-unit id="tx_localizer_settings.source_locale">
                 <source>Source Language</source>

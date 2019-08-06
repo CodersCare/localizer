@@ -5,7 +5,7 @@
         'exclude' => 1,
         'label'   => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:pages.localizer_include_with_automatic_export',
         'config'  => [
-            'type' => 'check',
+            'type'  => 'check',
             'items' => [
                 [
                     'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:pages.localizer_include_with_automatic_export.exclude',

@@ -97,6 +97,14 @@ class DownloadFile
     }
 
     /**
+     * @return string
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+
+    /**
      * @param string $content
      * @param string $iso2
      */
@@ -107,13 +115,5 @@ class DownloadFile
         $start = $position + strlen($search);
         $content{$start} = $iso2{0};
         $content{$start + 1} = $iso2{1};
-    }
-
-    /**
-     * @return string
-     */
-    public function getResponse()
-    {
-        return $this->response;
     }
 }

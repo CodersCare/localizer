@@ -2,6 +2,7 @@
 
 namespace Localizationteam\Localizer\Task;
 
+use Exception;
 use Localizationteam\Localizer\Handler\AbstractHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -30,7 +31,7 @@ class AbstractTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      * Should return TRUE on successful execution, FALSE on error.
      *
      * @return boolean Returns TRUE on successful execution, FALSE on error
-     * @throws \Exception
+     * @throws Exception
      */
     public function execute()
     {

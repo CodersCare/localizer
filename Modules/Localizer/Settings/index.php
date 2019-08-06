@@ -1,5 +1,9 @@
 <?php
-$GLOBALS['SOBE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Localizationteam\Localizer\Controller\SettingsController::class);
+
+use Localizationteam\Localizer\Controller\SettingsController;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+$GLOBALS['SOBE'] = GeneralUtility::makeInstance(SettingsController::class);
 $GLOBALS['SOBE']->init();
 $GLOBALS['SOBE']->main();
 $GLOBALS['SOBE']->printContent();
