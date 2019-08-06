@@ -57,7 +57,7 @@ Localizer Cart
 Each Localizer Cart consists of several files, one per translation task and target language. Each of the files can have a different translation status, which is indicated by the colors visible in the legend and a small info text like ``[translation in progress]``.
 
 .. tip::
-    The status of each file is change automatically via scheduler tasks, so you will get an overview of the current status of each cart. By clicking on the numbered buttons to the right of a cart you can filter the list of files so that it only shows the selected status.
+    The status of each file gets changed automatically via scheduler tasks, so you will get an overview of the current status of each cart. By clicking on the numbered buttons to the right of a cart you can filter the list of files so that it only shows the selected status.
 
 .. _figure3:
 .. figure:: ../Images/Screenshots/Cart.png
@@ -66,6 +66,11 @@ Each Localizer Cart consists of several files, one per translation task and targ
    :width: 300px
 
    Localizer Cart
+
+.. _LocalizerCartMarkForImport:
+
+Mark files for the importer
+"""""""""""""""""""""""""""
 
 There is only one step within the whole workflow that needs some manual intervention: As soon as the translation has been received, you have to mark the translated files that you want to be imported during the next scheduler call.
 
