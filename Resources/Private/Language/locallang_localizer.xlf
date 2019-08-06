@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2015-07-13T13:29:38Z"
+          product-name="localizer">
+        <header/>
+        <body>
+            <trans-unit id="mlang_tabs_tab">
+                <source>Localizer</source>
+            </trans-unit>
+            <trans-unit id="mlang_labels_tablabel">
+                <source>Localizer</source>
+            </trans-unit>
+            <trans-unit id="mlang_labels_tabdescr">
+                <source>Master Module of the Localizer</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

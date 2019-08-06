@@ -1,0 +1,2 @@
+# cat=basic/enable/40; type=boolean[1]; label=Display status icons: Enable hook for displaying small icon in page tree, web>List and page module.
+enable_stat_hook = 0

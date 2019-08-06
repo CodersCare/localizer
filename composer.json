@@ -1,0 +1,24 @@
+{
+  "name": "localizationteam/localizer",
+  "description": "Localizer interface for TYPO3 and L10nmgr",
+  "type": "typo3-cms-extension",
+  "keywords": [
+    "TYPO3 CMS",
+    "Localization",
+    "Localizer"
+  ],
+  "license": "GPL-3.0-or-later",
+  "version": "8.0.0",
+  "support": {
+    "issues": "https://gitlab.com/Coders.Care/localizer/issues"
+  },
+  "require": {
+    "typo3/cms-core": "^8.7",
+    "localizationteam/l10nmgr": "^8.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Localizationteam\\Localizer\\": "Classes"
+    }
+  }
+}

@@ -1,0 +1,274 @@
+.localizer-matrix-configurator table {
+    width: auto;
+    min-width: 50%;
+}
+
+.localizer-matrix-configurator .btn-group .btn {
+    color: #fff !important;
+}
+
+.localizer-matrix-configurator .input-group {
+    box-sizing: border-box;
+    white-space: nowrap;
+    vertical-align: top;
+    width: auto !important;
+    margin-right: 30px;
+}
+
+.localizer-matrix-configurator .input-group .form-control-clearable {
+    display: block;
+}
+
+.localizer-matrix-configurator .input-group .form-control {
+    width: auto !important;
+    padding-right: 0;
+}
+
+.localizer-matrix-configurator .input-group .form-control-clearable .close {
+    top: auto;
+    bottom: auto;
+    margin-top: auto;
+    line-height: 32px;
+}
+
+.localizer-matrix-configurator .input-group .input-group-btn {
+    width: auto !important;
+}
+
+.localizer-matrix-configurator .list-inline > li {
+    margin-bottom: 0.5em;
+}
+
+.localizer-selector-matrix table {
+    width: auto;
+    min-width: 50%;
+}
+
+.localizer-selector-matrix .language-header {
+    padding: 3px 5px !important;
+    font-size: 32px;
+    line-height: 21px;
+    vertical-align: top;
+}
+
+.localizer-selector-matrix .record-header {
+    padding: 0 5px !important;
+    font-size: 32px;
+    line-height: 28px;
+    vertical-align: top;
+    color: #ccc;
+}
+
+.localizer-selector-matrix .language-record-marker {
+    padding: 1px !important;
+    width: 64px;
+}
+
+.localizer-selector-matrix .language-record-marker .btn-group,
+.localizer-selector-matrix .language-record-marker .btn-group .btn:first-child {
+    width: 100%;
+    min-height: 32px;
+}
+
+.localizer-selector-matrix .language-record-marker .btn.active:after {
+    content: '\25cf';
+    line-height: 0;
+    opacity: 0.4;
+    color: #000 !important;
+    display: inline;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    font-size: 2em;
+    top: 14px;
+}
+
+.changed-after-translation {
+    background: #d1bdd1;
+}
+
+.table-hover tr:hover > .changed-after-translation,
+.table-hover tr > .changed-after-translation.hover {
+    background: #c7a3c7;
+}
+
+.btn-changed-after-translation {
+    background: #c7a3c7;
+}
+
+.localizer-legend.btn-changed-after-translation {
+    background: #a76da7 !important;
+}
+
+.active.btn-changed-after-translation,
+.table-hover tr > .hover .btn-changed-after-translation,
+.table-hover tr:hover .btn-changed-after-translation {
+    background: #a76da7;
+}
+
+.table-hover tr .btn-changed-after-translation:hover,
+.table-hover tr > .hover .active.btn-changed-after-translation,
+.table-hover tr:hover .active.btn-changed-after-translation {
+    background: #965b96;
+}
+
+.not-translated {
+    background: #d4bbbb;
+}
+
+.table-hover tr:hover > .not-translated,
+.table-hover tr > .not-translated.hover {
+    background: #cb9f9f;
+}
+
+.btn-not-translated {
+    background: #cb9f9f;
+}
+
+.localizer-legend.btn-not-translated {
+    background: #ad6767 !important;
+}
+
+.active.btn-not-translated,
+.table-hover tr > .hover .btn-not-translated,
+.table-hover tr:hover .btn-not-translated {
+    background: #ad6767;
+}
+
+.table-hover tr .btn-not-translated:hover,
+.table-hover tr > .hover .active.btn-not-translated,
+.table-hover tr:hover .active.btn-not-translated {
+    background: #9c5555;
+}
+
+.sent-to-translation {
+    background: #dac1ae;
+}
+
+.table-hover tr:hover > .sent-to-translation,
+.table-hover tr > .sent-to-translation.hover {
+    background: #d8ad8a;
+}
+
+.btn-sent-to-translation {
+    background: #d8ad8a;
+}
+
+.localizer-legend.btn-sent-to-translation {
+    background: #c17c44 !important;
+}
+
+.active.btn-sent-to-translation,
+.table-hover tr > .hover .btn-sent-to-translation,
+.table-hover tr:hover .btn-sent-to-translation {
+    background: #c17c44;
+}
+
+.table-hover tr .btn-sent-to-translation:hover,
+.table-hover tr > .hover .active.btn-sent-to-translation,
+.table-hover tr:hover .active.btn-sent-to-translation {
+    background: #a86b38;
+}
+
+.back-from-translation {
+    background: #d7cda6;
+}
+
+.table-hover tr:hover > .back-from-translation,
+.table-hover tr > .back-from-translation.hover {
+    background: #d4c37e;
+}
+
+.btn-back-from-translation {
+    background: #d4c37e;
+}
+
+.localizer-legend.btn-back-from-translation {
+    background: #b0993b !important;
+}
+
+.active.btn-back-from-translation,
+.table-hover tr > .hover .btn-back-from-translation,
+.table-hover tr:hover .btn-back-from-translation {
+    background: #b0993b;
+}
+
+.table-hover tr .btn-back-from-translation:hover,
+.table-hover tr > .hover .active.btn-back-from-translation,
+.table-hover tr:hover .active.btn-back-from-translation {
+    background: #927f31;
+}
+
+.translated {
+    background: #b9cab2;
+}
+
+.table-hover tr:hover > .translated,
+.table-hover tr > .translated.hover {
+    background: #a0be94;
+}
+
+.btn-translated {
+    background: #a0be94;
+}
+
+.localizer-legend.btn-translated {
+    background: #689258 !important;
+}
+
+.active.btn-translated,
+.table-hover tr > .hover .btn-translated,
+.table-hover tr:hover .btn-translated {
+    background: #689258;
+}
+
+.table-hover tr .btn-translated:hover,
+.table-hover tr > .hover .active.btn-translated,
+.table-hover tr:hover .active.btn-translated {
+    background: #567949;
+}
+
+#recordlist-tx_localizer_cart .table-hover tr:hover .btn {
+    color: #ffffff;
+}
+
+#recordlist-tx_localizer_cart .table-fit > .table tr > td {
+    vertical-align: top;
+}
+
+#recordlist-tx_localizer_cart .localizerCarts ul,
+#recordlist-tx_localizer_cart .col-control ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#recordlist-tx_localizer_cart .localizerCarts ul li,
+#recordlist-tx_localizer_cart .col-control ul li {
+    padding: 0;
+    margin: 0 0 0.5em 0;
+    display: none;
+}
+
+#recordlist-tx_localizer_cart .localizerCarts ul li:first-child,
+#recordlist-tx_localizer_cart .col-control ul li:first-child {
+    display: list-item;
+}
+
+#recordlist-tx_localizer_cart .expanded .localizerCarts ul li,
+#recordlist-tx_localizer_cart .expanded .col-control ul li {
+    display: list-item;
+}
+
+#recordlist-tx_localizer_cart .explicitely-hide {
+    display: none !important;
+}
+
+.localizer-matrix-configurator,
+label.localizer-legend {
+    cursor: default;
+}
+
+#recordlist-tx_localizer_cart .col-path {
+    display: none !important;
+}

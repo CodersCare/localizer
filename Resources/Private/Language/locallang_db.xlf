@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2015-08-03T15:23:47Z"
+          product-name="localizer">
+        <header/>
+        <body>
+            <trans-unit id="tx_localizer_settings">
+                <source>Localizer Settings</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.hidden">
+                <source>Disabled</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.type">
+                <source>Server Type</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.type.I.0">
+                <source>Universal FTP hot folders</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.type.I.1">
+                <source>External Server with API</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.title">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.description">
+                <source>Description</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.url">
+                <source>Translation Server URL</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.folder.out">
+                <source>Path to outgoing hot folder (relative to web root)</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.folder.in">
+                <source>Path to incoming hot folder (relative to web root)</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.workflow">
+                <source>Workflow</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.projectkey">
+                <source>Project-Key</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.username">
+                <source>Translation Server Username</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.password">
+                <source>Translation Server Password</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.project_settings">
+                <source>Translation Server Project-Settings</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.last_error">
+                <source>Last Communication Error</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.l10n_cfg">
+                <source>Allowed L10nmgr Configurations</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.automatic_export_minimum_age">
+                <source>Minimum age of the latest change (min) after that a record will be scheduled for automatic export.</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.source_locale">
+                <source>Source Language</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.target_locale">
+                <source>Target Language</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status">
+                <source>Translation Status</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.previous_status">
+                <source>Status Before Error</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm">
+                <source>Localizer Cart</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_cart">
+                <source>Localizer Global Cart</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.localizer_path">
+                <source>Path on translation server</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.deadline">
+                <source>Deadline</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.all_locale">
+                <source>All languages</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.source_locale">
+                <source>Source Language</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.target_locale">
+                <source>Target Language</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.all_languages">
+                <source>all languages from settings</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.configuration">
+                <source>Configuration</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.0">
+                <source></source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.10">
+                <source>added to cart</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.20">
+                <source>cart finalized</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.30">
+                <source>file exported</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.40">
+                <source>sent to translation service</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.50">
+                <source>translation in progress</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.60">
+                <source>translation finished</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.70">
+                <source>translation received</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.80">
+                <source>translation imported</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.100">
+                <source>Files on translation server deleted</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.-1">
+                <source>error occured</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.-900">
+                <source>undefined error in export</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.-901">
+                <source>Source language wrong</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.-902">
+                <source>Target language wrong</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.action">
+                <source>Action</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.action.I.0">
+                <source></source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.action.I.10">
+                <source>finalize cart</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.action.I.20">
+                <source>export files</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.action.I.30">
+                <source>send to translation server</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.action.I.40">
+                <source>request translation status</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.action.I.60">
+                <source>download translated file(s)</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.action.I.70">
+                <source>import translated file(s)</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.action.I.90">
+                <source>delete files on translation server</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.description">
+                <source>Description</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.uid_local">
+                <source>Settings</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.uid_export">
+                <source>Local Filename</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.uid_foreign">
+                <source>L10n</source>
+            </trans-unit>
+
+            <trans-unit id="pages.localizer_include_with_automatic_export">
+                <source>Include with scheduled automatic export</source>
+            </trans-unit>
+            <trans-unit id="pages.localizer_include_from_automatic_export.include">
+                <source>Include</source>
+            </trans-unit>
+
+            <trans-unit id="automaticExporterTask_title">
+                <source>Automatic export</source>
+            </trans-unit>
+            <trans-unit id="automaticExporterTask_desc">
+                <source>Automatic export of pages with a given minimum age</source>
+            </trans-unit>
+            <trans-unit id="fileSenderTask_title">
+                <source>Send file to translation server</source>
+            </trans-unit>
+            <trans-unit id="fileSenderTask_desc">
+                <source>Sends files marked as "send to " to a specific translation service</source>
+            </trans-unit>
+            <trans-unit id="statusRequesterTask_title">
+                <source>Requests translation status from translation server</source>
+            </trans-unit>
+            <trans-unit id="statusRequesterTask_desc">
+                <source>requests translation status for files marked as "request translation status" from the specific
+                    translation service
+                </source>
+            </trans-unit>
+
+            <trans-unit id="errorResetterTask_title">
+                <source>Resets translation server errors</source>
+            </trans-unit>
+            <trans-unit id="errorResetterTask_desc">
+                <source>resets occurred errors to previous status so taks can be executed again</source>
+            </trans-unit>
+            <trans-unit id="fileDownloaderTask_title">
+                <source>Download File from translation server</source>
+            </trans-unit>
+            <trans-unit id="fileDownloaderTask_desc">
+                <source>downloads translated files from a specific translation service</source>
+            </trans-unit>
+            <trans-unit id="fileImporterTask_title">
+                <source>Import translated files into TYPO3</source>
+            </trans-unit>
+            <trans-unit id="fileImporterTask_desc">
+                <source>imports the translated files into TYPO3</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
