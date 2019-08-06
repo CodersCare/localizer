@@ -73,6 +73,7 @@ Mark files for the importer
 """""""""""""""""""""""""""
 
 There is only one step within the whole workflow that needs some manual intervention: As soon as the translation has been received, you have to mark the translated files that you want to be imported during the next scheduler call.
+You can preview their files by clicking on the blue preview button. If you click twice, you will get the original file and the translated file for a side bas side comparison.
 
 These files are marked with the yellow upload button and you can either click on just one of them or on the whole cart to schedule each of the files for import. Scheduled files are indicated with the green clock icon.
 
