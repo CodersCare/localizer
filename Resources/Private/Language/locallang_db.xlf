@@ -38,7 +38,7 @@
                 <source>Workflow</source>
             </trans-unit>
             <trans-unit id="tx_localizer_settings.projectkey">
-                <source>Project-Key</source>
+                <source>Project Key</source>
             </trans-unit>
             <trans-unit id="tx_localizer_settings.username">
                 <source>Translation Server Username</source>
