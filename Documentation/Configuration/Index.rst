@@ -22,6 +22,16 @@ To create one or more Localizers for your editors, just
 ..  tip::
     If something went wrong while creating the record, you will find an error message in the "Last Communication Error" box and the record will be disabled.
 
+After creating the records, make sure to add the necessary tasks to the Scheduler, so that the automatic workflow can be triggered via a cron job. Each of these tasks has to be recurring and should be set to a time that matches your usual workflow timing best.
+
+.. _figure2:
+.. figure:: ../Images/Screenshots/Scheduler.png
+   :class: with-shadow
+   :alt: Localizer Scheduler Tasks
+   :width: 300px
+
+   Scheduler Tasks
+
 Settings
 ========
 
