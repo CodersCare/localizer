@@ -27,7 +27,7 @@ return [
     ],
     'feInterface' => '',
     'columns'     => [
-        'hidden'                       => [
+        'hidden'           => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.hidden',
             'config'  => [
@@ -35,7 +35,7 @@ return [
                 'default' => '0',
             ],
         ],
-        'type'                         => [
+        'type'             => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.type',
             'config'  => [
@@ -48,7 +48,7 @@ return [
                 'maxitems'   => 1,
             ],
         ],
-        'title'                        => [
+        'title'            => [
             'exclude' => 0,
             'label'   => $l10n . ':tx_localizer_settings.title',
             'config'  => [
@@ -58,7 +58,7 @@ return [
                 'eval' => 'required,trim',
             ],
         ],
-        'description'                  => [
+        'description'      => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.description',
             'config'  => [
@@ -67,7 +67,7 @@ return [
                 'rows' => '5',
             ],
         ],
-        'url'                          => [
+        'url'              => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.url',
             'config'  => [
@@ -78,7 +78,7 @@ return [
                 'eval'     => 'trim,nospace',
             ],
         ],
-        'out_folder'                   => [
+        'out_folder'       => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.folder.out',
             'config'  => [
@@ -89,7 +89,7 @@ return [
                 'eval'     => 'trim,nospace',
             ],
         ],
-        'in_folder'                    => [
+        'in_folder'        => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.folder.in',
             'config'  => [
@@ -100,7 +100,7 @@ return [
                 'eval'     => 'trim,nospace',
             ],
         ],
-        'workflow'                     => [
+        'workflow'         => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.workflow',
             'config'  => [
@@ -110,7 +110,7 @@ return [
                 'eval' => 'trim',
             ],
         ],
-        'projectkey'                   => [
+        'projectkey'       => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.projectkey',
             'config'  => [
@@ -120,7 +120,7 @@ return [
                 'eval' => 'trim',
             ],
         ],
-        'username'                     => [
+        'username'         => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.username',
             'config'  => [
@@ -130,7 +130,7 @@ return [
                 'eval' => 'trim,nospace',
             ],
         ],
-        'password'                     => [
+        'password'         => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.password',
             'config'  => [
@@ -140,7 +140,7 @@ return [
                 'eval' => 'trim,password',
             ],
         ],
-        'project_settings'             => [
+        'project_settings' => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.project_settings',
             'config'  => [
@@ -150,7 +150,7 @@ return [
                 'readOnly' => 1,
             ],
         ],
-        'last_error'                   => [
+        'last_error'       => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.last_error',
             'config'  => [
@@ -161,7 +161,7 @@ return [
                 'readOnly' => 1,
             ],
         ],
-        'l10n_cfg'                     => [
+        'l10n_cfg'         => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.l10n_cfg',
             'config'  => [
@@ -184,7 +184,7 @@ return [
                 ],
             ],
         ],
-        'source_locale'                => [
+        'source_locale'    => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.source_locale',
             'config'  => [
@@ -204,7 +204,7 @@ return [
                 'enableMultiSelectFilterTextfield' => true,
             ],
         ],
-        'target_locale'                => [
+        'target_locale'    => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.target_locale',
             'config'  => [
@@ -226,7 +226,7 @@ return [
         ],
     ],
     'types'       => [
-        '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, projectkey, l10n_cfg, source_locale, target_locale']
+        '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, projectkey, l10n_cfg, source_locale, target_locale'],
     ],
     'palettes'    => [
         '1' => ['showitem' => 'project_settings,last_error'],

@@ -338,26 +338,6 @@ class ApiCalls
     }
 
     /**
-     * @return bool
-     */
-    protected function doesLocalizerExist()
-    {
-        $doesExists = false;
-        $response = file_get_contents($this->url . '/whois');
-        if ($response !== '') {
-            $answer = json_decode($response, true);
-            if ($answer !== null) {
-                if (is_array($answer)) {
-                    if (isset($answer['name'])) {
-                        $doesExists = strtolower($answer['name']) === 'localizer api';
-                    }
-                }
-            }
-        }
-        return $doesExists;
-    }
-
-    /**
      * @param bool $asJson
      * @return string|array
      */
@@ -405,23 +385,6 @@ class ApiCalls
     public function resetMetaData()
     {
         $this->metaData = [];
-    }
-
-    /**
-     * Sends 1 file to the Localizer
-     *
-     * @param String $fileContent The content of the file you wish to send
-     * @param String $fileName Name the file will have in the Localizer
-     * @param string $source Source language of the file
-     * @param bool $attachInstruction
-     * @throws Exception
-     */
-    public function sendFile($fileContent, $fileName, $source, $attachInstruction = true)
-    {
-        switch ($this->type) {
-            default:
-                $this->storeFileIntoLocalHotfolder($fileContent, $fileName, $source, $attachInstruction);
-        }
     }
 
     /**
@@ -479,6 +442,23 @@ class ApiCalls
     protected function hasMetaData()
     {
         return count($this->metaData) > 0;
+    }
+
+    /**
+     * Sends 1 file to the Localizer
+     *
+     * @param String $fileContent The content of the file you wish to send
+     * @param String $fileName Name the file will have in the Localizer
+     * @param string $source Source language of the file
+     * @param bool $attachInstruction
+     * @throws Exception
+     */
+    public function sendFile($fileContent, $fileName, $source, $attachInstruction = true)
+    {
+        switch ($this->type) {
+            default:
+                $this->storeFileIntoLocalHotfolder($fileContent, $fileName, $source, $attachInstruction);
+        }
     }
 
     /**
@@ -596,6 +576,26 @@ class ApiCalls
             return false;
         };
         return true;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function doesLocalizerExist()
+    {
+        $doesExists = false;
+        $response = file_get_contents($this->url . '/whois');
+        if ($response !== '') {
+            $answer = json_decode($response, true);
+            if ($answer !== null) {
+                if (is_array($answer)) {
+                    if (isset($answer['name'])) {
+                        $doesExists = strtolower($answer['name']) === 'localizer api';
+                    }
+                }
+            }
+        }
+        return $doesExists;
     }
 
 }
