@@ -6,11 +6,10 @@ use Exception;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 
 /**
- * Language $COMMENT$
+ * Language
  *
- * @author      Peter Russ<peter.russ@4many.net>
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
- * @date        20150923-2241
  * @subpackage  localizer
  *
  * @method DatabaseConnection getDatabaseConnection() must be define in implementing class

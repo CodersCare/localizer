@@ -5,11 +5,10 @@ namespace Localizationteam\Localizer;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 
 /**
- * File $COMMENT$
+ * File
  *
- * @author      Peter Russ<peter.russ@4many.net>
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
- * @date        20150924-1133
  * @subpackage  localizer
  *
  */

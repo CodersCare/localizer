@@ -40,23 +40,16 @@ Extension Name
 
 **Community Documentation:**
 
-   This documentation is community documentation for the TYPO3 extension {extension.name}
+   This documentation is community documentation for the TYPO3 extension Localizer.
 
    It is maintained as part of this third party extension.
 
    If you find an error or something is missing, please:
-   `Report a Problem |project_issues|`__
+   `Report a Problem <https://gitlab.com/Coders.Care/localizer/issues>`__
 
 **Extension Manual**
 
-   This documentation is for the TYPO3 extension <extkey>.
-
-
-
-**For Contributors**
-
-   You are welcome to help improve this guide. Just click on "Edit me on GitHub"
-   on the top right to submit your change request.
+   This documentation is for the TYPO3 extension localizer.
 
 
 **Sitemap:**

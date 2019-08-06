@@ -9,9 +9,8 @@ use Localizationteam\Localizer\Constants;
 /**
  * Requests translation status from Localizer
  *
- * @author      Peter Russ<peter.russ@4many.net>
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
- * @date        20150910-1438
  * @subpackage  localizer
  *
  */

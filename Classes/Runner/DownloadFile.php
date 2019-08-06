@@ -10,9 +10,8 @@ use ZipArchive;
 /**
  * Download translated files from Localizer
  *
- * @author      Peter Russ<peter.russ@4many.net>
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
- * @date        20150920-1440
  * @subpackage  localizer
  *
  */

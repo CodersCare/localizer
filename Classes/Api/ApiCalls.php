@@ -13,9 +13,8 @@ use ZipArchive;
 /**
  * ApiCalls Class used to make calls to the Localizer API
  *
- * @author      Peter Russ<peter.russ@4many.net>
- * @package     $PACKAGE$
- * @date        20150731-0921
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
+ * @package     TYPO3
  * @subpackage  localizer
  *
  */

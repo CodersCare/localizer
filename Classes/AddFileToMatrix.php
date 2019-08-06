@@ -5,11 +5,10 @@ namespace Localizationteam\Localizer;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
- * AddFileToMatrix $COMMENT$
+ * AddFileToMatrix
  *
- * @author      Peter Russ<peter.russ@4many.net>
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
- * @date        20160628-0057
  * @subpackage  localizer
  *
  */

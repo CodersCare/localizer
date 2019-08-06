@@ -12,9 +12,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * StatusRequester takes care to request the translation status for file(s) from Localizer
  *
- * @author      Peter Russ<peter.russ@4many.net>
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
- * @date        20150910-1527
  * @subpackage  localizer
  *
  */

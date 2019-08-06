@@ -13,9 +13,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * FileImporter $COMMENT$
  *
- * @author      Peter Russ<peter.russ@4many.net>
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
- * @date        20150924-1112
  * @subpackage  localizer
  *
  */

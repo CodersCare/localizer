@@ -7,53 +7,48 @@
 Introduction
 ============
 
-
-.. tip::
-
-   New to reStructuredText and Sphinx?
-
-   Get an introduction:
-   https://docs.typo3.org/m/typo3/docs-how-to-document/master/en-us/WritingReST/Index.html
-
-   Use this cheat sheet as reference:
-   https://docs.typo3.org/m/typo3/docs-how-to-document/master/en-us/WritingReST/CheatSheet.html
-
 .. _what-it-does:
 
 What does it do?
 ================
 
-The aim of this chapter is to provide a general overview of your extension.
+This extension provides a fully automated workflow and a graphical user interface for the well known `Localization Manager (l10nmgr) <https://extensions.typo3.org/extension/l10nmgr/>`.
 
-* What does it do?
-* What problems does it solve?
-* Who is the target audience?
+While the L10nmgr still provides exports and imports of records and files, the Localizer will take care of all the necessary steps in between.
+Editors responsible for translations won't have to deal with any L10nmgr configurations anymore and as an administrator you create just one configuration per Localizer Project.
 
-This chapter should provide information that will help inform 
-potential users and assist them in deciding if they should 
-install and use this extension.
+- Create tasks, select and store items from several pages with the :ref:`figure1` until you finalize them into a cart for that particular task.
+- Now several :ref:`figure2` provide the automatic workflow from sending files, requesting translations status and resetting errors to downloading and importing translated files.
+- Get an overview of current translation tasks with the :ref:`figure3`, check their status and preview their translated XML files before you schedule them for the import.
 
-.. important::
-
-   Don't forget to repeat your extension's version number in the
-   :file:`Settings.cfg` file, in the :code:`release` property. It will be
-   automatically picked up on the cover page by the :code:`|release|`
-   substitution.
-
+While the basic Localizer extension provides you with a simple configurable hot folder to exchange files with translation service providers, each of the Localizer projects can be enhanced with several API plugins later on.
+That way you can have even different translation service providers for different tasks within your TYPO3 project, while still giving your editors a unified interface and workflow.
 
 .. _screenshots:
 
 Screenshots
 ===========
 
-This chapter should help people understand how the extension works. Remove it
-if it is not relevant.
-
-.. figure:: ../Images/IntroductionPackage.png
+.. _figure1:
+.. figure:: ../Images/Screenshots/Selector.png
    :class: with-shadow
-   :alt: Introduction Package
+   :alt: Localizer Selector
    :width: 300px
 
-   Introduction Package just after installation (caption of the image)
+   Localizer Selector
 
-How the Frontend of the Introduction Package looks like just after installation (legend of the image)
+.. _figure2:
+.. figure:: ../Images/Screenshots/Scheduler.png
+   :class: with-shadow
+   :alt: Localizer Scheduler Tasks
+   :width: 300px
+
+   Scheduler Tasks
+
+.. _figure3:
+.. figure:: ../Images/Screenshots/Cart.png
+   :class: with-shadow
+   :alt: Localizer Cart
+   :width: 300px
+
+   Localizer Cart

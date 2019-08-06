@@ -7,11 +7,10 @@ use Localizationteam\Localizer\Handler\AbstractHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * AbstractTask $COMMENT$
+ * AbstractTask
  *
- * @author      Peter Russ<peter.russ@4many.net>
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
- * @date        20150920-1107
  * @subpackage  localizer
  *
  */

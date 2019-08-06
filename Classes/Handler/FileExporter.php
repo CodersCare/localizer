@@ -14,7 +14,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * FileExporter takes care to create file(s) that can be sent to Localizer
  *
- * @author      Jo Hasenau<info@cybercraft.de>
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
  * @subpackage  localizer
  *
