@@ -6,7 +6,7 @@ use Exception;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 
 /**
- * Language $COMMENT$
+ * Language
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3

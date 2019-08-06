@@ -32,6 +32,9 @@ After creating the records, make sure to add the necessary tasks to the Schedule
 
    Scheduler Tasks
 
+.. tip::
+    To avoid performance problems during the import, only a single file will be imported during each scheduler run, so you should configure the time for the importer task accordingly to reduce the time your editors have to wait until each of their translation tasks has been imported..
+
 Settings
 ========
 
