@@ -14,15 +14,10 @@ Installation
 
 The extension needs to be installed as any other extension of TYPO3 CMS:
 
-#. Get the extension via **Extension Manager**.
+#. Get the extension via **Extension Manager** or **Composer**.
 
-   #. Switch to the module "Extension Manager" Press the "Retrieve/Update"
-      button, search for the extension key *localizer* and import the
-      extension from the TYPO3 extension repository.
-
-#. Get the extension via **Composer**.
-
-   #. Use the command `composer require localizationteam/localizer` to make the extension available in the typo3conf/ext directory.
+   - Either switch to the module "Extension Manager", press the "Retrieve/Update" button, search for the extension key *localizer* and import the extension from the TYPO3 extension repository.
+   - Or use the command `composer require localizationteam/localizer` to make the extension available in the typo3conf/ext directory.
 
 #. Switch to the module "Extension Manager" and click on the "activate" icon to install the extension.
 
