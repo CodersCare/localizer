@@ -7,53 +7,40 @@
 For Editors
 ===========
 
-Target group: **Editors**
+To create a new translation task with the Localizer go to the section LOCALIZER in your module menu and click on the Selector
 
-How to use the extension from the perspective of an editor.
-
-Think of common tasks that an editor is likely to perform in your extension.
-
-- How do they complete them?
-- What problems are they likely to encounter?
-- What access do they require?
-- What configuration options are available to them?
-
-One example could be adding a frontend plugin to a page and then configuring it.
-
-Language should be non-technical, aim to avoid using acronyms where possible.
-
-Be mindful that editors typically dont have administrative access to the installation.
-
-.. tip::
-
-   Take a break from time to time.
-
-Admonitions should be used to warn the users about potential
-pitfalls, attract their attention to important elements
-or just add some notes for for information (further reading,
-for example).
-
-.. important::
-
-   Do not overuse admonitions like notes, important, etc.!
-
-Provide screenshots as needed for making things clear. When creating
-screenshots, try using the Official Introduction Package.
-
-.. figure:: ../Images/UserManual/BackendView.png
+.. _figure0:
+.. figure:: ../Images/Screenshots/Module.png
    :class: with-shadow
-   :alt: Backend view
+   :alt: Localizer Modules
+   :width: 136px
 
-   Default Backend view (caption of the image)
+   Localizer Modules
 
-.. important::
+After the selector module has opened, you have to select a page from the page tree, since each translation process needs at least one page record to be working on.
 
-   Do not use huge full-screen images, unless it is necessary and serves
-   a good purpose.
+Now you can select one of the available Localizers for your translation tasks. If there is only one, you can proceed to the next step without selecting one.
 
-.. _editor-faq:
+.. _figure1:
+.. figure:: ../Images/Screenshots/Selector.png
+   :class: with-shadow
+   :alt: Localizer Selector
+   :width: 300px
 
-FAQ
-===
+   Localizer Selector
 
-Possible subsection: FAQ
+.. _figure2:
+.. figure:: ../Images/Screenshots/Scheduler.png
+   :class: with-shadow
+   :alt: Localizer Scheduler Tasks
+   :width: 300px
+
+   Scheduler Tasks
+
+.. _figure3:
+.. figure:: ../Images/Screenshots/Cart.png
+   :class: with-shadow
+   :alt: Localizer Cart
+   :width: 300px
+
+   Localizer Cart
