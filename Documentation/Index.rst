@@ -10,7 +10,7 @@
 .. _start:
 
 =============================================================
-Extension Name
+Localizer
 =============================================================
 
 :Version:
@@ -30,7 +30,7 @@ Extension Name
    `CC BY-NC-SA 4.0 <https://creativecommons.org/licenses/by-nc-sa/4.0/>`__ (Creative Commons)
    license
 
-{extension.description}
+The Localizer provides a fully automated workflow and a graphical user interface for the well known Localization Manager (l10nmgr). While the L10nmgr still provides exports and imports of records and files, the Localizer will take care of all the necessary steps in between. Editors responsible for translations won't have to deal with any L10nmgr configurations anymore and as an administrator you create just one configuration per Localizer Project.
 
 **TYPO3**
 
