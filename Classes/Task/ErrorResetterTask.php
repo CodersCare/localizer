@@ -8,9 +8,8 @@ use Localizationteam\Localizer\Handler\ErrorResetter;
 /**
  * ErrorResetterTask resets task to previous state so it can be executed again
  *
- * @author      Peter Russ<peter.russ@4many.net>
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
- * @date        20150910-2009
  * @subpackage  localizer
  *
  */

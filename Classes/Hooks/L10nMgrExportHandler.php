@@ -8,11 +8,10 @@ use Localizationteam\Localizer\Constants;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
- * L10nMgrExportHandler $COMMENT$
+ * L10nMgrExportHandler
  *
- * @author      Peter Russ<peter.russ@4many.net>
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
- * @date        20150909-2150
  * @subpackage  localizer
  *
  */

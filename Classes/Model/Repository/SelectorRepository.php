@@ -9,9 +9,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Repository for the module 'Selector' for the 'localizer' extension.
  *
- * @author    Jo Hasenau <info@cybercraft.de>
- * @package    TYPO3
- * @subpackage    localizer
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
+ * @package     TYPO3
+ * @subpackage  localizer
  */
 class SelectorRepository extends AbstractRepository
 {

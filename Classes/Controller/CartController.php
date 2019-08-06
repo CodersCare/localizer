@@ -14,9 +14,9 @@ use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
 /**
  * Module 'Cart' for the 'localizer' extension.
  *
- * @author    Peter Russ <peter.russ@4many.net>
- * @package    TYPO3
- * @subpackage    localizer
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
+ * @package     TYPO3
+ * @subpackage  localizer
  */
 class CartController extends AbstractController
 {

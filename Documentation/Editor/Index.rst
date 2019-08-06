@@ -31,6 +31,9 @@ After the selector module has opened, you have to select a page from the page tr
 #. If you have a large number of records on that page you can define a time frame to reduce the amount of records within the selector to the ones that have been created or changed within that time frame.
 #. Click on "Store" and you should see a matrix similar to the :ref:`figure1`
 
+.. tip::
+    Each of the colors described in the legend will be used to mark the status of the records within the matrix. Additionally there are tool tips for people with colour vision impairment.
+
 .. _figure1:
 .. figure:: ../Images/Screenshots/Selector.png
    :class: with-shadow
@@ -40,17 +43,11 @@ After the selector module has opened, you have to select a page from the page tr
    Localizer Selector
 
 By clicking on the matrix fields or the buttons within the matrix you can select and/or deselect single records within a single language, whole languages or single records within all languages and even groups of records and their children. Just follow the tool tips to get the different options.
-
-.. tip::
-    Each of the colors described in the legend will be used to mark the status of the records within the matrix. Additionally there are tool tips for people with colour vision impairment.
-
-.. important::
-    You can put records from several different pages into a single cart, but make sure to click on "Store" before you proceed to another page. Otherwise your selection will be lost.
-
 If you are done with your selection, click on "Finalize" to close the cart and push it into the translation process.
 
 .. important::
-    Make sure that you are really done with that cart, since it can not be reopened later on.
+    You can put records from several different pages into a single cart, but make sure to click on "Store" before you proceed to another page. Otherwise your selection will be lost.
+    Before you click on "Finalize" make sure that you are really done with that cart, since it can not be reopened later on.
 
 .. _LocalizerCart:
 

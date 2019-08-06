@@ -9,11 +9,10 @@ use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Data $COMMENT$
+ * Data
  *
- * @author      Peter Russ<peter.russ@4many.net>
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
- * @date        20150920-1014
  * @subpackage  localizer
  *
  * @method DatabaseConnection getDatabaseConnection() must be defined in implementing class

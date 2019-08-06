@@ -8,9 +8,8 @@ use Localizationteam\Localizer\Constants;
 /**
  * ErrorResetter resets status in Localizer cart to status before error occured so that this can rerun.
  *
- * @author      Peter Russ<peter.russ@4many.net>
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
- * @date        20150920-0912
  * @subpackage  localizer
  *
  */

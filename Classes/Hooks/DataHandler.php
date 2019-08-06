@@ -13,11 +13,10 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
- * DataHandler $COMMENT$
+ * DataHandler
  *
- * @author      Peter Russ<peter.russ@4many.net>
+ * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
- * @date        20150803-2107
  * @subpackage  localizer
  *
  */
