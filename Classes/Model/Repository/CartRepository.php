@@ -48,12 +48,12 @@ class CartRepository extends AbstractRepository
      */
     public function getRecordInfo($id, $classes, $user)
     {
-        $user = $user === 0 || $user ? $user : $this->getBackendUser()->user['uid'];
+        $user = $user ? $user : $this->getBackendUser()->user['uid'];
         $availableCarts = $this->getDatabaseConnection()->exec_SELECTgetRows(
             'uid, uid_local, uid_foreign, previous_status, action',
             Constants::TABLE_LOCALIZER_CART,
-            Constants::TABLE_LOCALIZER_CART . '.uid_local = ' . (int)$id .
-            ($user > 0 ? (' AND ' . Constants::TABLE_LOCALIZER_CART . '.cruser_id = ' . (int)$user) : '').
+            Constants::TABLE_LOCALIZER_CART . ' .cruser_id = ' . (int)$user .
+            ' AND ' . Constants::TABLE_LOCALIZER_CART . '.uid_local = ' . (int)$id .
             ' AND ' . Constants::TABLE_LOCALIZER_CART . '.status > ' . Constants::STATUS_CART_ADDED .
             BackendUtility::BEenableFields(Constants::TABLE_LOCALIZER_CART) .
             BackendUtility::deleteClause(Constants::TABLE_LOCALIZER_CART),

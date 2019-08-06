@@ -184,15 +184,6 @@ return [
                 ],
             ],
         ],
-        'automatic_export_minimum_age' => [
-            'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.automatic_export_minimum_age',
-            'config'  => [
-                'type' => 'input',
-                'size' => '10',
-                'eval' => 'int',
-            ],
-        ],
         'source_locale'                => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.source_locale',
@@ -235,8 +226,7 @@ return [
         ],
     ],
     'types'       => [
-        '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, projectkey, automatic_export_minimum_age, l10n_cfg, source_locale, target_locale'],
-        '1' => ['showitem' => 'hidden, --palette--;;1, type, title, description, url, projectkey, username, password, automatic_export_minimum_age, l10n_cfg, source_locale, target_locale'],
+        '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, projectkey, l10n_cfg, source_locale, target_locale']
     ],
     'palettes'    => [
         '1' => ['showitem' => 'project_settings,last_error'],

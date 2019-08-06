@@ -108,26 +108,6 @@ class ApiCalls
     protected $sourceLanguage = '';
 
     /**
-     * @var array
-     */
-    protected $align = [];
-
-    /**
-     * @var bool
-     */
-    protected $unapproveAll = false;
-
-    /**
-     * @var bool
-     */
-    protected $machineTranslation = true;
-
-    /**
-     * @var bool
-     */
-    protected $humanActivities = true;
-
-    /**
      * @var null
      */
     protected $projectInformation = null;
@@ -394,43 +374,11 @@ class ApiCalls
     }
 
     /**
-     * Set everything to be unapproved
-     */
-    public function unapproveAll()
-    {
-        $this->unapproveAll = true;
-    }
-
-    /**
-     * Disables machine translation.
-     */
-    public function disableMachineTranslation()
-    {
-        $this->machineTranslation = false;;
-    }
-
-    /**
-     * Disables human workflows (translation, revision...) explicitly for this file.
-     */
-    public function disableJobs()
-    {
-        $this->humanActivities = false;
-    }
-
-    /**
      * @param array $metaData
      */
     public function setMetaData(array $metaData)
     {
         $this->metaData = $metaData;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAdditionalInstuctions()
-    {
-        return $this->metaData;
     }
 
     /**
@@ -440,10 +388,6 @@ class ApiCalls
     {
         $this->resetDeadline();
         $this->resetLocales();
-        $this->resetAlign();
-        $this->resetUnapproveAll();
-        $this->resetMachineTranslation();
-        $this->resetJobs();
         $this->resetMetaData();
     }
 
@@ -456,56 +400,11 @@ class ApiCalls
     }
 
     /**
-     * Resets align
-     */
-    public function resetAlign()
-    {
-        $this->align = [];
-    }
-
-    /**
-     * Resets unapprove all
-     */
-    public function resetUnapproveAll()
-    {
-        $this->unapproveAll = false;
-    }
-
-    /**
-     * Resets Machine Translation
-     */
-    public function resetMachineTranslation()
-    {
-        $this->machineTranslation = true;
-    }
-
-    /**
-     * Resets resets jobs
-     */
-    public function resetJobs()
-    {
-        $this->humanActivities = true;
-    }
-
-    /**
      * Resets meta data
      */
     public function resetMetaData()
     {
         $this->metaData = [];
-    }
-
-    /**
-     * The purpose of this method is to send original content (or files) to cost.
-     *
-     * @param String $fileContent The content of the file you wish to send
-     * @param String $fileName Name the file will have in the Localizer
-     * @param bool $attachInstructions
-     * @throws Exception This Exception contains details of an eventual error
-     */
-    public function sandboxSendContent($fileContent, $fileName, $attachInstructions = true)
-    {
-        $this->sendFile($fileContent, $fileName, 'sandbox', $attachInstructions);
     }
 
     /**
@@ -552,18 +451,6 @@ class ApiCalls
         if ($this->isLocalesSet() === true) {
             $instructions['locales'] = $this->locales;
         }
-        if ($this->isAlignSet() === true) {
-            $instructions['align'] = $this->align;
-        }
-        if ($this->isUnapproveAllSet() === true) {
-            $instructions['unapproveAll'] = true;
-        }
-        if ($this->isMachineTranslationDisabled() === true) {
-            $instructions['disableMT'] = true;
-        }
-        if ($this->areJobsDisabled() === true) {
-            $instructions['disableJobs'] = true;
-        }
         if ($this->hasMetaData() === true) {
             $instructions['metadata'] = $this->metaData;
         }
@@ -584,38 +471,6 @@ class ApiCalls
     protected function isLocalesSet()
     {
         return count($this->locales) > 0;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAlignSet()
-    {
-        return count($this->align) > 0;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isUnapproveAllSet()
-    {
-        return $this->unapproveAll === true;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isMachineTranslationDisabled()
-    {
-        return $this->machineTranslation === false;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function areJobsDisabled()
-    {
-        return $this->humanActivities === false;
     }
 
     /**

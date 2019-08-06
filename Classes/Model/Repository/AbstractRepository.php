@@ -146,7 +146,6 @@ class AbstractRepository
                 'uid'
             );
             foreach ($availablePages as $pageId => &$pageData) {
-                $pageData['cart'] = $cartId;
                 $pageData['title'] = $pageTitles[$pageId]['title'];
             }
         }

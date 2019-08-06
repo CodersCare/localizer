@@ -27,7 +27,6 @@ CREATE TABLE tx_localizer_settings
     uid_local                    int(11)       DEFAULT '0' NOT NULL,
     uid_foreign                  int(11)       DEFAULT '0' NOT NULL,
     tablenames                   varchar(30)   DEFAULT ''  NOT NULL,
-    automatic_export_minimum_age int(11)       DEFAULT '0' NOT NULL,
     source_locale                int(11)       DEFAULT '0' NOT NULL,
     target_locale                int(11)       DEFAULT '0' NOT NULL,
     PRIMARY KEY (uid),

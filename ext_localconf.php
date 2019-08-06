@@ -28,12 +28,6 @@ if (TYPO3_MODE === 'BE') {
     // Register l10nmgr hook
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['l10nmgr']['exportView'][$_EXTKEY] = Localizationteam\Localizer\Hooks\L10nMgrExportHandler::class;
 
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Localizationteam\\Localizer\\Task\\AutomaticExporterTask'] = [
-        'extension'   => $_EXTKEY,
-        'title'       => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:automaticExporterTask_title',
-        'description' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:automaticExporterTask_desc',
-    ];
-
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Localizationteam\\Localizer\\Task\\FileSenderTask'] = [
         'extension'   => $_EXTKEY,
         'title'       => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:fileSenderTask_title',

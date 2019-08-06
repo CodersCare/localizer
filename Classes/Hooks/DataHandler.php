@@ -78,7 +78,6 @@ class DataHandler
                     new FlashMessage($e->getMessage());
                     new FlashMessage('Localizer settings [' . $checkArray['title'] . '] set to hidden', 'Error', 1);
                 }
-                $localizerApi->disconnect();
             }
         }
     }
