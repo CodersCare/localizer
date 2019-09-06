@@ -23,7 +23,7 @@ Localizer
    Jo Hasenau
 
 :Email:
-   localizer@coders.care
+   extensions@coders.care
 
 :License:
    This extension documentation is published under the
