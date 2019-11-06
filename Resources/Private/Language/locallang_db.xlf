@@ -38,7 +38,7 @@
                 <source>Workflow</source>
             </trans-unit>
             <trans-unit id="tx_localizer_settings.projectkey">
-                <source>Project-Key</source>
+                <source>Project Key</source>
             </trans-unit>
             <trans-unit id="tx_localizer_settings.username">
                 <source>Translation Server Username</source>
@@ -54,6 +54,20 @@
             </trans-unit>
             <trans-unit id="tx_localizer_settings.l10n_cfg">
                 <source>Allowed L10nmgr Configurations</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.automatic_export_minimum_age">
+                <source>Minimum age of the latest change (min) after that a record will be scheduled for automatic
+                    export.
+                </source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.automatic_export_pages">
+                <source>Pages added by editors for automatic export</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.allow_adding_to_export">
+                <source>Allow editors to add pages for automatic export</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.collect_pages_marked_for_export">
+                <source>Collect pages marked by editors for automatic export</source>
             </trans-unit>
             <trans-unit id="tx_localizer_settings.source_locale">
                 <source>Source Language</source>
@@ -176,6 +190,23 @@
                 <source>L10n</source>
             </trans-unit>
 
+            <trans-unit id="pages.localizer_include_with_automatic_export">
+                <source>Include with any scheduled automatic export that collects pages</source>
+            </trans-unit>
+            <trans-unit id="pages.localizer_include_from_automatic_export.include">
+                <source>Include</source>
+            </trans-unit>
+
+            <trans-unit id="pages.localizer_include_with_specific_export">
+                <source>Include with selected scheduled automatic exports</source>
+            </trans-unit>
+
+            <trans-unit id="automaticExporterTask_title">
+                <source>Automatic export</source>
+            </trans-unit>
+            <trans-unit id="automaticExporterTask_desc">
+                <source>Automatic export of pages with a given minimum age</source>
+            </trans-unit>
             <trans-unit id="fileSenderTask_title">
                 <source>Send file to translation server</source>
             </trans-unit>

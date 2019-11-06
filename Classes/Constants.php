@@ -69,6 +69,7 @@ class Constants
     const TABLE_CARTDATA_MM = 'tx_localizer_cart_table_record_language_mm';
     const TABLE_EXPORTDATA_MM = 'tx_localizer_settings_l10n_exportdata_mm';
     const TABLE_LOCALIZER_SETTINGS = 'tx_localizer_settings';
+    const TABLE_LOCALIZER_SETTINGS_PAGES_MM = 'tx_localizer_settings_pages_mm';
     const TABLE_LOCALIZER_LANGUAGE_MM = 'tx_localizer_language_mm';
     const TABLE_LOCALIZER_L10NMGR_MM = 'tx_localizer_settings_l10n_cfg_mm';
     const TABLE_STATIC_LANGUAGES = 'static_languages';

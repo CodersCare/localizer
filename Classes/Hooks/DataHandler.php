@@ -48,6 +48,7 @@ class DataHandler
                     $currentRecord = [];
                 }
                 $checkArray = array_merge($currentRecord, $fieldArray);
+                /** @var ApiCalls $localizerApi */
                 $localizerApi = new ApiCalls(
                     $checkArray['type'],
                     $checkArray['url'],
@@ -76,6 +77,9 @@ class DataHandler
                     $fieldArray['hidden'] = 1;
                     new FlashMessage($e->getMessage());
                     new FlashMessage('Localizer settings [' . $checkArray['title'] . '] set to hidden', 'Error', 1);
+                }
+                if (method_exists($localizerApi, 'disconnect')) {
+                    $localizerApi->disconnect();
                 }
             }
         }

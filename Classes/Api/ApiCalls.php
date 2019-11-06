@@ -387,60 +387,16 @@ class ApiCalls
     }
 
     /**
+     * The purpose of this method is to send original content (or files) to cost.
+     *
+     * @param String $fileContent The content of the file you wish to send
      * @param String $fileName Name the file will have in the Localizer
-     * @param string $source Source language of the file
+     * @param bool $attachInstructions
      * @throws Exception This Exception contains details of an eventual error
      */
-    public function sendInstructions($fileName, $source)
+    public function sandboxSendContent($fileContent, $fileName, $attachInstructions = true)
     {
-        $instructions = $this->getInstructions();
-        if (is_array($instructions)) {
-            $content = json_encode($instructions);
-            $instructionFilename = $fileName . '.localizer';
-            $this->sendFile($content, $instructionFilename, $source, false);
-        }
-    }
-
-    /**
-     * @return array|bool
-     */
-    public function getInstructions()
-    {
-        $instructions = [];
-        if ($this->isDeadlineSet() === true) {
-            $instructions['deadline'] = $this->deadline;
-        }
-        if ($this->isLocalesSet() === true) {
-            $instructions['locales'] = $this->locales;
-        }
-        if ($this->hasMetaData() === true) {
-            $instructions['metadata'] = $this->metaData;
-        }
-        return count($instructions) > 0 ? $instructions : false;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isDeadlineSet()
-    {
-        return $this->deadline !== '';
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isLocalesSet()
-    {
-        return count($this->locales) > 0;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function hasMetaData()
-    {
-        return count($this->metaData) > 0;
+        $this->sendFile($fileContent, $fileName, 'sandbox', $attachInstructions);
     }
 
     /**
@@ -545,6 +501,80 @@ class ApiCalls
         } else {
             $this->lastError = 'Path to ' . $type . ' folder is missing.';
             throw new Exception($this->lastError);
+        }
+    }
+
+    /**
+     * @return array|bool
+     */
+    public function getInstructions()
+    {
+        $instructions = [];
+        if ($this->isDeadlineSet() === true) {
+            $instructions['deadline'] = $this->deadline;
+        }
+        if ($this->isLocalesSet() === true) {
+            $instructions['locales'] = $this->locales;
+        }
+        if ($this->hasMetaData() === true) {
+            $instructions['metadata'] = $this->metaData;
+        }
+        return count($instructions) > 0 ? $instructions : false;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isDeadlineSet()
+    {
+        return $this->deadline !== '';
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isLocalesSet()
+    {
+        return count($this->locales) > 0;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function hasMetaData()
+    {
+        return count($this->metaData) > 0;
+    }
+
+    /**
+     * Sends 1 file to the Localizer
+     *
+     * @param String $fileContent The content of the file you wish to send
+     * @param String $fileName Name the file will have in the Localizer
+     * @param string $source Source language of the file
+     * @param bool $attachInstruction
+     * @throws Exception
+     */
+    public function sendFile($fileContent, $fileName, $source, $attachInstruction = true)
+    {
+        switch ($this->type) {
+            default:
+                $this->storeFileIntoLocalHotfolder($fileContent, $fileName, $source, $attachInstruction);
+        }
+    }
+
+    /**
+     * @param String $fileName Name the file will have in the Localizer
+     * @param string $source Source language of the file
+     * @throws Exception This Exception contains details of an eventual error
+     */
+    public function sendInstructions($fileName, $source)
+    {
+        $instructions = $this->getInstructions();
+        if (is_array($instructions)) {
+            $content = json_encode($instructions);
+            $instructionFilename = $fileName . '.localizer';
+            $this->sendFile($content, $instructionFilename, $source, false);
         }
     }
 

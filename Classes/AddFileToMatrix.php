@@ -60,7 +60,7 @@ trait AddFileToMatrix
             'uid_foreign,tablenames,ident,sorting',
             Constants::TABLE_LOCALIZER_LANGUAGE_MM,
             'uid_local = ' . (int)$localizerId .
-            ' AND ( ident = "source" OR uid_foreign = ' . $isoCodeTargetLanguage . ')' .
+            ' AND ( ident = "source" OR uid_foreign = ' . (int)$isoCodeTargetLanguage . ')' .
             ' AND source = "' . Constants::TABLE_LOCALIZER_SETTINGS . '"'
         );
         if (count($localizerLanguageRows) > 0) {
