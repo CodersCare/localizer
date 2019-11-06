@@ -60,6 +60,15 @@
                     export.
                 </source>
             </trans-unit>
+            <trans-unit id="tx_localizer_settings.automatic_export_pages">
+                <source>Pages added by editors for automatic export</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.allow_adding_to_export">
+                <source>Allow editors to add pages for automatic export</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.collect_pages_marked_for_export">
+                <source>Collect pages marked by editors for automatic export</source>
+            </trans-unit>
             <trans-unit id="tx_localizer_settings.source_locale">
                 <source>Source Language</source>
             </trans-unit>
@@ -182,10 +191,14 @@
             </trans-unit>
 
             <trans-unit id="pages.localizer_include_with_automatic_export">
-                <source>Include with scheduled automatic export</source>
+                <source>Include with any scheduled automatic export that collects pages</source>
             </trans-unit>
             <trans-unit id="pages.localizer_include_from_automatic_export.include">
                 <source>Include</source>
+            </trans-unit>
+
+            <trans-unit id="pages.localizer_include_with_specific_export">
+                <source>Include with selected scheduled automatic exports</source>
             </trans-unit>
 
             <trans-unit id="automaticExporterTask_title">

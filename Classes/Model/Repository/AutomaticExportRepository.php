@@ -57,4 +57,77 @@ class AutomaticExportRepository extends AbstractRepository
         );
         return $pagesConfiguredForAutomaticExport;
     }
+
+    /**
+     * Loads pages that are added to be exported autimatically with a specific localizer setting based on a given age
+     *
+     * @param int $localizer
+     * @param int $age
+     * @return array|NULL
+     */
+    public function loadPagesAddedToSpecificAutomaticExport($localizer, $age, $excludedPages)
+    {
+        $safeExcludedPageUids = implode(',', GeneralUtility::intExplode(',', implode(',', $excludedPages)));
+        $age = time() - $age * 60;
+        $pagesAddedToSpecificAutomaticExport = $this->getDatabaseConnection()->exec_SELECTgetRows(
+            'pages.*',
+            'pages ' .
+            'LEFT OUTER JOIN ' . Constants::TABLE_LOCALIZER_SETTINGS_PAGES_MM . ' mm 
+              ON mm.uid_local = pages.uid AND mm.uid_foreign = ' . (int)$localizer,
+            'pages.uid NOT IN (' . $safeExcludedPageUids . ') AND mm.uid IS NOT NULL ' .
+            BackendUtility::BEenableFields('pages') . BackendUtility::deleteClause('pages'),
+            '',
+            '',
+            '',
+            'uid'
+        );
+        return $pagesAddedToSpecificAutomaticExport;
+    }
+
+    /**
+     * Stores the items of the selected cart
+     *
+     * @param array $pageIds
+     * @param int $cartId
+     * @param array $configuration
+     * @param array $automaticTriples
+     */
+    public function storeCart($pageIds, $cartId, $configuration, $automaticTriples)
+    {
+        $insertValues = [];
+        $pageId = key($pageIds);
+        if (!empty($automaticTriples)) {
+            foreach ($automaticTriples as $tableName => $records) {
+                if (!empty($records) && $configuration['tables'][$tableName]) {
+                    foreach ($records as $recordId => $languages) {
+                        if (!empty($languages)) {
+                            foreach ($languages as $languageId => $checked) {
+                                if ($configuration['languages'][$languageId]) {
+                                    $identifier = md5($tableName . '.' . $recordId . '.' . $languageId);
+                                    $insertValues[$identifier] = [
+                                        'pid'        => (int)$pageId,
+                                        'identifier' => $identifier,
+                                        'cart'       => (int)$cartId,
+                                        'tablename'  => $tableName,
+                                        'recordId'   => (int)$recordId,
+                                        'languageId' => (int)$languageId,
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (!empty($insertValues)) {
+            $this->getDatabaseConnection()
+                ->exec_INSERTmultipleRows(
+                    Constants::TABLE_CARTDATA_MM,
+                    ['pid', 'identifier', 'cart', 'tablename', 'recordId', 'languageId'],
+                    $insertValues,
+                    'cart,recordId,languageId'
+                );
+        }
+    }
+
 }

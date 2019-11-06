@@ -3,33 +3,36 @@
 #
 CREATE TABLE tx_localizer_settings
 (
-    uid                          int(11)                   NOT NULL auto_increment,
-    pid                          int(11)       DEFAULT '0' NOT NULL,
-    tstamp                       int(11)       DEFAULT '0' NOT NULL,
-    crdate                       int(11)       DEFAULT '0' NOT NULL,
-    cruser_id                    int(11)       DEFAULT '0' NOT NULL,
-    sorting                      int(10)       DEFAULT '0' NOT NULL,
-    deleted                      tinyint(4)    DEFAULT '0' NOT NULL,
-    hidden                       tinyint(4)    DEFAULT '0' NOT NULL,
-    type                         varchar(255)  DEFAULT '0' NOT NULL,
-    title                        varchar(255)  DEFAULT ''  NOT NULL,
-    description                  text,
-    url                          varchar(255)  DEFAULT ''  NOT NULL,
-    out_folder                   varchar(255)  DEFAULT ''  NOT NULL,
-    in_folder                    varchar(255)  DEFAULT ''  NOT NULL,
-    workflow                     varchar(255)  DEFAULT ''  NOT NULL,
-    projectkey                   varchar(255)  DEFAULT ''  NOT NULL,
-    username                     varchar(255)  DEFAULT ''  NOT NULL,
-    password                     varchar(255)  DEFAULT ''  NOT NULL,
-    project_settings             text,
-    last_error                   varchar(8192) DEFAULT ''  NOT NULL,
-    l10n_cfg                     int(11)       DEFAULT '0' NOT NULL,
-    uid_local                    int(11)       DEFAULT '0' NOT NULL,
-    uid_foreign                  int(11)       DEFAULT '0' NOT NULL,
-    tablenames                   varchar(30)   DEFAULT ''  NOT NULL,
-    automatic_export_minimum_age int(11)       DEFAULT '0' NOT NULL,
-    source_locale                int(11)       DEFAULT '0' NOT NULL,
-    target_locale                int(11)       DEFAULT '0' NOT NULL,
+    uid                             int(11)                   NOT NULL auto_increment,
+    pid                             int(11)       DEFAULT '0' NOT NULL,
+    tstamp                          int(11)       DEFAULT '0' NOT NULL,
+    crdate                          int(11)       DEFAULT '0' NOT NULL,
+    cruser_id                       int(11)       DEFAULT '0' NOT NULL,
+    sorting                         int(10)       DEFAULT '0' NOT NULL,
+    deleted                         tinyint(4)    DEFAULT '0' NOT NULL,
+    hidden                          tinyint(4)    DEFAULT '0' NOT NULL,
+    type                            varchar(255)  DEFAULT '0' NOT NULL,
+    title                           varchar(255)  DEFAULT ''  NOT NULL,
+    description                     text,
+    url                             varchar(255)  DEFAULT ''  NOT NULL,
+    out_folder                      varchar(255)  DEFAULT ''  NOT NULL,
+    in_folder                       varchar(255)  DEFAULT ''  NOT NULL,
+    workflow                        varchar(255)  DEFAULT ''  NOT NULL,
+    projectkey                      varchar(255)  DEFAULT ''  NOT NULL,
+    username                        varchar(255)  DEFAULT ''  NOT NULL,
+    password                        varchar(255)  DEFAULT ''  NOT NULL,
+    project_settings                text,
+    last_error                      varchar(8192) DEFAULT ''  NOT NULL,
+    l10n_cfg                        int(11)       DEFAULT '0' NOT NULL,
+    uid_local                       int(11)       DEFAULT '0' NOT NULL,
+    uid_foreign                     int(11)       DEFAULT '0' NOT NULL,
+    tablenames                      varchar(30)   DEFAULT ''  NOT NULL,
+    allow_adding_to_export          int(11)       DEFAULT '0' NOT NULL,
+    automatic_export_pages          text,
+    collect_pages_marked_for_export int(11)       DEFAULT '0' NOT NULL,
+    automatic_export_minimum_age    int(11)       DEFAULT '0' NOT NULL,
+    source_locale                   int(11)       DEFAULT '0' NOT NULL,
+    target_locale                   int(11)       DEFAULT '0' NOT NULL,
     PRIMARY KEY (uid),
     KEY parent (pid),
     KEY titlet (title),
@@ -156,7 +159,24 @@ CREATE TABLE tx_localizer_cart_table_record_language_mm
     KEY languageId (languageId)
 );
 
+CREATE TABLE tx_localizer_settings_pages_mm
+(
+    uid         int(11)                 NOT NULL auto_increment,
+    pid         int(11)     DEFAULT '0' NOT NULL,
+    uid_local   int(11)     DEFAULT '0' NOT NULL,
+    uid_foreign int(11)     DEFAULT '0' NOT NULL,
+    tablenames  varchar(60) DEFAULT ''  NOT NULL,
+    source      varchar(60) DEFAULT ''  NOT NULL,
+    ident       varchar(30) DEFAULT ''  NOT NULL,
+    sorting     int(11)     DEFAULT '0' NOT NULL,
+    PRIMARY KEY (uid),
+    KEY uid_local (uid_local),
+    KEY uid_foreign (uid_foreign),
+    KEY ident (source, ident)
+);
+
 CREATE TABLE pages
 (
-    localizer_include_with_automatic_export tinyint(4) DEFAULT '0' NOT NULL
+    localizer_include_with_automatic_export tinyint(4) DEFAULT '0' NOT NULL,
+    localizer_include_with_specific_export  text
 );
