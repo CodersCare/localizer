@@ -612,19 +612,19 @@ class ApiCalls
      */
     protected function doesLocalizerExist()
     {
-        $doesExists = false;
+        $doesExist = false;
         $response = file_get_contents($this->url . '/whois');
         if ($response !== '') {
             $answer = json_decode($response, true);
             if ($answer !== null) {
                 if (is_array($answer)) {
                     if (isset($answer['name'])) {
-                        $doesExists = strtolower($answer['name']) === 'localizer api';
+                        $doesExist = strtolower($answer['name']) === 'localizer api';
                     }
                 }
             }
         }
-        return $doesExists;
+        return $doesExist;
     }
 
 }

@@ -51,7 +51,7 @@ Server Type
    Data type
          selector
    Description
-         If there are Localizer API extensions installed, you can select on of the available server types here. This will change the available configuration fields accordingly.
+         If there are Localizer API extensions installed, you can select one of the available server types here. This will change the available configuration fields accordingly.
 
 .. _Title:
 
