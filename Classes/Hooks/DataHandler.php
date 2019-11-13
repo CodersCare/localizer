@@ -48,38 +48,35 @@ class DataHandler
                     $currentRecord = [];
                 }
                 $checkArray = array_merge($currentRecord, $fieldArray);
-                /** @var ApiCalls $localizerApi */
-                $localizerApi = new ApiCalls(
-                    $checkArray['type'],
-                    $checkArray['url'],
-                    $checkArray['workflow'],
-                    $checkArray['projectkey'],
-                    $checkArray['username'],
-                    $checkArray['password'],
-                    $checkArray['out_folder'],
-                    $checkArray['in_folder']
-                );
-                try {
-                    $valid = $localizerApi->areSettingsValid();
-                    if ($valid === false) {
-                        //should never arrive here as exception should occur!
-                        $fieldArray['hidden'] = 1;
-                    } else {
-                        if ((int)$checkArray['type'] === 0) {
+                if ($checkArray['type'] === 0) {
+                    /** @var ApiCalls $localizerApi */
+                    $localizerApi = new ApiCalls(
+                        $checkArray['type'],
+                        $checkArray['url'],
+                        $checkArray['workflow'],
+                        $checkArray['projectkey'],
+                        $checkArray['username'],
+                        $checkArray['password'],
+                        $checkArray['out_folder'],
+                        $checkArray['in_folder']
+                    );
+                    try {
+                        $valid = $localizerApi->areSettingsValid();
+                        if ($valid === false) {
+                            //should never arrive here as exception should occur!
+                            $fieldArray['hidden'] = 1;
+                        } else {
                             $fieldArray['project_settings'] = $localizerApi->getFolderInformation(true);
+                            $fieldArray['last_error'] = '';
+                            new FlashMessage('Localizer settings [' . $checkArray['title'] . '] successfully validated and saved',
+                                'Success', 0);
                         }
-                        $fieldArray['last_error'] = '';
-                        new FlashMessage('Localizer settings [' . $checkArray['title'] . '] successfully validated and saved',
-                            'Success', 0);
+                    } catch (Exception $e) {
+                        $fieldArray['last_error'] = $localizerApi->getLastError();
+                        $fieldArray['hidden'] = 1;
+                        new FlashMessage($e->getMessage());
+                        new FlashMessage('Localizer settings [' . $checkArray['title'] . '] set to hidden', 'Error', 1);
                     }
-                } catch (Exception $e) {
-                    $fieldArray['last_error'] = $localizerApi->getLastError();
-                    $fieldArray['hidden'] = 1;
-                    new FlashMessage($e->getMessage());
-                    new FlashMessage('Localizer settings [' . $checkArray['title'] . '] set to hidden', 'Error', 1);
-                }
-                if (method_exists($localizerApi, 'disconnect')) {
-                    $localizerApi->disconnect();
                 }
             }
         }
