@@ -722,24 +722,4 @@ class ApiCalls
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    protected function doesLocalizerExist()
-    {
-        $doesExist = false;
-        $response = file_get_contents($this->url . '/whois');
-        if ($response !== '') {
-            $answer = json_decode($response, true);
-            if ($answer !== null) {
-                if (is_array($answer)) {
-                    if (isset($answer['name'])) {
-                        $doesExist = strtolower($answer['name']) === 'localizer api';
-                    }
-                }
-            }
-        }
-        return $doesExist;
-    }
-
 }
