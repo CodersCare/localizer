@@ -124,7 +124,7 @@ trait Data
             Constants::TABLE_LOCALIZER_SETTINGS,
             'deleted = 0 AND hidden = 0 AND uid = ' . (int)$uid
         );
-        if ($row['type'] === '0'  || ExtensionManagementUtility::isLoaded($row['type'])) {
+        if ($row['type'] === '0' || ExtensionManagementUtility::isLoaded($row['type'])) {
             if ($row['type'] === '0') {
                 $apiClass = ApiCalls::class;
             } else {
@@ -133,7 +133,7 @@ trait Data
             $api = GeneralUtility::makeInstance(
                 $apiClass,
                 0,
-                '',
+                $row['url'],
                 $row['workflow'],
                 $row['projectkey'],
                 $row['username'],
@@ -153,9 +153,12 @@ trait Data
                     'api'      => $api,
                     'settings' => [
                         'type'       => $row['type'],
+                        'url'        => $row['url'],
                         'outFolder'  => $row['out_folder'],
                         'inFolder'   => $row['in_folder'],
                         'projectKey' => $row['projectkey'],
+                        'username'   => $row['username'],
+                        'password'   => $row['password'],
                         'workflow'   => $row['workflow'],
                         'source'     => $sourceLocale['lg_collate_locale'],
                     ],
@@ -163,7 +166,8 @@ trait Data
             }
         } else {
             $this->apiPool[$uid] = false;
-            new FlashMessage('Localizer settings [' . $uid . '] either disabled or deleted or API plugin not available anymore', 3);
+            new FlashMessage('Localizer settings [' . $uid . '] either disabled or deleted or API plugin not available anymore',
+                3);
         }
         return $this->apiPool[$uid] === false ?
             false :

@@ -4,6 +4,7 @@ namespace Localizationteam\Localizer\Runner;
 
 use Exception;
 use Localizationteam\Localizer\Api\ApiCalls;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -69,19 +70,47 @@ class SendFile
                     $this->localFile = $configuration['localFile'];
                     if (isset($configuration['source'])) {
                         $this->source = $configuration['source'];
-                        switch ($configuration['type']) {
-                            default :
+                        switch ((string)$configuration['type']) {
+                            case '0' :
                                 if (isset($configuration['outFolder'])) {
+                                    $this->api = GeneralUtility::makeInstance(
+                                        ApiCalls::class,
+                                        $configuration['type'],
+                                        '',
+                                        $configuration['workflow'],
+                                        $configuration['projectKey'],
+                                        '',
+                                        '',
+                                        $configuration['outFolder']
+                                    );
+                                    if (isset($configuration['file'])) {
+                                        $this->path = str_replace('.xml', '', $configuration['file']) . '.xml';
+                                    }
+                                    if (isset($configuration['deadline'])) {
+                                        $this->deadline = (int)$configuration['deadline'];
+                                    }
+                                    if (isset($configuration['targetLocales'])) {
+                                        $this->targetLocales = $configuration['targetLocales'];
+                                    }
+                                    if (isset($configuration['metadata'])) {
+                                        $this->metaData = $configuration['metadata'];
+                                    }
+                                } else {
+                                    throw new Exception('No out folder given. Please set one in the localizer settings');
+                                }
+                                break;
+                            default :
+                                if (ExtensionManagementUtility::isLoaded($configuration['type'])) {
                                     if (isset($configuration['projectKey'])) {
                                         $this->api = GeneralUtility::makeInstance(
-                                            ApiCalls::class,
+                                            'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase($configuration['type']) . '\\Api\\ApiCalls',
                                             $configuration['type'],
-                                            '',
+                                            $configuration['url'],
                                             $configuration['workflow'],
                                             $configuration['projectKey'],
-                                            '',
-                                            '',
-                                            $configuration['outFolder']
+                                            $configuration['username'],
+                                            $configuration['password'],
+                                            ''
                                         );
                                         if (isset($configuration['file'])) {
                                             $this->path = str_replace('.xml', '', $configuration['file']) . '.xml';
@@ -99,7 +128,7 @@ class SendFile
                                         throw new Exception('No project key given. Please set one in the localizer settings');
                                     }
                                 } else {
-                                    throw new Exception('No out folder given. Please set one in the localizer settings');
+                                    throw new Exception('Missing API plugin ' . $configuration['type'] . '. Please install the necessary API plugin extension');
                                 }
                         }
                     } else {
@@ -125,6 +154,9 @@ class SendFile
         $this->setResponse();
     }
 
+    /**
+     * @throws Exception
+     */
     protected function prepareInstructions()
     {
         $this->api->resetInstructions();

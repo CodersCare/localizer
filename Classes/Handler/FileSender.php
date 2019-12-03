@@ -47,6 +47,7 @@ class FileSender extends AbstractHandler
 
     /**
      *
+     * @throws Exception
      */
     public function run()
     {
