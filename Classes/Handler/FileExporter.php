@@ -198,14 +198,13 @@ class FileExporter extends AbstractCartHandler
      * @param int $localizerId
      * @param int $configurationId
      * @param int $pid
-     * @param array $localizerData
      */
     protected function registerFilesForLocalizer($localizerId, $configurationId, $pid)
     {
         $this->getDatabaseConnection()->store_lastBuiltQuery = 1;
         $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
             'uid, translation_lang, filename',
-            Constants::TABLE_L10MGR_EXPORTDATA,
+            Constants::TABLE_L10NMGR_EXPORTDATA,
             'l10ncfg_id = ' . $configurationId
         );
         if (empty($rows) === false) {

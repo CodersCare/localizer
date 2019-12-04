@@ -130,6 +130,7 @@ class SelectorController extends AbstractController
      * Main function, starting the rendering of the list.
      *
      * @return void
+     * @throws \Exception
      */
     protected function main()
     {
@@ -305,6 +306,7 @@ class SelectorController extends AbstractController
 
     /**
      * Exports the records configured by the selector
+     * @throws \Exception
      */
     protected function exportConfiguredRecords()
     {

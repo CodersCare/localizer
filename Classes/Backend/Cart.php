@@ -29,9 +29,9 @@ class Cart
             if ($obj instanceof TcaSelectItems) {
                 $filter = $params['config']['filterList'];
                 $where = $filter['field'] . ' = ' .
-                    self::$data[$params['table']][$params['field']][$filter['rowValue']] .
+                    (int)$params['row']['uid'] .
                     $filter['where'];
-                $field = $filter['uid'] . ' AS uid';
+                $field = (int)$filter['uid'] . ' AS uid';
                 $storeLastBuiltQuery = false;
                 if (isset($filter['debug']) && $filter['debug']) {
                     $storeLastBuiltQuery = $this->getDatabaseConnection()->store_lastBuiltQuery;

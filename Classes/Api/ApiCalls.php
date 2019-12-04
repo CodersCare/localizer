@@ -39,7 +39,7 @@ class ApiCalls
     /**
      * @var string
      */
-    protected $token;
+    protected $token = '';
 
     /**
      * @var string
@@ -542,20 +542,6 @@ class ApiCalls
      * @return bool
      */
     protected function hasMetaData()
-    {
-        return count($this->metaData) > 0;
-    }
-
-    /**
-     * Sends 1 file to the Localizer
-     *
-     * @param String $fileContent The content of the file you wish to send
-     * @param String $fileName Name the file will have in the Localizer
-     * @param string $source Source language of the file
-     * @param bool $attachInstruction
-     * @throws Exception
-     */
-    public function sendFile($fileContent, $fileName, $source, $attachInstruction = true)
     {
         switch ($this->type) {
             default:
