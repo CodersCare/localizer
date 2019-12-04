@@ -39,7 +39,7 @@ class ApiCalls
     /**
      * @var string
      */
-    protected $token;
+    protected $token = '';
 
     /**
      * @var string

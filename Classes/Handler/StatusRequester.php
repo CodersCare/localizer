@@ -64,7 +64,7 @@ class StatusRequester extends AbstractHandler
                     /** @var RequestStatus $runner */
                     $runner = GeneralUtility::makeInstance(RequestStatus::class);
                     $runner->init($configuration);
-                    $runner->run();
+                    $runner->run($configuration);
                     $response = $runner->getResponse();
                     if (isset($response['http_status_code'])) {
                         if ($response['http_status_code'] == 200) {

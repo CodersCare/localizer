@@ -157,6 +157,7 @@ trait Data
                         'outFolder'  => $row['out_folder'],
                         'inFolder'   => $row['in_folder'],
                         'projectKey' => $row['projectkey'],
+                        'token'      => $api->getToken(),
                         'username'   => $row['username'],
                         'password'   => $row['password'],
                         'workflow'   => $row['workflow'],
