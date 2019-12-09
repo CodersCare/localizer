@@ -8,6 +8,7 @@ use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\File;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Runner\DownloadFile;
+use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -42,6 +43,10 @@ class FileDownloader extends AbstractHandler
         }
     }
 
+    /**
+     * @throws FolderDoesNotExistException
+     * @throws Exception
+     */
     function run()
     {
         if ($this->canRun() === true) {
@@ -99,6 +104,7 @@ class FileDownloader extends AbstractHandler
      * @param string $originalFileName
      * @param array $files
      * @return array
+     * @throws FolderDoesNotExistException
      */
     protected function processDownload(array $localizerSettings, $originalFileName, array $files)
     {
@@ -123,7 +129,7 @@ class FileDownloader extends AbstractHandler
         /** @var DownloadFile $runner */
         $runner = GeneralUtility::makeInstance(DownloadFile::class);
         $runner->init($configuration);
-        $runner->run();
+        $runner->run($configuration);
         $response = $runner->getResponse();
         return json_decode($response, true);
     }

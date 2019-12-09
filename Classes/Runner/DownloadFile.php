@@ -43,7 +43,7 @@ class DownloadFile
     public function init(array $configuration)
     {
         switch ($configuration['type']) {
-            default :
+            case '0':
                 if (isset($configuration['processFiles'])) {
                     $this->processFiles = $configuration['processFiles'];
                     if (isset($configuration['inFolder'])) {
@@ -65,32 +65,77 @@ class DownloadFile
                         }
                     }
                 }
+                break;
+            default :
+                if (isset($configuration['processFiles'])) {
+                    $this->processFiles = $configuration['processFiles'];
+                    if (isset($configuration['token'])) {
+                        if (isset($configuration['url'])) {
+                            if (isset($configuration['projectKey'])) {
+                                $this->api = GeneralUtility::makeInstance(
+                                    'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase($configuration['type']) . '\\Api\\ApiCalls',
+                                    $configuration['type'],
+                                    $configuration['url'],
+                                    $configuration['workflow'],
+                                    $configuration['projectKey'],
+                                    $configuration['username'],
+                                    $configuration['password'],
+                                    ''
+                                );
+                                $this->api->setToken($configuration['token']);
+                                if (isset($configuration['file'])) {
+                                    $this->path = $configuration['file'] . '.xml';
+                                }
+                            }
+                        }
+                    }
+                }
         }
     }
 
-    public function run()
+    public function run($configuration)
     {
         $response = [];
-        foreach ($this->processFiles as $files) {
-            try {
-                switch ($this->api->type) {
-                    default:
-                        $zip = new ZipArchive;
-                        $file = str_replace('\\', '', $files['hotfolder']);
-                        if ($zip->open($file) === true) {
-                            $zip->extractTo(dirname($files['local']));
-                            $zip->close();
-                            //unlink($file);
-                        } else {
-                            throw new Exception('File could not successfully be unzipped');
+        switch ($configuration['type']) {
+            case '0':
+                foreach ($this->processFiles as $files) {
+                    try {
+                        switch ($this->api->type) {
+                            default:
+                                $zip = new ZipArchive;
+                                $file = str_replace('\\', '', $files['hotfolder']);
+                                if ($zip->open($file) === true) {
+                                    $zip->extractTo(dirname($files['local']));
+                                    $zip->close();
+                                    //unlink($file);
+                                } else {
+                                    throw new Exception('File could not successfully be unzipped');
+                                }
                         }
+                        $response[] = [
+                            'http_status_code' => '200',
+                        ];
+                    } catch (Exception $e) {
+                        $response[] = $this->api->getLastError();
+                    }
                 }
-                $response[] = [
-                    'http_status_code' => '200',
-                ];
-            } catch (Exception $e) {
-                $response[] = $this->api->getLastError();
-            }
+                break;
+            default:
+                foreach ($this->processFiles as $files) {
+                    try {
+                        $fileContent = $this->api->getFile(
+                            basename($files['remote']),
+                            dirname($files['remote'])
+                        );
+                        $this->adjustContent($fileContent, $files['locale']);
+                        file_put_contents($files['local'], $fileContent);
+                        $response[] = [
+                            'http_status_code' => '200',
+                        ];
+                    } catch (\Exception $e) {
+                        $response[] = $this->api->getLastError();
+                    }
+                }
         }
         $this->response = json_encode($response);
     }
