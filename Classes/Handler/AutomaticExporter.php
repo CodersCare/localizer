@@ -8,6 +8,7 @@ use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\AutomaticExportRepository;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
+use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -122,13 +123,17 @@ class AutomaticExporter extends AbstractCartHandler
                 $recordsToBeExported = $this->selectorRepository->getRecordsOnPages((int)$page['uid'],
                     [(int)$page['uid'] => 1], $translatableTables, $configuration);
                 if (!empty($recordsToBeExported) && !empty($recordsToBeExported['records'])) {
+                    $translationConfigurationProvider = GeneralUtility::makeInstance(TranslationConfigurationProvider::class);
+                    $systemLanguages = $translationConfigurationProvider->getSystemLanguages();
                     $localizerLanguages = $this->selectorRepository->getLocalizerLanguages((int)$localizer['uid']);
                     if (!empty($localizerLanguages['source']) && !empty($localizerLanguages['target'])) {
                         $automaticTriples = [];
-                        $languageArray = GeneralUtility::intExplode(',', $localizerLanguages['target'], true);
+                        $languageArray = array_flip(GeneralUtility::intExplode(',', $localizerLanguages['target'], true));
                         $configuration['languages'] = [];
-                        foreach ($languageArray as $language) {
-                            $configuration['languages'][$language] = 1;
+                        foreach ($systemLanguages as $language) {
+                            if (isset($languageArray[(int)$language['static_lang_isocode']])) {
+                                $configuration['languages'][(int)$language['uid']] = 1;
+                            }
                         }
                         foreach ($recordsToBeExported['records'] as $table => $records) {
                             if (!empty($records)) {
