@@ -68,7 +68,7 @@ class RequestStatus
                             );
                             $this->api->setToken($configuration['token']);
                             if (isset($configuration['file'])) {
-                                $this->path = $configuration['file'] . '.xml';
+                                $this->path = $configuration['file'];
                             }
                         }
                     }
