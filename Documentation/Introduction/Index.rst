@@ -18,6 +18,7 @@ While the L10nmgr still provides exports and imports of records and files, the L
 Editors responsible for translations won't have to deal with any L10nmgr configurations anymore and as an administrator you create just one configuration per Localizer Project.
 
 - Create tasks, select and store items from several pages with the :ref:`figure1` until you finalize them into a cart for that particular task.
+- Configure pages for specific localizer projects and vice versa to create a fully automatic workflow without having to manually select items at all.
 - Now several :ref:`figure2` provide the automatic workflow from sending files, requesting translations status and resetting errors to downloading and importing translated files.
 - Get an overview of current translation tasks with the :ref:`figure3`, check their status and preview their translated XML files before you schedule them for the import.
 

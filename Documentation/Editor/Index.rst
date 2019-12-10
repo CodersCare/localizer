@@ -67,6 +67,24 @@ Each Localizer Cart consists of several files, one per translation task and targ
 
    Localizer Cart
 
+.. _AutomaticExport:
+
+Automatic Export
+================
+
+Each Localizer Cart can be configured to work with automatic exports of pages. If this is activated, you can put a page into the automatic workflow of a specific localizer configuration or you can activate a checkbox to have it appear in each automatic export regardless of the localizer configuration.
+
+.. tip::
+    Make sure that your administrator configured the necessary actions in the localizer configurations and activated the automatic export task in the scheduler, if you want to make use of automatic exports.
+
+.. _figure4:
+.. figure:: ../Images/Screenshots/AutomaticExport.png
+   :class: with-shadow
+   :alt: Automatic Export
+   :width: 300px
+
+   Localizer Cart
+
 .. _LocalizerCartMarkForImport:
 
 Mark files for the importer
