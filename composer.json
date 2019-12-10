@@ -1,6 +1,6 @@
 {
   "name": "localizationteam/localizer",
-  "description": "This extension provides a fully automated workflow and a graphical user interface for the well known Localization Manager (l10nmgr). While the L10nmgr still provides exports and imports of records and files, the Localizer will take care of all the necessary steps in between. Editors responsible for translations won't have to deal with any L10nmgr configurations anymore and as an administrator you create just one configuration per Localizer Project.",
+  "description": "This extension provides a fully automated workflow and a graphical user interface for the well known Localization Manager (l10nmgr). While the L10nmgr still handles exports and imports of records and files, the Localizer will take care of all the necessary steps in between. Editors responsible for translations won't have to deal with any L10nmgr configurations anymore and as an administrator you create just one configuration per Localizer Project.",
   "type": "typo3-cms-extension",
   "keywords": [
     "TYPO3 CMS",
@@ -14,7 +14,7 @@
   },
   "require": {
     "typo3/cms-core": "^8.7",
-    "localizationteam/l10nmgr": "^8.5"
+    "localizationteam/l10nmgr": "^8.6"
   },
   "autoload": {
     "psr-4": {
