@@ -49,24 +49,6 @@ If you are done with your selection, click on "Finalize" to close the cart and p
     You can put records from several different pages into a single cart, but make sure to click on "Store" before you proceed to another page. Otherwise your selection will be lost.
     Before you click on "Finalize" make sure that you are really done with that cart, since it can not be reopened later on.
 
-.. _LocalizerCart:
-
-Localizer Cart
-==============
-
-Each Localizer Cart consists of several files, one per translation task and target language. Each of the files can have a different translation status, which is indicated by the colors visible in the legend and a small info text like ``[translation in progress]``.
-
-.. tip::
-    The status of each file gets changed automatically via scheduler tasks, so you will get an overview of the current status of each cart. By clicking on the numbered buttons to the right of a cart you can filter the list of files so that it only shows the selected status.
-
-.. _figure3:
-.. figure:: ../Images/Screenshots/Cart.png
-   :class: with-shadow
-   :alt: Localizer Cart
-   :width: 300px
-
-   Localizer Cart
-
 .. _AutomaticExport:
 
 Automatic Export
@@ -81,6 +63,24 @@ Each Localizer Cart can be configured to work with automatic exports of pages. I
 .. figure:: ../Images/Screenshots/AutomaticExport.png
    :class: with-shadow
    :alt: Automatic Export
+   :width: 300px
+
+   Localizer Cart
+
+.. _LocalizerCart:
+
+Localizer Cart
+==============
+
+Each Localizer Cart consists of several files, one per translation task and target language. Each of the files can have a different translation status, which is indicated by the colors visible in the legend and a small info text like ``[translation in progress]``.
+
+.. tip::
+    The status of each file gets changed automatically via scheduler tasks, so you will get an overview of the current status of each cart. By clicking on the numbered buttons to the right of a cart you can filter the list of files so that it only shows the selected status.
+
+.. _figure3:
+.. figure:: ../Images/Screenshots/Cart.png
+   :class: with-shadow
+   :alt: Localizer Cart
    :width: 300px
 
    Localizer Cart
