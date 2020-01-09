@@ -14,6 +14,7 @@
   },
   "require": {
     "typo3/cms-core": "^9.5",
+    "friendsoftypo3/typo3db-legacy": "*",
     "localizationteam/l10nmgr": "^9.0"
   },
   "autoload": {
