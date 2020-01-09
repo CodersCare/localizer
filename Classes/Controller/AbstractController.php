@@ -19,6 +19,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractController extends BaseScriptClass
 {
+    use DatabaseConnection;
     /**
      * @var array
      */
@@ -71,6 +72,7 @@ abstract class AbstractController extends BaseScriptClass
      */
     public function __construct()
     {
+        parent::__construct();
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->abstractRepository = GeneralUtility::makeInstance(AbstractRepository::class);
     }
@@ -203,16 +205,6 @@ abstract class AbstractController extends BaseScriptClass
     protected function printContent()
     {
         echo $this->content;
-    }
-
-    /**
-     * @return DatabaseConnection
-     * @deprecated since TYPO3 v8, will be removed in TYPO3 v9, use the Doctrine DBAL layer via the ConnectionPool class
-     */
-    protected function getDatabaseConnection()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $GLOBALS['TYPO3_DB'];
     }
 
 }
