@@ -13,7 +13,7 @@ namespace Localizationteam\Localizer;
 trait DatabaseConnection
 {
     /**
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return \TYPO3\CMS\Typo3DbLegacy\Database\DatabaseConnection
      */
     protected function getDatabaseConnection()
     {

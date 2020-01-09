@@ -4,6 +4,8 @@ namespace Localizationteam\Localizer\Model\Repository;
 
 use Localizationteam\Localizer\Constants;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\RelationHandler;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -414,35 +416,23 @@ class SelectorRepository extends AbstractRepository
                 }
                 if (!isset($checkedRecords[$table][$record['uid']])) {
                     $checkedRecords[$table][$record['uid']] = true;
-                    $references = $this->checkReferences(
-                        $record['uid'],
-                        $table
+                    $relations = $this->checkRelations(
+                        $record,
+                        $table,
+                        $translatableTables
                     );
-                    if (!empty($references)) {
-                        foreach ($references as $referenceInfo) {
-                            if (isset($translatableTables[$referenceInfo['tablename']])
-                                && isset($configuration['tables'][$referenceInfo['tablename']])
-                                && (
-                                    !empty($GLOBALS['TCA'][$referenceInfo['tablename']]['columns'][$referenceInfo['field']]['config']['behaviour']['localizeChildrenAtParentLocalization'])
-                                    || !empty($GLOBALS['TCA'][$referenceInfo['tablename']]['columns'][$referenceInfo['field']]['config']['behaviour']['localizeReferencesAtParentLocalization'])
-                                )
-                            ) {
-                                $referencedRecord = BackendUtility::getRecord(
-                                    $referenceInfo['ref_table'],
-                                    (int)$referenceInfo['ref_uid']
-                                );
-                                if ((int)$referencedRecord['pid'] === $id) {
-                                    $referencedRecords[$referenceInfo['tablename']][$referenceInfo['recuid']][$referenceInfo['ref_table']][$referenceInfo['sorting']] = $referencedRecord;
-                                } else {
-                                    $records[$table][$record['uid']] = $record;
+                    if (!empty($relations)) {
+                        foreach ($relations as $referenceTable => $referenceInfo) {
+                            if (isset($configuration['tables'][$referenceTable])) {
+                                foreach($referenceInfo as $referenceUid  => $referencedRecord) {
+                                    if ((int)$referencedRecord['pid'] === $id) {
+                                        $referencedRecords[$table][$record['uid']][$referenceTable][$referenceUid] = $referencedRecord;
+                                    }
                                 }
-                            } else {
-                                $records[$table][$record['uid']] = $record;
                             }
                         }
-                    } else {
-                        $records[$table][$record['uid']] = $record;
                     }
+                    $records[$table][$record['uid']] = $record;
                 }
             }
             foreach ($referencedRecords as $referencingRecord) {

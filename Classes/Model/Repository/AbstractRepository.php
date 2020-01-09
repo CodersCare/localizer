@@ -6,6 +6,9 @@ use Localizationteam\Localizer\BackendUser;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\DatabaseConnection;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\RelationHandler;
+use TYPO3\CMS\Core\Utility\DebugUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Repository for the module 'Selector' for the 'localizer' extension.
@@ -228,18 +231,45 @@ class AbstractRepository
     /**
      * Gets all related child records of a parent record based on the reference index
      *
-     * @param int $uid
+     * @param array $record
      * @param int $table
-     * @return array|NULL
+     * @param array $translatableTables
+     * @return array $relations
      */
-    protected function checkReferences($uid, $table)
+    protected function checkRelations($record, $table, $translatableTables)
     {
-        $table = $this->getDatabaseConnection()->fullQuoteStr($table, $table);
-        $references = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            'sys_refindex',
-            'ref_table = ' . $table . ' AND ref_uid = ' . (int)$uid . ' AND tablename != \'sys_category\''
-        );
-        return $references;
+        $relations = [];
+        foreach ($GLOBALS['TCA'][$table]['columns'] as $fieldName => $column) {
+            $configuration = $column['config'];
+            if (
+                (
+                    $configuration['type'] === 'inline'
+                    || $configuration['type'] === 'group'
+                    || $configuration['type'] === 'select'
+                )
+                && (
+                    !empty($configuration['foreign_table'])
+                    || !empty($configuration['MM'])
+                )
+                && isset($translatableTables[$configuration['foreign_table']])
+            ) {
+                /**@var $relationHandler RelationHandler **/
+                $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
+                $relationHandler->start(
+                    $fieldName,
+                    $configuration['foreign_table'],
+                    $configuration['MM'] ?? '',
+                    $record['uid'],
+                    $table,
+                    $configuration
+                );
+                if (!empty($relationHandler->tableArray[$configuration['foreign_table']])) {
+                    $relationHandler->getFromDB();
+                    $relations = array_merge_recursive($relations, $relationHandler->results);
+                }
+            }
+        }
+
+        return $relations;
     }
 }
