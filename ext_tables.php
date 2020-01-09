@@ -24,10 +24,6 @@ if (TYPO3_MODE === 'BE') {
         ]
     );
 
-    // Register the page tree core navigation component
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent('localizer', 'typo3-pagetree', 'localizer');
-
-
     /**
      * Registers a Backend Module
      */
@@ -42,6 +38,7 @@ if (TYPO3_MODE === 'BE') {
             'name'        => 'localizer_localizerselector',
             'icon'        => 'EXT:localizer/Resources/Public/Icons/module-localizer-selector.svg',
             'labels'      => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf',
+            'navigationComponentId' => 'TYPO3/CMS/Backend/PageTree/PageTreeElement'
         ]
     );
 
@@ -59,6 +56,7 @@ if (TYPO3_MODE === 'BE') {
             'name'        => 'localizer_localizercart',
             'icon'        => 'EXT:localizer/Resources/Public/Icons/module-localizer-cart.svg',
             'labels'      => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf',
+            'navigationComponentId' => 'TYPO3/CMS/Backend/PageTree/PageTreeElement'
         ]
     );
 
@@ -76,8 +74,7 @@ if (TYPO3_MODE === 'BE') {
             'name'                  => 'localizer_localizersettings',
             'icon'                  => 'EXT:localizer/Resources/Public/Icons/module-localizer-settings.svg',
             'labels'                => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_settings.xlf',
-            'navigationComponentId' => 'typo3-pagetree',
-
+            'navigationComponentId' => 'TYPO3/CMS/Backend/PageTree/PageTreeElement'
         ]
     );
 
