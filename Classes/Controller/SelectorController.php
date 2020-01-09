@@ -8,6 +8,7 @@ use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
@@ -466,15 +467,18 @@ class SelectorController extends AbstractController
     {
         $translationConfigurationProvider = GeneralUtility::makeInstance(TranslationConfigurationProvider::class);
         $systemLanguages = $translationConfigurationProvider->getSystemLanguages();
+        $staticLanguages = $this->selectorRepository->getStaticLanguages($systemLanguages);
         $localizerLanguages = $this->selectorRepository->getLocalizerLanguages($this->localizerId);
         $targetLanguages = array_flip(GeneralUtility::intExplode(',', $localizerLanguages['target']));
         $availableLanguages = $this->selectorRepository->loadAvailableLanguages($this->cartId);
         $this->languages = [];
         $languages = [];
-        foreach ($systemLanguages as $language) {
-            $languages[$language['title'] . '_' . $language['language_isocode'] . '_' . $language['uid']] = $language;
+        if (!empty($staticLanguages)) {
+            foreach ($staticLanguages as $language) {
+                $languages[$language['title'] . '_' . $language['language_isocode'] . '_' . $language['uid']] = $language;
+            }
+            ksort($languages);
         }
-        ksort($languages);
         $languageSelector = '<li class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
             $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:languages.selector') .
@@ -485,20 +489,22 @@ class SelectorController extends AbstractController
             $languageSelector .= '<li class="select-all"><a href="#" class="small" tabIndex="-1">
                         <input type="checkbox" />&nbsp;' . $this->getLanguageService()->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:languages.selector.all') . '</a></li>';
         }
-        foreach ($languages as $language) {
-            if ($language['uid'] > 0 &&
-                $this->getBackendUser()->checkLanguageAccess($language['uid'])
-                && isset($targetLanguages[$language['static_lang_isocode']])
-            ) {
-                $checked = '';
-                if (isset($this->configuration['languages'][$language['uid']]) || isset($availableLanguages[$language['uid']])) {
-                    $this->languages[$language['uid']] = $language;
-                    $checked = ' checked="checked"';
+        if (!empty($languages)) {
+            foreach ($languages as $language) {
+                if ($language['uid'] > 0 &&
+                    $this->getBackendUser()->checkLanguageAccess($language['uid'])
+                    && isset($targetLanguages[$language['static_lang_isocode']])
+                ) {
+                    $checked = '';
+                    if (isset($this->configuration['languages'][$language['uid']]) || isset($availableLanguages[$language['uid']])) {
+                        $this->languages[$language['uid']] = $language;
+                        $checked = ' checked="checked"';
+                    }
+                    $languageSelector .= '<li><a href="#" class="small" tabIndex="-1">
+                            <input name="configured_languages[' . $language['uid'] . ']" type="checkbox" ' . $checked . ' />&nbsp;' .
+                        $this->iconFactory->getIcon($language['flagIcon'], Icon::SIZE_SMALL) . ' ' .
+                        $language['title'] . ' [' . $language['language_isocode'] . ']</a></li>';
                 }
-                $languageSelector .= '<li><a href="#" class="small" tabIndex="-1">
-                        <input name="configured_languages[' . $language['uid'] . ']" type="checkbox" ' . $checked . ' />&nbsp;' .
-                    $this->iconFactory->getIcon($language['flagIcon'], Icon::SIZE_SMALL) . ' ' .
-                    $language['title'] . ' [' . $language['language_isocode'] . ']</a></li>';
             }
         }
         $languageSelector .= '</ul>

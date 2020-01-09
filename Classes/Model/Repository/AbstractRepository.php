@@ -19,7 +19,7 @@ class AbstractRepository
     use BackendUser, DatabaseConnection;
 
     /**
-     * @param $localizerId
+     * @param int $localizerId
      * @return array|FALSE|NULL
      */
     public function getLocalizerLanguages($localizerId)
@@ -46,9 +46,41 @@ class AbstractRepository
     }
 
     /**
+     * @param array $systemLanguages
+     * @return array|FALSE|NULL
+     */
+    public function getStaticLanguages($systemLanguages)
+    {
+        $systemLanguageUids = '0';
+        foreach($systemLanguages as $language) {
+            $systemLanguageUids .= ',' . (int)$language['uid'];
+        }
+        $languages = $this->getDatabaseConnection()
+            ->exec_SELECTgetRows(
+                '*',
+                Constants::TABLE_SYS_LANGUAGE,
+                'uid IN (' . $systemLanguageUids . ') ' . BackendUtility::BEenableFields(Constants::TABLE_SYS_LANGUAGE) . BackendUtility::deleteClause(Constants::TABLE_SYS_LANGUAGE),
+                '',
+                '',
+                '',
+                'uid'
+            );
+
+        if (!empty($languages)) {
+            foreach($systemLanguages as $language) {
+                if (isset($languages[$language['uid']])) {
+                    $languages[$language['uid']]['flagIcon'] = $language['flagIcon'];
+                }
+            }
+        }
+
+        return $languages;
+    }
+
+    /**
      * Loads the configuration of the selected cart
      *
-     * @param $cartId
+     * @param int $cartId
      * @return array
      */
     public function loadConfiguration($cartId)
