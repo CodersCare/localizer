@@ -25,7 +25,7 @@ if (TYPO3_MODE === 'BE') {
     );
 
     // Register the page tree core navigation component
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent('localizer', 'typo3-pagetree');
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent('localizer', 'typo3-pagetree', 'localizer');
 
 
     /**
