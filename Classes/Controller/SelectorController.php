@@ -138,7 +138,7 @@ class SelectorController extends AbstractController
         $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/DateTimePicker');
         $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerSelector');
         $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/jquery.clearable');
-        $this->moduleTemplate->getPageRenderer()->addCssFile(ExtensionManagementUtility::extRelPath('localizer') . 'Resources/Public/Css/localizer.css');
+        $this->moduleTemplate->getPageRenderer()->addCssFile(ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css');
         $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
         $access = is_array($this->pageinfo) ? 1 : 0;
         if ($access) {

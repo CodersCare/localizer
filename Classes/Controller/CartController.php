@@ -142,7 +142,7 @@ class CartController extends AbstractController
     {
         $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
         $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerCart');
-        $this->moduleTemplate->getPageRenderer()->addCssFile(ExtensionManagementUtility::extRelPath('localizer') . 'Resources/Public/Css/localizer.css');
+        $this->moduleTemplate->getPageRenderer()->addCssFile(ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css');
         $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
         $access = is_array($this->pageinfo) ? 1 : 0;
         $this->MOD_SETTINGS['bigControlPanel'] = true;
