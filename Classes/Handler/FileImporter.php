@@ -98,7 +98,7 @@ class FileImporter extends AbstractHandler
             $fileNameAndPath = $this->getLocalFilename($originalFileName, $fileStatus['locale']);
             $context = GeneralUtility::getApplicationContext()->__toString();
             $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
-                PATH_site . 'typo3/sysext/core/bin/typo3 l10nmanager:import -t importFile -file ' .
+                PATH_site . 'typo3/sysext/core/bin/typo3 l10nmanager:import -t importFile --file ' .
                 $fileNameAndPath;
             $response[] = [
                 'http_status_code' => 200,
