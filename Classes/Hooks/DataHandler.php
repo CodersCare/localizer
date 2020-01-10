@@ -10,6 +10,7 @@ use Localizationteam\Localizer\Language;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
@@ -48,7 +49,7 @@ class DataHandler
                     $currentRecord = [];
                 }
                 $checkArray = array_merge($currentRecord, $fieldArray);
-                if ($checkArray['type'] === 0) {
+                if ($checkArray['type'] === 0 || $checkArray['type'] === '0') {
                     /** @var ApiCalls $localizerApi */
                     $localizerApi = new ApiCalls(
                         $checkArray['type'],
