@@ -96,7 +96,7 @@ class RequestStatus
                         $this->response['http_status_code'] = 200;
                         $this->response['files'] = [
                             [
-                                'status' => Constants::API_TRANSLATION_STATUS_TRANSLATED,
+                                'status' => Constants::API_TRANSLATION_STATUS_IN_PROGRESS,
                                 'file'   => $this->path,
                             ],
                         ];
