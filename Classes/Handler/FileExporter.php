@@ -9,6 +9,7 @@ use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -183,11 +184,11 @@ class FileExporter extends AbstractCartHandler
     {
         $context = GeneralUtility::getApplicationContext()->__toString();
         $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
-            PATH_site . 'typo3/cli_dispatch.phpsh l10nmgr_export --config=' . $configuration . ' --target=' . $language . '';
+            PATH_site . 'typo3/sysext/core/bin/typo3 l10nmanager:export -c ' . $configuration . ' -t ' . $language . '';
         $response = [
             'http_status_code' => 200,
             'response'         => [
-                'action' => exec($action),
+                'action' => exec($action . ' 2>&1'),
             ],
 
         ];
