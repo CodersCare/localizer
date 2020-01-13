@@ -27,7 +27,7 @@ $EM_CONF[$_EXTKEY] = [
             'typo3'              => '9.5.0-9.5.99',
             'scheduler'          => '9.5.0-9.5.99',
             'static_info_tables' => '6.2.0-0.0.0',
-            'l10nmgr'            => '9.0.0-0.0.0',
+            'l10nmgr'            => '9.1.0-0.0.0',
         ],
         'conflicts' => [],
         'suggests'  => [],

@@ -127,7 +127,7 @@ define(['jquery', 'bootstrap'], function ($) {
     };
 
     LocalizerCart.addButtonsForExportData = function (cell, id, values) {
-        var editOnClick = 'window.location.href=\'' + top.TYPO3.settings.FormEngine.moduleUrl + '&edit[tx_localizer_settings_l10n_exportdata_mm][' + id + ']=edit&returnUrl=\'+T3_THIS_LOCATION+self.location.search; return false;';
+        var editOnClick = 'window.location.href=\'' + top.TYPO3.settings.FormEngine.moduleUrl + '&edit[tx_localizer_settings_l10n_exportdata_mm][' + id + ']=edit&returnUrl=\'+T3_THIS_LOCATION; return false;';
         editOnClick = editOnClick.replace(/\//g, "\\/");
         editOnClick = editOnClick.replace(/&/g, "\\u0026");
         var previewOnClick = '';
@@ -185,7 +185,7 @@ define(['jquery', 'bootstrap'], function ($) {
             ) : '') +
             '</div> <div class="btn-group" role="group">' +
             '<a href="#" class="btn btn-default" ' +
-            'onclick="top.launchView(\'tx_localizer_settings_l10n_exportdata_mm\', ' + id + '); return false;"' +
+            'onclick="top.TYPO3.InfoWindow.showItem(\'tx_localizer_settings_l10n_exportdata_mm\', ' + id + '); return false;"' +
             'data-uid="' + id + '">' +
             '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-document-info" data-identifier="actions-document-info">' +
             '<span class="icon-markup">' +
