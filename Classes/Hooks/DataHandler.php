@@ -157,7 +157,6 @@ class DataHandler
     function calcStat($p, $languageList, $noLink = false)
     {
         $output = '';
-
         if ($p[0] != 'pages') {
             $records = $this->getDatabaseConnection()->exec_SELECTgetRows('*', 'tx_l10nmgr_index',
                 'tablename=' . $this->getDatabaseConnection()->fullQuoteStr($p[0],
@@ -167,13 +166,13 @@ class DataHandler
                 'recpid=' . (int)$p[1] . ' AND (translation_lang IN (' . $languageList . ') OR ' . $languageList . ' = 0)' . ' AND workspace=' . (int)$this->getBackendUser()->workspace);
         }
         $flags = [];
-        foreach ($records as $r) {
-            $flags['new'] += $r['flag_new'];
-            $flags['unknown'] += $r['flag_unknown'];
-            $flags['update'] += $r['flag_update'];
-            $flags['noChange'] += $r['flag_noChange'];
-        }
         if (count($records)) {
+            foreach ($records as $r) {
+                $flags['new'] += $r['flag_new'];
+                $flags['unknown'] += $r['flag_unknown'];
+                $flags['update'] += $r['flag_update'];
+                $flags['noChange'] += $r['flag_noChange'];
+            }
             // Setting icon:
             $msg = '';
             if ($flags['new'] && !$flags['unknown'] && !$flags['noChange'] && !$flags['update']) {
