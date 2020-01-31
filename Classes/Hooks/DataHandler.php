@@ -8,10 +8,9 @@ use Localizationteam\Localizer\BackendUser;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Language;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Typo3DbLegacy\Database\DatabaseConnection;
 
 /**
  * DataHandler
@@ -166,7 +165,7 @@ class DataHandler
                 'recpid=' . (int)$p[1] . ' AND (translation_lang IN (' . $languageList . ') OR ' . $languageList . ' = 0)' . ' AND workspace=' . (int)$this->getBackendUser()->workspace);
         }
         $flags = [];
-        if (count($records)) {
+        if (is_array($records)) {
             foreach ($records as $r) {
                 $flags['new'] += $r['flag_new'];
                 $flags['unknown'] += $r['flag_unknown'];
