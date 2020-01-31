@@ -200,9 +200,7 @@ class AutomaticExporter extends AbstractCartHandler
                     ->exec_SELECTgetSingleRow('*', $table, 'pid=' . $pid .
                         BackendUtility::BEenableFields($table) .
                         BackendUtility::deleteClause($table));
-                if (!empty($recordExists) &&
-                    $table !== 'pages_language_overlay'
-                ) {
+                if (!empty($recordExists)) {
                     $translatableTables[$table] = $GLOBALS['LANG']->sL($GLOBALS['TCA'][$table]['ctrl']['title']);
                 }
             }

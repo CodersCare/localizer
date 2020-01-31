@@ -339,15 +339,15 @@ class SelectorRepository extends AbstractRepository
                     GROUP_CONCAT(DISTINCT outdated.sys_language_uid) changed,
                     MAX(outdated.tstamp) outdated',
                     'pages ' .
-                    ' LEFT OUTER JOIN pages_language_overlay translations 
+                    ' LEFT OUTER JOIN pages translations 
                         ON translations.pid = pages.uid 
                            AND translations.tstamp >= pages.tstamp' .
                     ' LEFT OUTER JOIN ' . Constants::TABLE_CARTDATA_MM . ' triples 
-                        ON triples.tablename = "pages_language_overlay"' .
+                        ON triples.tablename = "pages"' .
                     ' LEFT OUTER JOIN ' . Constants::TABLE_LOCALIZER_CART . ' carts 
                         ON carts.status > 10 
                            AND triples.cart = carts.uid' .
-                    ' LEFT OUTER JOIN pages_language_overlay outdated 
+                    ' LEFT OUTER JOIN pages outdated 
                         ON outdated.pid = pages.uid 
                            AND outdated.tstamp < pages.tstamp',
                     'triples.recordid IN (translations.uid,outdated.uid) 

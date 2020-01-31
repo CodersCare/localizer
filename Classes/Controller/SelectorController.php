@@ -553,8 +553,7 @@ class SelectorController extends AbstractController
             if ((!empty($recordExists) || isset($availableTables[$table])) &&
                 BackendUtility::isTableLocalizable($table) &&
                 ($this->getBackendUser()->isAdmin() ||
-                    $this->getBackendUser()->check('tables_modify', $table)) &&
-                $table !== 'pages_language_overlay'
+                    $this->getBackendUser()->check('tables_modify', $table))
             ) {
                 $checked = '';
                 if (isset($this->configuration['tables'][$table]) || isset($availableTables[$table])) {
