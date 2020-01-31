@@ -3,7 +3,7 @@
 namespace Localizationteam\Localizer;
 
 use Exception;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Typo3DbLegacy\Database\DatabaseConnection;
 
 /**
  * Language
