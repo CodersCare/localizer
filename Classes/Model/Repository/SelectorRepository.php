@@ -341,6 +341,7 @@ class SelectorRepository extends AbstractRepository
                     'pages ' .
                     ' LEFT OUTER JOIN pages translations 
                         ON translations.pid = pages.uid 
+                           AND translations.sys_language_uid > 0
                            AND translations.tstamp >= pages.tstamp' .
                     ' LEFT OUTER JOIN ' . Constants::TABLE_CARTDATA_MM . ' triples 
                         ON triples.tablename = "pages"' .
@@ -349,6 +350,7 @@ class SelectorRepository extends AbstractRepository
                            AND triples.cart = carts.uid' .
                     ' LEFT OUTER JOIN pages outdated 
                         ON outdated.pid = pages.uid 
+                           AND outdated.sys_language_uid > 0
                            AND outdated.tstamp < pages.tstamp',
                     'triples.recordid IN (translations.uid,outdated.uid) 
                         AND pages.uid IN (' . $pageIds . ') ' . BackendUtility::deleteClause($table) . $additionalWhere,
