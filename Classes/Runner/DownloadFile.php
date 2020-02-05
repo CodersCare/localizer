@@ -157,7 +157,6 @@ class DownloadFile
         $search = '<t3_targetLang>';
         $position = strpos($content, $search);
         $start = $position + strlen($search);
-        $content{$start} = $iso2{0};
-        $content{$start + 1} = $iso2{1};
+        $content = substr_replace( $content,  $iso2, $start, 0 );
     }
 }
