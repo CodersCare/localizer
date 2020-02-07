@@ -543,10 +543,7 @@ class ApiCalls
      */
     protected function hasMetaData()
     {
-        switch ($this->type) {
-            default:
-                $this->storeFileIntoLocalHotfolder($fileContent, $fileName, $source, $attachInstruction);
-        }
+        return count($this->metaData) > 0;
     }
 
     /**
