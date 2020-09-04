@@ -353,7 +353,9 @@ class SelectorRepository extends AbstractRepository
                            AND outdated.sys_language_uid > 0
                            AND outdated.tstamp < pages.tstamp',
                     'triples.recordid IN (translations.uid,outdated.uid) 
-                        AND pages.uid IN (' . $pageIds . ') ' . BackendUtility::deleteClause($table) . $additionalWhere,
+                        AND pages.uid IN (' . $pageIds . ') ' .
+                    $GLOBALS['TCA'][$table]['ctrl']['delete'] ? (' AND ' . $table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'] . ' = 0') : '' .
+                    $additionalWhere,
                     'triples.languageId, pages.uid',
                     'pages.sorting'
                 );
@@ -383,7 +385,9 @@ class SelectorRepository extends AbstractRepository
                            AND outdated.tstamp < ' . $table . '.tstamp
                            ',
                     $table . '.pid IN ( ' . $pageIds . ' ) 
-                        AND ' . $table . '.sys_language_uid = 0 ' . BackendUtility::deleteClause($table) . $additionalWhere,
+                        AND ' . $table . '.sys_language_uid = 0 ' .
+                    $GLOBALS['TCA'][$table]['ctrl']['delete'] ? (' AND ' . $table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'] . ' = 0') : '' .
+                        $additionalWhere,
                     'localizer_language, ' . $table . '.uid',
                     $GLOBALS['TCA'][$table]['ctrl']['sortby'] ? $table . '.' . $GLOBALS['TCA'][$table]['ctrl']['sortby'] : ''
                 );

@@ -3,9 +3,9 @@ if (!defined('TYPO3_MODE')) {
     die ('Access denied.');
 }
 
-$extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY);
+$extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('localizer');
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript',
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('localizer', 'Configuration/TypoScript',
     'Localizer for TYPO3');
 
 if (TYPO3_MODE === 'BE') {
@@ -26,41 +26,41 @@ if (TYPO3_MODE === 'BE') {
         $extPath . 'Classes/Ajax/Controller.php:\\Localizationteam\\Localizer\\Ajax\\Controller->init';
 
     // Register l10nmgr hook
-    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['l10nmgr']['exportView'][$_EXTKEY] = Localizationteam\Localizer\Hooks\L10nMgrExportHandler::class;
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['l10nmgr']['exportView']['localizer'] = Localizationteam\Localizer\Hooks\L10nMgrExportHandler::class;
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Localizationteam\\Localizer\\Task\\AutomaticExporterTask'] = [
-        'extension'   => $_EXTKEY,
-        'title'       => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:automaticExporterTask_title',
-        'description' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:automaticExporterTask_desc',
+        'extension'   => 'localizer',
+        'title'       => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:automaticExporterTask_title',
+        'description' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:automaticExporterTask_desc',
     ];
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Localizationteam\\Localizer\\Task\\FileSenderTask'] = [
-        'extension'   => $_EXTKEY,
-        'title'       => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:fileSenderTask_title',
-        'description' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:fileSenderTask_desc',
+        'extension'   => 'localizer',
+        'title'       => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:fileSenderTask_title',
+        'description' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:fileSenderTask_desc',
     ];
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Localizationteam\\Localizer\\Task\\StatusRequesterTask'] = [
-        'extension'   => $_EXTKEY,
-        'title'       => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:statusRequesterTask_title',
-        'description' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:statusRequesterTask_desc',
+        'extension'   => 'localizer',
+        'title'       => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:statusRequesterTask_title',
+        'description' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:statusRequesterTask_desc',
     ];
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Localizationteam\\Localizer\\Task\\ErrorResetterTask'] = [
-        'extension'   => $_EXTKEY,
-        'title'       => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:errorResetterTask_title',
-        'description' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:errorResetterTask_desc',
+        'extension'   => 'localizer',
+        'title'       => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:errorResetterTask_title',
+        'description' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:errorResetterTask_desc',
     ];
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Localizationteam\\Localizer\\Task\\FileDownloaderTask'] = [
-        'extension'   => $_EXTKEY,
-        'title'       => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:fileDownloaderTask_title',
-        'description' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:fileDownloaderTask_desc',
+        'extension'   => 'localizer',
+        'title'       => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:fileDownloaderTask_title',
+        'description' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:fileDownloaderTask_desc',
     ];
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Localizationteam\\Localizer\\Task\\FileImporterTask'] = [
-        'extension'   => $_EXTKEY,
-        'title'       => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:fileImporterTask_title',
-        'description' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_db.xlf:fileImporterTask_desc',
+        'extension'   => 'localizer',
+        'title'       => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:fileImporterTask_title',
+        'description' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:fileImporterTask_desc',
     ];
 }

@@ -62,7 +62,7 @@ class AbstractRepository
             ->exec_SELECTgetRows(
                 '*',
                 Constants::TABLE_SYS_LANGUAGE,
-                'uid IN (' . $systemLanguageUids . ') ' . BackendUtility::BEenableFields(Constants::TABLE_SYS_LANGUAGE) . BackendUtility::deleteClause(Constants::TABLE_SYS_LANGUAGE),
+                'uid IN (' . $systemLanguageUids . ') ' . BackendUtility::BEenableFields(Constants::TABLE_SYS_LANGUAGE),
                 '',
                 '',
                 '',
@@ -118,7 +118,7 @@ class AbstractRepository
         $availableLocalizeres = $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             Constants::TABLE_LOCALIZER_SETTINGS,
-            'uid > 0 ' . BackendUtility::BEenableFields(Constants::TABLE_LOCALIZER_SETTINGS) . BackendUtility::deleteClause(Constants::TABLE_LOCALIZER_SETTINGS),
+            'uid > 0 ' . BackendUtility::BEenableFields(Constants::TABLE_LOCALIZER_SETTINGS) . ' AND ' . Constants::TABLE_LOCALIZER_SETTINGS . '.deleted = 0',
             '',
             '',
             '',
@@ -140,7 +140,7 @@ class AbstractRepository
             Constants::TABLE_LOCALIZER_CART,
             'cruser_id = ' . $this->getBackendUser()->user['uid'] .
             ' AND uid_local = ' . (int)$localizerId .
-            ' AND status = ' . Constants::STATUS_CART_ADDED . BackendUtility::BEenableFields(Constants::TABLE_LOCALIZER_CART) . BackendUtility::deleteClause(Constants::TABLE_LOCALIZER_CART)
+            ' AND status = ' . Constants::STATUS_CART_ADDED . BackendUtility::BEenableFields(Constants::TABLE_LOCALIZER_CART) . ' AND ' . Constants::TABLE_LOCALIZER_CART . '.deleted = 0'
         );
         return $availableCarts;
     }

@@ -14,7 +14,6 @@
   },
   "require": {
     "typo3/cms-core": "^10.4",
-    "friendsoftypo3/typo3db-legacy": "*",
     "localizationteam/l10nmgr": "^10 || dev-master",
     "ext-zip": "*",
     "ext-json": "*"

@@ -5,6 +5,7 @@ namespace Localizationteam\Localizer\Controller;
 use Localizationteam\Localizer\Handler\FileExporter;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
@@ -162,7 +163,8 @@ class SelectorController extends AbstractController
             /** @var DatabaseRecordList $dblist */
             $dblist = GeneralUtility::makeInstance('TYPO3\\CMS\\Recordlist\\RecordList\\DatabaseRecordList');
             $dblist->backPath = $GLOBALS['BACK_PATH'];
-            $dblist->script = BackendUtility::getModuleUrl('web_list', []);
+            $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+            $dblist->script = $uriBuilder->buildUriFromRoute('web_list', []);
             $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
             $header = 'LOCALIZER Selector';
             if (isset($this->pageinfo['title'])) {
@@ -493,7 +495,7 @@ class SelectorController extends AbstractController
             foreach ($languages as $language) {
                 if ($language['uid'] > 0 &&
                     $this->getBackendUser()->checkLanguageAccess($language['uid'])
-                    && isset($targetLanguages[$language['static_lang_isocode']])
+                    // && isset($targetLanguages[$language['static_lang_isocode']])
                 ) {
                     $checked = '';
                     if (isset($this->configuration['languages'][$language['uid']]) || isset($availableLanguages[$language['uid']])) {
@@ -549,7 +551,7 @@ class SelectorController extends AbstractController
             $recordExists = $this->getDatabaseConnection()
                 ->exec_SELECTgetSingleRow('*', $table, 'pid=' . (int)$this->id .
                     BackendUtility::BEenableFields($table) .
-                    BackendUtility::deleteClause($table));
+                    ' AND ' . $table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'] . ' = 0');
             if ((!empty($recordExists) || isset($availableTables[$table])) &&
                 BackendUtility::isTableLocalizable($table) &&
                 ($this->getBackendUser()->isAdmin() ||

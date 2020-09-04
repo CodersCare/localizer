@@ -4,9 +4,13 @@ namespace Localizationteam\Localizer\Controller;
 
 use Localizationteam\Localizer\DatabaseConnection;
 use Localizationteam\Localizer\Model\Repository\AbstractRepository;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Module\BaseScriptClass;
+use TYPO3\CMS\Backend\Routing\Exception\ResourceNotFoundException;
+use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -17,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package     TYPO3
  * @subpackage  localizer
  */
-abstract class AbstractController extends BaseScriptClass
+abstract class AbstractController extends BaseModule
 {
     use DatabaseConnection;
     /**
@@ -72,7 +76,6 @@ abstract class AbstractController extends BaseScriptClass
      */
     public function __construct()
     {
-        parent::__construct();
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->abstractRepository = GeneralUtility::makeInstance(AbstractRepository::class);
     }
@@ -81,17 +84,23 @@ abstract class AbstractController extends BaseScriptClass
      * Injects the request object for the current request or subrequest
      * Then checks for module functions that have hooked in, and renders menu etc.
      *
-     * @param ServerRequestInterface $request the current request
-     * @param Response $response
-     * @return Response the response with the content
+     * @return ResponseInterface the response with the content
+     * @throws ResourceNotFoundException
+     * @throws RouteNotFoundException
      */
-    public function mainAction(ServerRequestInterface $request, Response $response)
+    public function mainAction(): ResponseInterface
     {
+        /** @var ResponseInterface $response */
+        $response = func_num_args() === 2 ? func_get_arg(1) : null;
         $GLOBALS['SOBE'] = $this;
         $this->init();
         $this->main();
         $this->moduleTemplate->setContent($this->content);
-        $response->getBody()->write($this->moduleTemplate->renderContent());
+        if ($response !== null) {
+            $response->getBody()->write($this->moduleTemplate->renderContent());
+        } else {
+            $response = new HtmlResponse($this->moduleTemplate->renderContent());
+        }
         return $response;
     }
 
