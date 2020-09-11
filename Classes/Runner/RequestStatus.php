@@ -89,7 +89,7 @@ class RequestStatus
                         $this->response['files'] = [
                             [
                                 'status' => Constants::API_TRANSLATION_STATUS_TRANSLATED,
-                                'file'   => $this->path,
+                                'file' => $this->path,
                             ],
                         ];
                     } else {
@@ -97,7 +97,7 @@ class RequestStatus
                         $this->response['files'] = [
                             [
                                 'status' => Constants::API_TRANSLATION_STATUS_IN_PROGRESS,
-                                'file'   => $this->path,
+                                'file' => $this->path,
                             ],
                         ];
                     }

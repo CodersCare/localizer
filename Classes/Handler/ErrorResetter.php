@@ -4,6 +4,9 @@ namespace Localizationteam\Localizer\Handler;
 
 use Exception;
 use Localizationteam\Localizer\Constants;
+use PDO;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * ErrorResetter resets status in Localizer cart to status before error occured so that this can rerun.
@@ -21,21 +24,51 @@ class ErrorResetter extends AbstractHandler
      */
     public function init($id = 1)
     {
-        $where = 'deleted = 0 AND hidden = 0 AND  status = ' . Constants::STATUS_CART_ERROR .
-            ' AND previous_status <>""' .
-            ' AND processid = ""';
-
-        $this->setAcquireWhere($where);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $this->setAcquireWhere(
+            $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->eq(
+                    'status',
+                    $queryBuilder->createNamedParameter(Constants::STATUS_CART_ERROR, PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->neq(
+                    'previous_status',
+                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->eq(
+                    'processid',
+                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                )
+            )
+        );
         parent::init($id);
     }
 
     public function run()
     {
         if ($this->canRun() === true) {
-            $query = 'UPDATE ' . Constants::TABLE_EXPORTDATA_MM .
-                ' SET status = previous_status, previous_status = 0, last_error = "" WHERE previous_status <> ""' .
-                ' AND processid = "' . $this->getProcessId() . '"';
-            $this->getDatabaseConnection()->sql_query($query);
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+            $queryBuilder->getRestrictions();
+            $queryBuilder
+                ->update(Constants::TABLE_EXPORTDATA_MM)
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'last_error',
+                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->gt(
+                        'previous_status',
+                        $queryBuilder->createNamedParameter(0, PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'processid',
+                        $queryBuilder->createNamedParameter($this->getProcessId(), PDO::PARAM_STR)
+                    )
+                )
+                ->set('status', $queryBuilder->quoteIdentifier('previous_status'))
+                ->set('previous_status', 0)
+                ->set('last_error', '')
+                ->execute();
         }
     }
 

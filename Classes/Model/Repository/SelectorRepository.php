@@ -3,9 +3,11 @@
 namespace Localizationteam\Localizer\Model\Repository;
 
 use Localizationteam\Localizer\Constants;
+use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\RelationHandler;
-use TYPO3\CMS\Core\Utility\DebugUtility;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -28,38 +30,48 @@ class SelectorRepository extends AbstractRepository
     {
         $localizerLanguages = $this->getLocalizerLanguages($localizerId);
 
-        $fields = [
-            'pid'           => (int)$pageId,
-            'uid_local'     => (int)$localizerId,
-            'source_locale' => 1,
-            'all_locale'    => 1,
-            'crdate'        => time(),
-            'cruser_id'     => (int)$this->getBackendUser()->user['uid'],
-            'status'        => (int)Constants::STATUS_CART_ADDED,
-            'tstamp'        => time(),
-        ];
-        $this->getDatabaseConnection()
-            ->exec_INSERTquery(
-                Constants::TABLE_LOCALIZER_CART,
-                $fields,
-                ['pid', 'uid_local', 'source_locale', 'all_locale', 'crdate', 'cruser_id', 'status', 'tstamp']
-            );
-        $cartId = $this->getDatabaseConnection()->sql_insert_id();
-        $fields = [
-            'pid'         => (int)$pageId,
-            'uid_local'   => (int)$cartId,
-            'uid_foreign' => (int)$localizerLanguages['source'],
-            'tablenames'  => 'static_languages',
-            'source'      => Constants::TABLE_LOCALIZER_CART,
-            'ident'       => 'source',
-            'sorting'     => 1,
-        ];
-        $this->getDatabaseConnection()
-            ->exec_INSERTquery(
-                Constants::TABLE_LOCALIZER_LANGUAGE_MM,
-                $fields,
-                ['pid', 'uid_local', 'uid_foreign', 'sorting']
-            );
+        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(Constants::TABLE_LOCALIZER_CART);
+        $databaseConnection->insert(
+            Constants::TABLE_LOCALIZER_CART,
+            [
+                'pid' => (int)$pageId,
+                'uid_local' => (int)$localizerId,
+                'source_locale' => 1,
+                'all_locale' => 1,
+                'crdate' => time(),
+                'cruser_id' => (int)$this->getBackendUser()->user['uid'],
+                'status' => (int)Constants::STATUS_CART_ADDED,
+                'tstamp' => time(),
+            ],
+            [
+                PDO::PARAM_INT,
+                PDO::PARAM_INT,
+                PDO::PARAM_INT,
+                PDO::PARAM_INT,
+                PDO::PARAM_INT,
+                PDO::PARAM_INT,
+                PDO::PARAM_INT,
+                PDO::PARAM_INT
+            ]
+        );
+
+        $cartId = $databaseConnection->lastInsertId(Constants::TABLE_LOCALIZER_CART);
+        GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+            ->insert(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+            ->values(
+                [
+                    'pid' => (int)$pageId,
+                    'uid_local' => (int)$cartId,
+                    'uid_foreign' => (int)$localizerLanguages['source'],
+                    'tablenames' => 'static_languages',
+                    'source' => Constants::TABLE_LOCALIZER_CART,
+                    'ident' => 'source',
+                    'sorting' => 1,
+                ]
+            )
+            ->execute();
+
         return $cartId;
     }
 
@@ -72,23 +84,28 @@ class SelectorRepository extends AbstractRepository
      */
     public function storeConfiguration($pageId, $cartId, $configuration)
     {
-        $fieldArray = [
-            'configuration' => json_encode(
-                [
-                    'pid'       => (int)$pageId,
-                    'tstamp'    => time(),
-                    'tables'    => $configuration['tables'],
-                    'languages' => $configuration['languages'],
-                    'start'     => $configuration['start'],
-                    'end'       => $configuration['end'],
-                ]
-            ),
-        ];
-        $this->getDatabaseConnection()
-            ->exec_UPDATEquery(
+        GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable(Constants::TABLE_LOCALIZER_CART)
+            ->update(
                 Constants::TABLE_LOCALIZER_CART,
-                'uid = ' . (int)$cartId,
-                $fieldArray
+                [
+                    'uid' => (int)$cartId
+                ],
+                [
+                    'configuration' => json_encode(
+                        [
+                            'pid' => (int)$pageId,
+                            'tstamp' => time(),
+                            'tables' => $configuration['tables'],
+                            'languages' => $configuration['languages'],
+                            'start' => $configuration['start'],
+                            'end' => $configuration['end'],
+                        ]
+                    )
+                ],
+                [
+                    PDO::PARAM_STR
+                ]
             );
     }
 
@@ -117,11 +134,11 @@ class SelectorRepository extends AbstractRepository
                                 if ($configuration['languages'][$languageId]) {
                                     $identifier = md5($tableName . '.' . $recordId . '.' . $languageId);
                                     $checkedValues[$identifier] = [
-                                        'pid'        => (int)$pageId,
+                                        'pid' => (int)$pageId,
                                         'identifier' => $identifier,
-                                        'cart'       => (int)$cartId,
-                                        'tablename'  => $tableName,
-                                        'recordId'   => (int)$recordId,
+                                        'cart' => (int)$cartId,
+                                        'tablename' => $tableName,
+                                        'recordId' => (int)$recordId,
                                         'languageId' => (int)$languageId,
                                     ];
                                 }
@@ -134,21 +151,53 @@ class SelectorRepository extends AbstractRepository
         $insertValues = array_diff_assoc($checkedValues, $storedTriples);
         $deleteValues = array_diff_assoc($storedTriples, $checkedValues);
         if (!empty($insertValues)) {
-            $this->getDatabaseConnection()
-                ->exec_INSERTmultipleRows(
+            GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable(Constants::TABLE_CARTDATA_MM)
+                ->bulkInsert(
                     Constants::TABLE_CARTDATA_MM,
-                    ['pid', 'identifier', 'cart', 'tablename', 'recordId', 'languageId'],
                     $insertValues,
-                    'cart,recordId,languageId'
+                    [
+                        'pid',
+                        'identifier',
+                        'cart',
+                        'tablename',
+                        'recordId',
+                        'languageId'
+                    ],
+                    [
+                        PDO::PARAM_INT,
+                        PDO::PARAM_STR,
+                        PDO::PARAM_INT,
+                        PDO::PARAM_STR,
+                        PDO::PARAM_INT,
+                        PDO::PARAM_INT
+                    ]
                 );
         }
         if (!empty($deleteValues)) {
-            $this->getDatabaseConnection()
-                ->exec_DELETEquery(
-                    Constants::TABLE_CARTDATA_MM,
-                    "pid = " . $pageId . " AND identifier IN ('" . implode("','",
-                        array_keys($deleteValues)) . "') AND cart = " . (int)$cartId
-                );
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
+            $queryBuilder
+                ->delete(Constants::TABLE_CARTDATA_MM)
+                ->where(
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq(
+                            'pid',
+                            $queryBuilder->createNamedParameter((int)$pageId, PDO::PARAM_INT)
+                        ),
+                        $queryBuilder->expr()->in(
+                            'identifier',
+                            $queryBuilder->createNamedParameter(
+                                array_keys($deleteValues),
+                                Connection::PARAM_STR_ARRAY
+                            )
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'cart',
+                            $queryBuilder->createNamedParameter((int)$cartId, PDO::PARAM_INT)
+                        )
+                    )
+                )
+                ->execute();
         }
     }
 
@@ -162,16 +211,32 @@ class SelectorRepository extends AbstractRepository
     public function loadStoredTriples($pageIds, $cartId)
     {
         $pageIds = implode(',', GeneralUtility::intExplode(',', implode(',', array_keys($pageIds))));
-        $storedTriples = $this->getDatabaseConnection()
-            ->exec_SELECTgetRows(
-                '*',
-                Constants::TABLE_CARTDATA_MM,
-                'pid IN (' . $pageIds . ') AND cart = ' . (int)$cartId,
-                '',
-                '',
-                '',
-                'identifier'
-            );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
+        $queryBuilder->getRestrictions()
+            ->removeAll();
+        $triples = $queryBuilder
+            ->select('*')
+            ->from(Constants::TABLE_CARTDATA_MM)
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->in(
+                        'pid',
+                        $pageIds
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'cart',
+                        $queryBuilder->createNamedParameter((int)$cartId, PDO::PARAM_INT)
+                    )
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        $storedTriples = [];
+        if (!empty($triples)) {
+            foreach ($triples as $triple) {
+                $storedTriples[$triple['identifier']] = $triple;
+            }
+        }
         return $storedTriples;
     }
 
@@ -189,26 +254,39 @@ class SelectorRepository extends AbstractRepository
         if ($localizerId > 0 && $cartId > 0) {
             $localizerLanguages = $this->getLocalizerLanguages($localizerId);
             if (!empty($localizerLanguages)) {
-                $this->getDatabaseConnection()
-                    ->exec_INSERTquery(
-                        Constants::TABLE_L10NMGR_CONFIGURATION,
-                        [
-                            'pid'                          => (int)$pageId,
-                            'title'                        => 'Cart Configuration ' . (int)$cartId,
-                            'sourceLangStaticId'           => (int)$localizerLanguages['source'],
-                            'filenameprefix'               => 'cart_' . (int)$cartId . '_',
-                            'depth'                        => -2,
-                            'tablelist'                    => implode(',', array_keys($configuration['tables'])),
-                            'crdate'                       => time(),
-                            'tstamp'                       => time(),
-                            'cruser_id'                    => $this->getBackendUser()->user['uid'],
-                            'pretranslatecontent'          => 0,
-                            'overrideexistingtranslations' => 1,
-                        ]
-                    );
+                $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(Constants::TABLE_L10NMGR_CONFIGURATION);
+                $databaseConnection->insert(
+                    Constants::TABLE_L10NMGR_CONFIGURATION,
+                    [
+                        'pid' => (int)$pageId,
+                        'title' => 'Cart Configuration ' . (int)$cartId,
+                        'sourceLangStaticId' => (int)$localizerLanguages['source'],
+                        'filenameprefix' => 'cart_' . (int)$cartId . '_',
+                        'depth' => -2,
+                        'tablelist' => implode(',', array_keys($configuration['tables'])),
+                        'crdate' => time(),
+                        'tstamp' => time(),
+                        'cruser_id' => $this->getBackendUser()->user['uid'],
+                        'pretranslatecontent' => 0,
+                        'overrideexistingtranslations' => 1,
+                    ],
+                    [
+                        PDO::PARAM_INT,
+                        PDO::PARAM_STR,
+                        PDO::PARAM_INT,
+                        PDO::PARAM_INT,
+                        PDO::PARAM_INT,
+                        PDO::PARAM_STR,
+                        PDO::PARAM_INT,
+                        PDO::PARAM_INT,
+                        PDO::PARAM_INT,
+                        PDO::PARAM_INT,
+                        PDO::PARAM_INT
+                    ]
+                );
+                return $databaseConnection->lastInsertId(Constants::TABLE_L10NMGR_CONFIGURATION);;
             }
 
-            return $this->getDatabaseConnection()->sql_insert_id();
         }
         return 0;
     }
@@ -226,16 +304,23 @@ class SelectorRepository extends AbstractRepository
     {
         if ($localizerId > 0 && $cartId > 0) {
             $pageIds = implode(',', GeneralUtility::intExplode(',', implode(',', array_keys($pageIds))));
-            $this->getDatabaseConnection()
-                ->exec_UPDATEquery(
+            GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable(Constants::TABLE_L10NMGR_CONFIGURATION)
+                ->update(
                     Constants::TABLE_L10NMGR_CONFIGURATION,
-                    'uid = ' . (int)$uid,
                     [
-                        'tstamp'  => time(),
-                        'exclude' => $excludeItems,
-                        'pages'   => $pageIds,
+                        'uid' => (int)$uid
                     ],
-                    ['tstamp']
+                    [
+                        'tstamp' => time(),
+                        'exclude' => $excludeItems,
+                        'pages' => $pageIds,
+                    ],
+                    [
+                        PDO::PARAM_INT,
+                        PDO::PARAM_STR,
+                        PDO::PARAM_STR
+                    ]
                 );
         }
     }
@@ -250,41 +335,61 @@ class SelectorRepository extends AbstractRepository
     public function finalizeCart($localizerId, $cartId, $configurationId)
     {
         if ($cartId > 0) {
-            $this->getDatabaseConnection()
-                ->exec_UPDATEquery(
+            GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable(Constants::TABLE_LOCALIZER_CART)
+                ->update(
                     Constants::TABLE_LOCALIZER_CART,
-                    'uid = ' . (int)$cartId,
+                    [
+                        'uid' => (int)$cartId
+                    ],
                     [
                         'uid_foreign' => (int)$configurationId,
-                        'status'      => CONSTANTS::STATUS_CART_FINALIZED,
-                        'action'      => CONSTANTS::ACTION_EXPORT_FILE,
-                        'tstamp'      => time(),
+                        'status' => CONSTANTS::STATUS_CART_FINALIZED,
+                        'action' => CONSTANTS::ACTION_EXPORT_FILE,
+                        'tstamp' => time(),
                     ],
-                    ['uid_foreign', 'status', 'time']
-                );
-            $this->getDatabaseConnection()
-                ->exec_INSERTquery(
-                    Constants::TABLE_LOCALIZER_L10NMGR_MM,
                     [
-                        'uid_local'   => (int)$localizerId,
+                        PDO::PARAM_INT,
+                        PDO::PARAM_INT,
+                        PDO::PARAM_INT,
+                        PDO::PARAM_INT
+                    ]
+                );
+            GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_L10NMGR_MM)
+                ->insert(Constants::TABLE_LOCALIZER_L10NMGR_MM)
+                ->values(
+                    [
+                        'uid_local' => (int)$localizerId,
                         'uid_foreign' => (int)$configurationId,
-                    ],
-                    ['uid_local', 'uid_foreign']
-                );
-            $countConfigurations = $this->getDatabaseConnection()
-                ->exec_SELECTcountRows(
-                    '*',
-                    Constants::TABLE_LOCALIZER_L10NMGR_MM,
-                    'uid_local = ' . (int)$localizerId
-                );
-            $this->getDatabaseConnection()
-                ->exec_UPDATEquery(
+                    ]
+                )
+                ->execute();
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_L10NMGR_MM);
+            $countConfigurations = $queryBuilder
+                ->count('*')
+                ->from(Constants::TABLE_LOCALIZER_L10NMGR_MM)
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'uid_local',
+                        $queryBuilder->createNamedParameter((int)$localizerId, PDO::PARAM_INT)
+                    )
+                )
+                ->execute()
+                ->fetchColumn(0);
+            GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable(Constants::TABLE_LOCALIZER_SETTINGS)
+                ->update(
                     Constants::TABLE_LOCALIZER_SETTINGS,
-                    'uid = ' . (int)$localizerId,
+                    [
+                        'uid' => (int)$localizerId
+                    ],
                     [
                         'l10n_cfg' => $countConfigurations,
                     ],
-                    ['l10n_cfg']
+                    [
+                        PDO::PARAM_INT
+                    ]
                 );
         }
     }
@@ -311,7 +416,7 @@ class SelectorRepository extends AbstractRepository
         $identifiedStatus = [];
         $start = 0;
         $end = 0;
-        $pageIds = implode(',', GeneralUtility::intExplode(',', implode(',', array_keys($pageIds))));
+        $pageIds = GeneralUtility::intExplode(',', implode(',', array_keys($pageIds)));
         if (!empty($configuration['start'])) {
             $start = strtotime($configuration['start']);
         }
@@ -319,86 +424,232 @@ class SelectorRepository extends AbstractRepository
             $end = strtotime($configuration['end']);
         }
         foreach (array_keys($translatableTables) as $table) {
-            $additionalWhere = '';
-            if (BackendUtility::isTableWorkspaceEnabled($table)) {
-                $additionalWhere .= ' AND ' . $table . '.t3ver_id = 0';
-            }
-            if ($start) {
-                $additionalWhere .= ' AND ' . $table . '.tstamp >= ' . $start;
-            }
-            if ($end) {
-                $additionalWhere .= ' AND ' . $table . '.tstamp <= ' . $end;
-            }
-            if ($table === 'pages') {
-                $res = $this->getDatabaseConnection()->exec_SELECTquery(
-                    'pages.*, 
+            $tstampField = $GLOBALS['TCA'][$table]['ctrl']['tstamp'];
+            $languageField = $GLOBALS['TCA'][$table]['ctrl']['languageField'];
+            $transOrigPointerField = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
+            $queryBuilder->getRestrictions()
+                ->removeAll();
+            $queryBuilder
+                ->selectLiteral($table . '.*, 
                     triples.languageId localizer_language, 
                     MAX(carts.status) localizer_status, 
                     MAX(carts.tstamp) last_action, 
-                    GROUP_CONCAT(DISTINCT translations.sys_language_uid) translated,
-                    GROUP_CONCAT(DISTINCT outdated.sys_language_uid) changed,
-                    MAX(outdated.tstamp) outdated',
-                    'pages ' .
-                    ' LEFT OUTER JOIN pages translations 
-                        ON translations.pid = pages.uid 
-                           AND translations.sys_language_uid > 0
-                           AND translations.tstamp >= pages.tstamp' .
-                    ' LEFT OUTER JOIN ' . Constants::TABLE_CARTDATA_MM . ' triples 
-                        ON triples.tablename = "pages"' .
-                    ' LEFT OUTER JOIN ' . Constants::TABLE_LOCALIZER_CART . ' carts 
-                        ON carts.status > 10 
-                           AND triples.cart = carts.uid' .
-                    ' LEFT OUTER JOIN pages outdated 
-                        ON outdated.pid = pages.uid 
-                           AND outdated.sys_language_uid > 0
-                           AND outdated.tstamp < pages.tstamp',
-                    'triples.recordid IN (translations.uid,outdated.uid) 
-                        AND pages.uid IN (' . $pageIds . ') ' .
-                    $GLOBALS['TCA'][$table]['ctrl']['delete'] ? (' AND ' . $table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'] . ' = 0') : '' .
-                    $additionalWhere,
-                    'triples.languageId, pages.uid',
-                    'pages.sorting'
+                    GROUP_CONCAT(DISTINCT translations.' . $transOrigPointerField . ') translated,
+                    GROUP_CONCAT(DISTINCT outdated.' . $transOrigPointerField . ') changed,
+                    MAX(outdated.tstamp) outdated')
+                ->from($table);
+            if ($table === 'pages') {
+                $queryBuilder->leftJoin(
+                    $table,
+                    $table,
+                    'translations',
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq(
+                            $table . '.uid',
+                            $queryBuilder->quoteIdentifier('translations.pid')
+                        ),
+                        $queryBuilder->expr()->gt(
+                            'translations.' . $languageField,
+                            0
+                        ),
+                        $queryBuilder->expr()->gte(
+                            'translations.' . $tstampField,
+                            $queryBuilder->quoteIdentifier($table . '.' . $tstampField)
+                        ),
+                        $queryBuilder->expr()->gte(
+                            'translations.deleted',
+                            0
+                        )
+                    )
+                )->leftJoin(
+                    $table,
+                    Constants::TABLE_CARTDATA_MM,
+                    'triples',
+                    $queryBuilder->expr()->eq(
+                        'triples.tablename',
+                        $queryBuilder->createNamedParameter($table, PDO::PARAM_STR)
+                    )
+                )->leftJoin(
+                    'triples',
+                    Constants::TABLE_LOCALIZER_CART,
+                    'carts',
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->gt(
+                            'carts.status',
+                            10
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'triples.cart',
+                            $queryBuilder->quoteIdentifier('carts.uid')
+                        ),
+                        $queryBuilder->expr()->gte(
+                            'carts.deleted',
+                            0
+                        )
+                    )
+                )->leftJoin(
+                    $table,
+                    $table,
+                    'outdated',
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq(
+                            'outdated.pid',
+                            $queryBuilder->quoteIdentifier($table . '.uid')
+                        ),
+                        $queryBuilder->expr()->gt(
+                            'outdated.' . $languageField,
+                            0
+                        ),
+                        $queryBuilder->expr()->lt(
+                            'outdated.' . $tstampField,
+                            $queryBuilder->quoteIdentifier($table . '.tstamp')
+                        ),
+                        $queryBuilder->expr()->gte(
+                            'outdated.deleted',
+                            0
+                        )
+                    )
+                )->where(
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->in(
+                            $table . '.pid',
+                            $pageIds
+                        ),
+                        $queryBuilder->expr()->eq(
+                            $table . '.' . $transOrigPointerField,
+                            0
+                        )
+                    )
                 );
             } else {
-                $res = $this->getDatabaseConnection()->exec_SELECTquery(
-                    $table . '.*, 
-                    triples.languageId localizer_language, 
-                    MAX(carts.status) localizer_status, 
-                    MAX(carts.tstamp) last_action, 
-                    GROUP_CONCAT(DISTINCT translations.sys_language_uid) translated,
-                    GROUP_CONCAT(DISTINCT outdated.sys_language_uid) changed,
-                    MAX(outdated.tstamp) outdated',
-                    $table .
-                    ' LEFT OUTER JOIN ' . $table . ' translations 
-                        ON translations.pid IN (' . $pageIds . ' ) 
-                           AND translations . ' . $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] . ' = ' . $table . '.uid 
-                           AND translations.tstamp >= ' . $table . '.tstamp' .
-                    ' LEFT OUTER JOIN ' . Constants::TABLE_CARTDATA_MM . ' triples 
-                        ON triples.tablename = "' . $table . '" 
-                           AND triples.recordid = ' . $table . '.uid' .
-                    ' LEFT OUTER JOIN ' . Constants::TABLE_LOCALIZER_CART . ' carts 
-                        ON carts.status > 10 
-                           AND triples.cart = carts.uid' .
-                    ' LEFT OUTER JOIN ' . $table . ' outdated 
-                        ON outdated.pid IN ( ' . $pageIds . ' )
-                           AND outdated.' . $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] . ' = ' . $table . '.uid 
-                           AND outdated.tstamp < ' . $table . '.tstamp
-                           ',
-                    $table . '.pid IN ( ' . $pageIds . ' ) 
-                        AND ' . $table . '.sys_language_uid = 0 ' .
-                    $GLOBALS['TCA'][$table]['ctrl']['delete'] ? (' AND ' . $table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'] . ' = 0') : '' .
-                        $additionalWhere,
-                    'localizer_language, ' . $table . '.uid',
-                    $GLOBALS['TCA'][$table]['ctrl']['sortby'] ? $table . '.' . $GLOBALS['TCA'][$table]['ctrl']['sortby'] : ''
+                $queryBuilder->leftJoin(
+                    $table,
+                    $table,
+                    'translations',
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->in(
+                            'translations.pid',
+                            $pageIds
+                        ),
+                        $queryBuilder->expr()->gt(
+                            'translations.' . $transOrigPointerField,
+                            0
+                        ),
+                        $queryBuilder->expr()->gte(
+                            'translations.' . $tstampField,
+                            $queryBuilder->quoteIdentifier($table . '.' . $tstampField)
+                        ),
+                        $queryBuilder->expr()->gte(
+                            'translations.deleted',
+                            0
+                        )
+                    )
+                )->leftJoin(
+                    $table,
+                    Constants::TABLE_CARTDATA_MM,
+                    'triples',
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq(
+                            'triples.tablename',
+                            $queryBuilder->createNamedParameter($table, PDO::PARAM_STR)
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'triples.recordid',
+                            $queryBuilder->quoteIdentifier($table . '.uid')
+                        )
+                    )
+                )->leftJoin(
+                    'triples',
+                    Constants::TABLE_LOCALIZER_CART,
+                    'carts',
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->gt(
+                            'carts.status',
+                            10
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'triples.cart',
+                            $queryBuilder->quoteIdentifier('carts.uid')
+                        ),
+                        $queryBuilder->expr()->gte(
+                            'carts.deleted',
+                            0
+                        )
+                    )
+                )->leftJoin(
+                    $table,
+                    $table,
+                    'outdated',
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->in(
+                            'outdated.pid',
+                            $pageIds
+                        ),
+                        $queryBuilder->expr()->gt(
+                            'outdated.' . $transOrigPointerField,
+                            0
+                        ),
+                        $queryBuilder->expr()->lt(
+                            'outdated.' . $tstampField,
+                            $queryBuilder->quoteIdentifier($table . '.' . $tstampField)
+                        ),
+                        $queryBuilder->expr()->gte(
+                            'outdated.deleted',
+                            0
+                        )
+                    )
+                )->where(
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->in(
+                            $table . '.pid',
+                            $pageIds
+                        ),
+                        $queryBuilder->expr()->eq(
+                            $table . '.' . $languageField,
+                            0
+                        )
+                    )
                 );
             }
-            if ($this->getDatabaseConnection()->sql_error()) {
-                $this->getDatabaseConnection()->sql_free_result($res);
-                return null;
+            if (BackendUtility::isTableWorkspaceEnabled($table) && ExtensionManagementUtility::isLoaded('workspaces')) {
+                $queryBuilder->andWhere(
+                    $queryBuilder->expr()->eq(
+                        $table . '.t3ver_id',
+                        0
+                    )
+                );
             }
+            if ($start) {
+                $queryBuilder->andWhere(
+                    $queryBuilder->expr()->gte(
+                        $table . '.' . $tstampField,
+                        (int)$start
+                    )
+
+                );
+            }
+            if ($end) {
+                $queryBuilder->andWhere(
+                    $queryBuilder->expr()->lte(
+                        $table . '.' . $tstampField,
+                        (int)$end
+                    )
+
+                );
+            }
+            $queryBuilder->groupBy(
+                'localizer_language', $table . '.uid'
+            );
+            if ($GLOBALS['TCA'][$table]['ctrl']['sortby']) {
+                $queryBuilder->orderBy($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['sortby']);
+            }
+
+            $statement = $queryBuilder->execute();
+
             $records[$table] = [];
             $checkedRecords = [];
-            while ($record = $this->getDatabaseConnection()->sql_fetch_assoc($res)) {
+            while ($record = $statement->fetch()) {
                 if ($record['localizer_status'] && $record['outdated'] > $record['last_action'] && GeneralUtility::inList($record['changed'],
                         0)
                 ) {
@@ -430,7 +681,7 @@ class SelectorRepository extends AbstractRepository
                     if (!empty($relations)) {
                         foreach ($relations as $referenceTable => $referenceInfo) {
                             if (isset($configuration['tables'][$referenceTable])) {
-                                foreach($referenceInfo as $referenceUid  => $referencedRecord) {
+                                foreach ($referenceInfo as $referenceUid => $referencedRecord) {
                                     if ((int)$referencedRecord['pid'] === $id) {
                                         $referencedRecords[$table][$record['uid']][$referenceTable][$referenceUid] = $referencedRecord;
                                     }
@@ -451,12 +702,11 @@ class SelectorRepository extends AbstractRepository
                 }
             }
             unset($checkedRecords);
-            $this->getDatabaseConnection()->sql_free_result($res);
         }
         return [
-            'records'           => $records,
+            'records' => $records,
             'referencedRecords' => $referencedRecords,
-            'identifiedStatus'  => $identifiedStatus,
+            'identifiedStatus' => $identifiedStatus,
         ];
     }
 

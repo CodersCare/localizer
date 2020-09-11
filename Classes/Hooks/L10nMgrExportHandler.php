@@ -5,7 +5,10 @@ namespace Localizationteam\Localizer\Hooks;
 use Localizationteam\L10nmgr\View\PostSaveInterface;
 use Localizationteam\Localizer\AddFileToMatrix;
 use Localizationteam\Localizer\Constants;
+use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * L10nMgrExportHandler
@@ -28,41 +31,61 @@ class L10nMgrExportHandler implements PostSaveInterface
         if ($params['data']['exportType'] == 1) { //XML
             if ($params['data']['source_lang'] != $params['data']['translation_lang']) {
                 if ($_REQUEST['export_xml_forcepreviewlanguage'] != $_REQUEST['SET']['lang']) {
-                    $rootLine = join(
-                        ',',
-                        $this->getRootline(
-                            $this->getSrcPid()
+                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
+                    $row = $queryBuilder
+                        ->select(
+                            Constants::TABLE_LOCALIZER_SETTINGS . '.uid',
+                            Constants::TABLE_LOCALIZER_SETTINGS . '.pid',
+                            Constants::TABLE_LOCALIZER_SETTINGS . '.project_settings',
+                            'source_locale',
+                            'target_locale'
                         )
-                    );
-                    $where = 'AND ' . Constants::TABLE_LOCALIZER_L10NMGR_MM . '.uid_foreign = ' . (int)$params['data']['l10ncfg_id'] .
-                        ' AND ' . Constants::TABLE_LOCALIZER_SETTINGS . '.pid IN (' . $rootLine . ')' .
-                        BackendUtility::BEenableFields(Constants::TABLE_LOCALIZER_SETTINGS) . BackendUtility::deleteClause(Constants::TABLE_LOCALIZER_SETTINGS);
-                    $resource = $this->getDatabaseConnection()->exec_SELECT_mm_query(
-                        Constants::TABLE_LOCALIZER_SETTINGS . '.uid,' .
-                        Constants::TABLE_LOCALIZER_SETTINGS . '.pid,' .
-                        Constants::TABLE_LOCALIZER_SETTINGS . '.project_settings,
-                            source_locale,target_locale',
-                        Constants::TABLE_LOCALIZER_SETTINGS,
-                        Constants::TABLE_LOCALIZER_L10NMGR_MM,
-                        Constants::TABLE_L10NMGR_CONFIGURATION,
-                        $where,
-                        '',
-                        Constants::TABLE_LOCALIZER_SETTINGS . '.pid IN (' . $rootLine . ')',
-                        '0,1'
-                    );
-                    if ($resource) {
-                        $row = $this->getDatabaseConnection()->sql_fetch_assoc($resource);
-
-                        if ($row['pid'] !== null) {
-                            $this->addFileToMatrix(
-                                $row['pid'],
-                                $row['uid'],
-                                $params['uid'],
-                                $params['data']['l10ncfg_id'],
-                                $params['data']['filename'],
-                                $params['data']['translation_lang']
-                            );
-                        }
+                        ->from(Constants::TABLE_LOCALIZER_SETTINGS)
+                        ->join(
+                            Constants::TABLE_LOCALIZER_SETTINGS,
+                            Constants::TABLE_LOCALIZER_L10NMGR_MM,
+                            'mm'
+                        )
+                        ->join(
+                            Constants::TABLE_LOCALIZER_L10NMGR_MM,
+                            Constants::TABLE_L10NMGR_CONFIGURATION,
+                            Constants::TABLE_L10NMGR_CONFIGURATION
+                        )
+                        ->where(
+                            $queryBuilder->expr()->andX(
+                                $queryBuilder->expr()->eq(
+                                    Constants::TABLE_LOCALIZER_SETTINGS . '.uid',
+                                    $queryBuilder->quoteIdentifier('mm.uid_local')
+                                ),
+                                $queryBuilder->expr()->eq(
+                                    Constants::TABLE_L10NMGR_CONFIGURATION . '.uid',
+                                    $queryBuilder->quoteIdentifier('mm.uid_foreign')
+                                ),
+                                $queryBuilder->expr()->eq(
+                                    Constants::TABLE_LOCALIZER_L10NMGR_MM . '.uid_foreign',
+                                    $queryBuilder->createNamedParameter((int)$params['data']['l10ncfg_id'],
+                                        PDO::PARAM_INT)
+                                ),
+                                $queryBuilder->expr()->in(
+                                    Constants::TABLE_LOCALIZER_SETTINGS . '.pid',
+                                    $this->getRootline(
+                                        $this->getSrcPid()
+                                    )
+                                )
+                            )
+                        )
+                        ->setMaxResults(1)
+                        ->execute()
+                        ->fetchColumn(0);
+                    if ($row['pid'] !== null) {
+                        $this->addFileToMatrix(
+                            $row['pid'],
+                            $row['uid'],
+                            $params['uid'],
+                            $params['data']['l10ncfg_id'],
+                            $params['data']['filename'],
+                            $params['data']['translation_lang']
+                        );
                     }
                 }
             }

@@ -21,6 +21,7 @@ use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
 class CartController extends AbstractController
 {
     use BackendUser;
+
     /**
      * @var int
      */
@@ -107,8 +108,8 @@ class CartController extends AbstractController
     {
         $this->MOD_MENU = [
             'bigControlPanel' => '',
-            'clipBoard'       => '',
-            'localization'    => '',
+            'clipBoard' => '',
+            'localization' => '',
         ];
     }
 

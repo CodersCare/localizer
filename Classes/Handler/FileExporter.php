@@ -8,8 +8,9 @@ use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
+use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\DebugUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -55,11 +56,27 @@ class FileExporter extends AbstractCartHandler
      */
     public function init($id = 1)
     {
-        $where = 'deleted = 0 AND hidden = 0 AND status = ' . Constants::HANDLER_FILEEXPORTER_START .
-            ' AND action = ' . Constants::ACTION_EXPORT_FILE .
-            ' AND last_error = "" AND processid = ""' .
-            ' AND uid = ' . $id;
-        $this->setAcquireWhere($where);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
+        $this->setAcquireWhere(
+            $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->eq(
+                    'status',
+                    $queryBuilder->createNamedParameter(Constants::HANDLER_FILEEXPORTER_START, PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'action',
+                    $queryBuilder->createNamedParameter(Constants::ACTION_EXPORT_FILE, PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'last_error',
+                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter((int)$id, PDO::PARAM_INT)
+                )
+            )
+        );
         $this->selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
         parent::init($id);
         if ($this->canRun()) {
@@ -187,7 +204,7 @@ class FileExporter extends AbstractCartHandler
             PATH_site . 'typo3/sysext/core/bin/typo3 l10nmanager:export -c ' . $configuration . ' -t ' . $language . '';
         $response = [
             'http_status_code' => 200,
-            'response'         => [
+            'response' => [
                 'action' => exec($action . ' 2>&1'),
             ],
 
@@ -202,12 +219,20 @@ class FileExporter extends AbstractCartHandler
      */
     protected function registerFilesForLocalizer($localizerId, $configurationId, $pid)
     {
-        $this->getDatabaseConnection()->store_lastBuiltQuery = 1;
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid, translation_lang, filename',
-            Constants::TABLE_L10NMGR_EXPORTDATA,
-            'l10ncfg_id = ' . $configurationId
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_L10NMGR_EXPORTDATA);
+        $queryBuilder->getRestrictions()
+            ->removeAll();
+        $rows = $queryBuilder
+            ->select('uid', 'translation_lang', 'filename')
+            ->from(Constants::TABLE_L10NMGR_EXPORTDATA)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'l10ncfg_id',
+                    $queryBuilder->createNamedParameter((int)$configurationId, PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
         if (empty($rows) === false) {
             foreach ($rows as $row) {
                 $this->addFileToMatrix(

@@ -3,6 +3,9 @@
 namespace Localizationteam\Localizer;
 
 use Exception;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Typo3DbLegacy\Database\DatabaseConnection;
 
 /**
@@ -11,8 +14,6 @@ use TYPO3\CMS\Typo3DbLegacy\Database\DatabaseConnection;
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  * @package     TYPO3
  * @subpackage  localizer
- *
- * @method DatabaseConnection getDatabaseConnection() must be define in implementing class
  *
  */
 trait Language
@@ -25,11 +26,21 @@ trait Language
     protected function getIso2ForLocale($locale)
     {
         $iso2 = '';
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'lg_iso_2',
-            Constants::TABLE_STATIC_LANGUAGES,
-            'lg_collate_locale LIKE ("%' . str_replace('-', '%', $locale) . '%")'
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_STATIC_LANGUAGES);
+        $queryBuilder->getRestrictions()
+            ->removeAll();
+        $row = $queryBuilder
+            ->select('lg_iso_2')
+            ->from(Constants::TABLE_STATIC_LANGUAGES)
+            ->where(
+                $queryBuilder->expr()->like(
+                    'lg_collate_locale',
+                    $queryBuilder->createNamedParameter($queryBuilder->escapeLikeWildcards('%' . str_replace('-', '%',
+                            $locale) . '%'))
+                )
+            )
+            ->execute()
+            ->fetch();
         if ($row) {
             if (isset($row['lg_iso_2'])) {
                 $iso2 = trim($row['lg_iso_2']);
@@ -61,16 +72,40 @@ trait Language
      */
     protected function getAllTargetLanguageUids($uidLocal, $table)
     {
-        $languageUids = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid_foreign',
-            Constants::TABLE_LOCALIZER_LANGUAGE_MM,
-            'uid_local = ' . $uidLocal .
-            ' AND tablenames = "static_languages" AND source = "' . $table . '" AND ident ="target"',
-            '',
-            '',
-            '',
-            'uid_foreign'
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
+        $queryBuilder->getRestrictions()
+            ->removeAll();
+        $rows = $queryBuilder
+            ->select('uid_foreign')
+            ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq(
+                        'uid_local',
+                        $queryBuilder->createNamedParameter($uidLocal, Connection::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'tablenames',
+                        $queryBuilder->createNamedParameter('static_languages', Connection::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'source',
+                        $queryBuilder->createNamedParameter($table, Connection::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'ident',
+                        $queryBuilder->createNamedParameter('target', Connection::PARAM_STR)
+                    )
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        $languageUids = [];
+        if (!empty($rows)) {
+            foreach ($rows as $row) {
+                $languageUids['uid_foreign'] = $row;
+            }
+        }
         return array_keys($languageUids);
     }
 
@@ -85,20 +120,33 @@ trait Language
         if (count($uidList) > 0) {
             $field = 'lg_collate_locale';
             $orgField = $field;
+            $uidList = GeneralUtility::intExplode(',', join(',', $uidList), true);
             if ((bool)$fixUnderLine === true) {
                 $field = 'REPLACE(' . $field . ', "_", "-") as ' . $field;
             }
-            $rows = $this->getDatabaseConnection()
-                ->exec_SELECTgetRows(
-                    $field,
-                    Constants::TABLE_STATIC_LANGUAGES,
-                    'uid IN (' . join(',', $uidList) . ')',
-                    '',
-                    '',
-                    '',
-                    $orgField
-                );
-            $collateLocale = array_keys($rows);
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_STATIC_LANGUAGES);
+            $queryBuilder->getRestrictions()
+                ->removeAll();
+            $rows = $queryBuilder
+                ->select($field)
+                ->from(Constants::TABLE_STATIC_LANGUAGES)
+                ->where(
+                    $queryBuilder->expr()->in(
+                        'uid',
+                        $queryBuilder->createNamedParameter($uidList, Connection::PARAM_INT_ARRAY)
+                    )
+                )
+                ->execute()
+                ->fetchAll();
+            if (!empty($rows)) {
+                $locale = [];
+                foreach ($rows as $row) {
+                    if (isset($row[$orgField])) {
+                        $locale[$row[$orgField]] = $row;
+                    }
+                }
+            }
+            $collateLocale = array_keys($locale);
         }
         return $collateLocale;
     }

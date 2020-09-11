@@ -21,6 +21,7 @@ use ZipArchive;
 class ApiCalls
 {
     use BackendUser;
+
     /**
      * @var int
      */
@@ -345,7 +346,7 @@ class ApiCalls
         if ($this->folderInformation === null) {
             $this->folderInformation = [
                 'outFolder' => $this->outFolder,
-                'inFolder'  => $this->inFolder,
+                'inFolder' => $this->inFolder,
                 'lastError' => $this->lastError,
             ];
         }
@@ -440,16 +441,16 @@ class ApiCalls
                 $targetLanguage = strtolower($targetLocale[0]);
                 $targetCountry = $targetLocale[1] ? strtolower($targetLocale[1]) : strtolower($targetLocale[0]);
                 $markContentArray = [
-                    'DEADLINE'         => $instructions['deadline'],
-                    'FILE_NAME'        => $fileName,
-                    'PROJECT_CONTACT'  => $this->getBackendUser()->user['email'],
-                    'PROJECT_NAME'     => date('Y-m-d') . '_Typo3CMS_' . strtoupper($sourceLanguage) . '-' . strtoupper($targetLanguage),
+                    'DEADLINE' => $instructions['deadline'],
+                    'FILE_NAME' => $fileName,
+                    'PROJECT_CONTACT' => $this->getBackendUser()->user['email'],
+                    'PROJECT_NAME' => date('Y-m-d') . '_Typo3CMS_' . strtoupper($sourceLanguage) . '-' . strtoupper($targetLanguage),
                     'PROJECT_SETTINGS' => $this->projectKey,
-                    'SOURCE_COUNTRY'   => $sourceCountry,
-                    'SOURCE_LANGUAGE'  => $sourceLanguage,
-                    'TARGET_COUNTRY'   => $targetCountry,
-                    'TARGET_LANGUAGE'  => $targetLanguage,
-                    'WORKFLOW'         => $this->workflow,
+                    'SOURCE_COUNTRY' => $sourceCountry,
+                    'SOURCE_LANGUAGE' => $sourceLanguage,
+                    'TARGET_COUNTRY' => $targetCountry,
+                    'TARGET_LANGUAGE' => $targetLanguage,
+                    'WORKFLOW' => $this->workflow,
                 ];
                 $zip = new ZipArchive;
                 if ($zip->open($zipPath) === true) {

@@ -6,6 +6,8 @@ use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\File;
+use PDO;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -28,11 +30,28 @@ class FileImporter extends AbstractHandler
      */
     public function init($id = 1)
     {
-        $where = 'deleted = 0 AND hidden = 0 AND status = ' . Constants::HANDLER_FILEIMPORTER_START .
-            ' AND action = ' . Constants::ACTION_IMPORT_FILE .
-            ' AND last_error = "" AND processid = ""' .
-            ' LIMIT ' . Constants::HANDLER_FILEIMPORTER_MAX_FILES;
-        $this->setAcquireWhere($where);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $this->setAcquireWhere(
+            $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->eq(
+                    'status',
+                    $queryBuilder->createNamedParameter(Constants::HANDLER_FILEIMPORTER_START, PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'action',
+                    $queryBuilder->createNamedParameter(Constants::ACTION_IMPORT_FILE, PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->eq(
+                    'last_error',
+                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->eq(
+                    'processid',
+                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                )
+            )
+        );
+        $this->setLimit(Constants::HANDLER_FILEIMPORTER_MAX_FILES);
         parent::init($id);
         if ($this->canRun()) {
             $this->initData();
@@ -102,9 +121,9 @@ class FileImporter extends AbstractHandler
                 $fileNameAndPath;
             $response[] = [
                 'http_status_code' => 200,
-                'response'         => [
+                'response' => [
                     'action' => exec($action . ' 2>&1'),
-                    'file'   => $originalFileName,
+                    'file' => $originalFileName,
                     'locale' => $fileStatus['locale'],
                 ],
             ];

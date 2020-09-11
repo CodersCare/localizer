@@ -4,7 +4,10 @@ namespace Localizationteam\Localizer\Handler;
 
 use Exception;
 use Localizationteam\Localizer\Constants;
-use Localizationteam\Localizer\DatabaseConnection;
+use PDO;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * AbstractHandler $COMMENT$
@@ -16,7 +19,6 @@ use Localizationteam\Localizer\DatabaseConnection;
  */
 abstract class AbstractHandler
 {
-    use DatabaseConnection;
     /**
      * @var bool
      */
@@ -28,9 +30,14 @@ abstract class AbstractHandler
     private $processId = '';
 
     /**
-     * @var string
+     * @var ExpressionBuilder
      */
-    private $acquireWhere = '';
+    private $acquireWhere;
+
+    /**
+     * @var int
+     */
+    private $limit = 0;
 
     /**
      * @param $id
@@ -38,7 +45,7 @@ abstract class AbstractHandler
      */
     public function init($id = 1)
     {
-        if ($this->acquireWhere !== '' && $id) {
+        if ($this->acquireWhere !== null && $id) {
             $this->initProcessId();
             if ($this->acquire() === true) {
                 $this->initRun();
@@ -59,17 +66,20 @@ abstract class AbstractHandler
     protected function acquire()
     {
         $acquired = false;
-        $fields = [
-            'tstamp'    => time(),
-            'processid' => $this->processId,
-        ];
-        $this->getDatabaseConnection()
-            ->exec_UPDATEquery(
-                Constants::TABLE_EXPORTDATA_MM,
-                $this->acquireWhere,
-                $fields
-            );
-        if ($this->getDatabaseConnection()->sql_affected_rows() > 0) {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $queryBuilder->getRestrictions();
+        if ($this->limit > 0) {
+            $queryBuilder->setMaxResults($this->limit);
+        }
+        $affectedRows = $queryBuilder
+            ->update(Constants::TABLE_EXPORTDATA_MM)
+            ->where(
+                $this->acquireWhere
+            )
+            ->set('tstamp', time())
+            ->set('processid', $this->processId)
+            ->execute();
+        if ($affectedRows > 0) {
             $acquired = true;
         }
         return $acquired;
@@ -103,15 +113,19 @@ abstract class AbstractHandler
         if ($time == 0) {
             $time = time();
         }
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            Constants::TABLE_EXPORTDATA_MM,
-            'processid="' . $this->processId . '"',
-            [
-                'tstamp'    => $time,
-                'processid' => '',
-            ]
-        );
-
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $queryBuilder->getRestrictions();
+        $queryBuilder
+            ->update(Constants::TABLE_EXPORTDATA_MM)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'processid',
+                    $queryBuilder->createNamedParameter($this->processId, PDO::PARAM_STR)
+                )
+            )
+            ->set('tstamp', $time)
+            ->set('processid', $this->processId)
+            ->execute();
     }
 
     /**
@@ -123,11 +137,19 @@ abstract class AbstractHandler
     }
 
     /**
-     * @param $where
+     * @param ExpressionBuilder $where
      */
     protected function setAcquireWhere($where)
     {
-        $this->acquireWhere = (string)$where;
+        $this->acquireWhere = $where;
+    }
+
+    /**
+     * @param int $limit
+     */
+    protected function setLimit($limit)
+    {
+        $this->limit = $limit;
     }
 
     final protected function resetRun()

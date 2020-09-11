@@ -2,7 +2,6 @@
 
 namespace Localizationteam\Localizer\Backend;
 
-use Localizationteam\Localizer\DatabaseConnection;
 use TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 
@@ -16,7 +15,6 @@ use TYPO3\CMS\Core\Utility\DebugUtility;
  */
 class Cart
 {
-    use DatabaseConnection;
     static protected $data = [];
 
     /**

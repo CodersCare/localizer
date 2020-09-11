@@ -8,6 +8,8 @@ use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\File;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Runner\DownloadFile;
+use PDO;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -30,12 +32,28 @@ class FileDownloader extends AbstractHandler
      */
     public function init($id = 1)
     {
-        $where = 'deleted = 0 AND hidden = 0 AND status = ' . Constants::HANDLER_FILEDOWNLOADER_START .
-            ' AND action = ' . Constants::ACTION_DOWNLOAD_FILE .
-            ' AND last_error = "" AND processid = ""' .
-            ' LIMIT ' . Constants::HANDLER_FILEDOWNLOADER_MAX_FILES;
-
-        $this->setAcquireWhere($where);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $this->setAcquireWhere(
+            $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->eq(
+                    'status',
+                    $queryBuilder->createNamedParameter(Constants::HANDLER_FILEDOWNLOADER_START, PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'action',
+                    $queryBuilder->createNamedParameter(Constants::ACTION_DOWNLOAD_FILE, PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->eq(
+                    'last_error',
+                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->eq(
+                    'processid',
+                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                )
+            )
+        );
+        $this->setLimit(Constants::HANDLER_FILEDOWNLOADER_MAX_FILES);
         parent::init($id);
         if ($this->canRun()) {
             $this->initData();
@@ -112,10 +130,10 @@ class FileDownloader extends AbstractHandler
         foreach ($files as $fileStatus) {
             if ($fileStatus['status'] === Constants::API_TRANSLATION_STATUS_TRANSLATED) {
                 $processFiles['processFiles'][] = [
-                    'locale'    => $fileStatus['locale'],
-                    'local'     => $this->getLocalFilename($originalFileName, $fileStatus['locale']),
+                    'locale' => $fileStatus['locale'],
+                    'local' => $this->getLocalFilename($originalFileName, $fileStatus['locale']),
                     'hotfolder' => $this->getRemoteFilename($fileStatus['file'], ''),
-                    'remote'    => $this->getRemoteFilename($fileStatus['file'],
+                    'remote' => $this->getRemoteFilename($fileStatus['file'],
                         $this->getIso2ForLocale($fileStatus['locale'])),
                 ];
             } else {

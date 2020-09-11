@@ -7,9 +7,13 @@ use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\BackendUser;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Language;
+use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Typo3DbLegacy\Database\DatabaseConnection;
 
 /**
@@ -147,7 +151,8 @@ class DataHandler
     {
         if (!empty($this->getBackendUser()->groupData['allowed_languages']) || $this->getBackendUser()->isAdmin()) {
             return $this->calcStat($p,
-                $this->getDatabaseConnection()->cleanIntList($this->getBackendUser()->groupData['allowed_languages']));
+                implode(',', GeneralUtility::intExplode(',', $this->getBackendUser()->groupData['allowed_languages']))
+            );
         } else {
             return '';
         }
@@ -157,12 +162,87 @@ class DataHandler
     {
         $output = '';
         if ($p[0] != 'pages') {
-            $records = $this->getDatabaseConnection()->exec_SELECTgetRows('*', 'tx_l10nmgr_index',
-                'tablename=' . $this->getDatabaseConnection()->fullQuoteStr($p[0],
-                    'tx_l10nmgr_index') . ' AND recuid=' . (int)$p[1] . ' AND (translation_lang IN (' . $languageList . ') OR ' . $languageList . ' = 0)' . ' AND workspace=' . (int)$this->getBackendUser()->workspace);
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_l10nmgr_index');
+            $queryBuilder->getRestrictions()
+                ->removeAll();
+            if ($languageList === 0) {
+                $noLanguage = 0;
+                $languageValues = [];
+            } else {
+                $noLanguage = 1;
+                $languageValues = GeneralUtility::intExplode(',', $languageList, true);
+            }
+            $records = $queryBuilder
+                ->select('*')
+                ->from('tx_l10nmgr_index')
+                ->where(
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq(
+                            'tablename',
+                            $queryBuilder->createNamedParameter($p[0], PDO::PARAM_STR)
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'recuid',
+                            $queryBuilder->createNamedParameter((int)$p[1], PDO::PARAM_INT)
+                        ),
+                        $queryBuilder->expr()->orX(
+                            $queryBuilder->expr()->in(
+                                'translation_lang',
+                                $languageValues
+                            ),
+                            $queryBuilder->expr()->eq(
+                                0, $noLanguage
+                            )
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'workspaces',
+                            $queryBuilder->createNamedParameter((int)$this->getBackendUser()->workspace, PDO::PARAM_INT)
+                        )
+                    )
+                )
+                ->execute()
+                ->fetchAll();
         } else {
-            $records = $this->getDatabaseConnection()->exec_SELECTgetRows('*', 'tx_l10nmgr_index',
-                'recpid=' . (int)$p[1] . ' AND (translation_lang IN (' . $languageList . ') OR ' . $languageList . ' = 0)' . ' AND workspace=' . (int)$this->getBackendUser()->workspace);
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_l10nmgr_index');
+            $queryBuilder->getRestrictions()
+                ->removeAll();
+            if ($languageList === 0) {
+                $noLanguage = 0;
+                $languageValues = [];
+            } else {
+                $noLanguage = 1;
+                $languageValues = GeneralUtility::intExplode(',', $languageList, true);
+            }
+            $records = $queryBuilder
+                ->select('*')
+                ->from('tx_l10nmgr_index')
+                ->where(
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq(
+                            'tablename',
+                            $queryBuilder->createNamedParameter($p[0], PDO::PARAM_STR)
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'recpid',
+                            $queryBuilder->createNamedParameter((int)$p[1], PDO::PARAM_INT)
+                        ),
+                        $queryBuilder->expr()->orX(
+                            $queryBuilder->expr()->in(
+                                'translation_lang',
+                                $languageValues
+                            ),
+                            $queryBuilder->expr()->eq(
+                                0, $noLanguage
+                            )
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'workspaces',
+                            $queryBuilder->createNamedParameter((int)$this->getBackendUser()->workspace, PDO::PARAM_INT)
+                        )
+                    )
+                )
+                ->execute()
+                ->fetchAll();
         }
         $flags = [];
         if (is_array($records)) {
@@ -176,7 +256,7 @@ class DataHandler
             $msg = '';
             if ($flags['new'] && !$flags['unknown'] && !$flags['noChange'] && !$flags['update']) {
                 $msg .= 'None of ' . $flags['new'] . ' elements are translated.';
-                $output = '<img src="../' . ExtensionManagementUtility::siteRelPath('l10nmgr') . 'Resources/Public/Images/flags_new.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = '<img src="../' . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath('l10nmgr')) . 'Resources/Public/Images/flags_new.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
             } elseif ($flags['new'] || $flags['update']) {
                 if ($flags['update']) {
                     $msg .= $flags['update'] . ' elements to update. ';
@@ -184,28 +264,21 @@ class DataHandler
                 if ($flags['new']) {
                     $msg .= $flags['new'] . ' new elements found. ';
                 }
-                $output = '<img src="../' . ExtensionManagementUtility::siteRelPath('l10nmgr') . 'Resources/Public/Images/flags_update.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = '<img src="../' . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath('l10nmgr')) . 'Resources/Public/Images/flags_update.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
             } elseif ($flags['unknown']) {
                 $msg .= 'Translation status is unknown for ' . $flags['unknown'] . ' elements. Please check and update. ';
-                $output = '<img src="../' . ExtensionManagementUtility::siteRelPath('l10nmgr') . 'Resources/Public/Images/flags_unknown.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = '<img src="../' . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath('l10nmgr')) . 'Resources/Public/Images/flags_unknown.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
             } elseif ($flags['noChange']) {
                 $msg .= 'All ' . $flags['noChange'] . ' translations OK';
-                $output = '<img src="../' . ExtensionManagementUtility::siteRelPath('l10nmgr') . 'Resources/Public/Images/flags_ok.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = '<img src="../' . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath('l10nmgr')) . 'Resources/Public/Images/flags_ok.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
             } else {
                 $msg .= 'Nothing to do. ';
                 $msg .= '[n/?/u/ok=' . implode('/', $flags) . ']';
-                $output = '<img src="../' . ExtensionManagementUtility::siteRelPath('l10nmgr') . 'Resources/Public/Images/flags_none.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = '<img src="../' . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath('l10nmgr')) . 'Resources/Public/Images/flags_none.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
             }
-            $output = !$noLink ? '<a href="#" onclick="' . htmlspecialchars('parent.list_frame.location.href="' . $GLOBALS['BACK_PATH'] . ExtensionManagementUtility::siteRelPath('l10nmgr') . 'cm2/index.php?table=' . $p[0] . '&uid=' . $p[1] . '&languageList=' . rawurlencode($languageList) . '"; return false;') . '" target="listframe">' . $output . '</a>' : $output;
+            $output = !$noLink ? '<a href="#" onclick="' . htmlspecialchars('parent.list_frame.location.href="' . $GLOBALS['BACK_PATH'] . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath('l10nmgr')) . 'cm2/index.php?table=' . $p[0] . '&uid=' . $p[1] . '&languageList=' . rawurlencode($languageList) . '"; return false;') . '" target="listframe">' . $output . '</a>' : $output;
         }
         return $output;
     }
 
-    /**
-     * @return DatabaseConnection
-     */
-    public function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
 }

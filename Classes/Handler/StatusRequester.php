@@ -6,6 +6,8 @@ use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Runner\RequestStatus;
+use PDO;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -27,11 +29,31 @@ class StatusRequester extends AbstractHandler
      */
     public function init($id = 1)
     {
-        $where = 'deleted = 0 AND hidden = 0 AND  status >= ' . Constants::HANDLER_STATUSREQUESTER_START .
-            ' AND status < ' . Constants::HANDLER_STATUSREQUESTER_FINISH .
-            ' AND action = ' . Constants::ACTION_REQUEST_STATUS .
-            ' AND last_error = "" AND processid = ""';
-        $this->setAcquireWhere($where);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $this->setAcquireWhere(
+            $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->gte(
+                    'status',
+                    $queryBuilder->createNamedParameter(Constants::HANDLER_STATUSREQUESTER_START, PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->lt(
+                    'status',
+                    $queryBuilder->createNamedParameter(Constants::HANDLER_STATUSREQUESTER_FINISH, PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'action',
+                    $queryBuilder->createNamedParameter(Constants::ACTION_REQUEST_STATUS, PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->eq(
+                    'last_error',
+                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->eq(
+                    'processid',
+                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                )
+            )
+        );
         parent::init($id);
         if ($this->canRun()) {
             $this->initData();

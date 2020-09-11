@@ -7,7 +7,8 @@ use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Runner\SendFile;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use PDO;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -33,11 +34,28 @@ class FileSender extends AbstractHandler
      */
     public function init($id = 1)
     {
-        $where = 'deleted = 0 AND hidden = 0 AND status = ' . Constants::HANDLER_FILESENDER_START .
-            ' AND action = ' . Constants::ACTION_SEND_FILE .
-            ' AND last_error = "" AND processid = ""' .
-            ' LIMIT ' . Constants::HANDLER_FILESENDER_MAX_FILES;
-        $this->setAcquireWhere($where);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $this->setAcquireWhere(
+            $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->eq(
+                    'status',
+                    $queryBuilder->createNamedParameter(Constants::HANDLER_FILESENDER_START, PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'action',
+                    $queryBuilder->createNamedParameter(Constants::ACTION_SEND_FILE, PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->eq(
+                    'last_error',
+                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                ),
+                $queryBuilder->expr()->eq(
+                    'processid',
+                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                )
+            )
+        );
+        $this->setLimit(Constants::HANDLER_FILESENDER_MAX_FILES);
         parent::init($id);
         if ($this->canRun()) {
             $this->initData();
@@ -73,7 +91,7 @@ class FileSender extends AbstractHandler
                     } else {
                         $additionalConfiguration = [
                             'localFile' => $file,
-                            'file'      => $row['filename'],
+                            'file' => $row['filename'],
                         ];
                         $deadline = $this->addDeadline($row);
                         if (!empty($deadline)) {
@@ -145,18 +163,31 @@ class FileSender extends AbstractHandler
     protected function addDeadline(&$row)
     {
         $deadline = '';
-        $carts = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'COALESCE (
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $queryBuilder->getRestrictions();
+        $carts = $queryBuilder
+            ->selectLiteral('COALESCE (
                 NULLIF(' . Constants::TABLE_EXPORTDATA_MM . '.deadline, 0), ' .
-            Constants::TABLE_LOCALIZER_CART . '.deadline
-            ) deadline',
-            Constants::TABLE_EXPORTDATA_MM .
-            ' LEFT OUTER JOIN ' . Constants::TABLE_LOCALIZER_CART .
-            ' ON ' . Constants::TABLE_LOCALIZER_CART . '.uid_foreign = ' . Constants::TABLE_EXPORTDATA_MM . '.uid_foreign',
-            Constants::TABLE_EXPORTDATA_MM . ' .uid = ' . (int)$row['uid'] .
-            BackendUtility::BEenableFields(Constants::TABLE_EXPORTDATA_MM) .
-            BackendUtility::deleteClause(Constants::TABLE_EXPORTDATA_MM)
-        );
+                Constants::TABLE_LOCALIZER_CART . '.deadline
+            ) deadline')
+            ->from(Constants::TABLE_EXPORTDATA_MM)
+            ->leftJoin(
+                Constants::TABLE_EXPORTDATA_MM,
+                Constants::TABLE_LOCALIZER_CART,
+                Constants::TABLE_LOCALIZER_CART,
+                $queryBuilder->expr()->eq(
+                    Constants::TABLE_LOCALIZER_CART . '.uid_foreign',
+                    $queryBuilder->quoteIdentifier(Constants::TABLE_EXPORTDATA_MM . '.uid_foreign')
+                )
+            )->where(
+                $queryBuilder->expr()->eq(
+                    Constants::TABLE_EXPORTDATA_MM . ' .uid',
+                    $queryBuilder->createNamedParameter((int)$row['uid'], PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchColumn(0);
+
         if (!empty($carts['deadline'])) {
             $deadline = (int)$carts['deadline'];
         }

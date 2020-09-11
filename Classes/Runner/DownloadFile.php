@@ -141,14 +141,6 @@ class DownloadFile
     }
 
     /**
-     * @return string
-     */
-    public function getResponse()
-    {
-        return $this->response;
-    }
-
-    /**
      * @param string $content
      * @param string $iso2
      */
@@ -157,6 +149,14 @@ class DownloadFile
         $search = '<t3_targetLang>';
         $position = strpos($content, $search);
         $start = $position + strlen($search);
-        $content = substr_replace( $content,  $iso2, $start, 0 );
+        $content = substr_replace($content, $iso2, $start, 0);
+    }
+
+    /**
+     * @return string
+     */
+    public function getResponse()
+    {
+        return $this->response;
     }
 }
