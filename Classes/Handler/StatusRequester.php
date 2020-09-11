@@ -29,36 +29,54 @@ class StatusRequester extends AbstractHandler
      */
     public function init($id = 1)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
-        $this->setAcquireWhere(
-            $queryBuilder->expr()->andX(
-                $queryBuilder->expr()->gte(
-                    'status',
-                    $queryBuilder->createNamedParameter(Constants::HANDLER_STATUSREQUESTER_START, PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->lt(
-                    'status',
-                    $queryBuilder->createNamedParameter(Constants::HANDLER_STATUSREQUESTER_FINISH, PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    'action',
-                    $queryBuilder->createNamedParameter(Constants::ACTION_REQUEST_STATUS, PDO::PARAM_STR)
-                ),
-                $queryBuilder->expr()->eq(
-                    'last_error',
-                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
-                ),
-                $queryBuilder->expr()->eq(
-                    'processid',
-                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
-                )
-            )
-        );
         parent::init($id);
         if ($this->canRun()) {
             $this->initData();
             $this->load();
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function acquire()
+    {
+        $acquired = false;
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $queryBuilder->getRestrictions();
+        $affectedRows = $queryBuilder
+            ->update(Constants::TABLE_EXPORTDATA_MM)
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->gte(
+                        'status',
+                        $queryBuilder->createNamedParameter(Constants::HANDLER_STATUSREQUESTER_START, PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->lt(
+                        'status',
+                        $queryBuilder->createNamedParameter(Constants::HANDLER_STATUSREQUESTER_FINISH, PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'action',
+                        $queryBuilder->createNamedParameter(Constants::ACTION_REQUEST_STATUS, PDO::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'last_error',
+                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'processid',
+                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    )
+                )
+            )
+            ->set('tstamp', time())
+            ->set('processid', $this->processId)
+            ->execute();
+        if ($affectedRows > 0) {
+            $acquired = true;
+        }
+        return $acquired;
     }
 
     /**

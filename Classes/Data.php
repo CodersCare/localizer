@@ -6,7 +6,6 @@ use Exception;
 use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

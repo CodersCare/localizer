@@ -4,7 +4,6 @@ namespace Localizationteam\Localizer\Model\Repository;
 
 use Localizationteam\Localizer\BackendUser;
 use Localizationteam\Localizer\Constants;
-use Localizationteam\Localizer\DatabaseConnection;
 use PDO;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;

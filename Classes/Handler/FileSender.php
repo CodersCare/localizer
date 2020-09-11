@@ -34,33 +34,51 @@ class FileSender extends AbstractHandler
      */
     public function init($id = 1)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
-        $this->setAcquireWhere(
-            $queryBuilder->expr()->andX(
-                $queryBuilder->expr()->eq(
-                    'status',
-                    $queryBuilder->createNamedParameter(Constants::HANDLER_FILESENDER_START, PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    'action',
-                    $queryBuilder->createNamedParameter(Constants::ACTION_SEND_FILE, PDO::PARAM_STR)
-                ),
-                $queryBuilder->expr()->eq(
-                    'last_error',
-                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
-                ),
-                $queryBuilder->expr()->eq(
-                    'processid',
-                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
-                )
-            )
-        );
-        $this->setLimit(Constants::HANDLER_FILESENDER_MAX_FILES);
         parent::init($id);
         if ($this->canRun()) {
             $this->initData();
             $this->load();
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function acquire()
+    {
+        $acquired = false;
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $queryBuilder->getRestrictions();
+        $affectedRows = $queryBuilder
+            ->update(Constants::TABLE_EXPORTDATA_MM)
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq(
+                        'status',
+                        $queryBuilder->createNamedParameter(Constants::HANDLER_FILESENDER_START, PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'action',
+                        $queryBuilder->createNamedParameter(Constants::ACTION_SEND_FILE, PDO::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'last_error',
+                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'processid',
+                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    )
+                )
+            )
+            ->set('tstamp', time())
+            ->set('processid', $this->processId)
+            ->setMaxResults(Constants::HANDLER_FILESENDER_MAX_FILES)
+            ->execute();
+        if ($affectedRows > 0) {
+            $acquired = true;
+        }
+        return $acquired;
     }
 
     /**

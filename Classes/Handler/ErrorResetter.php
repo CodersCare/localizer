@@ -24,24 +24,42 @@ class ErrorResetter extends AbstractHandler
      */
     public function init($id = 1)
     {
+        parent::init($id);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function acquire()
+    {
+        $acquired = false;
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
-        $this->setAcquireWhere(
-            $queryBuilder->expr()->andX(
-                $queryBuilder->expr()->eq(
-                    'status',
-                    $queryBuilder->createNamedParameter(Constants::STATUS_CART_ERROR, PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->neq(
-                    'previous_status',
-                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
-                ),
-                $queryBuilder->expr()->eq(
-                    'processid',
-                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+        $queryBuilder->getRestrictions();
+        $affectedRows = $queryBuilder
+            ->update(Constants::TABLE_EXPORTDATA_MM)
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq(
+                        'status',
+                        $queryBuilder->createNamedParameter(Constants::STATUS_CART_ERROR, PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->neq(
+                        'previous_status',
+                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'processid',
+                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    )
                 )
             )
-        );
-        parent::init($id);
+            ->set('tstamp', time())
+            ->set('processid', $this->processId)
+            ->execute();
+        if ($affectedRows > 0) {
+            $acquired = true;
+        }
+        return $acquired;
     }
 
     public function run()

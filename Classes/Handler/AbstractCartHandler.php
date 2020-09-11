@@ -4,7 +4,6 @@ namespace Localizationteam\Localizer\Handler;
 
 use Exception;
 use Localizationteam\Localizer\Constants;
-use Localizationteam\Localizer\DatabaseConnection;
 use PDO;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
@@ -28,12 +27,7 @@ abstract class AbstractCartHandler
     /**
      * @var string
      */
-    private $processId = '';
-
-    /**
-     * @var ExpressionBuilder
-     */
-    private $acquireWhere;
+    protected $processId = '';
 
     /**
      * @param $id
@@ -41,13 +35,9 @@ abstract class AbstractCartHandler
      */
     public function init($id = 1)
     {
-        if ($this->acquireWhere !== null && $id) {
-            $this->initProcessId();
-            if ($this->acquire() === true) {
-                $this->initRun();
-            }
-        } else {
-            throw new Exception('Condition for acquire() missing');
+        $this->initProcessId();
+        if ($this->acquire() === true) {
+            $this->initRun();
         }
     }
 

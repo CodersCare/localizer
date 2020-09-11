@@ -17,7 +17,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 trait AddFileToMatrix
 {
-    use BackendUser, DatabaseConnection;
+    use BackendUser;
 
     /**
      * @param int $pid

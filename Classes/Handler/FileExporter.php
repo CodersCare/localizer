@@ -26,6 +26,11 @@ class FileExporter extends AbstractCartHandler
     use AddFileToMatrix, Data, Language;
 
     /**
+     * @var int
+     */
+    protected $id;
+
+    /**
      * @var string
      */
     protected $uploadPath = '';
@@ -56,33 +61,53 @@ class FileExporter extends AbstractCartHandler
      */
     public function init($id = 1)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
-        $this->setAcquireWhere(
-            $queryBuilder->expr()->andX(
-                $queryBuilder->expr()->eq(
-                    'status',
-                    $queryBuilder->createNamedParameter(Constants::HANDLER_FILEEXPORTER_START, PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    'action',
-                    $queryBuilder->createNamedParameter(Constants::ACTION_EXPORT_FILE, PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    'last_error',
-                    $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
-                ),
-                $queryBuilder->expr()->eq(
-                    'uid',
-                    $queryBuilder->createNamedParameter((int)$id, PDO::PARAM_INT)
-                )
-            )
-        );
+        $this->id = $id;
         $this->selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
         parent::init($id);
         if ($this->canRun()) {
             $this->initData();
             $this->loadCart();
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function acquire()
+    {
+        $acquired = false;
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $queryBuilder->getRestrictions();
+        $affectedRows = $queryBuilder
+            ->update(Constants::TABLE_EXPORTDATA_MM)
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq(
+                        'status',
+                        $queryBuilder->createNamedParameter(Constants::HANDLER_FILEEXPORTER_START, PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'action',
+                        $queryBuilder->createNamedParameter(Constants::ACTION_EXPORT_FILE, PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'last_error',
+                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'uid',
+                        $queryBuilder->createNamedParameter((int)$this->id, PDO::PARAM_INT)
+                    )
+                )
+            )
+            ->set('tstamp', time())
+            ->set('processid', $this->processId)
+            ->setMaxResults(Constants::HANDLER_FILEDOWNLOADER_MAX_FILES)
+            ->execute();
+        if ($affectedRows > 0) {
+            $acquired = true;
+        }
+        return $acquired;
     }
 
     /**

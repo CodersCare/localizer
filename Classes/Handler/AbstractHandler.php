@@ -27,12 +27,7 @@ abstract class AbstractHandler
     /**
      * @var string
      */
-    private $processId = '';
-
-    /**
-     * @var ExpressionBuilder
-     */
-    private $acquireWhere;
+    protected $processId = '';
 
     /**
      * @var int
@@ -45,13 +40,9 @@ abstract class AbstractHandler
      */
     public function init($id = 1)
     {
-        if ($this->acquireWhere !== null && $id) {
-            $this->initProcessId();
-            if ($this->acquire() === true) {
-                $this->initRun();
-            }
-        } else {
-            throw new Exception('Condition for acquire() missing');
+        $this->initProcessId();
+        if ($this->acquire() === true) {
+            $this->initRun();
         }
     }
 
@@ -65,24 +56,6 @@ abstract class AbstractHandler
      */
     protected function acquire()
     {
-        $acquired = false;
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
-        $queryBuilder->getRestrictions();
-        if ($this->limit > 0) {
-            $queryBuilder->setMaxResults($this->limit);
-        }
-        $affectedRows = $queryBuilder
-            ->update(Constants::TABLE_EXPORTDATA_MM)
-            ->where(
-                $this->acquireWhere
-            )
-            ->set('tstamp', time())
-            ->set('processid', $this->processId)
-            ->execute();
-        if ($affectedRows > 0) {
-            $acquired = true;
-        }
-        return $acquired;
     }
 
     final protected function initRun()
