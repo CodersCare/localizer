@@ -299,13 +299,6 @@ return [
                 ],
                 'foreign_table'   => 'static_languages',
                 'itemsProcFunc'   => 'Localizationteam\Localizer\Backend\Cart->filterList',
-                'filterList'      => [
-                    'uid'      => 'uid_foreign',
-                    'table'    => 'tx_localizer_language_mm',
-                    'field'    => 'uid_local',
-                    'rowValue' => 'uid_local',
-                    'where'    => ' AND tablenames = "static_languages" AND source = "tx_localizer_settings" AND ident ="target"',
-                ],
                 'size'            => 4,
                 'autoSizeMax'     => 10,
                 'minitems'        => 1,

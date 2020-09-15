@@ -33,19 +33,19 @@ class AutomaticExportRepository extends AbstractRepository
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'cruser_id',
-                        $queryBuilder->createNamedParameter((int)$this->getBackendUser()->user['uid'], PDO::PARAM_INT)
+                        (int)$this->getBackendUser()->user['uid']
                     ),
                     $queryBuilder->expr()->eq(
                         'uid_local',
-                        $queryBuilder->createNamedParameter((int)$localizerId, PDO::PARAM_INT)
+                        (int)$localizerId
                     ),
                     $queryBuilder->expr()->gte(
                         'status',
-                        $queryBuilder->createNamedParameter(Constants::STATUS_CART_FINALIZED, PDO::PARAM_INT)
+                        Constants::STATUS_CART_FINALIZED
                     ),
                     $queryBuilder->expr()->lt(
                         'status',
-                        $queryBuilder->createNamedParameter(Constants::STATUS_CART_FILE_IMPORTED, PDO::PARAM_INT)
+                        Constants::STATUS_CART_FILE_IMPORTED
                     )
                 )
             )
@@ -70,7 +70,7 @@ class AutomaticExportRepository extends AbstractRepository
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->gt(
                         'localizer_include_with_automatic_export',
-                        $queryBuilder->createNamedParameter(0, PDO::PARAM_INT)
+                        0
                     ),
                     $queryBuilder->expr()->notIn(
                         'uid',
@@ -78,11 +78,11 @@ class AutomaticExportRepository extends AbstractRepository
                     ),
                     $queryBuilder->expr()->gte(
                         'status',
-                        $queryBuilder->createNamedParameter(Constants::STATUS_CART_FINALIZED, PDO::PARAM_INT)
+                        Constants::STATUS_CART_FINALIZED
                     ),
                     $queryBuilder->expr()->lt(
                         'status',
-                        $queryBuilder->createNamedParameter(Constants::STATUS_CART_FILE_IMPORTED, PDO::PARAM_INT)
+                        Constants::STATUS_CART_FILE_IMPORTED
                     )
                 )
             )
@@ -122,7 +122,7 @@ class AutomaticExportRepository extends AbstractRepository
                     ),
                     $queryBuilder->expr()->eq(
                         'mm.uid_foreign',
-                        $queryBuilder->createNamedParameter((int)$localizer, PDO::PARAM_INT)
+                        (int)$localizer
                     )
                 )
             )

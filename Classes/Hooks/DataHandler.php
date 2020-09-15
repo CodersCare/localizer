@@ -70,7 +70,7 @@ class DataHandler
                             $fieldArray['hidden'] = 1;
                         } else {
                             $fieldArray['project_settings'] = $localizerApi->getFolderInformation(true);
-                            $fieldArray['last_error'] = '';
+                            $fieldArray['last_error'] = null;
                             new FlashMessage('Localizer settings [' . $checkArray['title'] . '] successfully validated and saved',
                                 'Success', 0);
                         }
@@ -182,7 +182,7 @@ class DataHandler
                         ),
                         $queryBuilder->expr()->eq(
                             'recuid',
-                            $queryBuilder->createNamedParameter((int)$p[1], PDO::PARAM_INT)
+                            (int)$p[1]
                         ),
                         $queryBuilder->expr()->orX(
                             $queryBuilder->expr()->in(
@@ -195,7 +195,7 @@ class DataHandler
                         ),
                         $queryBuilder->expr()->eq(
                             'workspaces',
-                            $queryBuilder->createNamedParameter((int)$this->getBackendUser()->workspace, PDO::PARAM_INT)
+                            (int)$this->getBackendUser()->workspace
                         )
                     )
                 )
@@ -223,7 +223,7 @@ class DataHandler
                         ),
                         $queryBuilder->expr()->eq(
                             'recpid',
-                            $queryBuilder->createNamedParameter((int)$p[1], PDO::PARAM_INT)
+                            (int)$p[1]
                         ),
                         $queryBuilder->expr()->orX(
                             $queryBuilder->expr()->in(
@@ -236,7 +236,7 @@ class DataHandler
                         ),
                         $queryBuilder->expr()->eq(
                             'workspaces',
-                            $queryBuilder->createNamedParameter((int)$this->getBackendUser()->workspace, PDO::PARAM_INT)
+                            (int)$this->getBackendUser()->workspace
                         )
                     )
                 )

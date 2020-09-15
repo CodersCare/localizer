@@ -13,7 +13,7 @@ if (TYPO3_MODE === 'BE') {
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
         'localizer',
         '', // Submodule key
-        'top',    // Position
+        '',    // Position
         $extPath . 'Modules/Localizer/',
         [
             'routeTarget' => \Localizationteam\Localizer\Controller\LocalizerController::class . '::mainAction',

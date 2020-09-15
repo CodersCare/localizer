@@ -8,6 +8,7 @@ use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Runner\SendFile;
 use PDO;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -34,7 +35,10 @@ class FileSender extends AbstractHandler
      */
     public function init($id = 1)
     {
-        parent::init($id);
+        parent::initProcessId();
+        if ($this->acquire() === true) {
+            $this->initRun();
+        }
         if ($this->canRun()) {
             $this->initData();
             $this->load();
@@ -55,15 +59,14 @@ class FileSender extends AbstractHandler
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'status',
-                        $queryBuilder->createNamedParameter(Constants::HANDLER_FILESENDER_START, PDO::PARAM_INT)
+                        Constants::HANDLER_FILESENDER_START
                     ),
                     $queryBuilder->expr()->eq(
                         'action',
-                        $queryBuilder->createNamedParameter(Constants::ACTION_SEND_FILE, PDO::PARAM_STR)
+                        Constants::ACTION_SEND_FILE
                     ),
-                    $queryBuilder->expr()->eq(
-                        'last_error',
-                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    $queryBuilder->expr()->isNull(
+                        'last_error'
                     ),
                     $queryBuilder->expr()->eq(
                         'processid',
@@ -169,7 +172,7 @@ class FileSender extends AbstractHandler
     protected function getUploadPath()
     {
         if ($this->uploadPath === '') {
-            $this->uploadPath = PATH_site . 'uploads/tx_l10nmgr/jobs/out/';
+            $this->uploadPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/out/';
         }
         return $this->uploadPath;
     }
@@ -199,12 +202,12 @@ class FileSender extends AbstractHandler
                 )
             )->where(
                 $queryBuilder->expr()->eq(
-                    Constants::TABLE_EXPORTDATA_MM . ' .uid',
-                    $queryBuilder->createNamedParameter((int)$row['uid'], PDO::PARAM_INT)
+                    Constants::TABLE_EXPORTDATA_MM . '.uid',
+                    (int)$row['uid']
                 )
             )
             ->execute()
-            ->fetchColumn(0);
+            ->fetch();
 
         if (!empty($carts['deadline'])) {
             $deadline = (int)$carts['deadline'];

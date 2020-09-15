@@ -7,6 +7,7 @@ use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\File;
 use PDO;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Utility\DebugUtility;
@@ -30,7 +31,10 @@ class FileImporter extends AbstractHandler
      */
     public function init($id = 1)
     {
-        parent::init($id);
+        parent::initProcessId();
+        if ($this->acquire() === true) {
+            $this->initRun();
+        }
         if ($this->canRun()) {
             $this->initData();
             $this->load();
@@ -51,15 +55,14 @@ class FileImporter extends AbstractHandler
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'status',
-                        $queryBuilder->createNamedParameter(Constants::HANDLER_FILEIMPORTER_START, PDO::PARAM_INT)
+                        Constants::HANDLER_FILEIMPORTER_START
                     ),
                     $queryBuilder->expr()->eq(
                         'action',
-                        $queryBuilder->createNamedParameter(Constants::ACTION_IMPORT_FILE, PDO::PARAM_STR)
+                        Constants::ACTION_IMPORT_FILE
                     ),
-                    $queryBuilder->expr()->eq(
-                        'last_error',
-                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    $queryBuilder->expr()->isNull(
+                        'last_error'
                     ),
                     $queryBuilder->expr()->eq(
                         'processid',
@@ -128,14 +131,14 @@ class FileImporter extends AbstractHandler
     {
         $response = [];
         foreach ($files as $fileStatus) {
-            $introductionXmlPath = PATH_site . 'uploads/tx_l10nmgr/jobs/in/instruction.xml';
+            $introductionXmlPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/in/instruction.xml';
             if (file_exists($introductionXmlPath)) {
                 unlink($introductionXmlPath);
             }
             $fileNameAndPath = $this->getLocalFilename($originalFileName, $fileStatus['locale']);
-            $context = GeneralUtility::getApplicationContext()->__toString();
+            $context = Environment::getContext()->__toString();
             $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
-                PATH_site . 'typo3/sysext/core/bin/typo3 l10nmanager:import -t importFile --file ' .
+                Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3 l10nmanager:import -t importFile --file ' .
                 $fileNameAndPath;
             $response[] = [
                 'http_status_code' => 200,

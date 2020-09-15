@@ -5,6 +5,7 @@ namespace Localizationteam\Localizer;
 use Exception;
 use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\Messaging\FlashMessage;
+use PDO;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -115,7 +116,7 @@ trait Data
         }
         $this->result['success'][(int)$uid] = [
             'status' => (int)$status,
-            'last_error' => '',
+            'last_error' => null,
             'action' => (int)$action,
         ];
         if ($response !== '') {
@@ -139,7 +140,7 @@ trait Data
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter((int)$uid, PDO::PARAM_INT)
+                    (int)$uid
                 )
             )
             ->execute()
@@ -180,7 +181,7 @@ trait Data
                         $queryBuilder->expr()->andX(
                             $queryBuilder->expr()->eq(
                                 'uid_local',
-                                $queryBuilder->createNamedParameter((int)$row['uid'], PDO::PARAM_INT)
+                                (int)$row['uid']
                             ),
                             $queryBuilder->expr()->eq(
                                 'ident',
@@ -246,7 +247,7 @@ trait Data
                     ->where(
                         $queryBuilder->expr()->eq(
                             'uid',
-                            $queryBuilder->createNamedParameter((int)$uid, PDO::PARAM_INT)
+                            (int)$uid
                         )
                     );
                 foreach ($fields as $key => $value) {
@@ -262,7 +263,7 @@ trait Data
                     ->where(
                         $queryBuilder->expr()->eq(
                             'uid',
-                            $queryBuilder->createNamedParameter((int)$uid, PDO::PARAM_INT)
+                            (int)$uid
                         )
                     );
                 foreach ($fields as $key => $value) {

@@ -4,9 +4,8 @@ namespace Localizationteam\Localizer\Handler;
 
 use Exception;
 use Localizationteam\Localizer\Constants;
-use PDO;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -20,58 +19,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 abstract class AbstractCartHandler
 {
     /**
+     * @var string
+     */
+    protected $processId = '';
+    /**
      * @var bool
      */
     private $run = false;
 
     /**
-     * @var string
-     */
-    protected $processId = '';
-
-    /**
      * @param $id
      * @throws Exception
      */
-    public function init($id = 1)
-    {
-        $this->initProcessId();
-        if ($this->acquire() === true) {
-            $this->initRun();
-        }
-    }
-
-    final protected function initProcessId()
-    {
-        $this->processId = md5(uniqid('', true) . (microtime(true) * 10000));
-    }
-
-    /**
-     * @return bool
-     */
-    protected function acquire()
-    {
-        $acquired = false;
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
-        $queryBuilder->getRestrictions();
-        $affectedRows = $queryBuilder
-            ->update(Constants::TABLE_LOCALIZER_CART)
-            ->where(
-                $this->acquireWhere
-            )
-            ->set('tstamp', time())
-            ->set('processid', $this->processId)
-            ->execute();
-        if ($affectedRows > 0) {
-            $acquired = true;
-        }
-        return $acquired;
-    }
-
-    final protected function initRun()
-    {
-        $this->run = true;
-    }
+    abstract public function init($id = 1);
 
     abstract function run();
 
@@ -101,15 +61,15 @@ abstract class AbstractCartHandler
             ->update(
                 Constants::TABLE_LOCALIZER_CART,
                 [
-                    'processid' => $this->processId
-                ],
-                [
                     'tstamp' => $time,
                     'processid' => '',
                 ],
                 [
-                    PDO::PARAM_INT,
-                    PDO::PARAM_STR
+                    'processid' => $this->processId
+                ],
+                [
+                    Connection::PARAM_INT,
+                    Connection::PARAM_STR
                 ]
             );
 
@@ -124,11 +84,18 @@ abstract class AbstractCartHandler
     }
 
     /**
-     * @param ExpressionBuilder $where
+     * @return bool
      */
-    protected function setAcquireWhere($where)
+    abstract protected function acquire();
+
+    final protected function initProcessId()
     {
-        $this->acquireWhere = $where;
+        $this->processId = md5(uniqid('', true) . (microtime(true) * 10000));
+    }
+
+    final protected function initRun()
+    {
+        $this->run = true;
     }
 
     final protected function resetRun()

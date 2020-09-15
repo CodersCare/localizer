@@ -2,6 +2,7 @@
 
 namespace Localizationteam\Localizer;
 
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 
 /**
@@ -28,12 +29,12 @@ trait File
     protected function getLocalFilename($fileName, $locale)
     {
         if ($this->downloadPath === '') {
-            $this->downloadPath = PATH_site . 'uploads/tx_l10nmgr/jobs/in/';
+            $this->downloadPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/in/';
         }
         //$path = $this->downloadPath . strtolower($locale) . '/';
         $path = $this->downloadPath;
         if (file_exists($path) === false) {
-            //GeneralUtility::mkdir_deep(PATH_site . 'uploads/', 'tx_l10nmgr/jobs/in/' . strtolower($locale));
+            //GeneralUtility::mkdir_deep(Environment::getPublicPath() . '/uploads/', 'tx_l10nmgr/jobs/in/' . strtolower($locale));
             if (file_exists($path) === false) {
                 throw new FolderDoesNotExistException('Can not create folder uploads/tx_l10nmgr/jobs/in/' . strtolower($locale));
             }

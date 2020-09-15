@@ -32,7 +32,10 @@ class FileDownloader extends AbstractHandler
      */
     public function init($id = 1)
     {
-        parent::init($id);
+        parent::initProcessId();
+        if ($this->acquire() === true) {
+            $this->initRun();
+        }
         if ($this->canRun()) {
             $this->initData();
             $this->load();
@@ -53,15 +56,14 @@ class FileDownloader extends AbstractHandler
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'status',
-                        $queryBuilder->createNamedParameter(Constants::HANDLER_FILEDOWNLOADER_START, PDO::PARAM_INT)
+                        Constants::HANDLER_FILEDOWNLOADER_START
                     ),
                     $queryBuilder->expr()->eq(
                         'action',
-                        $queryBuilder->createNamedParameter(Constants::ACTION_DOWNLOAD_FILE, PDO::PARAM_STR)
+                        Constants::ACTION_DOWNLOAD_FILE
                     ),
-                    $queryBuilder->expr()->eq(
-                        'last_error',
-                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    $queryBuilder->expr()->isNull(
+                        'last_error'
                     ),
                     $queryBuilder->expr()->eq(
                         'processid',

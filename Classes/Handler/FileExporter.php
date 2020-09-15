@@ -8,8 +8,9 @@ use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
-use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -63,7 +64,10 @@ class FileExporter extends AbstractCartHandler
     {
         $this->id = $id;
         $this->selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
-        parent::init($id);
+        parent::initProcessId();
+        if ($this->acquire() === true) {
+            $this->initRun();
+        }
         if ($this->canRun()) {
             $this->initData();
             $this->loadCart();
@@ -76,34 +80,30 @@ class FileExporter extends AbstractCartHandler
     protected function acquire()
     {
         $acquired = false;
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
-        $queryBuilder->getRestrictions();
-        $affectedRows = $queryBuilder
-            ->update(Constants::TABLE_EXPORTDATA_MM)
-            ->where(
-                $queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->eq(
-                        'status',
-                        $queryBuilder->createNamedParameter(Constants::HANDLER_FILEEXPORTER_START, PDO::PARAM_INT)
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'action',
-                        $queryBuilder->createNamedParameter(Constants::ACTION_EXPORT_FILE, PDO::PARAM_INT)
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'last_error',
-                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'uid',
-                        $queryBuilder->createNamedParameter((int)$this->id, PDO::PARAM_INT)
-                    )
-                )
-            )
-            ->set('tstamp', time())
-            ->set('processid', $this->processId)
-            ->setMaxResults(Constants::HANDLER_FILEDOWNLOADER_MAX_FILES)
-            ->execute();
+        $time = time();
+        $affectedRows = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable(Constants::TABLE_LOCALIZER_CART)
+            ->update(
+                Constants::TABLE_LOCALIZER_CART,
+                [
+                    'tstamp' => $time,
+                    'processid' => $this->processId,
+                ],
+                [
+                    'deleted' => 0,
+                    'hidden' => 0,
+                    'status' => Constants::HANDLER_FILEEXPORTER_START,
+                    'action' => Constants::ACTION_EXPORT_FILE,
+                    'last_error' => null,
+                    'processid' => '',
+                    'uid' => (int)$this->id
+                ],
+                [
+                    Connection::PARAM_INT,
+                    Connection::PARAM_STR
+                ]
+            );
+
         if ($affectedRows > 0) {
             $acquired = true;
         }
@@ -224,9 +224,9 @@ class FileExporter extends AbstractCartHandler
      */
     protected function processExport($configuration, $language)
     {
-        $context = GeneralUtility::getApplicationContext()->__toString();
+        $context = Environment::getContext()->__toString();
         $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
-            PATH_site . 'typo3/sysext/core/bin/typo3 l10nmanager:export -c ' . $configuration . ' -t ' . $language . '';
+            Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3 l10nmanager:export -c ' . $configuration . ' -t ' . $language . '';
         $response = [
             'http_status_code' => 200,
             'response' => [
@@ -253,7 +253,7 @@ class FileExporter extends AbstractCartHandler
             ->where(
                 $queryBuilder->expr()->eq(
                     'l10ncfg_id',
-                    $queryBuilder->createNamedParameter((int)$configurationId, PDO::PARAM_INT)
+                    (int)$configurationId
                 )
             )
             ->execute()
@@ -327,7 +327,7 @@ class FileExporter extends AbstractCartHandler
     protected function getUploadPath()
     {
         if ($this->uploadPath === '') {
-            $this->uploadPath = PATH_site . 'uploads/tx_l10nmgr/jobs/out/';
+            $this->uploadPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/out/';
         }
         return $this->uploadPath;
     }

@@ -4,7 +4,6 @@ namespace Localizationteam\Localizer\Model\Repository;
 
 use Localizationteam\Localizer\Constants;
 use PDO;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -39,11 +38,11 @@ class CartRepository extends AbstractRepository
                     ),
                     $queryBuilder->expr()->eq(
                         'cart.deleted',
-                        $queryBuilder->createNamedParameter(0, PDO::PARAM_INT)
+                        0
                     ),
                     $queryBuilder->expr()->eq(
                         'cart.hidden',
-                        $queryBuilder->createNamedParameter(0, PDO::PARAM_INT)
+                        0
                     )
                 )
             )
@@ -52,7 +51,7 @@ class CartRepository extends AbstractRepository
                     $queryBuilder->expr()->isNotNull('cart.uid'),
                     $queryBuilder->expr()->gt(
                         Constants::TABLE_BACKEND_USERS . '.uid',
-                        $queryBuilder->createNamedParameter(0, PDO::PARAM_INT)
+                        0
                     )
                 )
             )
@@ -60,7 +59,9 @@ class CartRepository extends AbstractRepository
                 Constants::TABLE_BACKEND_USERS . '.uid'
             )
             ->orderBy(
-                Constants::TABLE_BACKEND_USERS . '.realName',
+                Constants::TABLE_BACKEND_USERS . '.realName'
+            )
+            ->addOrderBy(
                 Constants::TABLE_BACKEND_USERS . '.username'
             )
             ->execute()
@@ -93,11 +94,11 @@ class CartRepository extends AbstractRepository
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         Constants::TABLE_LOCALIZER_CART . '.uid_local',
-                        $queryBuilder->createNamedParameter((int)$id, PDO::PARAM_INT)
+                        (int)$id
                     ),
                     $queryBuilder->expr()->gt(
                         Constants::TABLE_LOCALIZER_CART . '.status',
-                        $queryBuilder->createNamedParameter(Constants::STATUS_CART_ADDED, PDO::PARAM_INT)
+                        Constants::STATUS_CART_ADDED
                     )
                 )
             )
@@ -108,11 +109,11 @@ class CartRepository extends AbstractRepository
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->eq(
                     Constants::TABLE_LOCALIZER_CART . '.cruser_id',
-                    $queryBuilder->createNamedParameter((int)$user, PDO::PARAM_INT)
+                    (int)$user
                 )
             );
         }
-        $carts = $queryBuilder->execut()->fetchAll();
+        $carts = $queryBuilder->execute()->fetchAll();
         $availableCarts = [];
         if (!empty($carts)) {
             foreach ($carts as $cart) {
@@ -159,7 +160,7 @@ class CartRepository extends AbstractRepository
                         )
                     )
                     ->leftJoin(
-                        Constants::TABLE_LOCALIZER_LANGUAGE_MM,
+                        'targetMM',
                         Constants::TABLE_STATIC_LANGUAGES,
                         Constants::TABLE_STATIC_LANGUAGES,
                         $queryBuilder->expr()->eq(
@@ -170,7 +171,7 @@ class CartRepository extends AbstractRepository
                     ->where(
                         $queryBuilder->expr()->eq(
                             Constants::TABLE_EXPORTDATA_MM . '.uid_foreign',
-                            $queryBuilder->createNamedParameter((int)$cart['uid_foreign'], PDO::PARAM_INT)
+                            (int)$cart['uid_foreign']
                         )
                     )
                     ->orderBy(

@@ -89,9 +89,6 @@ class SelectorRepository extends AbstractRepository
             ->update(
                 Constants::TABLE_LOCALIZER_CART,
                 [
-                    'uid' => (int)$cartId
-                ],
-                [
                     'configuration' => json_encode(
                         [
                             'pid' => (int)$pageId,
@@ -102,6 +99,9 @@ class SelectorRepository extends AbstractRepository
                             'end' => $configuration['end'],
                         ]
                     )
+                ],
+                [
+                    'uid' => (int)$cartId
                 ],
                 [
                     PDO::PARAM_STR
@@ -182,7 +182,7 @@ class SelectorRepository extends AbstractRepository
                     $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->eq(
                             'pid',
-                            $queryBuilder->createNamedParameter((int)$pageId, PDO::PARAM_INT)
+                            (int)$pageId
                         ),
                         $queryBuilder->expr()->in(
                             'identifier',
@@ -193,7 +193,7 @@ class SelectorRepository extends AbstractRepository
                         ),
                         $queryBuilder->expr()->eq(
                             'cart',
-                            $queryBuilder->createNamedParameter((int)$cartId, PDO::PARAM_INT)
+                            (int)$cartId
                         )
                     )
                 )
@@ -225,7 +225,7 @@ class SelectorRepository extends AbstractRepository
                     ),
                     $queryBuilder->expr()->eq(
                         'cart',
-                        $queryBuilder->createNamedParameter((int)$cartId, PDO::PARAM_INT)
+                        (int)$cartId
                     )
                 )
             )
@@ -284,7 +284,7 @@ class SelectorRepository extends AbstractRepository
                         PDO::PARAM_INT
                     ]
                 );
-                return $databaseConnection->lastInsertId(Constants::TABLE_L10NMGR_CONFIGURATION);;
+                return $databaseConnection->lastInsertId(Constants::TABLE_L10NMGR_CONFIGURATION);
             }
 
         }
@@ -309,12 +309,12 @@ class SelectorRepository extends AbstractRepository
                 ->update(
                     Constants::TABLE_L10NMGR_CONFIGURATION,
                     [
-                        'uid' => (int)$uid
-                    ],
-                    [
                         'tstamp' => time(),
                         'exclude' => $excludeItems,
                         'pages' => $pageIds,
+                    ],
+                    [
+                        'uid' => (int)$uid
                     ],
                     [
                         PDO::PARAM_INT,
@@ -340,13 +340,13 @@ class SelectorRepository extends AbstractRepository
                 ->update(
                     Constants::TABLE_LOCALIZER_CART,
                     [
-                        'uid' => (int)$cartId
-                    ],
-                    [
                         'uid_foreign' => (int)$configurationId,
                         'status' => CONSTANTS::STATUS_CART_FINALIZED,
                         'action' => CONSTANTS::ACTION_EXPORT_FILE,
-                        'tstamp' => time(),
+                        'tstamp' => time()
+                    ],
+                    [
+                        'uid' => (int)$cartId
                     ],
                     [
                         PDO::PARAM_INT,
@@ -372,7 +372,7 @@ class SelectorRepository extends AbstractRepository
                 ->where(
                     $queryBuilder->expr()->eq(
                         'uid_local',
-                        $queryBuilder->createNamedParameter((int)$localizerId, PDO::PARAM_INT)
+                        (int)$localizerId
                     )
                 )
                 ->execute()
@@ -382,10 +382,10 @@ class SelectorRepository extends AbstractRepository
                 ->update(
                     Constants::TABLE_LOCALIZER_SETTINGS,
                     [
-                        'uid' => (int)$localizerId
+                        'l10n_cfg' => $countConfigurations,
                     ],
                     [
-                        'l10n_cfg' => $countConfigurations,
+                        'uid' => (int)$localizerId
                     ],
                     [
                         PDO::PARAM_INT

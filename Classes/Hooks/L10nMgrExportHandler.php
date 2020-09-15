@@ -5,7 +5,6 @@ namespace Localizationteam\Localizer\Hooks;
 use Localizationteam\L10nmgr\View\PostSaveInterface;
 use Localizationteam\Localizer\AddFileToMatrix;
 use Localizationteam\Localizer\Constants;
-use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -47,7 +46,7 @@ class L10nMgrExportHandler implements PostSaveInterface
                             'mm'
                         )
                         ->join(
-                            Constants::TABLE_LOCALIZER_L10NMGR_MM,
+                            'mm',
                             Constants::TABLE_L10NMGR_CONFIGURATION,
                             Constants::TABLE_L10NMGR_CONFIGURATION
                         )
@@ -62,9 +61,8 @@ class L10nMgrExportHandler implements PostSaveInterface
                                     $queryBuilder->quoteIdentifier('mm.uid_foreign')
                                 ),
                                 $queryBuilder->expr()->eq(
-                                    Constants::TABLE_LOCALIZER_L10NMGR_MM . '.uid_foreign',
-                                    $queryBuilder->createNamedParameter((int)$params['data']['l10ncfg_id'],
-                                        PDO::PARAM_INT)
+                                    'mm.uid_foreign',
+                                    (int)$params['data']['l10ncfg_id']
                                 ),
                                 $queryBuilder->expr()->in(
                                     Constants::TABLE_LOCALIZER_SETTINGS . '.pid',
@@ -76,7 +74,7 @@ class L10nMgrExportHandler implements PostSaveInterface
                         )
                         ->setMaxResults(1)
                         ->execute()
-                        ->fetchColumn(0);
+                        ->fetch();
                     if ($row['pid'] !== null) {
                         $this->addFileToMatrix(
                             $row['pid'],

@@ -46,7 +46,7 @@ trait Language
             }
         }
         if ($iso2 === '') {
-            throw new Exception($locale . ' can not be found in TYPO3 "static_languages". Please inform your admin!');
+            // throw new Exception($locale . ' can not be found in TYPO3 "static_languages". Please inform your admin!');
         }
         return $iso2;
     }
@@ -81,7 +81,7 @@ trait Language
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'uid_local',
-                        $queryBuilder->createNamedParameter($uidLocal, Connection::PARAM_INT)
+                        (int)$uidLocal
                     ),
                     $queryBuilder->expr()->eq(
                         'tablenames',
@@ -127,7 +127,7 @@ trait Language
             $queryBuilder->getRestrictions()
                 ->removeAll();
             $rows = $queryBuilder
-                ->select($field)
+                ->selectLiteral($field)
                 ->from(Constants::TABLE_STATIC_LANGUAGES)
                 ->where(
                     $queryBuilder->expr()->in(
@@ -144,8 +144,8 @@ trait Language
                         $locale[$row[$orgField]] = $row;
                     }
                 }
+                $collateLocale = array_keys($locale);
             }
-            $collateLocale = array_keys($locale);
         }
         return $collateLocale;
     }

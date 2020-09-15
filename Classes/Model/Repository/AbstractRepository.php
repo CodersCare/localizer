@@ -31,7 +31,7 @@ class AbstractRepository
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
         $queryBuilder->getRestrictions()
             ->removeAll();
-        $languages = $queryBuilder
+        return $queryBuilder
             ->selectLiteral('MAX(sourceLanguage.uid) source, GROUP_CONCAT(targetLanguage.uid) target')
             ->from(Constants::TABLE_LOCALIZER_SETTINGS, 'settings')
             ->leftJoin(
@@ -45,7 +45,7 @@ class AbstractRepository
                     ),
                     $queryBuilder->expr()->eq(
                         'sourceMM.tablenames',
-                        $queryBuilder->createNamedParameter((string)Constants::TABLE_STATIC_LANGUAGES, PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES, PDO::PARAM_STR)
                     ),
                     $queryBuilder->expr()->eq(
                         'sourceMM.ident',
@@ -53,7 +53,7 @@ class AbstractRepository
                     ),
                     $queryBuilder->expr()->eq(
                         'sourceMM.source',
-                        $queryBuilder->createNamedParameter('settings', PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS, PDO::PARAM_STR)
                     )
                 )
             )
@@ -77,7 +77,7 @@ class AbstractRepository
                     ),
                     $queryBuilder->expr()->eq(
                         'sourceMM.tablenames',
-                        $queryBuilder->createNamedParameter((string)Constants::TABLE_STATIC_LANGUAGES, PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES, PDO::PARAM_STR)
                     ),
                     $queryBuilder->expr()->eq(
                         'sourceMM.ident',
@@ -85,7 +85,7 @@ class AbstractRepository
                     ),
                     $queryBuilder->expr()->eq(
                         'sourceMM.source',
-                        $queryBuilder->createNamedParameter('settings', PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS, PDO::PARAM_STR)
                     )
                 )
             )
@@ -101,18 +101,12 @@ class AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'settings.uid',
-                    $queryBuilder->createNamedParameter((int)$localizerId, PDO::PARAM_INT)
+                    (int)$localizerId
                 )
             )
+            ->groupBy('settings.uid')
             ->execute()
-            ->fetchAll();
-        $localizerLanguages = [];
-        if (!empty($languages)) {
-            foreach ($languages as $language) {
-                $localizerLanguages[$language['uid']] = $language;
-            }
-        }
-        return $localizerLanguages;
+            ->fetch();
     }
 
     /**
@@ -176,7 +170,7 @@ class AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter((int)$cartId, PDO::PARAM_INT)
+                    (int)$cartId
                 )
             )
             ->execute()
@@ -241,15 +235,15 @@ class AbstractRepository
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'cruser_id',
-                        $queryBuilder->createNamedParameter((int)$this->getBackendUser()->user['uid'], PDO::PARAM_INT)
+                        (int)$this->getBackendUser()->user['uid']
                     ),
                     $queryBuilder->expr()->eq(
                         'uid_local',
-                        $queryBuilder->createNamedParameter((int)$localizerId, PDO::PARAM_INT)
+                        (int)$localizerId
                     ),
                     $queryBuilder->expr()->eq(
                         'status',
-                        $queryBuilder->createNamedParameter(Constants::STATUS_CART_ADDED, PDO::PARAM_INT)
+                        Constants::STATUS_CART_ADDED
                     )
                 )
             )
@@ -280,11 +274,11 @@ class AbstractRepository
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->gt(
                         'pid',
-                        $queryBuilder->createNamedParameter(0, PDO::PARAM_INT)
+                        0
                     ),
                     $queryBuilder->expr()->eq(
                         'cart',
-                        $queryBuilder->createNamedParameter((int)$cartId, PDO::PARAM_INT)
+                        (int)$cartId
                     )
                 )
             )
@@ -351,11 +345,11 @@ class AbstractRepository
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->gt(
                         'languageId',
-                        $queryBuilder->createNamedParameter(0, PDO::PARAM_INT)
+                        0
                     ),
                     $queryBuilder->expr()->eq(
                         'cart',
-                        $queryBuilder->createNamedParameter((int)$cartId, PDO::PARAM_INT)
+                        (int)$cartId
                     )
                 )
             )
@@ -389,7 +383,7 @@ class AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'cart',
-                    $queryBuilder->createNamedParameter((int)$cartId, PDO::PARAM_INT)
+                    (int)$cartId
                 )
             )
             ->groupBy('tableName')

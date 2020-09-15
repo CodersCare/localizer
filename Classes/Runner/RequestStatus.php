@@ -4,6 +4,7 @@ namespace Localizationteam\Localizer\Runner;
 
 use Exception;
 use Localizationteam\Localizer\Constants;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -47,7 +48,8 @@ class RequestStatus
             case '0':
                 if (isset($configuration['inFolder'])) {
                     if (isset($configuration['file'])) {
-                        $this->path = PATH_site . trim($configuration['inFolder'], '\/') . '/' . str_replace('.xml', '',
+                        $this->path = Environment::getPublicPath() . '/' . trim($configuration['inFolder'],
+                                '\/') . '/' . str_replace('.xml', '',
                                 $configuration['file']) . '.zip';
                     }
                 }

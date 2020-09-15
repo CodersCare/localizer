@@ -207,7 +207,7 @@ class AutomaticExporter extends AbstractCartHandler
                     ->where(
                         $queryBuilder->expr()->eq(
                             'pid',
-                            $queryBuilder->createNamedParameter((int)$pid, PDO::PARAM_INT)
+                            (int)$pid
                         )
                     )
                     ->execute()
@@ -223,6 +223,10 @@ class AutomaticExporter extends AbstractCartHandler
     public function finish($time)
     {
 
+    }
+
+    protected function acquire()
+    {
     }
 
 }

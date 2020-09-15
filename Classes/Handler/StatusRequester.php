@@ -29,7 +29,10 @@ class StatusRequester extends AbstractHandler
      */
     public function init($id = 1)
     {
-        parent::init($id);
+        parent::initProcessId();
+        if ($this->acquire() === true) {
+            $this->initRun();
+        }
         if ($this->canRun()) {
             $this->initData();
             $this->load();
@@ -50,19 +53,18 @@ class StatusRequester extends AbstractHandler
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->gte(
                         'status',
-                        $queryBuilder->createNamedParameter(Constants::HANDLER_STATUSREQUESTER_START, PDO::PARAM_INT)
+                        Constants::HANDLER_STATUSREQUESTER_START
                     ),
                     $queryBuilder->expr()->lt(
                         'status',
-                        $queryBuilder->createNamedParameter(Constants::HANDLER_STATUSREQUESTER_FINISH, PDO::PARAM_INT)
+                        Constants::HANDLER_STATUSREQUESTER_FINISH
                     ),
                     $queryBuilder->expr()->eq(
                         'action',
-                        $queryBuilder->createNamedParameter(Constants::ACTION_REQUEST_STATUS, PDO::PARAM_STR)
+                        Constants::ACTION_REQUEST_STATUS
                     ),
-                    $queryBuilder->expr()->eq(
-                        'last_error',
-                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    $queryBuilder->expr()->isNull(
+                        'last_error'
                     ),
                     $queryBuilder->expr()->eq(
                         'processid',

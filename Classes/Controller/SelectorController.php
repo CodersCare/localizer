@@ -4,7 +4,6 @@ namespace Localizationteam\Localizer\Controller;
 
 use Localizationteam\Localizer\Handler\FileExporter;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
-use PDO;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -284,7 +283,7 @@ class SelectorController extends AbstractController
             }
         }
         if (!empty($storedTables)) {
-            $this->configuration['tables'] = array_merge($this->configuration['tables'], $storedTables);
+            $this->configuration['tables'] = array_merge((array)$this->configuration['tables'], $storedTables);
         }
     }
 
@@ -560,7 +559,7 @@ class SelectorController extends AbstractController
                 ->where(
                     $queryBuilder->expr()->eq(
                         'pid',
-                        $queryBuilder->createNamedParameter((int)$this->id, PDO::PARAM_INT)
+                        (int)$this->id
                     )
                 )
                 ->execute()

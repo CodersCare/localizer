@@ -24,7 +24,10 @@ class ErrorResetter extends AbstractHandler
      */
     public function init($id = 1)
     {
-        parent::init($id);
+        parent::initProcessId();
+        if ($this->acquire() === true) {
+            $this->initRun();
+        }
     }
 
     /**
@@ -41,11 +44,11 @@ class ErrorResetter extends AbstractHandler
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'status',
-                        $queryBuilder->createNamedParameter(Constants::STATUS_CART_ERROR, PDO::PARAM_INT)
+                        Constants::STATUS_CART_ERROR
                     ),
-                    $queryBuilder->expr()->neq(
+                    $queryBuilder->expr()->gt(
                         'previous_status',
-                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                        0
                     ),
                     $queryBuilder->expr()->eq(
                         'processid',
@@ -70,13 +73,12 @@ class ErrorResetter extends AbstractHandler
             $queryBuilder
                 ->update(Constants::TABLE_EXPORTDATA_MM)
                 ->where(
-                    $queryBuilder->expr()->eq(
-                        'last_error',
-                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    $queryBuilder->expr()->isNull(
+                        'last_error'
                     ),
                     $queryBuilder->expr()->gt(
                         'previous_status',
-                        $queryBuilder->createNamedParameter(0, PDO::PARAM_INT)
+                        0
                     ),
                     $queryBuilder->expr()->eq(
                         'processid',
@@ -85,7 +87,7 @@ class ErrorResetter extends AbstractHandler
                 )
                 ->set('status', $queryBuilder->quoteIdentifier('previous_status'))
                 ->set('previous_status', 0)
-                ->set('last_error', '')
+                ->set('last_error', null)
                 ->execute();
         }
     }

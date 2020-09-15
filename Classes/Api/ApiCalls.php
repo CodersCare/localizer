@@ -5,6 +5,7 @@ namespace Localizationteam\Localizer\Api;
 use Exception;
 use Localizationteam\Localizer\BackendUser;
 use Localizationteam\Localizer\Constants;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -428,7 +429,7 @@ class ApiCalls
     protected function storeFileIntoLocalHotfolder($fileContent, $fileName, $source, $attachInstruction)
     {
         if ($this->checkAndCreateFolder($this->outFolder, 'outgoing') === true) {
-            $xmlPath = PATH_site . $this->outFolder . '/' . $fileName;
+            $xmlPath = Environment::getPublicPath() . '/' . $this->outFolder . '/' . $fileName;
             $zipPath = str_replace('.xml', '', $xmlPath) . '.zip';
             $zipFile = fopen($zipPath, 'w') or new Exception('Can not create ZIP file');
             $instructionFile = file_get_contents(ExtensionManagementUtility::extPath('localizer') . '/Resources/Private/Templates/Provider/instruction.xml');
@@ -483,7 +484,7 @@ class ApiCalls
     protected function checkAndCreateFolder($folder, $type)
     {
         if ($folder) {
-            $folder = PATH_site . '/' . $folder;
+            $folder = Environment::getPublicPath() . '/' . $folder;
             if (file_exists($folder) && is_writable($folder)) {
                 return true;
             } else {

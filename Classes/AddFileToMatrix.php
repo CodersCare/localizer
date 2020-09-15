@@ -84,7 +84,7 @@ trait AddFileToMatrix
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'uid_local',
-                        $queryBuilder->createNamedParameter((int)$localizerId, PDO::PARAM_INT)
+                        (int)$localizerId
                     ),
                     $queryBuilder->expr()->orX(
                         $queryBuilder->expr()->eq(
@@ -93,7 +93,7 @@ trait AddFileToMatrix
                         ),
                         $queryBuilder->expr()->eq(
                             'uid_foreign',
-                            $queryBuilder->createNamedParameter((int)$isoCodeTargetLanguage, PDO::PARAM_INT)
+                            (int)$isoCodeTargetLanguage
                         )
                     ),
                     $queryBuilder->expr()->eq(
@@ -143,7 +143,7 @@ trait AddFileToMatrix
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter((int)$sysLanguageId, PDO::PARAM_INT)
+                    (int)$sysLanguageId
                 )
             )
             ->execute()

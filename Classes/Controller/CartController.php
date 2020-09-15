@@ -5,6 +5,7 @@ namespace Localizationteam\Localizer\Controller;
 use Localizationteam\Localizer\BackendUser;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Model\Repository\CartRepository;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -152,7 +153,8 @@ class CartController extends AbstractController
         /** @var $dblist DatabaseRecordList */
         $dblist = GeneralUtility::makeInstance('TYPO3\\CMS\\Recordlist\\RecordList\\DatabaseRecordList');
         $dblist->backPath = $GLOBALS['BACK_PATH'];
-        $dblist->script = BackendUtility::getModuleUrl('web_list', []);
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $dblist->script = $uriBuilder->buildUriFromRoute('web_list');
         $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
         $dblist->returnUrl = $this->returnUrl;
@@ -232,7 +234,33 @@ class CartController extends AbstractController
 					}
 				}
 				' . $this->moduleTemplate->redirectUrls($listUrl) . '
-				' . $dblist->CBfunctions() . '
+                    // checkOffCB()
+                function checkOffCB(listOfCBnames, link) {	//
+                    var checkBoxes, flag, i;
+                    var checkBoxes = listOfCBnames.split(",");
+                    if (link.rel === "") {
+                        link.rel = "allChecked";
+                        flag = true;
+                    } else {
+                        link.rel = "";
+                        flag = false;
+                    }
+                    for (i = 0; i < checkBoxes.length; i++) {
+                        setcbValue(checkBoxes[i], flag);
+                    }
+                }
+                    // cbValue()
+                function cbValue(CBname) {	//
+                    var CBfullName = "CBC["+CBname+"]";
+                    return (document.dblistForm[CBfullName] && document.dblistForm[CBfullName].checked ? 1 : 0);
+                }
+                    // setcbValue()
+                function setcbValue(CBname,flag) {	//
+                    CBfullName = "CBC["+CBname+"]";
+                    if(document.dblistForm[CBfullName]) {
+                        document.dblistForm[CBfullName].checked = flag ? "on" : 0;
+                    }
+                }
 				function editRecords(table,idList,addParams,CBflag) {	//
 					window.location.href="' . $GLOBALS['BACK_PATH'] . 'alt_doc.php?returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI')) . '&edit["+table+"]["+idList+"]=edit"+addParams;
 				}
