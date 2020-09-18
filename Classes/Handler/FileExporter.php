@@ -9,7 +9,7 @@ use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\DebugUtility;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -92,15 +92,23 @@ class FileExporter extends AbstractCartHandler
                     $this->triples = $this->selectorRepository->loadStoredTriples($pageIds, $cart);
                     if (!empty($this->content) && !empty($this->triples)) {
                         foreach (array_keys($cartConfiguration['languages']) as $language) {
-                            $configuredLanguageExport = $this->configureRecordsForLanguage($localizer, $cart,
-                                $configuration, $language);
+                            $configuredLanguageExport = $this->configureRecordsForLanguage(
+                                $localizer,
+                                $cart,
+                                $configuration,
+                                $language
+                            );
                             if ($configuredLanguageExport) {
                                 $this->processExport($configuration, $language);
                             }
                         }
-                        $this->selectorRepository->updateL10nmgrConfiguration($configuration, $localizer, $cart,
+                        $this->selectorRepository->updateL10nmgrConfiguration(
+                            $configuration,
+                            $localizer,
+                            $cart,
                             $pageIds,
-                            '');
+                            ''
+                        );
                         $this->registerFilesForLocalizer($localizer, $configuration, $pid);
                     }
                 }
@@ -144,8 +152,13 @@ class FileExporter extends AbstractCartHandler
         if (!empty($this->triples)) {
             $excludeItems = implode(',', $this->exportTree);
             $pageIds = $this->selectorRepository->loadAvailablePages(0, $cart);
-            $this->selectorRepository->updateL10nmgrConfiguration($configuration, $localizer, $cart, $pageIds,
-                $excludeItems);
+            $this->selectorRepository->updateL10nmgrConfiguration(
+                $configuration,
+                $localizer,
+                $cart,
+                $pageIds,
+                $excludeItems
+            );
             return true;
         } else {
             return false;
@@ -184,10 +197,11 @@ class FileExporter extends AbstractCartHandler
     {
         $context = GeneralUtility::getApplicationContext()->__toString();
         $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
-            PATH_site . 'typo3/sysext/core/bin/typo3 l10nmanager:export -c ' . $configuration . ' -t ' . $language . '';
+            Environment::getPublicPath(
+            ) . '/typo3/sysext/core/bin/typo3 l10nmanager:export -c ' . $configuration . ' -t ' . $language . '';
         $response = [
             'http_status_code' => 200,
-            'response'         => [
+            'response' => [
                 'action' => exec($action . ' 2>&1'),
             ],
 
@@ -221,7 +235,6 @@ class FileExporter extends AbstractCartHandler
                 );
             }
         }
-
     }
 
     /**
@@ -277,7 +290,7 @@ class FileExporter extends AbstractCartHandler
     protected function getUploadPath()
     {
         if ($this->uploadPath === '') {
-            $this->uploadPath = PATH_site . 'uploads/tx_l10nmgr/jobs/out/';
+            $this->uploadPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/out/';
         }
         return $this->uploadPath;
     }

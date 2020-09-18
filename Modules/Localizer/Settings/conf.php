@@ -5,7 +5,7 @@ $MLANG = [
         'tabs_images' => [
             'tab' => '../../../Resources/Public/Icons/localizer.png',
         ],
-        'll_ref'      => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_settings.xlf',
+        'll_ref' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_settings.xlf',
     ],
 ];
 

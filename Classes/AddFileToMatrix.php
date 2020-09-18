@@ -36,18 +36,18 @@ trait AddFileToMatrix
     ) {
         $time = time();
         $fields = [
-            'pid'            => (int)$pid,
-            'crdate'         => $time,
-            'cruser_id'      => $this->getBackendUser()->user['uid'],
-            'status'         => Constants::STATUS_CART_FILE_EXPORTED,
-            'action'         => (int)$action,
-            'uid_local'      => (int)$localizerId,
-            'uid_export'     => (int)$exportDataId,
-            'uid_foreign'    => (int)$l10nConfigurationId,
+            'pid' => (int)$pid,
+            'crdate' => $time,
+            'cruser_id' => $this->getBackendUser()->user['uid'],
+            'status' => Constants::STATUS_CART_FILE_EXPORTED,
+            'action' => (int)$action,
+            'uid_local' => (int)$localizerId,
+            'uid_export' => (int)$exportDataId,
+            'uid_foreign' => (int)$l10nConfigurationId,
             'localizer_path' => $this->getRootPath((int)$pid),
-            'filename'       => (string)$fileName,
-            'source_locale'  => 1,
-            'target_locale'  => 1,
+            'filename' => (string)$fileName,
+            'source_locale' => 1,
+            'target_locale' => 1,
         ];
         $this->getDatabaseConnection()
             ->exec_INSERTquery(

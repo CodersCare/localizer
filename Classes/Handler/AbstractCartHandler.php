@@ -61,7 +61,7 @@ abstract class AbstractCartHandler
     {
         $acquired = false;
         $fields = [
-            'tstamp'    => time(),
+            'tstamp' => time(),
             'processid' => $this->processId,
         ];
         $this->getDatabaseConnection()
@@ -108,11 +108,10 @@ abstract class AbstractCartHandler
             Constants::TABLE_LOCALIZER_CART,
             'processid = "' . $this->processId . '"',
             [
-                'tstamp'    => $time,
+                'tstamp' => $time,
                 'processid' => '',
             ]
         );
-
     }
 
     /**

@@ -72,8 +72,11 @@ class FileDownloader extends AbstractHandler
                             );
                         } else {
                             if (isset($originalResponse['files'])) {
-                                $response = $this->processDownload($localizerSettings, $row['filename'],
-                                    $originalResponse['files']);
+                                $response = $this->processDownload(
+                                    $localizerSettings,
+                                    $row['filename'],
+                                    $originalResponse['files']
+                                );
                                 $this->processResponse($row['uid'], $response);
                             } else {
                                 $this->addErrorResult(
@@ -112,11 +115,13 @@ class FileDownloader extends AbstractHandler
         foreach ($files as $fileStatus) {
             if ($fileStatus['status'] === Constants::API_TRANSLATION_STATUS_TRANSLATED) {
                 $processFiles['processFiles'][] = [
-                    'locale'    => $fileStatus['locale'],
-                    'local'     => $this->getLocalFilename($originalFileName, $fileStatus['locale']),
+                    'locale' => $fileStatus['locale'],
+                    'local' => $this->getLocalFilename($originalFileName, $fileStatus['locale']),
                     'hotfolder' => $this->getRemoteFilename($fileStatus['file'], ''),
-                    'remote'    => $this->getRemoteFilename($fileStatus['file'],
-                        $this->getIso2ForLocale($fileStatus['locale'])),
+                    'remote' => $this->getRemoteFilename(
+                        $fileStatus['file'],
+                        $this->getIso2ForLocale($fileStatus['locale'])
+                    ),
                 ];
             } else {
                 //fixme:errorhandling

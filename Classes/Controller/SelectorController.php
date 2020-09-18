@@ -2,13 +2,15 @@
 
 namespace Localizationteam\Localizer\Controller;
 
+use Exception;
+use Localizationteam\Localizer\DatabaseConnection;
 use Localizationteam\Localizer\Handler\FileExporter;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
@@ -102,7 +104,9 @@ class SelectorController extends AbstractController
         $this->selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $this->getBackendUser()->modAccess($this->MCONF, 1);
-        $this->getLanguageService()->includeLLFile('EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf');
+        $this->getLanguageService()->includeLLFile(
+            'EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf'
+        );
         $this->backPath = $GLOBALS['BACK_PATH'];
         $this->cshKey = '_MOD_' . $GLOBALS['MCONF']['name'];
     }
@@ -115,9 +119,15 @@ class SelectorController extends AbstractController
     public function init()
     {
         parent::init();
-        $this->configuration['languages'] = GeneralUtility::_GP('configured_languages') ? GeneralUtility::_GP('configured_languages') : [];
-        $this->configuration['tables'] = GeneralUtility::_GP('configured_tables') ? GeneralUtility::_GP('configured_tables') : [];
-        $this->configuration['start'] = GeneralUtility::_GP('configured_start') ? GeneralUtility::_GP('configured_start') : 0;
+        $this->configuration['languages'] = GeneralUtility::_GP('configured_languages') ? GeneralUtility::_GP(
+            'configured_languages'
+        ) : [];
+        $this->configuration['tables'] = GeneralUtility::_GP('configured_tables') ? GeneralUtility::_GP(
+            'configured_tables'
+        ) : [];
+        $this->configuration['start'] = GeneralUtility::_GP('configured_start') ? GeneralUtility::_GP(
+            'configured_start'
+        ) : 0;
         $this->configuration['end'] = GeneralUtility::_GP('configured_end') ? GeneralUtility::_GP('configured_end') : 0;
 
         if (GeneralUtility::_GP('selected_cart') === 'new') {
@@ -131,7 +141,7 @@ class SelectorController extends AbstractController
      * Main function, starting the rendering of the list.
      *
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     protected function main()
     {
@@ -139,7 +149,9 @@ class SelectorController extends AbstractController
         $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/DateTimePicker');
         $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerSelector');
         $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/jquery.clearable');
-        $this->moduleTemplate->getPageRenderer()->addCssFile(ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css');
+        $this->moduleTemplate->getPageRenderer()->addCssFile(
+            ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css'
+        );
         $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
         $access = is_array($this->pageinfo) ? 1 : 0;
         if ($access) {
@@ -162,7 +174,8 @@ class SelectorController extends AbstractController
             /** @var DatabaseRecordList $dblist */
             $dblist = GeneralUtility::makeInstance('TYPO3\\CMS\\Recordlist\\RecordList\\DatabaseRecordList');
             $dblist->backPath = $GLOBALS['BACK_PATH'];
-            $dblist->script = BackendUtility::getModuleUrl('web_list', []);
+            $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+            $dblist->script = $uriBuilder->buildUriFromRoute('web_list');
             $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
             $header = 'LOCALIZER Selector';
             if (isset($this->pageinfo['title'])) {
@@ -179,7 +192,9 @@ class SelectorController extends AbstractController
                                 <label class="btn btn-' . $legendItem['cssClass'] . ' localizer-legend">
                                     <input type="checkbox" disabled="disabled">' . $label . '
                                 </label>&nbsp;<label class="btn btn-' . $legendItem['cssClass'] . ' active">
-                                <input type="checkbox" disabled="disabled">' . $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.cart') . '
+                                <input type="checkbox" disabled="disabled">' . $GLOBALS['LANG']->sL(
+                            'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.cart'
+                        ) . '
                             </label>
                             </div>
                         </td>
@@ -199,7 +214,11 @@ class SelectorController extends AbstractController
                 <input type="hidden" name="selected_localizerPid" value="' . $this->localizerPid . '" />
                 <input type="hidden" name="selected_cart" value="' . $this->cartId . '" />
                 <input type="hidden" name="id" value="' . $this->id . '" />';
-                if ($this->cartId > 0 && empty(GeneralUtility::_GP('configuratorStore')) && empty(GeneralUtility::_GP('configuratorFinalize'))) {
+                if ($this->cartId > 0 && empty(GeneralUtility::_GP('configuratorStore')) && empty(
+                    GeneralUtility::_GP(
+                        'configuratorFinalize'
+                    )
+                    )) {
                     $this->loadConfigurationAndCart();
                 }
                 if ($this->cartId > 0 && !empty(GeneralUtility::_GP('configuratorFinalize'))) {
@@ -208,40 +227,56 @@ class SelectorController extends AbstractController
                     $this->cartId = 0;
                 }
                 $this->content .= $this->getLocalizerConfigurator($dblist->listURL());
-                if ($this->cartId > 0 && !empty(GeneralUtility::_GP('configuratorStore')) && empty(GeneralUtility::_GP('configuratorFinalize'))) {
+                if ($this->cartId > 0 && !empty(GeneralUtility::_GP('configuratorStore')) && empty(
+                    GeneralUtility::_GP(
+                        'configuratorFinalize'
+                    )
+                    )) {
                     $this->storeConfigurationAndCart();
                 }
                 if ($this->localizerId) {
                     if ($this->cartId) {
                         if (empty($this->configuration)) {
                             $this->content .= '<div class="alert alert-warning">' .
-                                $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:cart.configure') .
+                                $GLOBALS['LANG']->sL(
+                                    'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:cart.configure'
+                                ) .
                                 '</div>';
                         } else {
                             $pageIds = $this->selectorRepository->loadAvailablePages($this->id, 0);
-                            $this->data = $this->selectorRepository->getRecordsOnPages($this->id,
+                            $this->data = $this->selectorRepository->getRecordsOnPages(
+                                $this->id,
                                 $pageIds,
                                 $this->translatableTables,
-                                $this->configuration);
+                                $this->configuration
+                            );
                             $this->content .= $this->getTranslationLocalizer();
                         }
                     } elseif (!empty(GeneralUtility::_GP('configuratorFinalize'))) {
                         $this->content .= '<div class="alert alert-success">' .
-                            $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:finalize.success') .
+                            $GLOBALS['LANG']->sL(
+                                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:finalize.success'
+                            ) .
                             '</div>';
                     } else {
                         $this->content .= '<div class="alert alert-warning">' .
-                            $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:cart.select') .
+                            $GLOBALS['LANG']->sL(
+                                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:cart.select'
+                            ) .
                             '</div>';
                     }
                 } else {
                     $this->content .= '<div class="alert alert-warning">' .
-                        $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:localizer.select') .
+                        $GLOBALS['LANG']->sL(
+                            'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:localizer.select'
+                        ) .
                         '</div>';
                 }
             } else {
                 $this->content .= '<div class="alert alert-warning">' .
-                    $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:page.select') .
+                    $GLOBALS['LANG']->sL(
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:page.select'
+                    ) .
                     '</div>';
             }
             $this->content .= '</form>';
@@ -290,8 +325,12 @@ class SelectorController extends AbstractController
     protected function finalizeCart()
     {
         $this->storeConfigurationAndCart();
-        $configurationId = $this->selectorRepository->storeL10nmgrConfiguration($this->id, $this->localizerId,
-            $this->cartId, $this->configuration);
+        $configurationId = $this->selectorRepository->storeL10nmgrConfiguration(
+            $this->id,
+            $this->localizerId,
+            $this->cartId,
+            $this->configuration
+        );
         $this->selectorRepository->finalizeCart($this->localizerId, $this->cartId, $configurationId);
     }
 
@@ -307,7 +346,7 @@ class SelectorController extends AbstractController
 
     /**
      * Exports the records configured by the selector
-     * @throws \Exception
+     * @throws Exception
      */
     protected function exportConfiguredRecords()
     {
@@ -336,13 +375,21 @@ class SelectorController extends AbstractController
             $localizerConfigurator .= $this->getTableSelector();
             $localizerConfigurator .= $this->getTimeFrameSelector();
             $localizerConfigurator .= '<li><button class="btn btn-info" name="configuratorStore" type="submit" value="store">' .
-                $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:store') .
+                $GLOBALS['LANG']->sL(
+                    'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:store'
+                ) .
                 '</button></li>';
         }
-        if (!empty($this->configuration['languages']) && !empty($this->configuration['tables']) && empty(GeneralUtility::_GP('configuratorFinalize'))) {
+        if (!empty($this->configuration['languages']) && !empty($this->configuration['tables']) && empty(
+            GeneralUtility::_GP(
+                'configuratorFinalize'
+            )
+            )) {
             $localizerConfigurator .= '<li><button class="btn btn-success" type="button" 
                 data-toggle="modal" data-target="#t3-modal-finalizecart">' .
-                $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:finalize') .
+                $GLOBALS['LANG']->sL(
+                    'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:finalize'
+                ) .
                 '</button><input type="hidden" name="configuratorFinalize" id="configuratorFinalize" /></li>';
         }
         $localizerConfigurator .= '</ul></div>';
@@ -363,7 +410,9 @@ class SelectorController extends AbstractController
         }
         $localizerSelector = '<li class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
-            $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:localizer.selector') .
+            $GLOBALS['LANG']->sL(
+                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:localizer.selector'
+            ) .
             '<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="localizerDropdownMenu1">';
@@ -396,7 +445,9 @@ class SelectorController extends AbstractController
         $availableCarts = $this->selectorRepository->loadAvailableCarts($this->localizerId);
         $cartSelector = '<li class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
-            $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:cart.selector') .
+            $GLOBALS['LANG']->sL(
+                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:cart.selector'
+            ) .
             '<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="localizerDropdownMenu2">
@@ -434,10 +485,12 @@ class SelectorController extends AbstractController
         $availablePages = $this->selectorRepository->loadAvailablePages($this->id, $this->cartId);
         if (empty($availablePages) || count($availablePages) === 1) {
             return '';
-        };
+        }
         $pageSelector = '<li class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
-            $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:page.selector') .
+            $GLOBALS['LANG']->sL(
+                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:page.selector'
+            ) .
             '<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="localizerDropdownMenu3">';
@@ -481,13 +534,17 @@ class SelectorController extends AbstractController
         }
         $languageSelector = '<li class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
-            $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:languages.selector') .
+            $GLOBALS['LANG']->sL(
+                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:languages.selector'
+            ) .
             '<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="localizerDropdownMenu4">';
         if (count($languages) > 1) {
             $languageSelector .= '<li class="select-all"><a href="#" class="small" tabIndex="-1">
-                        <input type="checkbox" />&nbsp;' . $this->getLanguageService()->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:languages.selector.all') . '</a></li>';
+                        <input type="checkbox" />&nbsp;' . $this->getLanguageService()->sL(
+                    'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:languages.selector.all'
+                ) . '</a></li>';
         }
         if (!empty($languages)) {
             foreach ($languages as $language) {
@@ -529,27 +586,37 @@ class SelectorController extends AbstractController
         $availableTables = $this->selectorRepository->loadAvailableTables($this->cartId);
         $tableSelector = '<li class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
-            $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:tables.selector') .
+            $GLOBALS['LANG']->sL(
+                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:tables.selector'
+            ) .
             '<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="localizerDropdownMenu5">';
         $tables = array_keys($GLOBALS['TCA']);
         if (count($tables) > 1) {
             $tableSelector .= '<li class="select-all"><a href="#" class="small" tabIndex="-1">
-                        <input type="checkbox" />&nbsp;' . $this->getLanguageService()->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:tables.selector.all') . '</a></li>';
+                        <input type="checkbox" />&nbsp;' . $this->getLanguageService()->sL(
+                    'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:tables.selector.all'
+                ) . '</a></li>';
         }
         $tableSelector .= '<li><a href="#" class="small" tabIndex="-1">
             <input name="configured_tables[pages]-dummy" type="checkbox" checked="checked" disabled="disabled">
             <input name="configured_tables[pages]" type="hidden" value="1">&nbsp;' .
             $GLOBALS['LANG']->sL($GLOBALS['TCA']['pages']['ctrl']['title']) . ' ' .
-            $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:tables.selector.mandatory') .
+            $GLOBALS['LANG']->sL(
+                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:tables.selector.mandatory'
+            ) .
             '</a></li>';
         $this->translatableTables = ['pages' => $GLOBALS['LANG']->sL($GLOBALS['TCA']['pages']['ctrl']['title'])];
         foreach (array_keys($GLOBALS['TCA']) as $table) {
             $recordExists = $this->getDatabaseConnection()
-                ->exec_SELECTgetSingleRow('*', $table, 'pid=' . (int)$this->id .
+                ->exec_SELECTgetSingleRow(
+                    '*',
+                    $table,
+                    'pid=' . (int)$this->id .
                     BackendUtility::BEenableFields($table) .
-                    BackendUtility::deleteClause($table));
+                    DatabaseConnection::deleteClause($table)
+                );
             if ((!empty($recordExists) || isset($availableTables[$table])) &&
                 BackendUtility::isTableLocalizable($table) &&
                 ($this->getBackendUser()->isAdmin() ||
@@ -648,12 +715,18 @@ class SelectorController extends AbstractController
                         '<button class="btn btn-default btn-sm" data-tableid="' . $table . '-' . $uid .
                         '" data-toggle="tooltip" data-placement="top" data-title="Select all languages for this record">' .
                         '<strong>' . $title . '</strong> : ' .
-                        GeneralUtility::fixed_lgd_cs($record[$labelField],
-                            50) . ' [' . $record['uid'] . ']</button></th>';
+                        GeneralUtility::fixed_lgd_cs(
+                            $record[$labelField],
+                            50
+                        ) . ' [' . $record['uid'] . ']</button></th>';
                     $translationLocalizer .= $this->generateLocalizerCells($table, $uid, $placement);
                     $translationLocalizer .= '</tr>';
-                    $translationLocalizer .= $this->getReferenceLocalizer($table, $uid, '',
-                        'parent-' . $table . '-' . $uid);
+                    $translationLocalizer .= $this->getReferenceLocalizer(
+                        $table,
+                        $uid,
+                        '',
+                        'parent-' . $table . '-' . $uid
+                    );
                     $counter++;
                 }
             }
@@ -679,7 +752,9 @@ class SelectorController extends AbstractController
             $checkBoxId = 'localizerSelectorCart[' . $table . '][' . $uid . '][' . $languageInfo['uid'] . ']';
             $identifier = md5($table . '.' . $uid . '.' . $languageInfo['uid']);
             $checked = $tableVars[$uid][$languageId] || $this->storedTriples[$identifier] ? ' checked=checked' : '';
-            $title = $GLOBALS['LANG']->sL($this->statusClasses[(int)$this->data['identifiedStatus'][$identifier]['status']]['label']);
+            $title = $GLOBALS['LANG']->sL(
+                $this->statusClasses[(int)$this->data['identifiedStatus'][$identifier]['status']]['label']
+            );
             $status = $this->statusClasses[(int)$this->data['identifiedStatus'][$identifier]['status']]['cssClass'];
             $cells .= '<td class="' . $status . ' language-record-marker column-hover ' . (int)$this->data['identifiedStatus'][$identifier]['status'] . '">' .
                 '<div class="btn-group" data-toggle="buttons">' .
@@ -725,12 +800,18 @@ class SelectorController extends AbstractController
                         '<button class="btn btn-default btn-sm" data-tableid="' . $table . '-' . $record['uid'] .
                         '" data-toggle="tooltip" data-placement="top" data-title="Select all languages for this record">
                         <strong>' . $this->translatableTables[$table] . '</strong> : ' .
-                        GeneralUtility::fixed_lgd_cs($record[$labelField],
-                            50) . ' [' . $record['uid'] . ']</button></td>';
+                        GeneralUtility::fixed_lgd_cs(
+                            $record[$labelField],
+                            50
+                        ) . ' [' . $record['uid'] . ']</button></td>';
                     $referenceLocalizer .= $this->generateLocalizerCells($table, $record['uid']);
                     $referenceLocalizer .= '</tr>';
-                    $referenceLocalizer .= $this->getReferenceLocalizer($table, $record['uid'], $level . $treeAdd,
-                        $parents . ' parent-' . $table . '-' . $record['uid']);
+                    $referenceLocalizer .= $this->getReferenceLocalizer(
+                        $table,
+                        $record['uid'],
+                        $level . $treeAdd,
+                        $parents . ' parent-' . $table . '-' . $record['uid']
+                    );
                 }
                 unset($this->data['referencedRecords'][$referencedTable][$referencedUid][$table]);
             }

@@ -96,14 +96,18 @@ class SendFile
                                         $this->metaData = $configuration['metadata'];
                                     }
                                 } else {
-                                    throw new Exception('No out folder given. Please set one in the localizer settings');
+                                    throw new Exception(
+                                        'No out folder given. Please set one in the localizer settings'
+                                    );
                                 }
                                 break;
                             default :
                                 if (ExtensionManagementUtility::isLoaded($configuration['type'])) {
                                     if (isset($configuration['projectKey'])) {
                                         $this->api = GeneralUtility::makeInstance(
-                                            'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase($configuration['type']) . '\\Api\\ApiCalls',
+                                            'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase(
+                                                $configuration['type']
+                                            ) . '\\Api\\ApiCalls',
                                             $configuration['type'],
                                             $configuration['url'],
                                             $configuration['workflow'],
@@ -125,10 +129,14 @@ class SendFile
                                             $this->metaData = $configuration['metadata'];
                                         }
                                     } else {
-                                        throw new Exception('No project key given. Please set one in the localizer settings');
+                                        throw new Exception(
+                                            'No project key given. Please set one in the localizer settings'
+                                        );
                                     }
                                 } else {
-                                    throw new Exception('Missing API plugin ' . $configuration['type'] . '. Please install the necessary API plugin extension');
+                                    throw new Exception(
+                                        'Missing API plugin ' . $configuration['type'] . '. Please install the necessary API plugin extension'
+                                    );
                                 }
                         }
                     } else {

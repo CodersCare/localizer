@@ -6,6 +6,7 @@ use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\File;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -91,20 +92,20 @@ class FileImporter extends AbstractHandler
     {
         $response = [];
         foreach ($files as $fileStatus) {
-            $introductionXmlPath = PATH_site . 'uploads/tx_l10nmgr/jobs/in/instruction.xml';
+            $introductionXmlPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/in/instruction.xml';
             if (file_exists($introductionXmlPath)) {
                 unlink($introductionXmlPath);
             }
             $fileNameAndPath = $this->getLocalFilename($originalFileName, $fileStatus['locale']);
             $context = GeneralUtility::getApplicationContext()->__toString();
             $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
-                PATH_site . 'typo3/sysext/core/bin/typo3 l10nmanager:import -t importFile --file ' .
+                Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3 l10nmanager:import -t importFile --file ' .
                 $fileNameAndPath;
             $response[] = [
                 'http_status_code' => 200,
-                'response'         => [
+                'response' => [
                     'action' => exec($action . ' 2>&1'),
-                    'file'   => $originalFileName,
+                    'file' => $originalFileName,
                     'locale' => $fileStatus['locale'],
                 ],
             ];

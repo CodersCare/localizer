@@ -30,7 +30,9 @@ class AutomaticExportRepository extends AbstractRepository
             ' AND uid_local = ' . (int)$localizerId .
             ' AND status >= ' . Constants::STATUS_CART_FINALIZED .
             ' AND status < ' . Constants::STATUS_CART_FILE_IMPORTED .
-            BackendUtility::BEenableFields(Constants::TABLE_LOCALIZER_CART) . BackendUtility::deleteClause(Constants::TABLE_LOCALIZER_CART)
+            BackendUtility::BEenableFields(
+                Constants::TABLE_LOCALIZER_CART
+            ) . ' AND ' . Constants::TABLE_LOCALIZER_CART . '.deleted=0'
         );
         return $unfinishedButSentCarts;
     }
@@ -49,7 +51,7 @@ class AutomaticExportRepository extends AbstractRepository
             '*',
             'pages',
             'localizer_include_with_automatic_export > 0 AND uid NOT IN (' . $safeExcludedPageUids . ') ' .
-            BackendUtility::BEenableFields('pages') . BackendUtility::deleteClause('pages'),
+            BackendUtility::BEenableFields('pages') . ' AND pages.deleted=0',
             '',
             '',
             '',
@@ -75,7 +77,7 @@ class AutomaticExportRepository extends AbstractRepository
             'LEFT OUTER JOIN ' . Constants::TABLE_LOCALIZER_SETTINGS_PAGES_MM . ' mm 
               ON mm.uid_local = pages.uid AND mm.uid_foreign = ' . (int)$localizer,
             'pages.uid NOT IN (' . $safeExcludedPageUids . ') AND mm.uid IS NOT NULL ' .
-            BackendUtility::BEenableFields('pages') . BackendUtility::deleteClause('pages'),
+            BackendUtility::BEenableFields('pages') . ' AND pages.deleted=0',
             '',
             '',
             '',
@@ -105,11 +107,11 @@ class AutomaticExportRepository extends AbstractRepository
                                 if ($configuration['languages'][$languageId]) {
                                     $identifier = md5($tableName . '.' . $recordId . '.' . $languageId);
                                     $insertValues[$identifier] = [
-                                        'pid'        => (int)$pageId,
+                                        'pid' => (int)$pageId,
                                         'identifier' => $identifier,
-                                        'cart'       => (int)$cartId,
-                                        'tablename'  => $tableName,
-                                        'recordId'   => (int)$recordId,
+                                        'cart' => (int)$cartId,
+                                        'tablename' => $tableName,
+                                        'recordId' => (int)$recordId,
                                         'languageId' => (int)$languageId,
                                     ];
                                 }

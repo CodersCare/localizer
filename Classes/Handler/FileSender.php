@@ -8,6 +8,7 @@ use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Runner\SendFile;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -73,7 +74,7 @@ class FileSender extends AbstractHandler
                     } else {
                         $additionalConfiguration = [
                             'localFile' => $file,
-                            'file'      => $row['filename'],
+                            'file' => $row['filename'],
                         ];
                         $deadline = $this->addDeadline($row);
                         if (!empty($deadline)) {
@@ -133,7 +134,7 @@ class FileSender extends AbstractHandler
     protected function getUploadPath()
     {
         if ($this->uploadPath === '') {
-            $this->uploadPath = PATH_site . 'uploads/tx_l10nmgr/jobs/out/';
+            $this->uploadPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/out/';
         }
         return $this->uploadPath;
     }
@@ -155,7 +156,7 @@ class FileSender extends AbstractHandler
             ' ON ' . Constants::TABLE_LOCALIZER_CART . '.uid_foreign = ' . Constants::TABLE_EXPORTDATA_MM . '.uid_foreign',
             Constants::TABLE_EXPORTDATA_MM . ' .uid = ' . (int)$row['uid'] .
             BackendUtility::BEenableFields(Constants::TABLE_EXPORTDATA_MM) .
-            BackendUtility::deleteClause(Constants::TABLE_EXPORTDATA_MM)
+            ' AND ' . Constants::TABLE_EXPORTDATA_MM . '.deleted=0'
         );
         if (!empty($carts['deadline'])) {
             $deadline = (int)$carts['deadline'];

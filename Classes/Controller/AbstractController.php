@@ -5,7 +5,6 @@ namespace Localizationteam\Localizer\Controller;
 use Localizationteam\Localizer\DatabaseConnection;
 use Localizationteam\Localizer\Model\Repository\AbstractRepository;
 use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Backend\Module\BaseScriptClass;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -17,9 +16,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package     TYPO3
  * @subpackage  localizer
  */
-abstract class AbstractController extends BaseScriptClass
+abstract class AbstractController extends BaseModule
 {
     use DatabaseConnection;
+
     /**
      * @var array
      */
@@ -72,7 +72,6 @@ abstract class AbstractController extends BaseScriptClass
      */
     public function __construct()
     {
-        parent::__construct();
         $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->abstractRepository = GeneralUtility::makeInstance(AbstractRepository::class);
     }
@@ -109,35 +108,39 @@ abstract class AbstractController extends BaseScriptClass
         $this->localizerPid = (int)GeneralUtility::_GP('selected_localizerPid');
 
         if (empty($this->id)) {
-            $this->id = hexdec(ltrim($this->getBackendUser()->uc['BackendComponents']['States']['Pagetree']->stateHash->lastSelectedNode,
-                'p'));
+            $this->id = hexdec(
+                ltrim(
+                    $this->getBackendUser()->uc['BackendComponents']['States']['Pagetree']->stateHash->lastSelectedNode,
+                    'p'
+                )
+            );
         }
 
         $this->legend = [
             '10' => [
                 'cssClass' => 'changed-after-translation',
-                'label'    => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.changed.after.translation',
+                'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.changed.after.translation',
             ],
             '20' => [
                 'cssClass' => 'not-translated',
-                'label'    => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.not.translated',
+                'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.not.translated',
             ],
             '30' => [
                 'cssClass' => 'sent-to-translation',
-                'label'    => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.sent.to.translation',
+                'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.sent.to.translation',
             ],
             '40' => [
                 'cssClass' => 'back-from-translation',
-                'label'    => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.back.from.translation',
+                'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.back.from.translation',
             ],
             '50' => [
                 'cssClass' => 'translated',
-                'label'    => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.translated',
+                'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.translated',
             ],
         ];
 
         $this->statusClasses = [
-            '0'  => $this->legend['20'],
+            '0' => $this->legend['20'],
             '10' => $this->legend['20'],
             '15' => $this->legend['20'],
             '17' => $this->legend['30'],
@@ -155,7 +158,6 @@ abstract class AbstractController extends BaseScriptClass
             $localizer = $this->availableLocalizers[$this->localizerId];
             $this->getLocalizerSettings($localizer['type']);
         }
-
     }
 
     /**
@@ -165,7 +167,6 @@ abstract class AbstractController extends BaseScriptClass
      */
     protected function getLocalizerSettings($type)
     {
-
     }
 
     /**
@@ -184,8 +185,8 @@ abstract class AbstractController extends BaseScriptClass
     {
         $this->MOD_MENU = [
             'bigControlPanel' => '',
-            'clipBoard'       => '',
-            'localization'    => '',
+            'clipBoard' => '',
+            'localization' => '',
         ];
     }
 

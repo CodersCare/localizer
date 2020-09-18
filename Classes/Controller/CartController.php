@@ -5,6 +5,7 @@ namespace Localizationteam\Localizer\Controller;
 use Localizationteam\Localizer\BackendUser;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Model\Repository\CartRepository;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -21,6 +22,7 @@ use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
 class CartController extends AbstractController
 {
     use BackendUser;
+
     /**
      * @var int
      */
@@ -94,7 +96,9 @@ class CartController extends AbstractController
         ];
         $this->cartRepository = GeneralUtility::makeInstance(CartRepository::class);
         $this->getBackendUser()->modAccess($this->MCONF, 1);
-        $this->getLanguageService()->includeLLFile('EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf');
+        $this->getLanguageService()->includeLLFile(
+            'EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf'
+        );
     }
 
     /**
@@ -107,8 +111,8 @@ class CartController extends AbstractController
     {
         $this->MOD_MENU = [
             'bigControlPanel' => '',
-            'clipBoard'       => '',
-            'localization'    => '',
+            'clipBoard' => '',
+            'localization' => '',
         ];
     }
 
@@ -142,7 +146,9 @@ class CartController extends AbstractController
     {
         $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
         $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerCart');
-        $this->moduleTemplate->getPageRenderer()->addCssFile(ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css');
+        $this->moduleTemplate->getPageRenderer()->addCssFile(
+            ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css'
+        );
         $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
         $access = is_array($this->pageinfo) ? 1 : 0;
         $this->MOD_SETTINGS['bigControlPanel'] = true;
@@ -151,7 +157,8 @@ class CartController extends AbstractController
         /** @var $dblist DatabaseRecordList */
         $dblist = GeneralUtility::makeInstance('TYPO3\\CMS\\Recordlist\\RecordList\\DatabaseRecordList');
         $dblist->backPath = $GLOBALS['BACK_PATH'];
-        $dblist->script = BackendUtility::getModuleUrl('web_list', []);
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $dblist->script = $uriBuilder->buildUriFromRoute('web_list');
         $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
         $dblist->returnUrl = $this->returnUrl;
@@ -188,7 +195,9 @@ class CartController extends AbstractController
                                 <label class="btn btn-' . $legendItem['cssClass'] . ' localizer-legend">
                                     <input type="checkbox" disabled="disabled">' . $label . '
                                 </label>&nbsp;<label class="btn btn-' . $legendItem['cssClass'] . ' active">
-                                <input type="checkbox" disabled="disabled">' . $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.cart') . '
+                                <input type="checkbox" disabled="disabled">' . $GLOBALS['LANG']->sL(
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.cart'
+                    ) . '
                             </label>
                             </div>
                         </td>
@@ -203,7 +212,9 @@ class CartController extends AbstractController
             </div>
             ';
 
-        $this->content .= '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" name="dblistForm">';
+        $this->content .= '<form action="' . htmlspecialchars(
+                $dblist->listURL()
+            ) . '" method="post" name="dblistForm">';
         $this->content .= $this->getCartConfigurator($dblist->listURL());
         if ($access || ($this->id === 0 && $this->search_levels > 0 && strlen($this->search_field) > 0)) {
             $this->pointer = MathUtility::forceIntegerInRange($this->pointer, 0, 100000);
@@ -211,7 +222,9 @@ class CartController extends AbstractController
             $dblist->setDispFields();
             $dblist->generateList();
             $listUrl = substr($dblist->listURL(), strlen($GLOBALS['BACK_PATH']));
-            $this->moduleTemplate->addJavaScriptCode('localizer_cart_list', '
+            $this->moduleTemplate->addJavaScriptCode(
+                'localizer_cart_list',
+                '
 				function jumpExt(URL,anchor) {	//
 					var anc = anchor?anchor:"";
 					window.location.href = URL+(T3_THIS_LOCATION?"&returnUrl="+T3_THIS_LOCATION:"")+anc;
@@ -233,7 +246,9 @@ class CartController extends AbstractController
 				' . $this->moduleTemplate->redirectUrls($listUrl) . '
 				' . $dblist->CBfunctions() . '
 				function editRecords(table,idList,addParams,CBflag) {	//
-					window.location.href="' . $GLOBALS['BACK_PATH'] . 'alt_doc.php?returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI')) . '&edit["+table+"]["+idList+"]=edit"+addParams;
+					window.location.href="' . $GLOBALS['BACK_PATH'] . 'alt_doc.php?returnUrl=' . rawurlencode(
+                    GeneralUtility::getIndpEnv('REQUEST_URI')
+                ) . '&edit["+table+"]["+idList+"]=edit"+addParams;
 				}
 				function editList(table,idList) {	//
 					var list="";
@@ -256,8 +271,10 @@ class CartController extends AbstractController
 				}
 
 				if (top.fsMod) top.fsMod.recentIds["web"] = ' . (int)$this->id . ';
-			');
-            $this->moduleTemplate->addJavaScriptCode('lcoalizer_cart_record_info',
+			'
+            );
+            $this->moduleTemplate->addJavaScriptCode(
+                'lcoalizer_cart_record_info',
                 $this->generateRecordInfo()
             );
         }
@@ -266,7 +283,9 @@ class CartController extends AbstractController
         } else {
             $dblist->HTMLcode = '';
             $this->content .= '<div class="alert alert-warning">' .
-                $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf:localizer.select') .
+                $GLOBALS['LANG']->sL(
+                    'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf:localizer.select'
+                ) .
                 '</div>';
         }
         $this->content .= '<input type="hidden" name="selected_localizer" value="' . $this->localizerId . '" />
@@ -333,7 +352,9 @@ class CartController extends AbstractController
         }
         $localizerSelector = '<li class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
-            $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf:localizer.selector') .
+            $GLOBALS['LANG']->sL(
+                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf:localizer.selector'
+            ) .
             '<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="localizerDropdownMenu1">';
@@ -367,7 +388,9 @@ class CartController extends AbstractController
         $availableUsers = $this->cartRepository->loadAvailableUsers();
         $userSelector = '<li class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
-            $GLOBALS['LANG']->sL('LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf:user.selector') .
+            $GLOBALS['LANG']->sL(
+                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf:user.selector'
+            ) .
             '<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="localizerDropdownMenu2">';

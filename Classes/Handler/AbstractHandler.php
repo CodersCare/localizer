@@ -17,6 +17,7 @@ use Localizationteam\Localizer\DatabaseConnection;
 abstract class AbstractHandler
 {
     use DatabaseConnection;
+
     /**
      * @var bool
      */
@@ -60,7 +61,7 @@ abstract class AbstractHandler
     {
         $acquired = false;
         $fields = [
-            'tstamp'    => time(),
+            'tstamp' => time(),
             'processid' => $this->processId,
         ];
         $this->getDatabaseConnection()
@@ -107,11 +108,10 @@ abstract class AbstractHandler
             Constants::TABLE_EXPORTDATA_MM,
             'processid="' . $this->processId . '"',
             [
-                'tstamp'    => $time,
+                'tstamp' => $time,
                 'processid' => '',
             ]
         );
-
     }
 
     /**

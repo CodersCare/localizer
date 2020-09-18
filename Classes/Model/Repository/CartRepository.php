@@ -29,7 +29,9 @@ class CartRepository extends AbstractRepository
                 AND cart.deleted = 0 AND cart.hidden = 0',
             'cart.uid IS NOT NULL AND ' .
             Constants::TABLE_BACKEND_USERS . '.uid > 0' .
-            BackendUtility::BEenableFields(Constants::TABLE_BACKEND_USERS) . BackendUtility::deleteClause(Constants::TABLE_BACKEND_USERS),
+            BackendUtility::BEenableFields(
+                Constants::TABLE_BACKEND_USERS
+            ) . ' AND ' . Constants::TABLE_BACKEND_USERS . '.deleted=0',
             Constants::TABLE_BACKEND_USERS . '.uid',
             Constants::TABLE_BACKEND_USERS . '.realName, ' . Constants::TABLE_BACKEND_USERS . '.username',
             '',
@@ -56,7 +58,7 @@ class CartRepository extends AbstractRepository
             ($user > 0 ? (' AND ' . Constants::TABLE_LOCALIZER_CART . '.cruser_id = ' . (int)$user) : '') .
             ' AND ' . Constants::TABLE_LOCALIZER_CART . '.status > ' . Constants::STATUS_CART_ADDED .
             BackendUtility::BEenableFields(Constants::TABLE_LOCALIZER_CART) .
-            BackendUtility::deleteClause(Constants::TABLE_LOCALIZER_CART),
+            ' AND ' . Constants::TABLE_LOCALIZER_CART . '.deleted=0',
             '',
             Constants::TABLE_LOCALIZER_CART . '.uid',
             '',
@@ -84,7 +86,7 @@ class CartRepository extends AbstractRepository
                     ' ON ' . Constants::TABLE_STATIC_LANGUAGES . '.uid = targetMM.uid_foreign',
                     Constants::TABLE_EXPORTDATA_MM . ' .uid_foreign = ' . (int)$cart['uid_foreign'] .
                     BackendUtility::BEenableFields(Constants::TABLE_EXPORTDATA_MM) .
-                    BackendUtility::deleteClause(Constants::TABLE_EXPORTDATA_MM),
+                    ' AND ' . Constants::TABLE_EXPORTDATA_MM . '.deleted=0',
                     '',
                     Constants::TABLE_EXPORTDATA_MM . '.status ASC',
                     '',
@@ -93,8 +95,11 @@ class CartRepository extends AbstractRepository
                 if (!empty($cart['exportData'])) {
                     foreach ($cart['exportData'] as $exportId => &$export) {
                         $export['locale'] = str_replace(
-                            '_', '-',
-                            strtolower($export['lg_collate_locale'] ? $export['lg_collate_locale'] : $export['lg_iso_2'])
+                            '_',
+                            '-',
+                            strtolower(
+                                $export['lg_collate_locale'] ? $export['lg_collate_locale'] : $export['lg_iso_2']
+                            )
                         );
                         unset($export['lg_collate_locale']);
                         unset($export['lg_iso_2']);
@@ -118,7 +123,7 @@ class CartRepository extends AbstractRepository
                     'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . $cart['status']
                 );
             }
-        };
+        }
         return $availableCarts;
     }
 

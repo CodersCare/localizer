@@ -17,6 +17,7 @@ use TYPO3\CMS\Core\Utility\DebugUtility;
 class Cart
 {
     use DatabaseConnection;
+
     static protected $data = [];
 
     /**
@@ -39,8 +40,10 @@ class Cart
                 }
                 $res = $this->getDatabaseConnection()->exec_SELECTquery($field, $filter['table'], $where);
                 if (isset($filter['debug']) && $filter['debug']) {
-                    DebugUtility::debug($this->getDatabaseConnection()->debug_lastBuiltQuery,
-                        __METHOD__ . ':' . __LINE__);
+                    DebugUtility::debug(
+                        $this->getDatabaseConnection()->debug_lastBuiltQuery,
+                        __METHOD__ . ':' . __LINE__
+                    );
                     $this->getDatabaseConnection()->store_lastBuiltQuery = $storeLastBuiltQuery;
                 }
                 if ($res) {

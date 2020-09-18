@@ -73,7 +73,9 @@ class DownloadFile
                         if (isset($configuration['url'])) {
                             if (isset($configuration['projectKey'])) {
                                 $this->api = GeneralUtility::makeInstance(
-                                    'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase($configuration['type']) . '\\Api\\ApiCalls',
+                                    'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase(
+                                        $configuration['type']
+                                    ) . '\\Api\\ApiCalls',
                                     $configuration['type'],
                                     $configuration['url'],
                                     $configuration['workflow'],
@@ -132,20 +134,12 @@ class DownloadFile
                         $response[] = [
                             'http_status_code' => '200',
                         ];
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $response[] = $this->api->getLastError();
                     }
                 }
         }
         $this->response = json_encode($response);
-    }
-
-    /**
-     * @return string
-     */
-    public function getResponse()
-    {
-        return $this->response;
     }
 
     /**
@@ -157,6 +151,14 @@ class DownloadFile
         $search = '<t3_targetLang>';
         $position = strpos($content, $search);
         $start = $position + strlen($search);
-        $content = substr_replace( $content,  $iso2, $start, 0 );
+        $content = substr_replace($content, $iso2, $start, 0);
+    }
+
+    /**
+     * @return string
+     */
+    public function getResponse()
+    {
+        return $this->response;
     }
 }

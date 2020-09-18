@@ -10,6 +10,7 @@ use Localizationteam\Localizer\Language;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Typo3DbLegacy\Database\DatabaseConnection;
 
 /**
@@ -68,8 +69,10 @@ class DataHandler
                         } else {
                             $fieldArray['project_settings'] = $localizerApi->getFolderInformation(true);
                             $fieldArray['last_error'] = '';
-                            new FlashMessage('Localizer settings [' . $checkArray['title'] . '] successfully validated and saved',
-                                'Success', 0);
+                            new FlashMessage(
+                                'Localizer settings [' . $checkArray['title'] . '] successfully validated and saved',
+                                'Success', 0
+                            );
                         }
                     } catch (Exception $e) {
                         $fieldArray['last_error'] = $localizerApi->getLastError();
@@ -146,8 +149,10 @@ class DataHandler
     function recStatInfo($p, $pObj)
     {
         if (!empty($this->getBackendUser()->groupData['allowed_languages']) || $this->getBackendUser()->isAdmin()) {
-            return $this->calcStat($p,
-                $this->getDatabaseConnection()->cleanIntList($this->getBackendUser()->groupData['allowed_languages']));
+            return $this->calcStat(
+                $p,
+                $this->getDatabaseConnection()->cleanIntList($this->getBackendUser()->groupData['allowed_languages'])
+            );
         } else {
             return '';
         }
@@ -156,13 +161,24 @@ class DataHandler
     function calcStat($p, $languageList, $noLink = false)
     {
         $output = '';
+        $siteRelPath = PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath('l10nmgr'));
         if ($p[0] != 'pages') {
-            $records = $this->getDatabaseConnection()->exec_SELECTgetRows('*', 'tx_l10nmgr_index',
-                'tablename=' . $this->getDatabaseConnection()->fullQuoteStr($p[0],
-                    'tx_l10nmgr_index') . ' AND recuid=' . (int)$p[1] . ' AND (translation_lang IN (' . $languageList . ') OR ' . $languageList . ' = 0)' . ' AND workspace=' . (int)$this->getBackendUser()->workspace);
+            $records = $this->getDatabaseConnection()->exec_SELECTgetRows(
+                '*',
+                'tx_l10nmgr_index',
+                'tablename=' . $this->getDatabaseConnection()->fullQuoteStr(
+                    $p[0],
+                    'tx_l10nmgr_index'
+                ) . ' AND recuid=' . (int)$p[1] . ' AND (translation_lang IN (' . $languageList . ') OR ' . $languageList . ' = 0)' . ' AND workspace=' . (int)$this->getBackendUser(
+                )->workspace
+            );
         } else {
-            $records = $this->getDatabaseConnection()->exec_SELECTgetRows('*', 'tx_l10nmgr_index',
-                'recpid=' . (int)$p[1] . ' AND (translation_lang IN (' . $languageList . ') OR ' . $languageList . ' = 0)' . ' AND workspace=' . (int)$this->getBackendUser()->workspace);
+            $records = $this->getDatabaseConnection()->exec_SELECTgetRows(
+                '*',
+                'tx_l10nmgr_index',
+                'recpid=' . (int)$p[1] . ' AND (translation_lang IN (' . $languageList . ') OR ' . $languageList . ' = 0)' . ' AND workspace=' . (int)$this->getBackendUser(
+                )->workspace
+            );
         }
         $flags = [];
         if (is_array($records)) {
@@ -176,7 +192,9 @@ class DataHandler
             $msg = '';
             if ($flags['new'] && !$flags['unknown'] && !$flags['noChange'] && !$flags['update']) {
                 $msg .= 'None of ' . $flags['new'] . ' elements are translated.';
-                $output = '<img src="../' . ExtensionManagementUtility::siteRelPath('l10nmgr') . 'Resources/Public/Images/flags_new.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = '<img src="../' . $siteRelPath . 'Resources/Public/Images/flags_new.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars(
+                        $msg
+                    ) . '" title="' . htmlspecialchars($msg) . '" />';
             } elseif ($flags['new'] || $flags['update']) {
                 if ($flags['update']) {
                     $msg .= $flags['update'] . ' elements to update. ';
@@ -184,19 +202,31 @@ class DataHandler
                 if ($flags['new']) {
                     $msg .= $flags['new'] . ' new elements found. ';
                 }
-                $output = '<img src="../' . ExtensionManagementUtility::siteRelPath('l10nmgr') . 'Resources/Public/Images/flags_update.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = '<img src="../' . $siteRelPath . 'Resources/Public/Images/flags_update.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars(
+                        $msg
+                    ) . '" title="' . htmlspecialchars($msg) . '" />';
             } elseif ($flags['unknown']) {
                 $msg .= 'Translation status is unknown for ' . $flags['unknown'] . ' elements. Please check and update. ';
-                $output = '<img src="../' . ExtensionManagementUtility::siteRelPath('l10nmgr') . 'Resources/Public/Images/flags_unknown.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = '<img src="../' . $siteRelPath . 'Resources/Public/Images/flags_unknown.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars(
+                        $msg
+                    ) . '" title="' . htmlspecialchars($msg) . '" />';
             } elseif ($flags['noChange']) {
                 $msg .= 'All ' . $flags['noChange'] . ' translations OK';
-                $output = '<img src="../' . ExtensionManagementUtility::siteRelPath('l10nmgr') . 'Resources/Public/Images/flags_ok.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = '<img src="../' . $siteRelPath . 'Resources/Public/Images/flags_ok.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars(
+                        $msg
+                    ) . '" title="' . htmlspecialchars($msg) . '" />';
             } else {
                 $msg .= 'Nothing to do. ';
                 $msg .= '[n/?/u/ok=' . implode('/', $flags) . ']';
-                $output = '<img src="../' . ExtensionManagementUtility::siteRelPath('l10nmgr') . 'Resources/Public/Images/flags_none.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars($msg) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = '<img src="../' . $siteRelPath . 'Resources/Public/Images/flags_none.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars(
+                        $msg
+                    ) . '" title="' . htmlspecialchars($msg) . '" />';
             }
-            $output = !$noLink ? '<a href="#" onclick="' . htmlspecialchars('parent.list_frame.location.href="' . $GLOBALS['BACK_PATH'] . ExtensionManagementUtility::siteRelPath('l10nmgr') . 'cm2/index.php?table=' . $p[0] . '&uid=' . $p[1] . '&languageList=' . rawurlencode($languageList) . '"; return false;') . '" target="listframe">' . $output . '</a>' : $output;
+            $output = !$noLink ? '<a href="#" onclick="' . htmlspecialchars(
+                    'parent.list_frame.location.href="' . $GLOBALS['BACK_PATH'] . $siteRelPath . 'cm2/index.php?table=' . $p[0] . '&uid=' . $p[1] . '&languageList=' . rawurlencode(
+                        $languageList
+                    ) . '"; return false;'
+                ) . '" target="listframe">' . $output . '</a>' : $output;
         }
         return $output;
     }

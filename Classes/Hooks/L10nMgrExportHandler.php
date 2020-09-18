@@ -36,7 +36,9 @@ class L10nMgrExportHandler implements PostSaveInterface
                     );
                     $where = 'AND ' . Constants::TABLE_LOCALIZER_L10NMGR_MM . '.uid_foreign = ' . (int)$params['data']['l10ncfg_id'] .
                         ' AND ' . Constants::TABLE_LOCALIZER_SETTINGS . '.pid IN (' . $rootLine . ')' .
-                        BackendUtility::BEenableFields(Constants::TABLE_LOCALIZER_SETTINGS) . BackendUtility::deleteClause(Constants::TABLE_LOCALIZER_SETTINGS);
+                        BackendUtility::BEenableFields(
+                            Constants::TABLE_LOCALIZER_SETTINGS
+                        ) . ' AND ' . Constants::TABLE_LOCALIZER_SETTINGS . '.deleted=0';
                     $resource = $this->getDatabaseConnection()->exec_SELECT_mm_query(
                         Constants::TABLE_LOCALIZER_SETTINGS . '.uid,' .
                         Constants::TABLE_LOCALIZER_SETTINGS . '.pid,' .
