@@ -12,6 +12,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\CommandUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -225,7 +226,7 @@ class FileExporter extends AbstractCartHandler
     protected function processExport($configuration, $language)
     {
         $context = Environment::getContext()->__toString();
-        $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
+        $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') . CommandUtility::getCommand('php') . ' ' .
             Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3 l10nmanager:export -c ' . $configuration . ' -t ' . $language . '';
         $response = [
             'http_status_code' => 200,
@@ -234,6 +235,7 @@ class FileExporter extends AbstractCartHandler
             ],
 
         ];
+
         return $response;
     }
 
