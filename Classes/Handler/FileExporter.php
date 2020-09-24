@@ -135,15 +135,23 @@ class FileExporter extends AbstractCartHandler
                     $this->triples = $this->selectorRepository->loadStoredTriples($pageIds, $cart);
                     if (!empty($this->content) && !empty($this->triples)) {
                         foreach (array_keys($cartConfiguration['languages']) as $language) {
-                            $configuredLanguageExport = $this->configureRecordsForLanguage($localizer, $cart,
-                                $configuration, $language);
+                            $configuredLanguageExport = $this->configureRecordsForLanguage(
+                                $localizer,
+                                $cart,
+                                $configuration,
+                                $language
+                            );
                             if ($configuredLanguageExport) {
                                 $this->processExport($configuration, $language);
                             }
                         }
-                        $this->selectorRepository->updateL10nmgrConfiguration($configuration, $localizer, $cart,
+                        $this->selectorRepository->updateL10nmgrConfiguration(
+                            $configuration,
+                            $localizer,
+                            $cart,
                             $pageIds,
-                            '');
+                            ''
+                        );
                         $this->registerFilesForLocalizer($localizer, $configuration, $pid);
                     }
                 }
@@ -187,8 +195,13 @@ class FileExporter extends AbstractCartHandler
         if (!empty($this->triples)) {
             $excludeItems = implode(',', $this->exportTree);
             $pageIds = $this->selectorRepository->loadAvailablePages(0, $cart);
-            $this->selectorRepository->updateL10nmgrConfiguration($configuration, $localizer, $cart, $pageIds,
-                $excludeItems);
+            $this->selectorRepository->updateL10nmgrConfiguration(
+                $configuration,
+                $localizer,
+                $cart,
+                $pageIds,
+                $excludeItems
+            );
             return true;
         } else {
             return false;
@@ -227,7 +240,8 @@ class FileExporter extends AbstractCartHandler
     {
         $context = Environment::getContext()->__toString();
         $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') . CommandUtility::getCommand('php') . ' ' .
-            Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3 l10nmanager:export -c ' . $configuration . ' -t ' . $language . '';
+            Environment::getPublicPath() .
+            '/typo3/sysext/core/bin/typo3 l10nmanager:export -c ' . $configuration . ' -t ' . $language . '';
         $response = [
             'http_status_code' => 200,
             'response' => [
@@ -246,7 +260,9 @@ class FileExporter extends AbstractCartHandler
      */
     protected function registerFilesForLocalizer($localizerId, $configurationId, $pid)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_L10NMGR_EXPORTDATA);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_L10NMGR_EXPORTDATA
+        );
         $queryBuilder->getRestrictions()
             ->removeAll();
         $rows = $queryBuilder
@@ -273,7 +289,6 @@ class FileExporter extends AbstractCartHandler
                 );
             }
         }
-
     }
 
     /**

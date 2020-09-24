@@ -54,7 +54,9 @@ trait Data
 
     protected function load()
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_EXPORTDATA_MM
+        );
         $this->data = $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_EXPORTDATA_MM)
@@ -70,7 +72,9 @@ trait Data
 
     protected function loadCart()
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_LOCALIZER_CART
+        );
         $this->data = $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_LOCALIZER_CART)
@@ -131,11 +135,25 @@ trait Data
      */
     protected function getLocalizerSettings($uid)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_LOCALIZER_SETTINGS
+        );
         $queryBuilder->getRestrictions();
         $row = $queryBuilder
-            ->select('uid', 'type', 'url', 'workflow', 'projectkey', 'username', 'password', 'project_settings',
-                'out_folder', 'in_folder', 'source_locale', 'target_locale')
+            ->select(
+                'uid',
+                'type',
+                'url',
+                'workflow',
+                'projectkey',
+                'username',
+                'password',
+                'project_settings',
+                'out_folder',
+                'in_folder',
+                'source_locale',
+                'target_locale'
+            )
             ->from(Constants::TABLE_LOCALIZER_SETTINGS)
             ->where(
                 $queryBuilder->expr()->eq(
@@ -149,7 +167,9 @@ trait Data
             if ($row['type'] === '0') {
                 $apiClass = ApiCalls::class;
             } else {
-                $apiClass = 'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase($row['type']) . '\\Api\\ApiCalls';
+                $apiClass = 'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase(
+                        $row['type']
+                    ) . '\\Api\\ApiCalls';
             }
             $api = GeneralUtility::makeInstance(
                 $apiClass,
@@ -163,7 +183,9 @@ trait Data
                 $row['in_folder']
             );
             if ($row['type'] !== '0' || $api->checkAndCreateFolders() === true) {
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+                    Constants::TABLE_LOCALIZER_LANGUAGE_MM
+                );
                 $queryBuilder->getRestrictions();
                 $sourceLocale = $queryBuilder
                     ->select('*')
@@ -217,8 +239,10 @@ trait Data
             }
         } else {
             $this->apiPool[$uid] = false;
-            new FlashMessage('Localizer settings [' . $uid . '] either disabled or deleted or API plugin not available anymore',
-                3);
+            new FlashMessage(
+                'Localizer settings [' . $uid . '] either disabled or deleted or API plugin not available anymore',
+                3
+            );
         }
         return $this->apiPool[$uid] === false ?
             false :
@@ -241,7 +265,9 @@ trait Data
         if ($this->canPersist === true) {
             foreach ($this->result['error'] as $uid => $fields) {
                 $fields['tstamp'] = (int)$time;
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+                    Constants::TABLE_LOCALIZER_CART
+                );
                 $queryBuilder
                     ->update(Constants::TABLE_LOCALIZER_CART)
                     ->where(
@@ -257,7 +283,9 @@ trait Data
             }
             foreach ($this->result['success'] as $uid => $fields) {
                 $fields['tstamp'] = (int)$time;
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+                    Constants::TABLE_EXPORTDATA_MM
+                );
                 $queryBuilder
                     ->update(Constants::TABLE_EXPORTDATA_MM)
                     ->where(

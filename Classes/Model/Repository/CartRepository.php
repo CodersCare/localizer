@@ -23,7 +23,9 @@ class CartRepository extends AbstractRepository
      */
     public function loadAvailableUsers()
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_BACKEND_USERS);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_BACKEND_USERS
+        );
         $users = $queryBuilder
             ->select(Constants::TABLE_BACKEND_USERS . '.*')
             ->from(Constants::TABLE_BACKEND_USERS)
@@ -65,7 +67,7 @@ class CartRepository extends AbstractRepository
                 Constants::TABLE_BACKEND_USERS . '.username'
             )
             ->execute()
-            ->fetchAll();;
+            ->fetchAll();
         $availableUsers = [];
         if (!empty($users)) {
             foreach ($users as $user) {
@@ -86,7 +88,9 @@ class CartRepository extends AbstractRepository
     public function getRecordInfo($id, $classes, $user)
     {
         $user = $user === 0 || $user ? $user : $this->getBackendUser()->user['uid'];
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_LOCALIZER_CART
+        );
         $queryBuilder
             ->select('uid', 'uid_local', 'uid_foreign', 'previous_status', 'action')
             ->from(Constants::TABLE_LOCALIZER_CART)
@@ -122,7 +126,9 @@ class CartRepository extends AbstractRepository
         }
         if (!empty($availableCarts)) {
             foreach ($availableCarts as $cartId => &$cart) {
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+                    Constants::TABLE_EXPORTDATA_MM
+                );
                 $exportData = $queryBuilder
                     ->select(
                         Constants::TABLE_EXPORTDATA_MM . '.uid',
@@ -188,8 +194,11 @@ class CartRepository extends AbstractRepository
                 if (!empty($cart['exportData'])) {
                     foreach ($cart['exportData'] as $exportId => &$export) {
                         $export['locale'] = str_replace(
-                            '_', '-',
-                            strtolower($export['lg_collate_locale'] ? $export['lg_collate_locale'] : $export['lg_iso_2'])
+                            '_',
+                            '-',
+                            strtolower(
+                                $export['lg_collate_locale'] ? $export['lg_collate_locale'] : $export['lg_iso_2']
+                            )
                         );
                         unset($export['lg_collate_locale']);
                         unset($export['lg_iso_2']);
@@ -213,7 +222,7 @@ class CartRepository extends AbstractRepository
                     'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . $cart['status']
                 );
             }
-        };
+        }
         return $availableCarts;
     }
 

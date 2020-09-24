@@ -25,8 +25,13 @@ class FlashMessage
     public function __construct($message, $severity = \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR)
     {
         /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
-        $flashMessage = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-            htmlspecialchars($message), '', $severity, true);
+        $flashMessage = GeneralUtility::makeInstance(
+            'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+            htmlspecialchars($message),
+            '',
+            $severity,
+            true
+        );
         /** @var $flashMessageService FlashMessageService */
         $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
         /** @var $defaultFlashMessageQueue FlashMessageQueue */

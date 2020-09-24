@@ -45,7 +45,9 @@ class StatusRequester extends AbstractHandler
     protected function acquire()
     {
         $acquired = false;
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_EXPORTDATA_MM
+        );
         $queryBuilder->getRestrictions();
         $affectedRows = $queryBuilder
             ->update(Constants::TABLE_EXPORTDATA_MM)

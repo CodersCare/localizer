@@ -38,7 +38,9 @@ trait AddFileToMatrix
         $action = 0
     ) {
         $time = time();
-        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(Constants::TABLE_EXPORTDATA_MM);
+        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(
+            Constants::TABLE_EXPORTDATA_MM
+        );
         $databaseConnection
             ->insert(
                 Constants::TABLE_EXPORTDATA_MM,
@@ -74,7 +76,9 @@ trait AddFileToMatrix
 
         $uid = $databaseConnection->lastInsertId(Constants::TABLE_EXPORTDATA_MM);
         $isoCodeTargetLanguage = $this->getLanguageIsoCode($translationLanguage);
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_LOCALIZER_LANGUAGE_MM
+        );
         $queryBuilder->getRestrictions()
             ->removeAll();
         $localizerLanguageRows = $queryBuilder

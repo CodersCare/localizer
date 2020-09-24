@@ -24,7 +24,9 @@ class AutomaticExportRepository extends AbstractRepository
      */
     public function loadUnfinishedButSentCarts($localizerId)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_LOCALIZER_CART
+        );
         $queryBuilder->getRestrictions();
         return $queryBuilder
             ->select('*')

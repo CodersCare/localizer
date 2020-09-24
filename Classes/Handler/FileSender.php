@@ -51,7 +51,9 @@ class FileSender extends AbstractHandler
     protected function acquire()
     {
         $acquired = false;
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_EXPORTDATA_MM
+        );
         $queryBuilder->getRestrictions();
         $affectedRows = $queryBuilder
             ->update(Constants::TABLE_EXPORTDATA_MM)
@@ -184,13 +186,17 @@ class FileSender extends AbstractHandler
     protected function addDeadline(&$row)
     {
         $deadline = '';
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_EXPORTDATA_MM
+        );
         $queryBuilder->getRestrictions();
         $carts = $queryBuilder
-            ->selectLiteral('COALESCE (
+            ->selectLiteral(
+                'COALESCE (
                 NULLIF(' . Constants::TABLE_EXPORTDATA_MM . '.deadline, 0), ' .
                 Constants::TABLE_LOCALIZER_CART . '.deadline
-            ) deadline')
+            ) deadline'
+            )
             ->from(Constants::TABLE_EXPORTDATA_MM)
             ->leftJoin(
                 Constants::TABLE_EXPORTDATA_MM,

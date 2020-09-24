@@ -36,11 +36,15 @@ trait File
         if (file_exists($path) === false) {
             //GeneralUtility::mkdir_deep(Environment::getPublicPath() . '/uploads/', 'tx_l10nmgr/jobs/in/' . strtolower($locale));
             if (file_exists($path) === false) {
-                throw new FolderDoesNotExistException('Can not create folder uploads/tx_l10nmgr/jobs/in/' . strtolower($locale));
+                throw new FolderDoesNotExistException(
+                    'Can not create folder uploads/tx_l10nmgr/jobs/in/' . strtolower($locale)
+                );
             }
         } else {
             if (is_dir($path) === false) {
-                throw new FolderDoesNotExistException('Path uploads/tx_l10nmgr/jobs/in/' . strtolower($locale) . ' exists but is not a folder');
+                throw new FolderDoesNotExistException(
+                    'Path uploads/tx_l10nmgr/jobs/in/' . strtolower($locale) . ' exists but is not a folder'
+                );
             }
         }
         return $path . $fileName;

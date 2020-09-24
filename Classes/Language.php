@@ -25,7 +25,9 @@ trait Language
     protected function getIso2ForLocale($locale)
     {
         $iso2 = '';
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_STATIC_LANGUAGES);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_STATIC_LANGUAGES
+        );
         $queryBuilder->getRestrictions()
             ->removeAll();
         $row = $queryBuilder
@@ -34,8 +36,15 @@ trait Language
             ->where(
                 $queryBuilder->expr()->like(
                     'lg_collate_locale',
-                    $queryBuilder->createNamedParameter($queryBuilder->escapeLikeWildcards('%' . str_replace('-', '%',
-                            $locale) . '%'))
+                    $queryBuilder->createNamedParameter(
+                        $queryBuilder->escapeLikeWildcards(
+                            '%' . str_replace(
+                                '-',
+                                '%',
+                                $locale
+                            ) . '%'
+                        )
+                    )
                 )
             )
             ->execute()
@@ -46,7 +55,7 @@ trait Language
             }
         }
         if ($iso2 === '') {
-            // throw new Exception($locale . ' can not be found in TYPO3 "static_languages". Please inform your admin!');
+            throw new Exception($locale . ' can not be found in TYPO3 "static_languages". Please inform your admin!');
         }
         return $iso2;
     }
@@ -71,7 +80,9 @@ trait Language
      */
     protected function getAllTargetLanguageUids($uidLocal, $table)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_LOCALIZER_LANGUAGE_MM
+        );
         $queryBuilder->getRestrictions()
             ->removeAll();
         $rows = $queryBuilder
@@ -123,7 +134,9 @@ trait Language
             if ((bool)$fixUnderLine === true) {
                 $field = 'REPLACE(' . $field . ', "_", "-") as ' . $field;
             }
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_STATIC_LANGUAGES);
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+                Constants::TABLE_STATIC_LANGUAGES
+            );
             $queryBuilder->getRestrictions()
                 ->removeAll();
             $rows = $queryBuilder

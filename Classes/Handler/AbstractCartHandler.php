@@ -72,7 +72,6 @@ abstract class AbstractCartHandler
                     Connection::PARAM_STR
                 ]
             );
-
     }
 
     /**

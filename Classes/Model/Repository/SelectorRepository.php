@@ -30,7 +30,9 @@ class SelectorRepository extends AbstractRepository
     {
         $localizerLanguages = $this->getLocalizerLanguages($localizerId);
 
-        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(Constants::TABLE_LOCALIZER_CART);
+        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(
+            Constants::TABLE_LOCALIZER_CART
+        );
         $databaseConnection->insert(
             Constants::TABLE_LOCALIZER_CART,
             [
@@ -175,7 +177,9 @@ class SelectorRepository extends AbstractRepository
                 );
         }
         if (!empty($deleteValues)) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+                Constants::TABLE_CARTDATA_MM
+            );
             $queryBuilder
                 ->delete(Constants::TABLE_CARTDATA_MM)
                 ->where(
@@ -211,7 +215,9 @@ class SelectorRepository extends AbstractRepository
     public function loadStoredTriples($pageIds, $cartId)
     {
         $pageIds = implode(',', GeneralUtility::intExplode(',', implode(',', array_keys($pageIds))));
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_CARTDATA_MM
+        );
         $queryBuilder->getRestrictions()
             ->removeAll();
         $triples = $queryBuilder
@@ -254,7 +260,9 @@ class SelectorRepository extends AbstractRepository
         if ($localizerId > 0 && $cartId > 0) {
             $localizerLanguages = $this->getLocalizerLanguages($localizerId);
             if (!empty($localizerLanguages)) {
-                $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(Constants::TABLE_L10NMGR_CONFIGURATION);
+                $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(
+                    Constants::TABLE_L10NMGR_CONFIGURATION
+                );
                 $databaseConnection->insert(
                     Constants::TABLE_L10NMGR_CONFIGURATION,
                     [
@@ -286,7 +294,6 @@ class SelectorRepository extends AbstractRepository
                 );
                 return $databaseConnection->lastInsertId(Constants::TABLE_L10NMGR_CONFIGURATION);
             }
-
         }
         return 0;
     }
@@ -365,7 +372,9 @@ class SelectorRepository extends AbstractRepository
                     ]
                 )
                 ->execute();
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_L10NMGR_MM);
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+                Constants::TABLE_LOCALIZER_L10NMGR_MM
+            );
             $countConfigurations = $queryBuilder
                 ->count('*')
                 ->from(Constants::TABLE_LOCALIZER_L10NMGR_MM)
@@ -431,13 +440,15 @@ class SelectorRepository extends AbstractRepository
             $queryBuilder->getRestrictions()
                 ->removeAll();
             $queryBuilder
-                ->selectLiteral($table . '.*, 
+                ->selectLiteral(
+                    $table . '.*, 
                     triples.languageId localizer_language, 
                     MAX(carts.status) localizer_status, 
                     MAX(carts.tstamp) last_action, 
                     GROUP_CONCAT(DISTINCT translations.' . $transOrigPointerField . ') translated,
                     GROUP_CONCAT(DISTINCT outdated.' . $transOrigPointerField . ') changed,
-                    MAX(outdated.tstamp) outdated')
+                    MAX(outdated.tstamp) outdated'
+                )
                 ->from($table);
             if ($table === 'pages') {
                 $queryBuilder->leftJoin(
@@ -639,7 +650,8 @@ class SelectorRepository extends AbstractRepository
                 );
             }
             $queryBuilder->groupBy(
-                'localizer_language', $table . '.uid'
+                'localizer_language',
+                $table . '.uid'
             );
             if ($GLOBALS['TCA'][$table]['ctrl']['sortby']) {
                 $queryBuilder->orderBy($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['sortby']);
@@ -650,8 +662,10 @@ class SelectorRepository extends AbstractRepository
             $records[$table] = [];
             $checkedRecords = [];
             while ($record = $statement->fetch()) {
-                if ($record['localizer_status'] && $record['outdated'] > $record['last_action'] && GeneralUtility::inList($record['changed'],
-                        0)
+                if ($record['localizer_status'] && $record['outdated'] > $record['last_action'] && GeneralUtility::inList(
+                        $record['changed'],
+                        0
+                    )
                 ) {
                     $record['localizer_status'] = 71;
                 }

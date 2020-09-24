@@ -27,7 +27,9 @@ class Cart
     public function filterList(&$params, $obj)
     {
         if ($obj instanceof TcaSelectItems) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+                Constants::TABLE_LOCALIZER_LANGUAGE_MM
+            );
             $queryBuilder->getRestrictions()
                 ->removeAll();
             $resource = $queryBuilder

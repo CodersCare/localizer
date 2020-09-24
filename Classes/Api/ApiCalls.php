@@ -432,7 +432,11 @@ class ApiCalls
             $xmlPath = Environment::getPublicPath() . '/' . $this->outFolder . '/' . $fileName;
             $zipPath = str_replace('.xml', '', $xmlPath) . '.zip';
             $zipFile = fopen($zipPath, 'w') or new Exception('Can not create ZIP file');
-            $instructionFile = file_get_contents(ExtensionManagementUtility::extPath('localizer') . '/Resources/Private/Templates/Provider/instruction.xml');
+            $instructionFile = file_get_contents(
+                ExtensionManagementUtility::extPath(
+                    'localizer'
+                ) . '/Resources/Private/Templates/Provider/instruction.xml'
+            );
             if (file_exists($zipPath) && !empty($instructionFile)) {
                 $instructions = $this->getInstructions();
                 $sourceLocale = GeneralUtility::trimExplode('_', str_replace('-', '_', $source));
@@ -445,7 +449,9 @@ class ApiCalls
                     'DEADLINE' => $instructions['deadline'],
                     'FILE_NAME' => $fileName,
                     'PROJECT_CONTACT' => $this->getBackendUser()->user['email'],
-                    'PROJECT_NAME' => date('Y-m-d') . '_Typo3CMS_' . strtoupper($sourceLanguage) . '-' . strtoupper($targetLanguage),
+                    'PROJECT_NAME' => date('Y-m-d') . '_Typo3CMS_' . strtoupper($sourceLanguage) . '-' . strtoupper(
+                            $targetLanguage
+                        ),
                     'PROJECT_SETTINGS' => $this->projectKey,
                     'SOURCE_COUNTRY' => $sourceCountry,
                     'SOURCE_LANGUAGE' => $sourceLanguage,
@@ -456,7 +462,9 @@ class ApiCalls
                 $zip = new ZipArchive;
                 if ($zip->open($zipPath) === true) {
                     if ($attachInstruction) {
-                        $instructionFileContent = GeneralUtility::makeInstance(MarkerBasedTemplateService::class)->substituteMarkerArray(
+                        $instructionFileContent = GeneralUtility::makeInstance(
+                            MarkerBasedTemplateService::class
+                        )->substituteMarkerArray(
                             $instructionFile,
                             $markContentArray,
                             '###|###',
@@ -588,7 +596,7 @@ class ApiCalls
         }
         if (!$this->checkAndCreateFolder($this->inFolder, 'incoming')) {
             return false;
-        };
+        }
         return true;
     }
 

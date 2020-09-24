@@ -76,7 +76,6 @@ abstract class AbstractHandler
                     Connection::PARAM_STR
                 ]
             );
-
     }
 
     /**

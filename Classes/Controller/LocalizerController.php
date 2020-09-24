@@ -13,7 +13,6 @@ class LocalizerController extends BaseModule
 {
     function main()
     {
-
     }
 
     function printContent()

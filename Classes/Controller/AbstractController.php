@@ -4,7 +4,6 @@ namespace Localizationteam\Localizer\Controller;
 
 use Localizationteam\Localizer\Model\Repository\AbstractRepository;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Backend\Module\BaseScriptClass;
 use TYPO3\CMS\Backend\Routing\Exception\ResourceNotFoundException;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
@@ -114,8 +113,12 @@ abstract class AbstractController extends BaseModule
         $this->localizerPid = (int)GeneralUtility::_GP('selected_localizerPid');
 
         if (empty($this->id)) {
-            $this->id = hexdec(ltrim($this->getBackendUser()->uc['BackendComponents']['States']['Pagetree']->stateHash->lastSelectedNode,
-                'p'));
+            $this->id = hexdec(
+                ltrim(
+                    $this->getBackendUser()->uc['BackendComponents']['States']['Pagetree']->stateHash->lastSelectedNode,
+                    'p'
+                )
+            );
         }
 
         $this->legend = [
@@ -160,7 +163,6 @@ abstract class AbstractController extends BaseModule
             $localizer = $this->availableLocalizers[$this->localizerId];
             $this->getLocalizerSettings($localizer['type']);
         }
-
     }
 
     /**
@@ -170,7 +172,6 @@ abstract class AbstractController extends BaseModule
      */
     protected function getLocalizerSettings($type)
     {
-
     }
 
     /**

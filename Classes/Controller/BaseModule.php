@@ -185,17 +185,28 @@ class BaseModule
     public function menuConfig()
     {
         // Page / user TSconfig settings and blinding of menu-items
-        $this->modTSconfig['properties'] = BackendUtility::getPagesTSconfig($this->id)['mod.'][$this->MCONF['name'] . '.'] ?? [];
-        $this->MOD_MENU['function'] = $this->mergeExternalItems($this->MCONF['name'], 'function',
-            $this->MOD_MENU['function']);
+        $this->modTSconfig['properties'] = BackendUtility::getPagesTSconfig(
+                $this->id
+            )['mod.'][$this->MCONF['name'] . '.'] ?? [];
+        $this->MOD_MENU['function'] = $this->mergeExternalItems(
+            $this->MCONF['name'],
+            'function',
+            $this->MOD_MENU['function']
+        );
         $blindActions = $this->modTSconfig['properties']['menu.']['function.'] ?? [];
         foreach ($blindActions as $key => $value) {
             if (!$value && array_key_exists($key, $this->MOD_MENU['function'])) {
                 unset($this->MOD_MENU['function'][$key]);
             }
         }
-        $this->MOD_SETTINGS = BackendUtility::getModuleData($this->MOD_MENU, GeneralUtility::_GP('SET'),
-            $this->MCONF['name'], $this->modMenu_type, $this->modMenu_dontValidateList, $this->modMenu_setDefaultList);
+        $this->MOD_SETTINGS = BackendUtility::getModuleData(
+            $this->MOD_MENU,
+            GeneralUtility::_GP('SET'),
+            $this->MCONF['name'],
+            $this->modMenu_type,
+            $this->modMenu_dontValidateList,
+            $this->modMenu_setDefaultList
+        );
     }
 
     /**
@@ -213,10 +224,16 @@ class BaseModule
         $mergeArray = $GLOBALS['TBE_MODULES_EXT'][$modName]['MOD_MENU'][$menuKey];
         if (is_array($mergeArray)) {
             foreach ($mergeArray as $k => $v) {
-                if (((string)$v['ws'] === '' || $this->getBackendUser()->workspace === 0 && GeneralUtility::inList($v['ws'],
-                            'online')) || $this->getBackendUser()->workspace === -1 && GeneralUtility::inList($v['ws'],
-                        'offline') || $this->getBackendUser()->workspace > 0 && GeneralUtility::inList($v['ws'],
-                        'custom')) {
+                if (((string)$v['ws'] === '' || $this->getBackendUser()->workspace === 0 && GeneralUtility::inList(
+                            $v['ws'],
+                            'online'
+                        )) || $this->getBackendUser()->workspace === -1 && GeneralUtility::inList(
+                        $v['ws'],
+                        'offline'
+                    ) || $this->getBackendUser()->workspace > 0 && GeneralUtility::inList(
+                        $v['ws'],
+                        'custom'
+                    )) {
                     $menuArr[$k] = $this->getLanguageService()->sL($v['title']);
                 }
             }
@@ -280,9 +297,14 @@ class BaseModule
             $this->extObj = GeneralUtility::makeInstance($this->extClassConf['name']);
             $this->extObj->init($this, $this->extClassConf);
             // Re-write:
-            $this->MOD_SETTINGS = BackendUtility::getModuleData($this->MOD_MENU, GeneralUtility::_GP('SET'),
-                $this->MCONF['name'], $this->modMenu_type, $this->modMenu_dontValidateList,
-                $this->modMenu_setDefaultList);
+            $this->MOD_SETTINGS = BackendUtility::getModuleData(
+                $this->MOD_MENU,
+                GeneralUtility::_GP('SET'),
+                $this->MCONF['name'],
+                $this->modMenu_type,
+                $this->modMenu_dontValidateList,
+                $this->modMenu_setDefaultList
+            );
         }
     }
 
@@ -330,9 +352,12 @@ class BaseModule
     public function extObjContent()
     {
         if ($this->extObj === null) {
+            /**@var $flashMessage FlashMessage **/
             $flashMessage = GeneralUtility::makeInstance(
                 FlashMessage::class,
-                $this->getLanguageService()->sL('LLL:EXT:backend/Resources/Private/Language/locallang.xlf:no_modules_registered'),
+                $this->getLanguageService()->sL(
+                    'LLL:EXT:backend/Resources/Private/Language/locallang.xlf:no_modules_registered'
+                ),
                 $this->getLanguageService()->getLL('title'),
                 FlashMessage::ERROR
             );
