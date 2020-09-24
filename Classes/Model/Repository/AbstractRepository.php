@@ -78,15 +78,15 @@ class AbstractRepository
                         $queryBuilder->quoteIdentifier('targetMM.uid_local')
                     ),
                     $queryBuilder->expr()->eq(
-                        'sourceMM.tablenames',
+                        'targetMM.tablenames',
                         $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES, PDO::PARAM_STR)
                     ),
                     $queryBuilder->expr()->eq(
-                        'sourceMM.ident',
+                        'targetMM.ident',
                         $queryBuilder->createNamedParameter('target', PDO::PARAM_STR)
                     ),
                     $queryBuilder->expr()->eq(
-                        'sourceMM.source',
+                        'targetMM.source',
                         $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS, PDO::PARAM_STR)
                     )
                 )
