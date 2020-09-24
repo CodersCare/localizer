@@ -51,6 +51,7 @@ define(['jquery', 'bootstrap'], function ($) {
                 children.click();
                 children.find('input').prop('checked', false);
             }
+            $(this).focus().blur();
             $('[data-toggle="tooltip"]').tooltip('hide');
         });
         $('.localizer-selector-matrix .language-header').click(function (event) {
@@ -75,6 +76,7 @@ define(['jquery', 'bootstrap'], function ($) {
                 children.click();
                 children.find('input').prop('checked', false);
             }
+            $(this).focus().blur();
             $('[data-toggle="tooltip"]').tooltip('hide');
         });
         var recordHeader = $('.localizer-selector-matrix .record-header');
