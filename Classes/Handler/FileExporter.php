@@ -197,17 +197,22 @@ class FileExporter extends AbstractCartHandler
     protected function processExport($configuration, $language)
     {
         $context = Environment::getContext()->__toString();
-        $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') . CommandUtility::getCommand('php') . ' ' .
-            Environment::getPublicPath() .
-            '/typo3/sysext/core/bin/typo3 l10nmanager:export -c ' . $configuration . ' -t ' . $language . '';
-        $response = [
-            'http_status_code' => 200,
+        $command = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
+            CommandUtility::getCommand('php') . ' ' .
+            Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3' .
+            ' l10nmanager:export' .
+            ' -c ' . CommandUtility::escapeShellArgument($configuration) .
+            ' -t ' . CommandUtility::escapeShellArgument($language) . ' 2>&1';
+        $statusCode = 200;
+        $output = '';
+        $action = CommandUtility::exec($command, $output, $statusCode);
+        return [
+            'http_status_code' => $statusCode,
             'response' => [
-                'action' => exec($action . ' 2>&1'),
+                'action' => $action,
             ],
 
         ];
-        return $response;
     }
 
     /**
