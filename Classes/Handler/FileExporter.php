@@ -13,7 +13,6 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\CommandUtility;
-use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -249,7 +248,6 @@ class FileExporter extends AbstractCartHandler
         ;
         $statusCode = 200;
         $output = '';
-        DebugUtility::debug($command);
         $action = CommandUtility::exec($command, $output, $statusCode);
         return [
             'http_status_code' => $statusCode,
