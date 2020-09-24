@@ -8,6 +8,7 @@ use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\File;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
+use TYPO3\CMS\Core\Utility\CommandUtility;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -97,8 +98,8 @@ class FileImporter extends AbstractHandler
                 unlink($introductionXmlPath);
             }
             $fileNameAndPath = $this->getLocalFilename($originalFileName, $fileStatus['locale']);
-            $context = GeneralUtility::getApplicationContext()->__toString();
-            $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
+            $context = Environment::getContext()->__toString();
+            $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') . CommandUtility::getCommand('php') . ' ' .
                 Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3 l10nmanager:import -t importFile --file ' .
                 $fileNameAndPath;
             $response[] = [
