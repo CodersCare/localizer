@@ -134,19 +134,25 @@ class FileImporter extends AbstractHandler
     {
         $response = [];
         foreach ($files as $fileStatus) {
-            $introductionXmlPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/in/instruction.xml';
-            if (file_exists($introductionXmlPath)) {
-                unlink($introductionXmlPath);
+            $instructionXmlPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/in/instruction.xml';
+            if (file_exists($instructionXmlPath)) {
+                unlink($instructionXmlPath);
             }
             $fileNameAndPath = $this->getLocalFilename($originalFileName, $fileStatus['locale']);
             $context = Environment::getContext()->__toString();
-            $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') . CommandUtility::getCommand('php') . ' ' .
-                Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3 l10nmanager:import -t importFile --file ' .
-                $fileNameAndPath;
+            $command = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
+                CommandUtility::getCommand('php') . ' ' .
+                Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3 ' .
+                'l10nmanager:import' .
+                ' -t importFile'.
+                ' --file ' . CommandUtility::escapeShellArgument($fileNameAndPath) . ' 2>&1';
+            $statusCode = 200;
+            $output = '';
+            $action = CommandUtility::exec($command, $output, $statusCode);
             $response[] = [
-                'http_status_code' => 200,
+                'http_status_code' => $statusCode,
                 'response' => [
-                    'action' => exec($action . ' 2>&1'),
+                    'action' => $action,
                     'file' => $originalFileName,
                     'locale' => $fileStatus['locale'],
                 ],
