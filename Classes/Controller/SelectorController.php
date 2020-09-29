@@ -609,6 +609,9 @@ class SelectorController extends AbstractController
             '</a></li>';
         $this->translatableTables = ['pages' => $GLOBALS['LANG']->sL($GLOBALS['TCA']['pages']['ctrl']['title'])];
         foreach (array_keys($GLOBALS['TCA']) as $table) {
+            if ($table === 'pages') {
+                continue;
+            }
             $recordExists = $this->getDatabaseConnection()
                 ->exec_SELECTgetSingleRow(
                     '*',
@@ -706,6 +709,9 @@ class SelectorController extends AbstractController
         $translationLocalizer .= '</tr></thead><tbody>';
         $this->tableHeaderSpan = count($this->languages) + 2;
         foreach ($this->translatableTables as $table => $title) {
+            if ($table === 'pages') {
+                continue;
+            }
             $labelField = $GLOBALS['TCA'][$table]['ctrl']['label'];
             if (!empty($this->data['records'][$table])) {
                 $counter = 0;
