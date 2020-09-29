@@ -18,6 +18,7 @@ CREATE TABLE tx_localizer_settings
     out_folder                      varchar(255)  DEFAULT ''  NOT NULL,
     in_folder                       varchar(255)  DEFAULT ''  NOT NULL,
     workflow                        varchar(255)  DEFAULT ''  NOT NULL,
+    deadline                        tinyint(4)    DEFAULT '0' NOT NULL,
     projectkey                      varchar(255)  DEFAULT ''  NOT NULL,
     username                        varchar(255)  DEFAULT ''  NOT NULL,
     password                        varchar(255)  DEFAULT ''  NOT NULL,

@@ -269,6 +269,25 @@ label.localizer-legend {
     cursor: default;
 }
 
+#t3-modal-finalizecart .modal,
+#t3-modal-finalizecart .modal-open,
+#t3-modal-finalizecart .modal-body {
+    overflow-y: visible;
+}
+
+#t3-modal-finalizecart .modal-body .list-inline {
+    display: table;
+    margin-left: 0;
+}
+
+#t3-modal-finalizecart .modal-body .input-group {
+    display: table-row;
+}
+
+#t3-modal-finalizecart .modal-body .input-group > *{
+    display: table-cell;
+}
+
 #recordlist-tx_localizer_cart .col-path {
     display: none !important;
 }

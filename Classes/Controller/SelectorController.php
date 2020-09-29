@@ -130,6 +130,9 @@ class SelectorController extends AbstractController
             'configured_start'
         ) : 0;
         $this->configuration['end'] = GeneralUtility::_GP('configured_end') ? GeneralUtility::_GP('configured_end') : 0;
+        $this->configuration['deadline'] = GeneralUtility::_GP('selected_deadline') ? GeneralUtility::_GP(
+            'selected_deadline'
+        ) : '';
 
         if (GeneralUtility::_GP('selected_cart') === 'new') {
             $this->cartId = (int)$this->selectorRepository->createNewCart($this->id, $this->localizerId);
@@ -210,7 +213,9 @@ class SelectorController extends AbstractController
             </div>
             ';
             if ($this->id > 0) {
-                $this->content .= '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" class="localizer_selector" id="localizer_selector">
+                $this->content .= '<form action="' . htmlspecialchars($dblist->listURL()) .
+                    '" method="post" class="localizer_selector" id="localizer_selector">
+                <input type="hidden" name="selected_deadline" value="0" />
                 <input type="hidden" name="selected_localizer" value="' . $this->localizerId . '" />
                 <input type="hidden" name="selected_localizerPid" value="' . $this->localizerPid . '" />
                 <input type="hidden" name="selected_cart" value="' . $this->cartId . '" />
@@ -288,7 +293,15 @@ class SelectorController extends AbstractController
                             <h4 class="modal-title">Please confirm cart finalization</h4>
                         </div>
                         <div class="modal-body">
-                            <p>When you proceed, the cart can not be changed anymore and will be exported to be sent to the Localizer.</p>
+                            <p>When you proceed, the cart can not be changed anymore and will be exported to be sent to the Localizer.</p>';
+            if ($this->availableLocalizers[$this->localizerId]['deadline']) {
+                $this->content .= '
+                            <p>If necessary pick a deadline for this job here: </p>
+                            <ul class="list-inline">' .
+                    $this->getDateTimeSelector('configured_deadline') .
+                    '</ul>';
+            }
+            $this->content .= '
                             <p>Press "Finalize" to proceed, otherwise press "Cancel".</p>
                         </div>
                         <div class="modal-footer">
@@ -332,7 +345,7 @@ class SelectorController extends AbstractController
             $this->cartId,
             $this->configuration
         );
-        $this->selectorRepository->finalizeCart($this->localizerId, $this->cartId, $configurationId);
+        $this->selectorRepository->finalizeCart($this->localizerId, $this->cartId, $configurationId, $this->configuration['deadline']);
     }
 
     /**

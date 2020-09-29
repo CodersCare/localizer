@@ -24,7 +24,7 @@ return [
         'iconfile' => 'EXT:localizer/Resources/Public/Icons/module-localizer-settings.svg',
     ],
     'interface' => [
-        'showRecordFieldList' => 'hidden,type,title,description,url,out_folder,in_folder,workflow,projectkey,username,password,project_settings,last_error,l10n_cfg,source_locale,target_locale',
+        'showRecordFieldList' => 'hidden,type,title,description,url,out_folder,in_folder,workflow,deadline,projectkey,username,password,project_settings,last_error,l10n_cfg,source_locale,target_locale',
     ],
     'feInterface' => '',
     'columns' => [
@@ -151,6 +151,14 @@ return [
                 'readOnly' => 1,
             ],
         ],
+        'deadline' => [
+            'exclude' => 1,
+            'label' => $l10n . ':tx_localizer_settings.deadline',
+            'config' => [
+                'type' => 'check',
+                'default' => '0',
+            ],
+        ],
         'last_error' => [
             'exclude' => 1,
             'label' => $l10n . ':tx_localizer_settings.last_error',
@@ -275,8 +283,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, projectkey, --palette--;;2, --palette--;;3, l10n_cfg, source_locale, target_locale'],
-        '1' => ['showitem' => 'hidden, --palette--;;1, type, title, description, url, projectkey, username, password, --palette--;;2, --palette--;;3, l10n_cfg, source_locale, target_locale'],
+        '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, deadline, projectkey, --palette--;;2, --palette--;;3, l10n_cfg, source_locale, target_locale'],
     ],
     'palettes' => [
         '1' => ['showitem' => 'project_settings,last_error'],

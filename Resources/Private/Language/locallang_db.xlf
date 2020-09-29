@@ -37,6 +37,9 @@
             <trans-unit id="tx_localizer_settings.workflow">
                 <source>Workflow</source>
             </trans-unit>
+            <trans-unit id="tx_localizer_settings.deadline">
+                <source>Additional deadline field when finalizing a cart</source>
+            </trans-unit>
             <trans-unit id="tx_localizer_settings.projectkey">
                 <source>Project Key</source>
             </trans-unit>

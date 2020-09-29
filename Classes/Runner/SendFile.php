@@ -168,8 +168,11 @@ class SendFile
     protected function prepareInstructions()
     {
         $this->api->resetInstructions();
-        if (count($this->targetLocales) > 0) {
+        if ($this->deadline > 0) {
             $this->api->setDeadline($this->deadline);
+            $this->sendAttachment = true;
+        }
+        if (count($this->targetLocales) > 0) {
             $this->api->setLocales($this->targetLocales);
             $this->sendAttachment = true;
         }

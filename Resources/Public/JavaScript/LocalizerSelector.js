@@ -23,6 +23,7 @@ define(['jquery', 'bootstrap'], function ($) {
         $('#finalize-cart-submit').click(function (e) {
             e.preventDefault();
             $(this).off("click").attr('href', "javascript: void(0);");
+            $('#localizer_selector [name="selected_deadline"]').val($('#input-configured-configured_deadline').val());
             $('#configuratorFinalize').val('finalize');
             $('#localizer_selector').submit();
         });

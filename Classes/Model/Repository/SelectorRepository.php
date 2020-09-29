@@ -338,8 +338,9 @@ class SelectorRepository extends AbstractRepository
      * @param int $localizerId
      * @param int $cartId
      * @param int $configurationId
+     * @param string $deadline
      */
-    public function finalizeCart($localizerId, $cartId, $configurationId)
+    public function finalizeCart($localizerId, $cartId, $configurationId, $deadline = '')
     {
         if ($cartId > 0) {
             GeneralUtility::makeInstance(ConnectionPool::class)
@@ -350,12 +351,14 @@ class SelectorRepository extends AbstractRepository
                         'uid_foreign' => (int)$configurationId,
                         'status' => CONSTANTS::STATUS_CART_FINALIZED,
                         'action' => CONSTANTS::ACTION_EXPORT_FILE,
+                        'deadline' => strtotime($deadline, time()),
                         'tstamp' => time()
                     ],
                     [
                         'uid' => (int)$cartId
                     ],
                     [
+                        PDO::PARAM_INT,
                         PDO::PARAM_INT,
                         PDO::PARAM_INT,
                         PDO::PARAM_INT,
