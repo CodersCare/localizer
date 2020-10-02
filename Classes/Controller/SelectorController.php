@@ -119,7 +119,7 @@ class SelectorController extends AbstractController
      */
     public function init()
     {
-        parent::init();
+        $localizer = parent::init();
         $this->configuration['languages'] = GeneralUtility::_GP('configured_languages') ? GeneralUtility::_GP(
             'configured_languages'
         ) : [];
@@ -133,6 +133,7 @@ class SelectorController extends AbstractController
         $this->configuration['deadline'] = GeneralUtility::_GP('selected_deadline') ? GeneralUtility::_GP(
             'selected_deadline'
         ) : '';
+        $this->configuration['sortexports'] = $localizer['sortexports'];
 
         if (GeneralUtility::_GP('selected_cart') === 'new') {
             $this->cartId = (int)$this->selectorRepository->createNewCart($this->id, $this->localizerId);

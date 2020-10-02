@@ -25,6 +25,7 @@ CREATE TABLE tx_localizer_settings
     project_settings                text,
     last_error                      text,
     l10n_cfg                        int(11)       DEFAULT '0' NOT NULL,
+    sortexports                     tinyint(4)    DEFAULT '0' NOT NULL,
     uid_local                       int(11)       DEFAULT '0' NOT NULL,
     uid_foreign                     int(11)       DEFAULT '0' NOT NULL,
     tablenames                      varchar(30)   DEFAULT ''  NOT NULL,

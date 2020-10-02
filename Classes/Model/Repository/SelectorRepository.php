@@ -7,6 +7,7 @@ use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -99,6 +100,7 @@ class SelectorRepository extends AbstractRepository
                             'languages' => $configuration['languages'],
                             'start' => $configuration['start'],
                             'end' => $configuration['end'],
+                            'sortexports' => $configuration['sortexports']
                         ]
                     )
                 ],
@@ -277,6 +279,7 @@ class SelectorRepository extends AbstractRepository
                         'cruser_id' => $this->getBackendUser()->user['uid'],
                         'pretranslatecontent' => 0,
                         'overrideexistingtranslations' => 1,
+                        'sortexports' => (int)$configuration['sortexports'],
                     ],
                     [
                         PDO::PARAM_INT,
@@ -285,6 +288,7 @@ class SelectorRepository extends AbstractRepository
                         PDO::PARAM_INT,
                         PDO::PARAM_INT,
                         PDO::PARAM_STR,
+                        PDO::PARAM_INT,
                         PDO::PARAM_INT,
                         PDO::PARAM_INT,
                         PDO::PARAM_INT,
@@ -656,8 +660,25 @@ class SelectorRepository extends AbstractRepository
                 'localizer_language',
                 $table . '.uid'
             );
-            if ($GLOBALS['TCA'][$table]['ctrl']['sortby']) {
-                $queryBuilder->orderBy($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['sortby']);
+            if ($configuration['sortexports']) {
+                $sortBy = '';
+                if (isset($GLOBALS['TCA'][$table]['ctrl']['sortby'])) {
+                    $sortBy = $GLOBALS['TCA'][$table]['ctrl']['sortby'];
+                } else {
+                    if (isset($GLOBALS['TCA'][$table]['ctrl']['default_sortby'])) {
+                        $sortBy = $GLOBALS['TCA'][$table]['ctrl']['default_sortby'];
+                    }
+                }
+                $TSconfig = BackendUtility::getPagesTSconfig($id);
+                if (isset($TSconfig['tx_l10nmgr']) && isset($TSconfig['tx_l10nmgr']['sortexports']) && isset($TSconfig['tx_l10nmgr']['sortexports'][$table])) {
+                    $sortBy = $TSconfig['tx_l10nmgr']['sortexports'][$table];
+                }
+                if ($sortBy) {
+                    foreach (QueryHelper::parseOrderBy((string)$sortBy) as $orderPair) {
+                        [$fieldName, $order] = $orderPair;
+                        $queryBuilder->addOrderBy($table . '.' . $fieldName, $order);
+                    }
+                }
             }
 
             $statement = $queryBuilder->execute();

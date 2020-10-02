@@ -129,6 +129,7 @@ class AutomaticExporter extends AbstractCartHandler
                 $translatableTables = $this->findTranslatableTables((int)$page['uid']);
                 $configuration = [
                     'tables' => array_flip(array_keys($translatableTables)),
+                    'sortexports' => 1
                 ];
                 $recordsToBeExported = $this->selectorRepository->getRecordsOnPages(
                     (int)$page['uid'],
