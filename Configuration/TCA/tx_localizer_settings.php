@@ -198,7 +198,7 @@ return [
             'label'   => $l10n . ':tx_localizer_settings.l10nmgr_sortexports',
             'config'  => [
                 'type'    => 'check',
-                'default' => 0,
+                'default' => 1,
             ],
         ],
         'allow_adding_to_export' => [
