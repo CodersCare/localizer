@@ -632,6 +632,15 @@ class SelectorController extends AbstractController
                 }
                 $tableSelector .= '<li><a href="#" class="small" tabIndex="-1"><input name="configured_tables[' . $table . ']" type="checkbox" ' . $checked . ' />&nbsp;' .
                     $GLOBALS['LANG']->sL($GLOBALS['TCA'][$table]['ctrl']['title']) . '</a></li>';
+                if ($table === 'sys_file_reference') {
+                    $checked = '';
+                    if (isset($this->configuration['tables']['sys_file_metadata']) || isset($availableTables['sys_file_metadata'])) {
+                        $this->translatableTables['sys_file_metadata'] = $GLOBALS['LANG']->sL($GLOBALS['TCA']['sys_file_metadata']['ctrl']['title']);
+                        $checked = ' checked="checked"';
+                    }
+                    $tableSelector .= '<li><ul class="sys-file-metadata"><li><a href="#" class="small" tabIndex="-1">+&nbsp;<input name="configured_tables[sys_file_metadata]" type="checkbox" ' . $checked . ' />&nbsp;' .
+                        $GLOBALS['LANG']->sL($GLOBALS['TCA']['sys_file_metadata']['ctrl']['title']) . '</a></li></ul></li>';
+                }
             }
         }
         $tableSelector .= '</ul>
