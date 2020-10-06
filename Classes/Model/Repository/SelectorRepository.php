@@ -8,6 +8,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -440,7 +441,11 @@ class SelectorRepository extends AbstractRepository
             $end = strtotime($configuration['end']);
         }
         foreach (array_keys($translatableTables) as $table) {
+            if ($table === 'sys_file_metadata') {
+                continue;
+            }
             $tstampField = $GLOBALS['TCA'][$table]['ctrl']['tstamp'];
+            $deleteField = $GLOBALS['TCA'][$table]['ctrl']['delete'];
             $languageField = $GLOBALS['TCA'][$table]['ctrl']['languageField'];
             $transOrigPointerField = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
@@ -541,6 +546,7 @@ class SelectorRepository extends AbstractRepository
                     )
                 );
             } else {
+                /** @var $queryBuilder \Doctrine\DBAL\Query\QueryBuilder **/
                 $queryBuilder->leftJoin(
                     $table,
                     $table,
@@ -558,10 +564,10 @@ class SelectorRepository extends AbstractRepository
                             'translations.' . $tstampField,
                             $queryBuilder->quoteIdentifier($table . '.' . $tstampField)
                         ),
-                        $queryBuilder->expr()->gte(
+                        $deleteField ? $queryBuilder->expr()->gte(
                             'translations.deleted',
                             0
-                        )
+                        ) : null
                     )
                 )->leftJoin(
                     $table,
@@ -612,10 +618,10 @@ class SelectorRepository extends AbstractRepository
                             'outdated.' . $tstampField,
                             $queryBuilder->quoteIdentifier($table . '.' . $tstampField)
                         ),
-                        $queryBuilder->expr()->gte(
+                        $deleteField ? $queryBuilder->expr()->gte(
                             'outdated.deleted',
                             0
-                        )
+                        ) : null
                     )
                 )->where(
                     $queryBuilder->expr()->andX(
