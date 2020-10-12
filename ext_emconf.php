@@ -21,13 +21,13 @@ $EM_CONF['localizer'] = [
     'uploadfolder' => '0',
     'createDirs' => '',
     'clearCacheOnLoad' => 0,
-    'version' => '9.1.0',
+    'version' => '9.2.0',
     'constraints' => [
         'depends' => [
             'typo3' => '9.5.0-9.5.99',
             'scheduler' => '9.5.0-9.5.99',
             'static_info_tables' => '6.2.0-0.0.0',
-            'l10nmgr' => '9.1.0-0.0.0',
+            'l10nmgr' => '9.3.0-0.0.0',
         ],
         'conflicts' => [],
         'suggests' => [],
