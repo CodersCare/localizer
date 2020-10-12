@@ -39,6 +39,12 @@
     margin-bottom: 0.5em;
 }
 
+.localizer-matrix-configurator ul.sys-file-metadata {
+    list-style-type: none;
+    padding: 0 0 0 2em;
+    margin: 0;
+}
+
 .localizer-selector-matrix table {
     width: auto;
     min-width: 50%;
@@ -272,3 +278,4 @@ label.localizer-legend {
 #recordlist-tx_localizer_cart .col-path {
     display: none !important;
 }
+
