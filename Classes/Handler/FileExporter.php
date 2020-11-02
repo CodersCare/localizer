@@ -244,11 +244,12 @@ class FileExporter extends AbstractCartHandler
             Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3' .
             ' l10nmanager:export' .
             ' -c ' . CommandUtility::escapeShellArgument($configuration) .
-            ' -t ' . CommandUtility::escapeShellArgument($language) . ' 2>&1'
+            ' -t ' . CommandUtility::escapeShellArgument($language)
         ;
         if ($this->getBackendUser()->user['realName']) {
-            $command .= ' -customer ' . CommandUtility::escapeShellArgument($this->getBackendUser()->user['realName']);
+            $command .= ' --customer ' . CommandUtility::escapeShellArgument($this->getBackendUser()->user['realName']);
         }
+        $command .=  ' 2>&1';
 
         $statusCode = 200;
         $output = '';
