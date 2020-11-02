@@ -246,6 +246,10 @@ class FileExporter extends AbstractCartHandler
             ' -c ' . CommandUtility::escapeShellArgument($configuration) .
             ' -t ' . CommandUtility::escapeShellArgument($language) . ' 2>&1'
         ;
+        if ($this->getBackendUser()->user['realName']) {
+            $command .= ' -customer ' . CommandUtility::escapeShellArgument($this->getBackendUser()->user['realName']);
+        }
+
         $statusCode = 200;
         $output = '';
         $action = CommandUtility::exec($command, $output, $statusCode);
