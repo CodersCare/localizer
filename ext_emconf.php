@@ -26,6 +26,7 @@ $EM_CONF['localizer'] = [
         'depends' => [
             'typo3' => '10.4.0-10.4.99',
             'scheduler' => '10.4.0-10.4.99',
+            'static_info_tables' => '6.9.0-0.0.0',
             'l10nmgr' => '10.0.0-0.0.0',
         ],
         'conflicts' => [],
