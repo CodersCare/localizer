@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('TYPO3_MODE')) {
     die ('Access denied.');
 }
@@ -8,174 +9,182 @@ $l10n = 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_localizer_settings');
 
 return [
-    'ctrl'        => [
-        'title'         => $l10n . ':tx_localizer_settings',
-        'label'         => 'title',
-        'tstamp'        => 'tstamp',
-        'crdate'        => 'crdate',
-        'cruser_id'     => 'cruser_id',
-        'sortby'        => 'sorting',
-        'delete'        => 'deleted',
-        'type'          => 'type',
+    'ctrl' => [
+        'title' => $l10n . ':tx_localizer_settings',
+        'label' => 'title',
+        'tstamp' => 'tstamp',
+        'crdate' => 'crdate',
+        'cruser_id' => 'cruser_id',
+        'sortby' => 'sorting',
+        'delete' => 'deleted',
+        'type' => 'type',
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
-        'iconfile'      => 'EXT:localizer/Resources/Public/Icons/module-localizer-settings.svg',
+        'iconfile' => 'EXT:localizer/Resources/Public/Icons/module-localizer-settings.svg',
     ],
-    'interface'   => [
-        'showRecordFieldList' => 'hidden,type,title,description,url,out_folder,in_folder,workflow,projectkey,username,password,project_settings,last_error,l10n_cfg,source_locale,target_locale',
+    'interface' => [
+        'showRecordFieldList' => 'hidden,type,title,description,url,out_folder,in_folder,workflow,deadline,projectkey,username,password,project_settings,last_error,l10n_cfg,sortexports,source_locale,target_locale',
     ],
     'feInterface' => '',
-    'columns'     => [
-        'hidden'                          => [
+    'columns' => [
+        'hidden' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.hidden',
-            'config'  => [
-                'type'    => 'check',
+            'label' => $l10n . ':tx_localizer_settings.hidden',
+            'config' => [
+                'type' => 'check',
                 'default' => '0',
             ],
         ],
-        'type'                            => [
+        'type' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.type',
-            'config'  => [
-                'type'       => 'select',
+            'label' => $l10n . ':tx_localizer_settings.type',
+            'config' => [
+                'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items'      => [
+                'items' => [
                     [$l10n . ':tx_localizer_settings.type.I.0', '0'],
                 ],
-                'size'       => 1,
-                'maxitems'   => 1,
+                'size' => 1,
+                'maxitems' => 1,
             ],
         ],
-        'title'                           => [
+        'title' => [
             'exclude' => 0,
-            'label'   => $l10n . ':tx_localizer_settings.title',
-            'config'  => [
+            'label' => $l10n . ':tx_localizer_settings.title',
+            'config' => [
                 'type' => 'input',
                 'size' => '48',
-                'max'  => '255',
+                'max' => '255',
                 'eval' => 'required,trim',
             ],
         ],
-        'description'                     => [
+        'description' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.description',
-            'config'  => [
+            'label' => $l10n . ':tx_localizer_settings.description',
+            'config' => [
                 'type' => 'text',
                 'cols' => '30',
                 'rows' => '5',
             ],
         ],
-        'url'                             => [
+        'url' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.url',
-            'config'  => [
-                'type'     => 'input',
-                'size'     => '48',
-                'max'      => '255',
-                'checkbox' => '',
-                'eval'     => 'trim,nospace',
-            ],
-        ],
-        'out_folder'                      => [
-            'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.folder.out',
-            'config'  => [
-                'type'     => 'input',
-                'size'     => '48',
-                'max'      => '255',
-                'checkbox' => '',
-                'eval'     => 'trim,nospace',
-            ],
-        ],
-        'in_folder'                       => [
-            'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.folder.in',
-            'config'  => [
-                'type'     => 'input',
-                'size'     => '48',
-                'max'      => '255',
-                'checkbox' => '',
-                'eval'     => 'trim,nospace',
-            ],
-        ],
-        'workflow'                        => [
-            'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.workflow',
-            'config'  => [
+            'label' => $l10n . ':tx_localizer_settings.url',
+            'config' => [
                 'type' => 'input',
                 'size' => '48',
-                'max'  => '255',
-                'eval' => 'trim',
-            ],
-        ],
-        'projectkey'                      => [
-            'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.projectkey',
-            'config'  => [
-                'type' => 'input',
-                'size' => '48',
-                'max'  => '255',
-                'eval' => 'trim',
-            ],
-        ],
-        'username'                        => [
-            'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.username',
-            'config'  => [
-                'type' => 'input',
-                'size' => '48',
-                'max'  => '255',
+                'max' => '255',
+                'checkbox' => '',
                 'eval' => 'trim,nospace',
             ],
         ],
-        'password'                        => [
+        'out_folder' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.password',
-            'config'  => [
+            'label' => $l10n . ':tx_localizer_settings.folder.out',
+            'config' => [
                 'type' => 'input',
                 'size' => '48',
-                'max'  => '255',
+                'max' => '255',
+                'checkbox' => '',
+                'eval' => 'trim,nospace',
+            ],
+        ],
+        'in_folder' => [
+            'exclude' => 1,
+            'label' => $l10n . ':tx_localizer_settings.folder.in',
+            'config' => [
+                'type' => 'input',
+                'size' => '48',
+                'max' => '255',
+                'checkbox' => '',
+                'eval' => 'trim,nospace',
+            ],
+        ],
+        'workflow' => [
+            'exclude' => 1,
+            'label' => $l10n . ':tx_localizer_settings.workflow',
+            'config' => [
+                'type' => 'input',
+                'size' => '48',
+                'max' => '255',
+                'eval' => 'trim',
+            ],
+        ],
+        'projectkey' => [
+            'exclude' => 1,
+            'label' => $l10n . ':tx_localizer_settings.projectkey',
+            'config' => [
+                'type' => 'input',
+                'size' => '48',
+                'max' => '255',
+                'eval' => 'trim',
+            ],
+        ],
+        'username' => [
+            'exclude' => 1,
+            'label' => $l10n . ':tx_localizer_settings.username',
+            'config' => [
+                'type' => 'input',
+                'size' => '48',
+                'max' => '255',
+                'eval' => 'trim,nospace',
+            ],
+        ],
+        'password' => [
+            'exclude' => 1,
+            'label' => $l10n . ':tx_localizer_settings.password',
+            'config' => [
+                'type' => 'input',
+                'size' => '48',
+                'max' => '255',
                 'eval' => 'trim,password',
             ],
         ],
-        'project_settings'                => [
+        'project_settings' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.project_settings',
-            'config'  => [
-                'type'     => 'text',
-                'cols'     => '48',
-                'rows'     => '5',
+            'label' => $l10n . ':tx_localizer_settings.project_settings',
+            'config' => [
+                'type' => 'text',
+                'cols' => '48',
+                'rows' => '5',
                 'readOnly' => 1,
             ],
         ],
-        'last_error'                      => [
+        'deadline' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.last_error',
-            'config'  => [
-                'type'     => 'input',
-                'size'     => '48',
-                'max'      => '255',
-                'eval'     => 'trim',
+            'label' => $l10n . ':tx_localizer_settings.deadline',
+            'config' => [
+                'type' => 'check',
+                'default' => '0',
+            ],
+        ],
+        'last_error' => [
+            'exclude' => 1,
+            'label' => $l10n . ':tx_localizer_settings.last_error',
+            'config' => [
+                'type' => 'input',
+                'size' => '48',
+                'max' => '255',
+                'eval' => 'trim',
                 'readOnly' => 1,
             ],
         ],
-        'l10n_cfg'                        => [
+        'l10n_cfg' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.l10n_cfg',
-            'config'  => [
-                'type'                => 'select',
-                'renderType'          => 'selectMultipleSideBySide',
-                'foreign_table'       => 'tx_l10nmgr_cfg',
+            'label' => $l10n . ':tx_localizer_settings.l10n_cfg',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectMultipleSideBySide',
+                'foreign_table' => 'tx_l10nmgr_cfg',
                 'foreign_table_where' => 'ORDER BY tx_l10nmgr_cfg.title',
-                'size'                => 5,
-                'autoSizeMax'         => 10,
-                'minitems'            => 0,
-                'maxitems'            => 99,
-                "MM"                  => "tx_localizer_settings_l10n_cfg_mm",
-                'fieldControl'        => [
-                    'addRecord'  => [
+                'size' => 5,
+                'autoSizeMax' => 10,
+                'minitems' => 0,
+                'maxitems' => 99,
+                "MM" => "tx_localizer_settings_l10n_cfg_mm",
+                'fieldControl' => [
+                    'addRecord' => [
                         'disabled' => false,
                     ],
                     'listModule' => [
@@ -184,11 +193,19 @@ return [
                 ],
             ],
         ],
-        'allow_adding_to_export'          => [
+        'sortexports' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.allow_adding_to_export',
+            'label'   => $l10n . ':tx_localizer_settings.l10nmgr_sortexports',
             'config'  => [
-                'type'  => 'check',
+                'type'    => 'check',
+                'default' => 1,
+            ],
+        ],
+        'allow_adding_to_export' => [
+            'exclude' => 1,
+            'label' => $l10n . ':tx_localizer_settings.allow_adding_to_export',
+            'config' => [
+                'type' => 'check',
                 'items' => [
                     [
                         $l10n . ':tx_localizer_settings.allow_adding_to_export.allow',
@@ -199,9 +216,9 @@ return [
         ],
         'collect_pages_marked_for_export' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.collect_pages_marked_for_export',
-            'config'  => [
-                'type'  => 'check',
+            'label' => $l10n . ':tx_localizer_settings.collect_pages_marked_for_export',
+            'config' => [
+                'type' => 'check',
                 'items' => [
                     [
                         $l10n . ':tx_localizer_settings.collect_pages_marked_for_export.collect',
@@ -210,74 +227,73 @@ return [
                 ],
             ],
         ],
-        'automatic_export_minimum_age'    => [
+        'automatic_export_minimum_age' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.automatic_export_minimum_age',
-            'config'  => [
+            'label' => $l10n . ':tx_localizer_settings.automatic_export_minimum_age',
+            'config' => [
                 'type' => 'input',
                 'size' => '10',
                 'eval' => 'int',
             ],
         ],
-        'automatic_export_pages'          => [
+        'automatic_export_pages' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.automatic_export_pages',
-            'config'  => [
-                'type'          => 'select',
+            'label' => $l10n . ':tx_localizer_settings.automatic_export_pages',
+            'config' => [
+                'type' => 'select',
                 'foreign_table' => 'pages',
-                'renderType'    => 'selectMultipleSideBySide',
-                'size'          => 2,
-                'autoSizeMax'   => 5,
-                'MM'            => 'tx_localizer_settings_pages_mm',
-                'readOnly'      => 1,
+                'renderType' => 'selectMultipleSideBySide',
+                'size' => 2,
+                'autoSizeMax' => 5,
+                'MM' => 'tx_localizer_settings_pages_mm',
+                'readOnly' => 1,
             ],
         ],
-        'source_locale'                   => [
+        'source_locale' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.source_locale',
-            'config'  => [
-                'type'                             => 'select',
-                'foreign_table'                    => 'static_languages',
-                'renderType'                       => 'selectMultipleSideBySide',
-                'size'                             => 2,
-                'autoSizeMax'                      => 5,
-                'minitems'                         => 1,
-                'maxitems'                         => 99,
-                'MM'                               => 'tx_localizer_language_mm',
-                'MM_match_fields'                  => [
+            'label' => $l10n . ':tx_localizer_settings.source_locale',
+            'config' => [
+                'type' => 'select',
+                'foreign_table' => 'static_languages',
+                'renderType' => 'selectMultipleSideBySide',
+                'size' => 2,
+                'autoSizeMax' => 5,
+                'minitems' => 1,
+                'maxitems' => 99,
+                'MM' => 'tx_localizer_language_mm',
+                'MM_match_fields' => [
                     'tablenames' => 'static_languages',
-                    'source'     => 'tx_localizer_settings',
-                    'ident'      => 'source',
+                    'source' => 'tx_localizer_settings',
+                    'ident' => 'source',
                 ],
                 'enableMultiSelectFilterTextfield' => true,
             ],
         ],
-        'target_locale'                   => [
+        'target_locale' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.target_locale',
-            'config'  => [
-                'type'                             => 'select',
-                'foreign_table'                    => 'static_languages',
-                'renderType'                       => 'selectMultipleSideBySide',
-                'size'                             => 3,
-                'autoSizeMax'                      => 10,
-                'minitems'                         => 1,
-                'maxitems'                         => 99,
-                'MM'                               => 'tx_localizer_language_mm',
-                'MM_match_fields'                  => [
+            'label' => $l10n . ':tx_localizer_settings.target_locale',
+            'config' => [
+                'type' => 'select',
+                'foreign_table' => 'static_languages',
+                'renderType' => 'selectMultipleSideBySide',
+                'size' => 3,
+                'autoSizeMax' => 10,
+                'minitems' => 1,
+                'maxitems' => 99,
+                'MM' => 'tx_localizer_language_mm',
+                'MM_match_fields' => [
                     'tablenames' => 'static_languages',
-                    'source'     => 'tx_localizer_settings',
-                    'ident'      => 'target',
+                    'source' => 'tx_localizer_settings',
+                    'ident' => 'target',
                 ],
                 'enableMultiSelectFilterTextfield' => true,
             ],
         ],
     ],
-    'types'       => [
-        '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, projectkey, --palette--;;2, --palette--;;3, l10n_cfg, source_locale, target_locale'],
-        '1' => ['showitem' => 'hidden, --palette--;;1, type, title, description, url, projectkey, username, password, --palette--;;2, --palette--;;3, l10n_cfg, source_locale, target_locale'],
+    'types' => [
+        '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, deadline, projectkey, --palette--;;2, --palette--;;3, l10n_cfg, sortexports, source_locale, target_locale'],
     ],
-    'palettes'    => [
+    'palettes' => [
         '1' => ['showitem' => 'project_settings,last_error'],
         '2' => ['showitem' => 'automatic_export_pages,allow_adding_to_export'],
         '3' => ['showitem' => 'automatic_export_minimum_age,collect_pages_marked_for_export'],

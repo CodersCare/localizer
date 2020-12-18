@@ -8,6 +8,8 @@ use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\File;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Runner\DownloadFile;
+use PDO;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -30,17 +32,55 @@ class FileDownloader extends AbstractHandler
      */
     public function init($id = 1)
     {
-        $where = 'deleted = 0 AND hidden = 0 AND status = ' . Constants::HANDLER_FILEDOWNLOADER_START .
-            ' AND action = ' . Constants::ACTION_DOWNLOAD_FILE .
-            ' AND last_error = "" AND processid = ""' .
-            ' LIMIT ' . Constants::HANDLER_FILEDOWNLOADER_MAX_FILES;
-
-        $this->setAcquireWhere($where);
-        parent::init($id);
+        parent::initProcessId();
+        if ($this->acquire() === true) {
+            $this->initRun();
+        }
         if ($this->canRun()) {
             $this->initData();
             $this->load();
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function acquire()
+    {
+        $acquired = false;
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_EXPORTDATA_MM
+        );
+        $queryBuilder->getRestrictions();
+        $affectedRows = $queryBuilder
+            ->update(Constants::TABLE_EXPORTDATA_MM)
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq(
+                        'status',
+                        Constants::HANDLER_FILEDOWNLOADER_START
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'action',
+                        Constants::ACTION_DOWNLOAD_FILE
+                    ),
+                    $queryBuilder->expr()->isNull(
+                        'last_error'
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'processid',
+                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    )
+                )
+            )
+            ->set('tstamp', time())
+            ->set('processid', $this->processId)
+            ->setMaxResults(Constants::HANDLER_FILEDOWNLOADER_MAX_FILES)
+            ->execute();
+        if ($affectedRows > 0) {
+            $acquired = true;
+        }
+        return $acquired;
     }
 
     /**
@@ -72,8 +112,11 @@ class FileDownloader extends AbstractHandler
                             );
                         } else {
                             if (isset($originalResponse['files'])) {
-                                $response = $this->processDownload($localizerSettings, $row['filename'],
-                                    $originalResponse['files']);
+                                $response = $this->processDownload(
+                                    $localizerSettings,
+                                    $row['filename'],
+                                    $originalResponse['files']
+                                );
                                 $this->processResponse($row['uid'], $response);
                             } else {
                                 $this->addErrorResult(
@@ -112,11 +155,13 @@ class FileDownloader extends AbstractHandler
         foreach ($files as $fileStatus) {
             if ($fileStatus['status'] === Constants::API_TRANSLATION_STATUS_TRANSLATED) {
                 $processFiles['processFiles'][] = [
-                    'locale'    => $fileStatus['locale'],
-                    'local'     => $this->getLocalFilename($originalFileName, $fileStatus['locale']),
+                    'locale' => $fileStatus['locale'],
+                    'local' => $this->getLocalFilename($originalFileName, $fileStatus['locale']),
                     'hotfolder' => $this->getRemoteFilename($fileStatus['file'], ''),
-                    'remote'    => $this->getRemoteFilename($fileStatus['file'],
-                        $this->getIso2ForLocale($fileStatus['locale'])),
+                    'remote' => $this->getRemoteFilename(
+                        $fileStatus['file'],
+                        $this->getIso2ForLocale($fileStatus['locale'])
+                    ),
                 ];
             } else {
                 //fixme:errorhandling

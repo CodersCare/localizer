@@ -3,7 +3,8 @@
 namespace Localizationteam\Localizer\Model\Repository;
 
 use Localizationteam\Localizer\Constants;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use PDO;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -23,16 +24,35 @@ class AutomaticExportRepository extends AbstractRepository
      */
     public function loadUnfinishedButSentCarts($localizerId)
     {
-        $unfinishedButSentCarts = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            Constants::TABLE_LOCALIZER_CART,
-            'cruser_id = ' . $this->getBackendUser()->user['uid'] .
-            ' AND uid_local = ' . (int)$localizerId .
-            ' AND status >= ' . Constants::STATUS_CART_FINALIZED .
-            ' AND status < ' . Constants::STATUS_CART_FILE_IMPORTED .
-            BackendUtility::BEenableFields(Constants::TABLE_LOCALIZER_CART) . BackendUtility::deleteClause(Constants::TABLE_LOCALIZER_CART)
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_LOCALIZER_CART
         );
-        return $unfinishedButSentCarts;
+        $queryBuilder->getRestrictions();
+        return $queryBuilder
+            ->select('*')
+            ->from(Constants::TABLE_LOCALIZER_CART)
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq(
+                        'cruser_id',
+                        (int)$this->getBackendUser()->user['uid']
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'uid_local',
+                        (int)$localizerId
+                    ),
+                    $queryBuilder->expr()->gte(
+                        'status',
+                        Constants::STATUS_CART_FINALIZED
+                    ),
+                    $queryBuilder->expr()->lt(
+                        'status',
+                        Constants::STATUS_CART_FILE_IMPORTED
+                    )
+                )
+            )
+            ->execute()
+            ->fetchAll();
     }
 
     /**
@@ -43,18 +63,39 @@ class AutomaticExportRepository extends AbstractRepository
      */
     public function loadPagesConfiguredForAutomaticExport($age, $excludedPages)
     {
-        $safeExcludedPageUids = implode(',', GeneralUtility::intExplode(',', implode(',', $excludedPages)));
-        $age = time() - $age * 60;
-        $pagesConfiguredForAutomaticExport = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            'pages',
-            'localizer_include_with_automatic_export > 0 AND uid NOT IN (' . $safeExcludedPageUids . ') ' .
-            BackendUtility::BEenableFields('pages') . BackendUtility::deleteClause('pages'),
-            '',
-            '',
-            '',
-            'uid'
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+        $queryBuilder->getRestrictions();
+        $pages = $queryBuilder
+            ->select('*')
+            ->from('pages')
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->gt(
+                        'localizer_include_with_automatic_export',
+                        0
+                    ),
+                    $queryBuilder->expr()->notIn(
+                        'uid',
+                        $excludedPages
+                    ),
+                    $queryBuilder->expr()->gte(
+                        'status',
+                        Constants::STATUS_CART_FINALIZED
+                    ),
+                    $queryBuilder->expr()->lt(
+                        'status',
+                        Constants::STATUS_CART_FILE_IMPORTED
+                    )
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        $pagesConfiguredForAutomaticExport = [];
+        if (!empty($pages)) {
+            foreach ($pages as $page) {
+                $pagesConfiguredForAutomaticExport[$page['uid']] = $page;
+            }
+        }
         return $pagesConfiguredForAutomaticExport;
     }
 
@@ -63,24 +104,47 @@ class AutomaticExportRepository extends AbstractRepository
      *
      * @param int $localizer
      * @param int $age
+     * @param array $excludedPages
      * @return array|NULL
      */
     public function loadPagesAddedToSpecificAutomaticExport($localizer, $age, $excludedPages)
     {
-        $safeExcludedPageUids = implode(',', GeneralUtility::intExplode(',', implode(',', $excludedPages)));
-        $age = time() - $age * 60;
-        $pagesAddedToSpecificAutomaticExport = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'pages.*',
-            'pages ' .
-            'LEFT OUTER JOIN ' . Constants::TABLE_LOCALIZER_SETTINGS_PAGES_MM . ' mm 
-              ON mm.uid_local = pages.uid AND mm.uid_foreign = ' . (int)$localizer,
-            'pages.uid NOT IN (' . $safeExcludedPageUids . ') AND mm.uid IS NOT NULL ' .
-            BackendUtility::BEenableFields('pages') . BackendUtility::deleteClause('pages'),
-            '',
-            '',
-            '',
-            'uid'
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+        $pages = $queryBuilder
+            ->select('pages.*')
+            ->from('pages')
+            ->leftJoin(
+                'pages',
+                Constants::TABLE_LOCALIZER_SETTINGS_PAGES_MM,
+                'mm',
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq(
+                        'mm.uid_local',
+                        $queryBuilder->quoteIdentifier('pages.uid')
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'mm.uid_foreign',
+                        (int)$localizer
+                    )
+                )
+            )
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->notIn(
+                        'pages.uid',
+                        $excludedPages
+                    ),
+                    $queryBuilder->expr()->isNotNull('mm.uid')
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        $pagesAddedToSpecificAutomaticExport = [];
+        if (!empty($pages)) {
+            foreach ($pages as $page) {
+                $pagesAddedToSpecificAutomaticExport[$page['uid']] = $page;
+            }
+        }
         return $pagesAddedToSpecificAutomaticExport;
     }
 
@@ -105,11 +169,11 @@ class AutomaticExportRepository extends AbstractRepository
                                 if ($configuration['languages'][$languageId]) {
                                     $identifier = md5($tableName . '.' . $recordId . '.' . $languageId);
                                     $insertValues[$identifier] = [
-                                        'pid'        => (int)$pageId,
+                                        'pid' => (int)$pageId,
                                         'identifier' => $identifier,
-                                        'cart'       => (int)$cartId,
-                                        'tablename'  => $tableName,
-                                        'recordId'   => (int)$recordId,
+                                        'cart' => (int)$cartId,
+                                        'tablename' => $tableName,
+                                        'recordId' => (int)$recordId,
                                         'languageId' => (int)$languageId,
                                     ];
                                 }
@@ -120,12 +184,27 @@ class AutomaticExportRepository extends AbstractRepository
             }
         }
         if (!empty($insertValues)) {
-            $this->getDatabaseConnection()
-                ->exec_INSERTmultipleRows(
+            GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable(Constants::TABLE_CARTDATA_MM)
+                ->bulkInsert(
                     Constants::TABLE_CARTDATA_MM,
-                    ['pid', 'identifier', 'cart', 'tablename', 'recordId', 'languageId'],
                     $insertValues,
-                    'cart,recordId,languageId'
+                    [
+                        'pid',
+                        'identifier',
+                        'cart',
+                        'tablename',
+                        'recordId',
+                        'languageId'
+                    ],
+                    [
+                        PDO::PARAM_INT,
+                        PDO::PARAM_STR,
+                        PDO::PARAM_INT,
+                        PDO::PARAM_STR,
+                        PDO::PARAM_INT,
+                        PDO::PARAM_INT
+                    ]
                 );
         }
     }

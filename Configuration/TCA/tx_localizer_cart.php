@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('TYPO3_MODE')) {
     die ('Access denied.');
 }
@@ -8,97 +9,97 @@ $l10n = 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_localizer_cart');
 
 return [
-    'ctrl'        => [
-        'title'           => $l10n . 'tx_localizer_cart',
-        'label'           => 'uid_local',
-        'label_alt'       => 'uid_foreign',
+    'ctrl' => [
+        'title' => $l10n . 'tx_localizer_cart',
+        'label' => 'uid_local',
+        'label_alt' => 'uid_foreign',
         'label_alt_force' => '1',
-        'tstamp'          => 'tstamp',
-        'crdate'          => 'crdate',
-        'cruser_id'       => 'cruser_id',
-        'default_sortby'  => 'crdate DESC',
-        'delete'          => 'deleted',
-        'enablecolumns'   => [
+        'tstamp' => 'tstamp',
+        'crdate' => 'crdate',
+        'cruser_id' => 'cruser_id',
+        'default_sortby' => 'crdate DESC',
+        'delete' => 'deleted',
+        'enablecolumns' => [
             'disabled' => 'hidden',
         ],
-        'iconfile'        => 'EXT:localizer/Resources/Public/Icons/module-localizer-cart.svg',
+        'iconfile' => 'EXT:localizer/Resources/Public/Icons/module-localizer-cart.svg',
     ],
-    'interface'   => [
+    'interface' => [
         'showRecordFieldList' => 'hidden,description,uid_local,uid_export,uid_foreign,status,action,deadline,all_locale,source_locale,configuration,target_locale,localizer_path,last_error',
     ],
     'feInterface' => '',
-    'columns'     => [
-        'hidden'          => [
+    'columns' => [
+        'hidden' => [
             'exclude' => 1,
-            'label'   => 'LLL:EXT:lang/locallang_general.xml:LGL.hidden',
-            'config'  => [
-                'type'    => 'check',
+            'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.hidden',
+            'config' => [
+                'type' => 'check',
                 'default' => '0',
             ],
         ],
-        'uid_local'       => [
+        'uid_local' => [
             'exclude' => 1,
-            'label'   => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.uid_local',
-            'config'  => [
-                'type'          => 'group',
+            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.uid_local',
+            'config' => [
+                'type' => 'group',
                 'internal_type' => 'db',
-                'allowed'       => 'tx_localizer_settings',
-                'size'          => 1,
-                'maxitems'      => 1,
-                'readOnly'      => 1,
-            ],
-        ],
-        'uid_export'      => [
-            'exclude' => 1,
-            'label'   => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.uid_export',
-            'config'  => [
-                'type'          => 'group',
-                'internal_type' => 'db',
-                'allowed'       => 'tx_l10nmgr_exportdata',
-                'size'          => 1,
-                'maxitems'      => 1,
-                'readOnly'      => 1,
-            ],
-        ],
-        'uid_foreign'     => [
-            'exclude' => 1,
-            'label'   => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.uid_foreign',
-            'config'  => [
-                'type'          => 'group',
-                'internal_type' => 'db',
-                'allowed'       => 'tx_l10nmgr_cfg',
-                'size'          => 1,
-                'maxitems'      => 1,
-                'readOnly'      => 1,
-            ],
-        ],
-        'description'     => [
-            'exclude' => 1,
-            'label'   => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.description',
-            'config'  => [
-                'type' => 'input',
-                'size' => '48',
-                'max'  => '255',
-                'eval' => 'trim',
-            ],
-        ],
-        'localizer_path'  => [
-            'exclude' => 1,
-            'label'   => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.localizer_path',
-            'config'  => [
-                'type'     => 'text',
-                'cols'     => 80,
-                'rows'     => 2,
+                'allowed' => 'tx_localizer_settings',
+                'size' => 1,
+                'maxitems' => 1,
                 'readOnly' => 1,
             ],
         ],
-        'status'          => [
+        'uid_export' => [
             'exclude' => 1,
-            'label'   => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status',
-            'config'  => [
-                'type'       => 'select',
+            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.uid_export',
+            'config' => [
+                'type' => 'group',
+                'internal_type' => 'db',
+                'allowed' => 'tx_l10nmgr_exportdata',
+                'size' => 1,
+                'maxitems' => 1,
+                'readOnly' => 1,
+            ],
+        ],
+        'uid_foreign' => [
+            'exclude' => 1,
+            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.uid_foreign',
+            'config' => [
+                'type' => 'group',
+                'internal_type' => 'db',
+                'allowed' => 'tx_l10nmgr_cfg',
+                'size' => 1,
+                'maxitems' => 1,
+                'readOnly' => 1,
+            ],
+        ],
+        'description' => [
+            'exclude' => 1,
+            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.description',
+            'config' => [
+                'type' => 'input',
+                'size' => '48',
+                'max' => '255',
+                'eval' => 'trim',
+            ],
+        ],
+        'localizer_path' => [
+            'exclude' => 1,
+            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.localizer_path',
+            'config' => [
+                'type' => 'text',
+                'cols' => 80,
+                'rows' => 2,
+                'readOnly' => 1,
+            ],
+        ],
+        'status' => [
+            'exclude' => 1,
+            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status',
+            'config' => [
+                'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items'      => [
+                'items' => [
                     [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.0', '0'],
                     [
                         $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_ADDED,
@@ -138,19 +139,19 @@ return [
                     [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-901', '-901'],
                     [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-902', '-902'],
                 ],
-                'size'       => 1,
-                'maxitems'   => 1,
-                'readOnly'   => 1,
+                'size' => 1,
+                'maxitems' => 1,
+                'readOnly' => 1,
             ],
         ],
         //will only hold value if error occured
         'previous_status' => [
             'exclude' => 1,
-            'label'   => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.previous_status',
-            'config'  => [
-                'type'       => 'select',
+            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.previous_status',
+            'config' => [
+                'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items'      => [
+                'items' => [
                     [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.0', '0'],
                     [
                         $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_ADDED,
@@ -190,18 +191,18 @@ return [
                     [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-901', '-901'],
                     [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-902', '-902'],
                 ],
-                'size'       => 1,
-                'maxitems'   => 1,
-                'readOnly'   => 1,
+                'size' => 1,
+                'maxitems' => 1,
+                'readOnly' => 1,
             ],
         ],
-        'action'          => [
+        'action' => [
             'exclude' => 1,
-            'label'   => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.action',
-            'config'  => [
-                'type'       => 'select',
+            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.action',
+            'config' => [
+                'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items'      => [
+                'items' => [
                     [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.action.I.0', '0'],
                     [
                         $l10n . 'tx_localizer_settings_l10n_exportdata_mm.action.I.' . \Localizationteam\Localizer\Constants::ACTION_EXPORT_FILE,
@@ -224,100 +225,93 @@ return [
                         \Localizationteam\Localizer\Constants::ACTION_IMPORT_FILE,
                     ],
                 ],
-                'size'       => 1,
-                'maxitems'   => 1,
+                'size' => 1,
+                'maxitems' => 1,
             ],
         ],
-        'configuration'   => [
+        'configuration' => [
             'exclude' => 1,
-            'label'   => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.configuration',
-            'config'  => [
-                'type'     => 'text',
-                'cols'     => 80,
-                'rows'     => 2,
+            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.configuration',
+            'config' => [
+                'type' => 'text',
+                'cols' => 80,
+                'rows' => 2,
                 'readOnly' => 1,
             ],
         ],
-        'last_error'      => [
+        'last_error' => [
             'exclude' => 1,
-            'label'   => $l10n . 'tx_localizer_settings.last_error',
-            'config'  => [
-                'type'     => 'input',
-                'size'     => '48',
-                'max'      => '255',
-                'eval'     => 'trim',
+            'label' => $l10n . 'tx_localizer_settings.last_error',
+            'config' => [
+                'type' => 'input',
+                'size' => '48',
+                'max' => '255',
+                'eval' => 'trim',
                 'readOnly' => 1,
             ],
         ],
-        'deadline'        => [
+        'deadline' => [
             'exclude' => 1,
-            'label'   => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.deadline',
-            'config'  => [
-                'type'       => 'input',
+            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.deadline',
+            'config' => [
+                'type' => 'input',
                 'renderType' => 'inputDateTime',
-                'eval'       => 'datetime',
-                'size'       => '48',
+                'eval' => 'datetime',
+                'size' => '48',
             ],
         ],
-        'all_locale'      => [
+        'all_locale' => [
             'exclude' => 1,
-            'label'   => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.all_locale',
-            'config'  => [
-                'type'    => 'check',
+            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.all_locale',
+            'config' => [
+                'type' => 'check',
                 'default' => '0',
             ],
         ],
-        'source_locale'   => [
+        'source_locale' => [
             'exclude' => 1,
-            'label'   => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.source_locale',
-            'config'  => [
-                'type'            => 'select',
-                'renderType'      => 'selectSingle',
-                'foreign_table'   => 'static_languages',
-                'size'            => 1,
-                'maxitems'        => 1,
-                'MM'              => 'tx_localizer_language_mm',
+            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.source_locale',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'static_languages',
+                'size' => 1,
+                'maxitems' => 1,
+                'MM' => 'tx_localizer_language_mm',
                 'MM_match_fields' => [
                     'tablenames' => 'static_languages',
-                    'source'     => 'tx_localizer_settings_l10n_exportdata_mm',
-                    'ident'      => 'source',
+                    'source' => 'tx_localizer_settings_l10n_exportdata_mm',
+                    'ident' => 'source',
                 ],
-                'readOnly'        => 1,
+                'readOnly' => 1,
             ],
         ],
-        'target_locale'   => [
+        'target_locale' => [
             'exclude' => 1,
-            'label'   => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.target_locale',
-            'config'  => [
-                'type'            => 'select',
-                'renderType'      => 'selectSingleBox',
-                'items'           => [
+            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.target_locale',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingleBox',
+                'items' => [
                     [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.all_languages', '0'],
                 ],
-                'foreign_table'   => 'static_languages',
-                'itemsProcFunc'   => 'Localizationteam\Localizer\Backend\Cart->filterList',
-                'filterList'      => [
-                    'uid'      => 'uid_foreign',
-                    'table'    => 'tx_localizer_language_mm',
-                    'field'    => 'uid_local',
-                    'rowValue' => 'uid_local',
-                    'where'    => ' AND tablenames = "static_languages" AND source = "tx_localizer_settings" AND ident ="target"',
-                ],
-                'size'            => 4,
-                'autoSizeMax'     => 10,
-                'maxitems'        => 99,
-                'MM'              => 'tx_localizer_language_mm',
+                'foreign_table' => 'static_languages',
+                'itemsProcFunc' => 'Localizationteam\Localizer\Backend\Cart->filterList',
+                'size' => 4,
+                'autoSizeMax' => 10,
+                'maxitems' => 99,
+                'MM' => 'tx_localizer_language_mm',
                 'MM_match_fields' => [
                     'tablenames' => 'static_languages',
-                    'source'     => 'tx_localizer_settings_l10n_exportdata_mm',
-                    'ident'      => 'target',
+                    'source' => 'tx_localizer_settings_l10n_exportdata_mm',
+                    'ident' => 'target',
                 ],
-                'readOnly'        => 1,
+                'readOnly' => 1,
             ],
         ],
 
     ],
-    'types'       => [
+    'types' => [
         '0' => ['showitem' => 'hidden,uid_local,uid_export,uid_foreign,description,localizer_path,deadline,action,all_locale,source_locale,target_locale,configuration,status,last_error'],
     ],
 ];

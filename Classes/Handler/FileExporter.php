@@ -9,7 +9,10 @@ use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\DebugUtility;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\CommandUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -23,6 +26,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class FileExporter extends AbstractCartHandler
 {
     use AddFileToMatrix, Data, Language;
+
+    /**
+     * @var int
+     */
+    protected $id;
 
     /**
      * @var string
@@ -55,17 +63,52 @@ class FileExporter extends AbstractCartHandler
      */
     public function init($id = 1)
     {
-        $where = 'deleted = 0 AND hidden = 0 AND status = ' . Constants::HANDLER_FILEEXPORTER_START .
-            ' AND action = ' . Constants::ACTION_EXPORT_FILE .
-            ' AND last_error = "" AND processid = ""' .
-            ' AND uid = ' . $id;
-        $this->setAcquireWhere($where);
+        $this->id = $id;
         $this->selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
-        parent::init($id);
+        parent::initProcessId();
+        if ($this->acquire() === true) {
+            $this->initRun();
+        }
         if ($this->canRun()) {
             $this->initData();
             $this->loadCart();
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function acquire()
+    {
+        $acquired = false;
+        $time = time();
+        $affectedRows = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable(Constants::TABLE_LOCALIZER_CART)
+            ->update(
+                Constants::TABLE_LOCALIZER_CART,
+                [
+                    'tstamp' => $time,
+                    'processid' => $this->processId,
+                ],
+                [
+                    'deleted' => 0,
+                    'hidden' => 0,
+                    'status' => Constants::HANDLER_FILEEXPORTER_START,
+                    'action' => Constants::ACTION_EXPORT_FILE,
+                    'last_error' => null,
+                    'processid' => '',
+                    'uid' => (int)$this->id
+                ],
+                [
+                    Connection::PARAM_INT,
+                    Connection::PARAM_STR
+                ]
+            );
+
+        if ($affectedRows > 0) {
+            $acquired = true;
+        }
+        return $acquired;
     }
 
     /**
@@ -92,15 +135,23 @@ class FileExporter extends AbstractCartHandler
                     $this->triples = $this->selectorRepository->loadStoredTriples($pageIds, $cart);
                     if (!empty($this->content) && !empty($this->triples)) {
                         foreach (array_keys($cartConfiguration['languages']) as $language) {
-                            $configuredLanguageExport = $this->configureRecordsForLanguage($localizer, $cart,
-                                $configuration, $language);
+                            $configuredLanguageExport = $this->configureRecordsForLanguage(
+                                $localizer,
+                                $cart,
+                                $configuration,
+                                $language
+                            );
                             if ($configuredLanguageExport) {
                                 $this->processExport($configuration, $language);
                             }
                         }
-                        $this->selectorRepository->updateL10nmgrConfiguration($configuration, $localizer, $cart,
+                        $this->selectorRepository->updateL10nmgrConfiguration(
+                            $configuration,
+                            $localizer,
+                            $cart,
                             $pageIds,
-                            '');
+                            ''
+                        );
                         $this->registerFilesForLocalizer($localizer, $configuration, $pid);
                     }
                 }
@@ -144,8 +195,13 @@ class FileExporter extends AbstractCartHandler
         if (!empty($this->triples)) {
             $excludeItems = implode(',', $this->exportTree);
             $pageIds = $this->selectorRepository->loadAvailablePages(0, $cart);
-            $this->selectorRepository->updateL10nmgrConfiguration($configuration, $localizer, $cart, $pageIds,
-                $excludeItems);
+            $this->selectorRepository->updateL10nmgrConfiguration(
+                $configuration,
+                $localizer,
+                $cart,
+                $pageIds,
+                $excludeItems
+            );
             return true;
         } else {
             return false;
@@ -182,17 +238,28 @@ class FileExporter extends AbstractCartHandler
      */
     protected function processExport($configuration, $language)
     {
-        $context = GeneralUtility::getApplicationContext()->__toString();
-        $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
-            PATH_site . 'typo3/sysext/core/bin/typo3 l10nmanager:export -c ' . $configuration . ' -t ' . $language . '';
-        $response = [
-            'http_status_code' => 200,
-            'response'         => [
-                'action' => exec($action . ' 2>&1'),
-            ],
+        $context = Environment::getContext()->__toString();
+        $command = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
+            CommandUtility::getCommand('php') . ' ' .
+            Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3' .
+            ' l10nmanager:export' .
+            ' -c ' . CommandUtility::escapeShellArgument($configuration) .
+            ' -t ' . CommandUtility::escapeShellArgument($language)
+        ;
+        if ($this->getBackendUser()->user['realName']) {
+            $command .= ' --customer ' . CommandUtility::escapeShellArgument($this->getBackendUser()->user['realName']);
+        }
+        $command .=  ' 2>&1';
 
+        $statusCode = 200;
+        $output = '';
+        $action = CommandUtility::exec($command, $output, $statusCode);
+        return [
+            'http_status_code' => $statusCode,
+            'response' => [
+                'action' => $action,
+            ],
         ];
-        return $response;
     }
 
     /**
@@ -202,12 +269,22 @@ class FileExporter extends AbstractCartHandler
      */
     protected function registerFilesForLocalizer($localizerId, $configurationId, $pid)
     {
-        $this->getDatabaseConnection()->store_lastBuiltQuery = 1;
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid, translation_lang, filename',
-            Constants::TABLE_L10NMGR_EXPORTDATA,
-            'l10ncfg_id = ' . $configurationId
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_L10NMGR_EXPORTDATA
         );
+        $queryBuilder->getRestrictions()
+            ->removeAll();
+        $rows = $queryBuilder
+            ->select('uid', 'translation_lang', 'filename')
+            ->from(Constants::TABLE_L10NMGR_EXPORTDATA)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'l10ncfg_id',
+                    (int)$configurationId
+                )
+            )
+            ->execute()
+            ->fetchAll();
         if (empty($rows) === false) {
             foreach ($rows as $row) {
                 $this->addFileToMatrix(
@@ -221,7 +298,6 @@ class FileExporter extends AbstractCartHandler
                 );
             }
         }
-
     }
 
     /**
@@ -277,7 +353,7 @@ class FileExporter extends AbstractCartHandler
     protected function getUploadPath()
     {
         if ($this->uploadPath === '') {
-            $this->uploadPath = PATH_site . 'uploads/tx_l10nmgr/jobs/out/';
+            $this->uploadPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/out/';
         }
         return $this->uploadPath;
     }

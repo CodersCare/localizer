@@ -7,7 +7,9 @@ use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Runner\SendFile;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use PDO;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -33,16 +35,55 @@ class FileSender extends AbstractHandler
      */
     public function init($id = 1)
     {
-        $where = 'deleted = 0 AND hidden = 0 AND status = ' . Constants::HANDLER_FILESENDER_START .
-            ' AND action = ' . Constants::ACTION_SEND_FILE .
-            ' AND last_error = "" AND processid = ""' .
-            ' LIMIT ' . Constants::HANDLER_FILESENDER_MAX_FILES;
-        $this->setAcquireWhere($where);
-        parent::init($id);
+        parent::initProcessId();
+        if ($this->acquire() === true) {
+            $this->initRun();
+        }
         if ($this->canRun()) {
             $this->initData();
             $this->load();
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function acquire()
+    {
+        $acquired = false;
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_EXPORTDATA_MM
+        );
+        $queryBuilder->getRestrictions();
+        $affectedRows = $queryBuilder
+            ->update(Constants::TABLE_EXPORTDATA_MM)
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq(
+                        'status',
+                        Constants::HANDLER_FILESENDER_START
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'action',
+                        Constants::ACTION_SEND_FILE
+                    ),
+                    $queryBuilder->expr()->isNull(
+                        'last_error'
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'processid',
+                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    )
+                )
+            )
+            ->set('tstamp', time())
+            ->set('processid', $this->processId)
+            ->setMaxResults(Constants::HANDLER_FILESENDER_MAX_FILES)
+            ->execute();
+        if ($affectedRows > 0) {
+            $acquired = true;
+        }
+        return $acquired;
     }
 
     /**
@@ -74,7 +115,7 @@ class FileSender extends AbstractHandler
                         $additionalConfiguration = [
                             'uid' => $row['uid'],
                             'localFile' => $file,
-                            'file'      => $row['filename'],
+                            'file' => $row['filename'],
                         ];
                         $deadline = $this->addDeadline($row);
                         if (!empty($deadline)) {
@@ -134,7 +175,7 @@ class FileSender extends AbstractHandler
     protected function getUploadPath()
     {
         if ($this->uploadPath === '') {
-            $this->uploadPath = PATH_site . 'uploads/tx_l10nmgr/jobs/out/';
+            $this->uploadPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/out/';
         }
         return $this->uploadPath;
     }
@@ -146,18 +187,35 @@ class FileSender extends AbstractHandler
     protected function addDeadline(&$row)
     {
         $deadline = '';
-        $carts = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'COALESCE (
-                NULLIF(' . Constants::TABLE_EXPORTDATA_MM . '.deadline, 0), ' .
-            Constants::TABLE_LOCALIZER_CART . '.deadline
-            ) deadline',
-            Constants::TABLE_EXPORTDATA_MM .
-            ' LEFT OUTER JOIN ' . Constants::TABLE_LOCALIZER_CART .
-            ' ON ' . Constants::TABLE_LOCALIZER_CART . '.uid_foreign = ' . Constants::TABLE_EXPORTDATA_MM . '.uid_foreign',
-            Constants::TABLE_EXPORTDATA_MM . ' .uid = ' . (int)$row['uid'] .
-            BackendUtility::BEenableFields(Constants::TABLE_EXPORTDATA_MM) .
-            BackendUtility::deleteClause(Constants::TABLE_EXPORTDATA_MM)
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_EXPORTDATA_MM
         );
+        $queryBuilder->getRestrictions();
+        $carts = $queryBuilder
+            ->selectLiteral(
+                'COALESCE (
+                NULLIF(' . Constants::TABLE_EXPORTDATA_MM . '.deadline, 0), ' .
+                Constants::TABLE_LOCALIZER_CART . '.deadline
+            ) deadline'
+            )
+            ->from(Constants::TABLE_EXPORTDATA_MM)
+            ->leftJoin(
+                Constants::TABLE_EXPORTDATA_MM,
+                Constants::TABLE_LOCALIZER_CART,
+                Constants::TABLE_LOCALIZER_CART,
+                $queryBuilder->expr()->eq(
+                    Constants::TABLE_LOCALIZER_CART . '.uid_foreign',
+                    $queryBuilder->quoteIdentifier(Constants::TABLE_EXPORTDATA_MM . '.uid_foreign')
+                )
+            )->where(
+                $queryBuilder->expr()->eq(
+                    Constants::TABLE_EXPORTDATA_MM . '.uid',
+                    (int)$row['uid']
+                )
+            )
+            ->execute()
+            ->fetch();
+
         if (!empty($carts['deadline'])) {
             $deadline = (int)$carts['deadline'];
         }

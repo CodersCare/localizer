@@ -5,7 +5,8 @@ namespace Localizationteam\Localizer;
 use Exception;
 use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use PDO;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -16,7 +17,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package     TYPO3
  * @subpackage  localizer
  *
- * @method DatabaseConnection getDatabaseConnection() must be defined in implementing class
  * @method string getProcessId() must be defined in implementing class
  */
 trait Data
@@ -45,7 +45,7 @@ trait Data
     {
         $this->result = [
             'success' => [],
-            'error'   => [],
+            'error' => [],
         ];
         $this->apiPool = [];
         $this->data = [];
@@ -54,22 +54,38 @@ trait Data
 
     protected function load()
     {
-        $this->data = $this->getDatabaseConnection()
-            ->exec_SELECTgetRows(
-                '*',
-                Constants::TABLE_EXPORTDATA_MM,
-                'processid = "' . $this->getProcessId() . '"'
-            );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_EXPORTDATA_MM
+        );
+        $this->data = $queryBuilder
+            ->select('*')
+            ->from(Constants::TABLE_EXPORTDATA_MM)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'processid',
+                    $queryBuilder->createNamedParameter($this->getProcessId(), PDO::PARAM_STR)
+                )
+            )
+            ->execute()
+            ->fetchAll();
     }
 
     protected function loadCart()
     {
-        $this->data = $this->getDatabaseConnection()
-            ->exec_SELECTgetRows(
-                '*',
-                Constants::TABLE_LOCALIZER_CART,
-                'processid = "' . $this->getProcessId() . '"'
-            );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_LOCALIZER_CART
+        );
+        $this->data = $queryBuilder
+            ->select('*')
+            ->from(Constants::TABLE_LOCALIZER_CART)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'processid',
+                    $queryBuilder->createNamedParameter($this->getProcessId(), PDO::PARAM_STR)
+                )
+            )
+            ->execute()
+            ->fetchAll();
     }
 
     /**
@@ -82,9 +98,9 @@ trait Data
     protected function addErrorResult($uid, $status, $previousStatus, $lastError, $action = 0)
     {
         $this->result['error'][(int)$uid] = [
-            'status'          => (int)$status,
+            'status' => (int)$status,
             'previous_status' => (int)$previousStatus,
-            'last_error'      => (string)$lastError,
+            'last_error' => (string)$lastError,
         ];
         if ($action > 0) {
             $this->result['error'][(int)$uid]['action'] = $action;
@@ -103,9 +119,9 @@ trait Data
             $response = json_encode($response);
         }
         $this->result['success'][(int)$uid] = [
-            'status'     => (int)$status,
-            'last_error' => '',
-            'action'     => (int)$action,
+            'status' => (int)$status,
+            'last_error' => null,
+            'action' => (int)$action,
         ];
         if ($response !== '') {
             $this->result['success'][(int)$uid]['response'] = (string)$response;
@@ -119,16 +135,41 @@ trait Data
      */
     protected function getLocalizerSettings($uid)
     {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid,type,url,workflow,projectkey,username,password,project_settings,out_folder,in_folder,source_locale,target_locale',
-            Constants::TABLE_LOCALIZER_SETTINGS,
-            'deleted = 0 AND hidden = 0 AND uid = ' . (int)$uid
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_LOCALIZER_SETTINGS
         );
+        $queryBuilder->getRestrictions();
+        $row = $queryBuilder
+            ->select(
+                'uid',
+                'type',
+                'url',
+                'workflow',
+                'projectkey',
+                'username',
+                'password',
+                'project_settings',
+                'out_folder',
+                'in_folder',
+                'source_locale',
+                'target_locale'
+            )
+            ->from(Constants::TABLE_LOCALIZER_SETTINGS)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    (int)$uid
+                )
+            )
+            ->execute()
+            ->fetch();
         if ($row['type'] === '0' || ExtensionManagementUtility::isLoaded($row['type'])) {
             if ($row['type'] === '0') {
                 $apiClass = ApiCalls::class;
             } else {
-                $apiClass = 'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase($row['type']) . '\\Api\\ApiCalls';
+                $apiClass = 'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase(
+                        $row['type']
+                    ) . '\\Api\\ApiCalls';
             }
             $api = GeneralUtility::makeInstance(
                 $apiClass,
@@ -142,33 +183,66 @@ trait Data
                 $row['in_folder']
             );
             if ($row['type'] !== '0' || $api->checkAndCreateFolders() === true) {
-                $sourceLocale = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                    '*',
-                    Constants::TABLE_LOCALIZER_LANGUAGE_MM .
-                    ' LEFT OUTER JOIN ' . Constants::TABLE_STATIC_LANGUAGES . ' ON ' . Constants::TABLE_STATIC_LANGUAGES . '.uid=' . Constants::TABLE_LOCALIZER_LANGUAGE_MM . '.uid_foreign',
-                    "uid_local=" . (int)$row['uid'] .
-                    " AND ident='source' AND tablenames='static_languages' AND source='tx_localizer_settings'"
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+                    Constants::TABLE_LOCALIZER_LANGUAGE_MM
                 );
+                $queryBuilder->getRestrictions();
+                $sourceLocale = $queryBuilder
+                    ->select('*')
+                    ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                    ->leftJoin(
+                        Constants::TABLE_LOCALIZER_LANGUAGE_MM,
+                        Constants::TABLE_STATIC_LANGUAGES,
+                        Constants::TABLE_STATIC_LANGUAGES,
+                        $queryBuilder->expr()->eq(
+                            Constants::TABLE_STATIC_LANGUAGES . '.uid',
+                            $queryBuilder->quoteIdentifier(Constants::TABLE_LOCALIZER_LANGUAGE_MM . '.uid_foreign')
+                        )
+                    )
+                    ->where(
+                        $queryBuilder->expr()->andX(
+                            $queryBuilder->expr()->eq(
+                                'uid_local',
+                                (int)$row['uid']
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'ident',
+                                $queryBuilder->createNamedParameter('source', PDO::PARAM_STR)
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'tablenames',
+                                $queryBuilder->createNamedParameter('static_languages', PDO::PARAM_STR)
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'source',
+                                $queryBuilder->createNamedParameter('tx_localizer_settings', PDO::PARAM_STR)
+                            )
+                        )
+                    )
+                    ->execute()
+                    ->fetch();
                 $this->apiPool[$uid] = [
-                    'api'      => $api,
+                    'api' => $api,
                     'settings' => [
-                        'type'       => $row['type'],
-                        'url'        => $row['url'],
-                        'outFolder'  => $row['out_folder'],
-                        'inFolder'   => $row['in_folder'],
+                        'type' => $row['type'],
+                        'url' => $row['url'],
+                        'outFolder' => $row['out_folder'],
+                        'inFolder' => $row['in_folder'],
                         'projectKey' => $row['projectkey'],
-                        'token'      => $api->getToken(),
-                        'username'   => $row['username'],
-                        'password'   => $row['password'],
-                        'workflow'   => $row['workflow'],
-                        'source'     => $sourceLocale['lg_collate_locale'],
+                        'token' => $api->getToken(),
+                        'username' => $row['username'],
+                        'password' => $row['password'],
+                        'workflow' => $row['workflow'],
+                        'source' => $sourceLocale['lg_collate_locale'],
                     ],
                 ];
             }
         } else {
             $this->apiPool[$uid] = false;
-            new FlashMessage('Localizer settings [' . $uid . '] either disabled or deleted or API plugin not available anymore',
-                3);
+            new FlashMessage(
+                'Localizer settings [' . $uid . '] either disabled or deleted or API plugin not available anymore',
+                3
+            );
         }
         return $this->apiPool[$uid] === false ?
             false :
@@ -191,19 +265,39 @@ trait Data
         if ($this->canPersist === true) {
             foreach ($this->result['error'] as $uid => $fields) {
                 $fields['tstamp'] = (int)$time;
-                $this->getDatabaseConnection()->exec_UPDATEquery(
-                    Constants::TABLE_EXPORTDATA_MM,
-                    'uid=' . $uid,
-                    $fields
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+                    Constants::TABLE_LOCALIZER_CART
                 );
+                $queryBuilder
+                    ->update(Constants::TABLE_LOCALIZER_CART)
+                    ->where(
+                        $queryBuilder->expr()->eq(
+                            'uid',
+                            (int)$uid
+                        )
+                    );
+                foreach ($fields as $key => $value) {
+                    $queryBuilder->set($key, $value);
+                }
+                $queryBuilder->execute();
             }
             foreach ($this->result['success'] as $uid => $fields) {
                 $fields['tstamp'] = (int)$time;
-                $this->getDatabaseConnection()->exec_UPDATEquery(
-                    Constants::TABLE_EXPORTDATA_MM,
-                    'uid=' . $uid,
-                    $fields
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+                    Constants::TABLE_EXPORTDATA_MM
                 );
+                $queryBuilder
+                    ->update(Constants::TABLE_EXPORTDATA_MM)
+                    ->where(
+                        $queryBuilder->expr()->eq(
+                            'uid',
+                            (int)$uid
+                        )
+                    );
+                foreach ($fields as $key => $value) {
+                    $queryBuilder->set($key, $value);
+                }
+                $queryBuilder->execute();
             }
         }
     }

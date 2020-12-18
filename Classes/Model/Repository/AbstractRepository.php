@@ -4,10 +4,11 @@ namespace Localizationteam\Localizer\Model\Repository;
 
 use Localizationteam\Localizer\BackendUser;
 use Localizationteam\Localizer\Constants;
-use Localizationteam\Localizer\DatabaseConnection;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use PDO;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Database\RelationHandler;
-use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -19,7 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class AbstractRepository
 {
-    use BackendUser, DatabaseConnection;
+    use BackendUser;
 
     /**
      * @param int $localizerId
@@ -27,25 +28,87 @@ class AbstractRepository
      */
     public function getLocalizerLanguages($localizerId)
     {
-        return $this->getDatabaseConnection()
-            ->exec_SELECTgetSingleRow(
-                'MAX(sourceLanguage.uid) source, GROUP_CONCAT(targetLanguage.uid) target',
-                Constants::TABLE_LOCALIZER_SETTINGS . ' settings' .
-                ' LEFT OUTER JOIN ' . Constants::TABLE_LOCALIZER_LANGUAGE_MM . ' sourceMM' .
-                ' ON settings.uid = sourceMM.uid_local 
-                            AND sourceMM.tablenames = "' . Constants::TABLE_STATIC_LANGUAGES . '" 
-                            AND sourceMM.ident = "source"
-                            AND sourceMM.source = "' . Constants::TABLE_LOCALIZER_SETTINGS . '"' .
-                ' LEFT OUTER JOIN ' . Constants::TABLE_STATIC_LANGUAGES . ' sourceLanguage ON sourceLanguage.uid = sourceMM.uid_foreign' .
-                ' LEFT OUTER JOIN ' . Constants::TABLE_LOCALIZER_LANGUAGE_MM . ' targetMM' .
-                ' ON settings.uid = targetMM.uid_local 
-                            AND targetMM.tablenames = "' . Constants::TABLE_STATIC_LANGUAGES . '" 
-                            AND targetMM.ident = "target"
-                            AND targetMM.source = "' . Constants::TABLE_LOCALIZER_SETTINGS . '"' .
-                ' LEFT OUTER JOIN ' . Constants::TABLE_STATIC_LANGUAGES . ' targetLanguage ON targetLanguage.uid = targetMM.uid_foreign',
-                'settings.uid = ' . (int)$localizerId,
-                'settings.uid'
-            );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_LOCALIZER_SETTINGS
+        );
+        $queryBuilder->getRestrictions()
+            ->removeAll();
+        return $queryBuilder
+            ->selectLiteral('MAX(sourceLanguage.uid) source, GROUP_CONCAT(targetLanguage.uid) target')
+            ->from(Constants::TABLE_LOCALIZER_SETTINGS, 'settings')
+            ->leftJoin(
+                'settings',
+                Constants::TABLE_LOCALIZER_LANGUAGE_MM,
+                'sourceMM',
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq(
+                        'settings.uid',
+                        $queryBuilder->quoteIdentifier('sourceMM.uid_local')
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'sourceMM.tablenames',
+                        $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES, PDO::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'sourceMM.ident',
+                        $queryBuilder->createNamedParameter('source', PDO::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'sourceMM.source',
+                        $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS, PDO::PARAM_STR)
+                    )
+                )
+            )
+            ->leftJoin(
+                'sourceMM',
+                Constants::TABLE_STATIC_LANGUAGES,
+                'sourceLanguage',
+                $queryBuilder->expr()->eq(
+                    'sourceLanguage.uid',
+                    $queryBuilder->quoteIdentifier('sourceMM.uid_foreign')
+                )
+            )
+            ->leftJoin(
+                'settings',
+                Constants::TABLE_LOCALIZER_LANGUAGE_MM,
+                'targetMM',
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq(
+                        'settings.uid',
+                        $queryBuilder->quoteIdentifier('targetMM.uid_local')
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'targetMM.tablenames',
+                        $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES, PDO::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'targetMM.ident',
+                        $queryBuilder->createNamedParameter('target', PDO::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'targetMM.source',
+                        $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS, PDO::PARAM_STR)
+                    )
+                )
+            )
+            ->leftJoin(
+                'targetMM',
+                Constants::TABLE_STATIC_LANGUAGES,
+                'targetLanguage',
+                $queryBuilder->expr()->eq(
+                    'targetLanguage.uid',
+                    $queryBuilder->quoteIdentifier('targetMM.uid_foreign')
+                )
+            )
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'settings.uid',
+                    (int)$localizerId
+                )
+            )
+            ->groupBy('settings.uid')
+            ->execute()
+            ->fetch();
     }
 
     /**
@@ -54,30 +117,42 @@ class AbstractRepository
      */
     public function getStaticLanguages($systemLanguages)
     {
-        $systemLanguageUids = '0';
-        foreach($systemLanguages as $language) {
-            $systemLanguageUids .= ',' . (int)$language['uid'];
+        $systemLanguageUids = [];
+        $systemLanguageUids[] = '0';
+        foreach ($systemLanguages as $language) {
+            $systemLanguageUids[] = (int)$language['uid'];
         }
-        $languages = $this->getDatabaseConnection()
-            ->exec_SELECTgetRows(
-                '*',
-                Constants::TABLE_SYS_LANGUAGE,
-                'uid IN (' . $systemLanguageUids . ') ' . BackendUtility::BEenableFields(Constants::TABLE_SYS_LANGUAGE) . BackendUtility::deleteClause(Constants::TABLE_SYS_LANGUAGE),
-                '',
-                '',
-                '',
-                'uid'
-            );
-
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_SYS_LANGUAGE
+        );
+        $queryBuilder->getRestrictions()
+            ->removeAll();
+        $languages = $queryBuilder
+            ->select('*')
+            ->from(Constants::TABLE_SYS_LANGUAGE)
+            ->where(
+                $queryBuilder->expr()->in(
+                    'uid',
+                    $systemLanguageUids
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        $staticLanguages = [];
         if (!empty($languages)) {
-            foreach($systemLanguages as $language) {
-                if (isset($languages[$language['uid']])) {
-                    $languages[$language['uid']]['flagIcon'] = $language['flagIcon'];
+            foreach ($languages as $language) {
+                $staticLanguages[$language['uid']] = $language;
+            }
+        }
+        if (!empty($staticLanguages)) {
+            foreach ($systemLanguages as $language) {
+                if (isset($staticLanguages[$language['uid']])) {
+                    $staticLanguages[$language['uid']]['flagIcon'] = $language['flagIcon'];
                 }
             }
         }
 
-        return $languages;
+        return $staticLanguages;
     }
 
     /**
@@ -88,20 +163,33 @@ class AbstractRepository
      */
     public function loadConfiguration($cartId)
     {
-        $selectedCart = $this->getDatabaseConnection()
-            ->exec_SELECTgetSingleRow(
-                '*',
-                Constants::TABLE_LOCALIZER_CART,
-                'uid = ' . (int)$cartId
-            );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_LOCALIZER_CART
+        );
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(HiddenRestriction::class));
+        $selectedCart = $queryBuilder
+            ->select('*')
+            ->from(Constants::TABLE_LOCALIZER_CART)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    (int)$cartId
+                )
+            )
+            ->execute()
+            ->fetch();
         if (!empty($selectedCart['configuration'])) {
             $configuration = json_decode($selectedCart['configuration'], true);
             if (!empty($configuration)) {
                 return [
-                    'tables'    => $configuration['tables'],
+                    'tables' => $configuration['tables'],
                     'languages' => $configuration['languages'],
-                    'start'     => $configuration['start'],
-                    'end'       => $configuration['end'],
+                    'start' => $configuration['start'],
+                    'end' => $configuration['end'],
+                    'sortexports' => $configuration['sortexports'],
                 ];
             }
         }
@@ -115,16 +203,25 @@ class AbstractRepository
      */
     public function loadAvailableLocalizers()
     {
-        $availableLocalizeres = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            Constants::TABLE_LOCALIZER_SETTINGS,
-            'uid > 0 ' . BackendUtility::BEenableFields(Constants::TABLE_LOCALIZER_SETTINGS) . BackendUtility::deleteClause(Constants::TABLE_LOCALIZER_SETTINGS),
-            '',
-            '',
-            '',
-            'uid'
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_LOCALIZER_SETTINGS
         );
-        return $availableLocalizeres;
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(HiddenRestriction::class));
+        $localizers = $queryBuilder
+            ->select('*')
+            ->from(Constants::TABLE_LOCALIZER_SETTINGS)
+            ->execute()
+            ->fetchAll();
+        $availableLocalizers = [];
+        if (!empty($localizers)) {
+            foreach ($localizers as $localizer) {
+                $availableLocalizers[$localizer['uid']] = $localizer;
+            }
+        }
+        return $availableLocalizers;
     }
 
     /**
@@ -135,14 +232,34 @@ class AbstractRepository
      */
     public function loadAvailableCarts($localizerId)
     {
-        $availableCarts = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            Constants::TABLE_LOCALIZER_CART,
-            'cruser_id = ' . $this->getBackendUser()->user['uid'] .
-            ' AND uid_local = ' . (int)$localizerId .
-            ' AND status = ' . Constants::STATUS_CART_ADDED . BackendUtility::BEenableFields(Constants::TABLE_LOCALIZER_CART) . BackendUtility::deleteClause(Constants::TABLE_LOCALIZER_CART)
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_LOCALIZER_CART
         );
-        return $availableCarts;
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(HiddenRestriction::class));
+        return $queryBuilder
+            ->select('*')
+            ->from(Constants::TABLE_LOCALIZER_CART)
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq(
+                        'cruser_id',
+                        (int)$this->getBackendUser()->user['uid']
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'uid_local',
+                        (int)$localizerId
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'status',
+                        Constants::STATUS_CART_ADDED
+                    )
+                )
+            )
+            ->execute()
+            ->fetchAll();
     }
 
     /**
@@ -156,30 +273,64 @@ class AbstractRepository
     {
         $pageId = (int)$pageId;
         $cartId = (int)$cartId;
-        $availablePages = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'DISTINCT pid',
-            Constants::TABLE_CARTDATA_MM,
-            'pid > 0 AND cart = ' . $cartId,
-            '',
-            '',
-            '',
-            'pid'
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_CARTDATA_MM
         );
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(HiddenRestriction::class));
+        $pages = $queryBuilder
+            ->select('pid')
+            ->from(Constants::TABLE_CARTDATA_MM)
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->gt(
+                        'pid',
+                        0
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'cart',
+                        (int)$cartId
+                    )
+                )
+            )
+            ->groupBy('pid')
+            ->execute()
+            ->fetchAll();
+        $availablePages = [];
+        if (!empty($pages)) {
+            foreach ($pages as $page) {
+                $availablePages[$page['pid']] = $page;
+            }
+        }
         if ($pageId > 0) {
             $availablePages[$pageId] = [
                 'pid' => $pageId,
             ];
         }
         if (!empty($availablePages)) {
-            $pageTitles = $this->getDatabaseConnection()->exec_SELECTgetRows(
-                'uid,title',
-                'pages',
-                'uid IN (' . implode(',', array_keys($availablePages)) . ')',
-                '',
-                '',
-                '',
-                'uid'
-            );
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+            $queryBuilder->getRestrictions()
+                ->removeAll()
+                ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+            $titles = $queryBuilder
+                ->select('uid', 'title')
+                ->from('pages')
+                ->where(
+                    $queryBuilder->expr()->in(
+                        'uid',
+                        implode(',', array_keys($availablePages))
+                    )
+                )
+                ->execute()
+                ->fetchAll();
+            $pageTitles = [];
+            if (!empty($titles)) {
+                foreach ($titles as $title) {
+                    $pageTitles[$title['uid']] = $title;
+                }
+            }
             foreach ($availablePages as $pageId => &$pageData) {
                 $pageData['cart'] = $cartId;
                 $pageData['title'] = $pageTitles[$pageId]['title'];
@@ -196,15 +347,36 @@ class AbstractRepository
      */
     public function loadAvailableLanguages($cartId)
     {
-        $availableLanguages = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'DISTINCT languageId',
-            Constants::TABLE_CARTDATA_MM,
-            'languageId > 0 AND cart = ' . (int)$cartId,
-            '',
-            '',
-            '',
-            'languageId'
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_CARTDATA_MM
         );
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+        $languages = $queryBuilder
+            ->select('languageId')
+            ->from(Constants::TABLE_CARTDATA_MM)
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->gt(
+                        'languageId',
+                        0
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'cart',
+                        (int)$cartId
+                    )
+                )
+            )
+            ->groupBy('languageId')
+            ->execute()
+            ->fetchAll();
+        $availableLanguages = [];
+        if (!empty($languages)) {
+            foreach ($languages as $language) {
+                $availableLanguages[$language['languageId']] = $language;
+            }
+        }
         return $availableLanguages;
     }
 
@@ -216,15 +388,30 @@ class AbstractRepository
      */
     public function loadAvailableTables($cartId)
     {
-        $availableTables = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'DISTINCT tablename',
-            Constants::TABLE_CARTDATA_MM,
-            'cart = ' . (int)$cartId,
-            '',
-            '',
-            '',
-            'tablename'
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_CARTDATA_MM
         );
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+        $tables = $queryBuilder
+            ->select('tableName')
+            ->from(Constants::TABLE_CARTDATA_MM)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'cart',
+                    (int)$cartId
+                )
+            )
+            ->groupBy('tableName')
+            ->execute()
+            ->fetchAll();
+        $availableTables = [];
+        if (!empty($tables)) {
+            foreach ($tables as $table) {
+                $availableTables[$table['tableName']] = $table;
+            }
+        }
         return $availableTables;
     }
 
@@ -253,7 +440,7 @@ class AbstractRepository
                 )
                 && isset($translatableTables[$configuration['foreign_table']])
             ) {
-                /**@var $relationHandler RelationHandler **/
+                /**@var $relationHandler RelationHandler * */
                 $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
                 $relationHandler->start(
                     $fieldName,

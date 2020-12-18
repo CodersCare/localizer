@@ -4,7 +4,9 @@ namespace Localizationteam\Localizer\Handler;
 
 use Exception;
 use Localizationteam\Localizer\Constants;
-use Localizationteam\Localizer\DatabaseConnection;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * AbstractHandler $COMMENT$
@@ -16,69 +18,24 @@ use Localizationteam\Localizer\DatabaseConnection;
  */
 abstract class AbstractHandler
 {
-    use DatabaseConnection;
+    /**
+     * @var string
+     */
+    protected $processId = '';
     /**
      * @var bool
      */
     private $run = false;
-
     /**
-     * @var string
+     * @var int
      */
-    private $processId = '';
-
-    /**
-     * @var string
-     */
-    private $acquireWhere = '';
+    private $limit = 0;
 
     /**
      * @param $id
      * @throws Exception
      */
-    public function init($id = 1)
-    {
-        if ($this->acquireWhere !== '' && $id) {
-            $this->initProcessId();
-            if ($this->acquire() === true) {
-                $this->initRun();
-            }
-        } else {
-            throw new Exception('Condition for acquire() missing');
-        }
-    }
-
-    final protected function initProcessId()
-    {
-        $this->processId = md5(uniqid('', true) . (microtime(true) * 10000));
-    }
-
-    /**
-     * @return bool
-     */
-    protected function acquire()
-    {
-        $acquired = false;
-        $fields = [
-            'tstamp'    => time(),
-            'processid' => $this->processId,
-        ];
-        $this->getDatabaseConnection()
-            ->exec_UPDATEquery(
-                Constants::TABLE_EXPORTDATA_MM,
-                $this->acquireWhere,
-                $fields
-            );
-        if ($this->getDatabaseConnection()->sql_affected_rows() > 0) {
-            $acquired = true;
-        }
-        return $acquired;
-    }
-
-    final protected function initRun()
-    {
-        $this->run = true;
-    }
+    abstract public function init($id = 1);
 
     abstract function run();
 
@@ -103,15 +60,22 @@ abstract class AbstractHandler
         if ($time == 0) {
             $time = time();
         }
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            Constants::TABLE_EXPORTDATA_MM,
-            'processid="' . $this->processId . '"',
-            [
-                'tstamp'    => $time,
-                'processid' => '',
-            ]
-        );
-
+        GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable(Constants::TABLE_EXPORTDATA_MM)
+            ->update(
+                Constants::TABLE_EXPORTDATA_MM,
+                [
+                    'tstamp' => $time,
+                    'processid' => '',
+                ],
+                [
+                    'processid' => $this->processId
+                ],
+                [
+                    Connection::PARAM_INT,
+                    Connection::PARAM_STR
+                ]
+            );
     }
 
     /**
@@ -123,11 +87,26 @@ abstract class AbstractHandler
     }
 
     /**
-     * @param $where
+     * @return bool
      */
-    protected function setAcquireWhere($where)
+    abstract protected function acquire();
+
+    final protected function initProcessId()
     {
-        $this->acquireWhere = (string)$where;
+        $this->processId = md5(uniqid('', true) . (microtime(true) * 10000));
+    }
+
+    final protected function initRun()
+    {
+        $this->run = true;
+    }
+
+    /**
+     * @param int $limit
+     */
+    protected function setLimit($limit)
+    {
+        $this->limit = $limit;
     }
 
     final protected function resetRun()

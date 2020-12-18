@@ -5,6 +5,7 @@ namespace Localizationteam\Localizer\Api;
 use Exception;
 use Localizationteam\Localizer\BackendUser;
 use Localizationteam\Localizer\Constants;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -21,6 +22,7 @@ use ZipArchive;
 class ApiCalls
 {
     use BackendUser;
+
     /**
      * @var int
      */
@@ -345,7 +347,7 @@ class ApiCalls
         if ($this->folderInformation === null) {
             $this->folderInformation = [
                 'outFolder' => $this->outFolder,
-                'inFolder'  => $this->inFolder,
+                'inFolder' => $this->inFolder,
                 'lastError' => $this->lastError,
             ];
         }
@@ -427,10 +429,14 @@ class ApiCalls
     protected function storeFileIntoLocalHotfolder($fileContent, $fileName, $source, $attachInstruction)
     {
         if ($this->checkAndCreateFolder($this->outFolder, 'outgoing') === true) {
-            $xmlPath = PATH_site . $this->outFolder . '/' . $fileName;
+            $xmlPath = Environment::getPublicPath() . '/' . $this->outFolder . '/' . $fileName;
             $zipPath = str_replace('.xml', '', $xmlPath) . '.zip';
             $zipFile = fopen($zipPath, 'w') or new Exception('Can not create ZIP file');
-            $instructionFile = file_get_contents(ExtensionManagementUtility::extPath('localizer') . '/Resources/Private/Templates/Provider/instruction.xml');
+            $instructionFile = file_get_contents(
+                ExtensionManagementUtility::extPath(
+                    'localizer'
+                ) . '/Resources/Private/Templates/Provider/instruction.xml'
+            );
             if (file_exists($zipPath) && !empty($instructionFile)) {
                 $instructions = $this->getInstructions();
                 $sourceLocale = GeneralUtility::trimExplode('_', str_replace('-', '_', $source));
@@ -440,21 +446,25 @@ class ApiCalls
                 $targetLanguage = strtolower($targetLocale[0]);
                 $targetCountry = $targetLocale[1] ? strtolower($targetLocale[1]) : strtolower($targetLocale[0]);
                 $markContentArray = [
-                    'DEADLINE'         => $instructions['deadline'],
-                    'FILE_NAME'        => $fileName,
-                    'PROJECT_CONTACT'  => $this->getBackendUser()->user['email'],
-                    'PROJECT_NAME'     => date('Y-m-d') . '_Typo3CMS_' . strtoupper($sourceLanguage) . '-' . strtoupper($targetLanguage),
+                    'DEADLINE' => $instructions['deadline'],
+                    'FILE_NAME' => $fileName,
+                    'PROJECT_CONTACT' => $this->getBackendUser()->user['email'],
+                    'PROJECT_NAME' => date('Y-m-d') . '_Typo3CMS_' . strtoupper($sourceLanguage) . '-' . strtoupper(
+                            $targetLanguage
+                        ),
                     'PROJECT_SETTINGS' => $this->projectKey,
-                    'SOURCE_COUNTRY'   => $sourceCountry,
-                    'SOURCE_LANGUAGE'  => $sourceLanguage,
-                    'TARGET_COUNTRY'   => $targetCountry,
-                    'TARGET_LANGUAGE'  => $targetLanguage,
-                    'WORKFLOW'         => $this->workflow,
+                    'SOURCE_COUNTRY' => $sourceCountry,
+                    'SOURCE_LANGUAGE' => $sourceLanguage,
+                    'TARGET_COUNTRY' => $targetCountry,
+                    'TARGET_LANGUAGE' => $targetLanguage,
+                    'WORKFLOW' => $this->workflow,
                 ];
                 $zip = new ZipArchive;
                 if ($zip->open($zipPath) === true) {
                     if ($attachInstruction) {
-                        $instructionFileContent = GeneralUtility::makeInstance(MarkerBasedTemplateService::class)->substituteMarkerArray(
+                        $instructionFileContent = GeneralUtility::makeInstance(
+                            MarkerBasedTemplateService::class
+                        )->substituteMarkerArray(
                             $instructionFile,
                             $markContentArray,
                             '###|###',
@@ -482,7 +492,7 @@ class ApiCalls
     protected function checkAndCreateFolder($folder, $type)
     {
         if ($folder) {
-            $folder = PATH_site . '/' . $folder;
+            $folder = Environment::getPublicPath() . '/' . $folder;
             if (file_exists($folder) && is_writable($folder)) {
                 return true;
             } else {
@@ -586,7 +596,7 @@ class ApiCalls
         }
         if (!$this->checkAndCreateFolder($this->inFolder, 'incoming')) {
             return false;
-        };
+        }
         return true;
     }
 

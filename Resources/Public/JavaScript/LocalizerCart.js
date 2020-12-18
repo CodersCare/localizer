@@ -88,7 +88,7 @@ define(['jquery', 'bootstrap'], function ($) {
         var showImportButton = false;
         if ($(exportCounters).length) {
             $.each(exportCounters, function (exportStatus, values) {
-                if (exportStatus === '70' && values.action === '0') {
+                if (exportStatus === '70' && values.action === 0) {
                     showImportButton = true;
                 }
                 firstCell.append(' <button type="button" ' +
@@ -104,7 +104,7 @@ define(['jquery', 'bootstrap'], function ($) {
 
     LocalizerCart.addExportData = function (record, firstCell) {
         $.each(record.exportData, function (exportId, values) {
-            firstCell.append('<li class="toggle-status toggle-' + values.status + '"><button type="button" ' +
+            firstCell.append('<li class="toggle-status toggle-' + values.status + ' action1-' + values.action + '"><button type="button" ' +
                 'class="btn btn-' + values.cssClass + '" data-toggle="tooltip" data-placement="top" ' +
                 'data-uid="' + exportId + '" ' +
                 'data-title="' + values.label + '">' + values.filename + ' [' + values.label + ']</button></li>');
@@ -132,7 +132,7 @@ define(['jquery', 'bootstrap'], function ($) {
         editOnClick = editOnClick.replace(/&/g, "\\u0026");
         var previewOnClick = '';
         var previewTooltip = '';
-        if (values.status === '70') {
+        if (values.status === 70) {
             //previewOnClick = "window.open('/uploads/tx_l10nmgr/jobs/in/" + values.locale + "/" + values.filename + "', 'Import File', 'width=1024,height=768'); window.open('/uploads/tx_l10nmgr/jobs/out/" + values.filename + "', 'Export File', 'width=1024,height=768'); return false;";
             previewOnClick = "window.open('/uploads/tx_l10nmgr/jobs/in/" + values.filename + "', 'Import File', 'width=1024,height=768'); window.open('/uploads/tx_l10nmgr/jobs/out/" + values.filename + "', 'Export File', 'width=1024,height=768'); return false;";
             previewTooltip = 'Click twice to preview both files';
@@ -140,8 +140,8 @@ define(['jquery', 'bootstrap'], function ($) {
             previewOnClick = "window.open('/uploads/tx_l10nmgr/jobs/out/" + values.filename + "', 'Export File', 'width=1024,height=768'); return false;";
             previewTooltip = 'Preview this file';
         }
-        cell.append('<li class="toggle-status toggle-' + values.status + '">' +
-            (values.status === '70' && values.action === '0' ? (
+        cell.append('<li class="toggle-status toggle-' + values.status + ' action2-' + values.action + '">' +
+            (values.status === 70 && values.action === 0 ? (
                 '<div class="btn-group btn-group-import" role="group">' +
                 '<a href="#" class="btn btn-warning" ' +
                 'data-toggle="tooltip" data-placement="top" ' +
@@ -152,7 +152,7 @@ define(['jquery', 'bootstrap'], function ($) {
                 '<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-upload.svg" width="16" height="16">' +
                 '</span></span></a>'
             ) : '') +
-            (values.status !== '80' && values.action !== '70' ? (
+            (values.status !== 80 && values.action !== 70 ? (
                 '</div> <div class="btn-group btn-group-preview" role="group">' +
                 '<a href="#" class="btn btn-info" ' +
                 'onclick="' + previewOnClick + '"' +
@@ -172,7 +172,7 @@ define(['jquery', 'bootstrap'], function ($) {
                 '<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-open.svg" width="16" height="16">' +
                 '</span></span></a>'
             ) : '') +
-            (values.action === '70' ? (
+            (values.action === 70 ? (
                 '</div> <div class="btn-group btn-group-scheduled" role="group">' +
                 '<a href="#" class="btn btn-success" ' +
                 'data-toggle="tooltip" data-placement="top" ' +

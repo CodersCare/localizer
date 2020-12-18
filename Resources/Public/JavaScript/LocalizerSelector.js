@@ -23,6 +23,7 @@ define(['jquery', 'bootstrap'], function ($) {
         $('#finalize-cart-submit').click(function (e) {
             e.preventDefault();
             $(this).off("click").attr('href', "javascript: void(0);");
+            $('#localizer_selector [name="selected_deadline"]').val($('#input-configured-configured_deadline').val());
             $('#configuratorFinalize').val('finalize');
             $('#localizer_selector').submit();
         });
@@ -51,6 +52,7 @@ define(['jquery', 'bootstrap'], function ($) {
                 children.click();
                 children.find('input').prop('checked', false);
             }
+            $(this).focus().blur();
             $('[data-toggle="tooltip"]').tooltip('hide');
         });
         $('.localizer-selector-matrix .language-header').click(function (event) {
@@ -75,6 +77,7 @@ define(['jquery', 'bootstrap'], function ($) {
                 children.click();
                 children.find('input').prop('checked', false);
             }
+            $(this).focus().blur();
             $('[data-toggle="tooltip"]').tooltip('hide');
         });
         var recordHeader = $('.localizer-selector-matrix .record-header');

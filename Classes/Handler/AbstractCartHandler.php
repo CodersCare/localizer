@@ -4,7 +4,9 @@ namespace Localizationteam\Localizer\Handler;
 
 use Exception;
 use Localizationteam\Localizer\Constants;
-use Localizationteam\Localizer\DatabaseConnection;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * AbstractCartHandler $COMMENT$
@@ -16,70 +18,20 @@ use Localizationteam\Localizer\DatabaseConnection;
  */
 abstract class AbstractCartHandler
 {
-    use DatabaseConnection;
-
+    /**
+     * @var string
+     */
+    protected $processId = '';
     /**
      * @var bool
      */
     private $run = false;
 
     /**
-     * @var string
-     */
-    private $processId = '';
-
-    /**
-     * @var string
-     */
-    private $acquireWhere = '';
-
-    /**
      * @param $id
      * @throws Exception
      */
-    public function init($id = 1)
-    {
-        if ($this->acquireWhere !== '' && $id) {
-            $this->initProcessId();
-            if ($this->acquire() === true) {
-                $this->initRun();
-            }
-        } else {
-            throw new Exception('Condition for acquire() missing');
-        }
-    }
-
-    final protected function initProcessId()
-    {
-        $this->processId = md5(uniqid('', true) . (microtime(true) * 10000));
-    }
-
-    /**
-     * @return bool
-     */
-    protected function acquire()
-    {
-        $acquired = false;
-        $fields = [
-            'tstamp'    => time(),
-            'processid' => $this->processId,
-        ];
-        $this->getDatabaseConnection()
-            ->exec_UPDATEquery(
-                Constants::TABLE_LOCALIZER_CART,
-                $this->acquireWhere,
-                $fields
-            );
-        if ($this->getDatabaseConnection()->sql_affected_rows() > 0) {
-            $acquired = true;
-        }
-        return $acquired;
-    }
-
-    final protected function initRun()
-    {
-        $this->run = true;
-    }
+    abstract public function init($id = 1);
 
     abstract function run();
 
@@ -104,15 +56,22 @@ abstract class AbstractCartHandler
         if ($time == 0) {
             $time = time();
         }
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            Constants::TABLE_LOCALIZER_CART,
-            'processid = "' . $this->processId . '"',
-            [
-                'tstamp'    => $time,
-                'processid' => '',
-            ]
-        );
-
+        GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable(Constants::TABLE_LOCALIZER_CART)
+            ->update(
+                Constants::TABLE_LOCALIZER_CART,
+                [
+                    'tstamp' => $time,
+                    'processid' => '',
+                ],
+                [
+                    'processid' => $this->processId
+                ],
+                [
+                    Connection::PARAM_INT,
+                    Connection::PARAM_STR
+                ]
+            );
     }
 
     /**
@@ -124,11 +83,18 @@ abstract class AbstractCartHandler
     }
 
     /**
-     * @param $where
+     * @return bool
      */
-    protected function setAcquireWhere($where)
+    abstract protected function acquire();
+
+    final protected function initProcessId()
     {
-        $this->acquireWhere = (string)$where;
+        $this->processId = md5(uniqid('', true) . (microtime(true) * 10000));
+    }
+
+    final protected function initRun()
+    {
+        $this->run = true;
     }
 
     final protected function resetRun()

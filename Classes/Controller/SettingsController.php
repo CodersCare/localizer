@@ -2,8 +2,8 @@
 
 namespace Localizationteam\Localizer\Controller;
 
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
@@ -79,7 +79,9 @@ class SettingsController extends AbstractController
             'name' => $this->moduleName,
         ];
         $this->getBackendUser()->modAccess($this->MCONF, 1);
-        $this->getLanguageService()->includeLLFile('EXT:localizer/Resources/Private/Language/locallang_localizer_settings.xlf');
+        $this->getLanguageService()->includeLLFile(
+            'EXT:localizer/Resources/Private/Language/locallang_localizer_settings.xlf'
+        );
     }
 
     /**
@@ -113,12 +115,7 @@ class SettingsController extends AbstractController
     {
         $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
         $access = is_array($this->pageinfo) ? 1 : 0;
-        $this->modTSconfig['properties']['enableDisplayBigControlPanel'] = 'activated';
-        if ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'activated') {
-            $this->MOD_SETTINGS['bigControlPanel'] = true;
-        } elseif ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'deactivated') {
-            $this->MOD_SETTINGS['bigControlPanel'] = false;
-        }
+        $this->MOD_SETTINGS['bigControlPanel'] = true;
         if ($this->modTSconfig['properties']['enableClipBoard'] === 'activated') {
             $this->MOD_SETTINGS['clipBoard'] = true;
         } elseif ($this->modTSconfig['properties']['enableClipBoard'] === 'deactivated') {
@@ -132,7 +129,8 @@ class SettingsController extends AbstractController
         /** @var $dblist DatabaseRecordList */
         $dblist = GeneralUtility::makeInstance('TYPO3\\CMS\\Recordlist\\RecordList\\DatabaseRecordList');
         $dblist->backPath = $GLOBALS['BACK_PATH'];
-        $dblist->script = BackendUtility::getModuleUrl('web_list', []);
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $dblist->script = $uriBuilder->buildUriFromRoute('web_list');
         $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
         $dblist->returnUrl = $this->returnUrl;
@@ -145,11 +143,16 @@ class SettingsController extends AbstractController
         $dblist->hideTranslations = $this->modTSconfig['properties']['hideTranslations'];
         $dblist->tableTSconfigOverTCA = $this->modTSconfig['properties']['table.'];
         $dblist->alternateBgColors = $this->modTSconfig['properties']['alternateBgColors'] ? 1 : 0;
-        $dblist->allowedNewTables = GeneralUtility::trimExplode(',',
-            $this->modTSconfig['properties']['allowedNewTables'], true);
-        $dblist->deniedNewTables = GeneralUtility::trimExplode(',', $this->modTSconfig['properties']['deniedNewTables'],
-            true);
-        $dblist->newWizards = $this->modTSconfig['properties']['newWizards'] ? 1 : 0;
+        $dblist->allowedNewTables = GeneralUtility::trimExplode(
+            ',',
+            $this->modTSconfig['properties']['allowedNewTables'],
+            true
+        );
+        $dblist->deniedNewTables = GeneralUtility::trimExplode(
+            ',',
+            $this->modTSconfig['properties']['deniedNewTables'],
+            true
+        );
         $dblist->pageRow = $this->pageinfo;
         $dblist->counter++;
         $dblist->MOD_MENU = ['bigControlPanel' => '', 'clipBoard' => '', 'localization' => ''];
@@ -160,8 +163,13 @@ class SettingsController extends AbstractController
         $dblist->clipObj->initializeClipboard();
         $CB = GeneralUtility::_GET('CB');
         if ($this->cmd == 'setCB') {
-            $CB['el'] = $dblist->clipObj->cleanUpCBC(array_merge(GeneralUtility::_POST('CBH'),
-                (array)GeneralUtility::_POST('CBC')), $this->cmd_table);
+            $CB['el'] = $dblist->clipObj->cleanUpCBC(
+                array_merge(
+                    GeneralUtility::_POST('CBH'),
+                    (array)GeneralUtility::_POST('CBC')
+                ),
+                $this->cmd_table
+            );
         }
         if (!$this->MOD_SETTINGS['clipBoard']) {
             $CB['setP'] = 'normal';
@@ -186,18 +194,17 @@ class SettingsController extends AbstractController
                     if (isset($cmd['pages'])) {
                         BackendUtility::setUpdateSignal('updatePageTree');
                     }
-                    $tce->printLogErrorMessages(GeneralUtility::getIndpEnv('REQUEST_URI'));
+                    $tce->printLogErrorMessages();
                 }
             }
             $this->pointer = MathUtility::forceIntegerInRange($this->pointer, 0, 100000);
             $dblist->start($this->id, $this->table, $this->pointer, $this->search_field, 99, $this->showLimit);
             $dblist->setDispFields();
-            if (ExtensionManagementUtility::isLoaded('version')) {
-                $dblist->HTMLcode .= $this->moduleTemplate->getVersionSelector($this->id);
-            }
             $dblist->generateList();
             $listUrl = substr($dblist->listURL(), strlen($GLOBALS['BACK_PATH']));
-            $this->moduleTemplate->addJavaScriptCode('localizer_settings_list', '
+            $this->moduleTemplate->addJavaScriptCode(
+                'localizer_settings_list',
+                '
 				function jumpExt(URL,anchor) {	//
 					var anc = anchor?anchor:"";
 					window.location.href = URL+(T3_THIS_LOCATION?"&returnUrl="+T3_THIS_LOCATION:"")+anc;
@@ -217,9 +224,37 @@ class SettingsController extends AbstractController
 					}
 				}
 				' . $this->moduleTemplate->redirectUrls($listUrl) . '
-				' . $dblist->CBfunctions() . '
+                    // checkOffCB()
+                function checkOffCB(listOfCBnames, link) {	//
+                    var checkBoxes, flag, i;
+                    var checkBoxes = listOfCBnames.split(",");
+                    if (link.rel === "") {
+                        link.rel = "allChecked";
+                        flag = true;
+                    } else {
+                        link.rel = "";
+                        flag = false;
+                    }
+                    for (i = 0; i < checkBoxes.length; i++) {
+                        setcbValue(checkBoxes[i], flag);
+                    }
+                }
+                    // cbValue()
+                function cbValue(CBname) {	//
+                    var CBfullName = "CBC["+CBname+"]";
+                    return (document.dblistForm[CBfullName] && document.dblistForm[CBfullName].checked ? 1 : 0);
+                }
+                    // setcbValue()
+                function setcbValue(CBname,flag) {	//
+                    CBfullName = "CBC["+CBname+"]";
+                    if(document.dblistForm[CBfullName]) {
+                        document.dblistForm[CBfullName].checked = flag ? "on" : 0;
+                    }
+                }
 				function editRecords(table,idList,addParams,CBflag) {	//
-					window.location.href="' . $GLOBALS['BACK_PATH'] . 'alt_doc.php?returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI')) . '&edit["+table+"]["+idList+"]=edit"+addParams;
+					window.location.href="' . $GLOBALS['BACK_PATH'] . 'alt_doc.php?returnUrl=' . rawurlencode(
+                    GeneralUtility::getIndpEnv('REQUEST_URI')
+                ) . '&edit["+table+"]["+idList+"]=edit"+addParams;
 				}
 				function editList(table,idList) {	//
 					var list="";
@@ -242,7 +277,8 @@ class SettingsController extends AbstractController
 				}
 
 				if (top.fsMod) top.fsMod.recentIds["web"] = ' . (int)$this->id . ';
-			');
+			'
+            );
         }
         $header = 'LOCALIZER Settings';
         if (isset($this->pageinfo['title'])) {
@@ -250,7 +286,9 @@ class SettingsController extends AbstractController
         }
         $this->content = $this->moduleTemplate->header($header . $this->pageinfo['title']);
         if ($this->id > 0) {
-            $this->content .= '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" name="dblistForm">';
+            $this->content .= '<form action="' . htmlspecialchars(
+                    $dblist->listURL()
+                ) . '" method="post" name="dblistForm">';
             $this->content .= $dblist->HTMLcode;
             $this->content .= '<input type="hidden" name="cmd_table" /><input type="hidden" name="cmd" /></form>';
             if ($dblist->HTMLcode) {
@@ -261,28 +299,51 @@ class SettingsController extends AbstractController
 					<div id="typo3-listOptions">
 						<form action="" method="post">';
                 if ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'selectable') {
-                    $this->content .= BackendUtility::getFuncCheck($this->id, 'SET[bigControlPanel]',
-                        $this->MOD_SETTINGS['bigControlPanel'], '', $this->table ? '&table=' . $this->table : '',
-                        'id="checkLargeControl"');
-                    $this->content .= '<label for="checkLargeControl">' . BackendUtility::wrapInHelp('xMOD_csh_corebe',
-                            'list_options', $GLOBALS['LANG']->getLL('largeControl', true)) . '</label><br />';
+                    $this->content .= BackendUtility::getFuncCheck(
+                        $this->id,
+                        'SET[bigControlPanel]',
+                        $this->MOD_SETTINGS['bigControlPanel'],
+                        '',
+                        $this->table ? '&table=' . $this->table : '',
+                        'id="checkLargeControl"'
+                    );
+                    $this->content .= '<label for="checkLargeControl">' . BackendUtility::wrapInHelp(
+                            'xMOD_csh_corebe',
+                            'list_options',
+                            $GLOBALS['LANG']->getLL('largeControl')
+                        ) . '</label><br />';
                 }
                 if ($this->modTSconfig['properties']['enableClipBoard'] === 'selectable') {
                     if ($dblist->showClipboard) {
-                        $this->content .= BackendUtility::getFuncCheck($this->id, 'SET[clipBoard]',
-                            $this->MOD_SETTINGS['clipBoard'], '', $this->table ? '&table=' . $this->table : '',
-                            'id="checkShowClipBoard"');
-                        $this->content .= '<label for="checkShowClipBoard">' . BackendUtility::wrapInHelp('xMOD_csh_corebe',
+                        $this->content .= BackendUtility::getFuncCheck(
+                            $this->id,
+                            'SET[clipBoard]',
+                            $this->MOD_SETTINGS['clipBoard'],
+                            '',
+                            $this->table ? '&table=' . $this->table : '',
+                            'id="checkShowClipBoard"'
+                        );
+                        $this->content .= '<label for="checkShowClipBoard">' . BackendUtility::wrapInHelp(
+                                'xMOD_csh_corebe',
                                 'list_options',
-                                $GLOBALS['LANG']->getLL('showClipBoard', true)) . '</label><br />';
+                                $GLOBALS['LANG']->getLL('showClipBoard')
+                            ) . '</label><br />';
                     }
                 }
                 if ($this->modTSconfig['properties']['enableLocalizationView'] === 'selectable') {
-                    $this->content .= BackendUtility::getFuncCheck($this->id, 'SET[localization]',
-                        $this->MOD_SETTINGS['localization'], '', $this->table ? '&table=' . $this->table : '',
-                        'id="checkLocalization"');
-                    $this->content .= '<label for="checkLocalization">' . BackendUtility::wrapInHelp('xMOD_csh_corebe',
-                            'list_options', $GLOBALS['LANG']->getLL('localization', true)) . '</label><br />';
+                    $this->content .= BackendUtility::getFuncCheck(
+                        $this->id,
+                        'SET[localization]',
+                        $this->MOD_SETTINGS['localization'],
+                        '',
+                        $this->table ? '&table=' . $this->table : '',
+                        'id="checkLocalization"'
+                    );
+                    $this->content .= '<label for="checkLocalization">' . BackendUtility::wrapInHelp(
+                            'xMOD_csh_corebe',
+                            'list_options',
+                            $GLOBALS['LANG']->getLL('localization')
+                        ) . '</label><br />';
                 }
                 $this->content .= '
 						</form>

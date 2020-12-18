@@ -10,6 +10,7 @@ use Localizationteam\Localizer\Model\Repository\AutomaticExportRepository;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -77,7 +78,7 @@ class AutomaticExporter extends AbstractCartHandler
                     unset($this->availableLocalizers[$key]);
                 }
             }
-        };
+        }
     }
 
     /**
@@ -104,31 +105,53 @@ class AutomaticExporter extends AbstractCartHandler
             ArrayUtility::mergeRecursiveWithOverrule($alreadyHandledPages,
                 $this->selectorRepository->loadAvailablePages(0, (int)$cart['uid']));
         }*/
+        $pagesConfiguredForAutomaticExport = [];
         if ($localizer['collect_pages_marked_for_export']) {
-            $pagesConfiguredForAutomaticExport = $this->automaticExportRepository->loadPagesConfiguredForAutomaticExport((int)$localizer['automatic_export_minimum_age'],
-                array_keys($alreadyHandledPages));
-        }
-        if ($localizer['allow_adding_to_export']) {
-            $pagesAddedToThisAutomaticExport = $this->automaticExportRepository->loadPagesAddedToSpecificAutomaticExport((int)$localizer['uid'],
+            $pagesConfiguredForAutomaticExport = $this->automaticExportRepository->loadPagesConfiguredForAutomaticExport(
                 (int)$localizer['automatic_export_minimum_age'],
-                array_keys($alreadyHandledPages));
+                array_keys($alreadyHandledPages)
+            );
         }
-        $pagesForAutomaticExport = array_merge($pagesConfiguredForAutomaticExport ? : [], $pagesAddedToThisAutomaticExport ? : []);
+        $pagesAddedToThisAutomaticExport = [];
+        if ($localizer['allow_adding_to_export']) {
+            $pagesAddedToThisAutomaticExport = $this->automaticExportRepository->loadPagesAddedToSpecificAutomaticExport(
+                (int)$localizer['uid'],
+                (int)$localizer['automatic_export_minimum_age'],
+                array_keys($alreadyHandledPages)
+            );
+        }
+        $pagesForAutomaticExport = array_merge(
+            $pagesConfiguredForAutomaticExport,
+            $pagesAddedToThisAutomaticExport
+        );
         if (!empty($pagesForAutomaticExport)) {
             foreach ($pagesForAutomaticExport as $page) {
                 $translatableTables = $this->findTranslatableTables((int)$page['uid']);
                 $configuration = [
                     'tables' => array_flip(array_keys($translatableTables)),
+                    'sortexports' => 1
                 ];
-                $recordsToBeExported = $this->selectorRepository->getRecordsOnPages((int)$page['uid'],
-                    [(int)$page['uid'] => 1], $translatableTables, $configuration);
+                $recordsToBeExported = $this->selectorRepository->getRecordsOnPages(
+                    (int)$page['uid'],
+                    [(int)$page['uid'] => 1],
+                    $translatableTables,
+                    $configuration
+                );
                 if (!empty($recordsToBeExported) && !empty($recordsToBeExported['records'])) {
-                    $translationConfigurationProvider = GeneralUtility::makeInstance(TranslationConfigurationProvider::class);
+                    $translationConfigurationProvider = GeneralUtility::makeInstance(
+                        TranslationConfigurationProvider::class
+                    );
                     $systemLanguages = $translationConfigurationProvider->getSystemLanguages();
                     $localizerLanguages = $this->selectorRepository->getLocalizerLanguages((int)$localizer['uid']);
                     if (!empty($localizerLanguages['source']) && !empty($localizerLanguages['target'])) {
                         $automaticTriples = [];
-                        $languageArray = array_flip(GeneralUtility::intExplode(',', $localizerLanguages['target'], true));
+                        $languageArray = array_flip(
+                            GeneralUtility::intExplode(
+                                ',',
+                                $localizerLanguages['target'],
+                                true
+                            )
+                        );
                         $configuration['languages'] = [];
                         foreach ($systemLanguages as $language) {
                             if (isset($languageArray[(int)$language['static_lang_isocode']])) {
@@ -167,15 +190,24 @@ class AutomaticExporter extends AbstractCartHandler
                                 }
                             }
                         }
-                        $cartId = (int)$this->selectorRepository->createNewCart((int)$localizer['pid'],
-                            (int)$localizer['uid']);
+                        $cartId = (int)$this->selectorRepository->createNewCart(
+                            (int)$localizer['pid'],
+                            (int)$localizer['uid']
+                        );
                         $this->selectorRepository->storeConfiguration((int)$localizer['pid'], $cartId, $configuration);
                         $pageIds = [(int)$page['uid'] => (int)$page['uid']];
-                        $this->automaticExportRepository->storeCart($pageIds, $cartId, $configuration,
-                            $automaticTriples);
-                        $configurationId = $this->selectorRepository->storeL10nmgrConfiguration((int)$localizer['pid'],
+                        $this->automaticExportRepository->storeCart(
+                            $pageIds,
+                            $cartId,
+                            $configuration,
+                            $automaticTriples
+                        );
+                        $configurationId = $this->selectorRepository->storeL10nmgrConfiguration(
+                            (int)$localizer['pid'],
                             (int)$localizer['uid'],
-                            $cartId, $configuration);
+                            $cartId,
+                            $configuration
+                        );
                         $this->selectorRepository->finalizeCart((int)$localizer['uid'], $cartId, $configurationId);
                         /** @var FileExporter $fileExporter */
                         $fileExporter = GeneralUtility::makeInstance(FileExporter::class);
@@ -196,10 +228,19 @@ class AutomaticExporter extends AbstractCartHandler
         $translatableTables = ['pages' => $GLOBALS['LANG']->sL($GLOBALS['TCA']['pages']['ctrl']['title'])];
         foreach (array_keys($GLOBALS['TCA']) as $table) {
             if (BackendUtility::isTableLocalizable($table)) {
-                $recordExists = $this->getDatabaseConnection()
-                    ->exec_SELECTgetSingleRow('*', $table, 'pid=' . $pid .
-                        BackendUtility::BEenableFields($table) .
-                        BackendUtility::deleteClause($table));
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
+                $queryBuilder->getRestrictions();
+                $recordExists = $queryBuilder
+                    ->select('*')
+                    ->from($table)
+                    ->where(
+                        $queryBuilder->expr()->eq(
+                            'pid',
+                            (int)$pid
+                        )
+                    )
+                    ->execute()
+                    ->fetchColumn(0);
                 if (!empty($recordExists)) {
                     $translatableTables[$table] = $GLOBALS['LANG']->sL($GLOBALS['TCA'][$table]['ctrl']['title']);
                 }
@@ -210,7 +251,10 @@ class AutomaticExporter extends AbstractCartHandler
 
     public function finish($time)
     {
+    }
 
+    protected function acquire()
+    {
     }
 
 }

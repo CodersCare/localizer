@@ -6,7 +6,11 @@ use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\File;
+use PDO;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
+use TYPO3\CMS\Core\Utility\CommandUtility;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 
 /**
@@ -27,16 +31,55 @@ class FileImporter extends AbstractHandler
      */
     public function init($id = 1)
     {
-        $where = 'deleted = 0 AND hidden = 0 AND status = ' . Constants::HANDLER_FILEIMPORTER_START .
-            ' AND action = ' . Constants::ACTION_IMPORT_FILE .
-            ' AND last_error = "" AND processid = ""' .
-            ' LIMIT ' . Constants::HANDLER_FILEIMPORTER_MAX_FILES;
-        $this->setAcquireWhere($where);
-        parent::init($id);
+        parent::initProcessId();
+        if ($this->acquire() === true) {
+            $this->initRun();
+        }
         if ($this->canRun()) {
             $this->initData();
             $this->load();
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function acquire()
+    {
+        $acquired = false;
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            Constants::TABLE_EXPORTDATA_MM
+        );
+        $queryBuilder->getRestrictions();
+        $affectedRows = $queryBuilder
+            ->update(Constants::TABLE_EXPORTDATA_MM)
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq(
+                        'status',
+                        Constants::HANDLER_FILEIMPORTER_START
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'action',
+                        Constants::ACTION_IMPORT_FILE
+                    ),
+                    $queryBuilder->expr()->isNull(
+                        'last_error'
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'processid',
+                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                    )
+                )
+            )
+            ->set('tstamp', time())
+            ->set('processid', $this->processId)
+            ->setMaxResults(Constants::HANDLER_FILEIMPORTER_MAX_FILES)
+            ->execute();
+        if ($affectedRows > 0) {
+            $acquired = true;
+        }
+        return $acquired;
     }
 
     function run()
@@ -90,20 +133,26 @@ class FileImporter extends AbstractHandler
     {
         $response = [];
         foreach ($files as $fileStatus) {
-            $introductionXmlPath = PATH_site . 'uploads/tx_l10nmgr/jobs/in/instruction.xml';
-            if (file_exists($introductionXmlPath)) {
-                unlink($introductionXmlPath);
+            $instructionXmlPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/in/instruction.xml';
+            if (file_exists($instructionXmlPath)) {
+                unlink($instructionXmlPath);
             }
             $fileNameAndPath = $this->getLocalFilename($originalFileName, $fileStatus['locale']);
-            $context = GeneralUtility::getApplicationContext()->__toString();
-            $action = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
-                PATH_site . 'typo3/sysext/core/bin/typo3 l10nmanager:import -t importFile --file ' .
-                $fileNameAndPath;
+            $context = Environment::getContext()->__toString();
+            $command = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
+                CommandUtility::getCommand('php') . ' ' .
+                Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3 ' .
+                'l10nmanager:import' .
+                ' -t importFile'.
+                ' --file ' . CommandUtility::escapeShellArgument($fileNameAndPath) . ' 2>&1';
+            $statusCode = 200;
+            $output = '';
+            $action = CommandUtility::exec($command, $output, $statusCode);
             $response[] = [
-                'http_status_code' => 200,
-                'response'         => [
-                    'action' => exec($action . ' 2>&1'),
-                    'file'   => $originalFileName,
+                'http_status_code' => $statusCode,
+                'response' => [
+                    'action' => $action,
+                    'file' => $originalFileName,
                     'locale' => $fileStatus['locale'],
                 ],
             ];

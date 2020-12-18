@@ -2,8 +2,6 @@
 
 namespace Localizationteam\Localizer\Controller;
 
-use TYPO3\CMS\Backend\Module\BaseScriptClass;
-
 /**
  * Module 'Localizer' for the 'l10n_matrix' extension.
  *
@@ -11,11 +9,10 @@ use TYPO3\CMS\Backend\Module\BaseScriptClass;
  * @package     TYPO3
  * @subpackage  localizer
  */
-class LocalizerController extends BaseScriptClass
+class LocalizerController extends BaseModule
 {
     function main()
     {
-
     }
 
     function printContent()
