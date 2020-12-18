@@ -8,7 +8,6 @@ use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\File;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Utility\DebugUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * FileImporter $COMMENT$

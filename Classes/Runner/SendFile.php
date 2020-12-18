@@ -110,7 +110,7 @@ class SendFile
                                             $configuration['projectKey'],
                                             $configuration['username'],
                                             $configuration['password'],
-                                            ''
+                                            $configuration['uid']
                                         );
                                         if (isset($configuration['file'])) {
                                             $this->path = str_replace('.xml', '', $configuration['file']) . '.xml';
