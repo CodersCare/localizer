@@ -73,7 +73,7 @@ class RequestStatus
                                 $configuration['projectKey'],
                                 $configuration['username'],
                                 $configuration['password'],
-                                ''
+                                $configuration['uid']
                             );
                             $this->api->setToken($configuration['token']);
                             if (isset($configuration['file'])) {

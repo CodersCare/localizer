@@ -73,6 +73,7 @@ class FileSender extends AbstractHandler
                         );
                     } else {
                         $additionalConfiguration = [
+                            'uid' => $row['uid'],
                             'localFile' => $file,
                             'file' => $row['filename'],
                         ];
