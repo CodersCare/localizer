@@ -102,6 +102,7 @@ class StatusRequester extends AbstractHandler
                     $configuration = array_merge(
                         (array)$localizerSettings,
                         [
+                            'uid' => $row['uid'],
                             'file' => $row['filename'],
                         ]
                     );
