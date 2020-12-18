@@ -61,7 +61,89 @@ class SendFile
      */
     public function init(array $configuration)
     {
-        if (!isset($configuration['type'])) {
+        if (isset($configuration['type'])) {
+            if (isset($configuration['localFile'])) {
+                if (file_exists($configuration['localFile'])) {
+                    $this->localFile = $configuration['localFile'];
+                    if (isset($configuration['source'])) {
+                        $this->source = $configuration['source'];
+                        switch ((string)$configuration['type']) {
+                            case '0':
+                                if (isset($configuration['outFolder'])) {
+                                    $this->api = GeneralUtility::makeInstance(
+                                        ApiCalls::class,
+                                        $configuration['type'],
+                                        '',
+                                        $configuration['workflow'],
+                                        $configuration['projectKey'],
+                                        '',
+                                        '',
+                                        $configuration['outFolder']
+                                    );
+                                    if (isset($configuration['file'])) {
+                                        $this->path = str_replace('.xml', '', $configuration['file']) . '.xml';
+                                    }
+                                    if (isset($configuration['deadline'])) {
+                                        $this->deadline = (int)$configuration['deadline'];
+                                    }
+                                    if (isset($configuration['targetLocales'])) {
+                                        $this->targetLocales = $configuration['targetLocales'];
+                                    }
+                                    if (isset($configuration['metadata'])) {
+                                        $this->metaData = $configuration['metadata'];
+                                    }
+                                } else {
+                                    throw new Exception(
+                                        'No out folder given. Please set one in the localizer settings'
+                                    );
+                                }
+                                break;
+                            default:
+                                if (ExtensionManagementUtility::isLoaded($configuration['type'])) {
+                                    if (isset($configuration['projectKey'])) {
+                                        $this->api = GeneralUtility::makeInstance(
+                                            'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase(
+                                                $configuration['type']
+                                            ) . '\\Api\\ApiCalls',
+                                            $configuration['type'],
+                                            $configuration['url'],
+                                            $configuration['workflow'],
+                                            $configuration['projectKey'],
+                                            $configuration['username'],
+                                            $configuration['password'],
+                                            $configuration['uid']
+                                        );
+                                        if (isset($configuration['file'])) {
+                                            $this->path = str_replace('.xml', '', $configuration['file']) . '.xml';
+                                        }
+                                        if (isset($configuration['deadline'])) {
+                                            $this->deadline = (int)$configuration['deadline'];
+                                        }
+                                        if (isset($configuration['targetLocales'])) {
+                                            $this->targetLocales = $configuration['targetLocales'];
+                                        }
+                                        if (isset($configuration['metadata'])) {
+                                            $this->metaData = $configuration['metadata'];
+                                        }
+                                    } else {
+                                        throw new Exception(
+                                            'No project key given. Please set one in the localizer settings'
+                                        );
+                                    }
+                                } else {
+                                    throw new Exception(
+                                        'Missing API plugin ' . $configuration['type'] . '. Please install the necessary API plugin extension'
+                                    );
+                                }
+                        }
+                    } else {
+                        throw new Exception('No source given. Please set one in the localizer settings');
+                    }
+                }
+            } else {
+                throw new Exception('No local file given. Please set one in the localizer settings');
+            }
+        } else {
             throw new Exception('No type given. Please set one in the localizer settings');
         }
         if (!isset($configuration['localFile']) || !file_exists($configuration['localFile'])) {
