@@ -5,8 +5,6 @@ if (!defined('TYPO3_MODE')) {
 }
 
 if (TYPO3_MODE === 'BE') {
-    $extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('localizer');
-
     /**
      * Registers a Backend Module
      */
@@ -14,7 +12,7 @@ if (TYPO3_MODE === 'BE') {
         'localizer',
         '', // Submodule key
         '',    // Position
-        $extPath . 'Modules/Localizer/',
+        '',
         [
             'routeTarget' => \Localizationteam\Localizer\Controller\LocalizerController::class . '::mainAction',
             'access' => 'user,group',
@@ -31,7 +29,7 @@ if (TYPO3_MODE === 'BE') {
         'localizer', // Make module a submodule of 'Localizer'
         'localizerselector', // Submodule key
         '',    // Position
-        $extPath . 'Modules/Localizer/Selector/',
+        '',
         [
             'routeTarget' => \Localizationteam\Localizer\Controller\SelectorController::class . '::mainAction',
             'access' => 'user,group',
@@ -49,7 +47,7 @@ if (TYPO3_MODE === 'BE') {
         'localizer', // Make module a submodule of 'Localizer'
         'localizercart', // Submodule key
         '',    // Position
-        $extPath . 'Modules/Localizer/Cart/',
+        '',
         [
             'routeTarget' => \Localizationteam\Localizer\Controller\CartController::class . '::mainAction',
             'access' => 'user,group',
@@ -67,7 +65,7 @@ if (TYPO3_MODE === 'BE') {
         'localizer', // Make module a submodule of 'Localizer'
         'localizersettings', // Submodule key
         '',    // Position
-        $extPath . 'Modules/Localizer/Settings/',
+        '',
         [
             'routeTarget' => \Localizationteam\Localizer\Controller\SettingsController::class . '::mainAction',
             'access' => 'user,group',
