@@ -37,13 +37,15 @@ trait Language
                 $queryBuilder->expr()->like(
                     'lg_collate_locale',
                     $queryBuilder->createNamedParameter(
+                        '%' .
                         $queryBuilder->escapeLikeWildcards(
-                            '%' . str_replace(
-                                '-',
-                                '%',
-                                $locale
-                            ) . '%'
-                        )
+                            str_replace(
+                            '-',
+                            '%',
+                            $locale
+                            )
+                        ) .
+                        '%'
                     )
                 )
             )

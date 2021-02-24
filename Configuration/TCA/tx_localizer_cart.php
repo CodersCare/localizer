@@ -24,9 +24,6 @@ return [
         ],
         'iconfile' => 'EXT:localizer/Resources/Public/Icons/module-localizer-cart.svg',
     ],
-    'interface' => [
-        'showRecordFieldList' => 'hidden,description,uid_local,uid_export,uid_foreign,status,action,deadline,all_locale,source_locale,configuration,target_locale,localizer_path,last_error',
-    ],
     'feInterface' => '',
     'columns' => [
         'hidden' => [

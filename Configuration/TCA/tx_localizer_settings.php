@@ -23,9 +23,6 @@ return [
         ],
         'iconfile' => 'EXT:localizer/Resources/Public/Icons/module-localizer-settings.svg',
     ],
-    'interface' => [
-        'showRecordFieldList' => 'hidden,type,title,description,url,out_folder,in_folder,workflow,deadline,projectkey,username,password,project_settings,last_error,l10n_cfg,sortexports,source_locale,target_locale',
-    ],
     'feInterface' => '',
     'columns' => [
         'hidden' => [
@@ -266,7 +263,6 @@ return [
                     'source' => 'tx_localizer_settings',
                     'ident' => 'source',
                 ],
-                'enableMultiSelectFilterTextfield' => true,
             ],
         ],
         'target_locale' => [
@@ -286,7 +282,6 @@ return [
                     'source' => 'tx_localizer_settings',
                     'ident' => 'target',
                 ],
-                'enableMultiSelectFilterTextfield' => true,
             ],
         ],
     ],
