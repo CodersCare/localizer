@@ -20,5 +20,10 @@
     "psr-4": {
       "Localizationteam\\Localizer\\": "Classes"
     }
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "localizer"
+    }
   }
 }
