@@ -65,7 +65,7 @@ class AutomaticExportRepository extends AbstractRepository
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
         $queryBuilder->getRestrictions();
-        $pages = $queryBuilder
+        $queryBuilder
             ->select('*')
             ->from('pages')
             ->where(
@@ -73,10 +73,6 @@ class AutomaticExportRepository extends AbstractRepository
                     $queryBuilder->expr()->gt(
                         'localizer_include_with_automatic_export',
                         0
-                    ),
-                    $queryBuilder->expr()->notIn(
-                        'uid',
-                        $excludedPages
                     ),
                     $queryBuilder->expr()->gte(
                         'status',
@@ -87,8 +83,16 @@ class AutomaticExportRepository extends AbstractRepository
                         Constants::STATUS_CART_FILE_IMPORTED
                     )
                 )
-            )
-            ->execute()
+            );
+        if (!empty($excludedPages)) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->notIn(
+                    'uid',
+                    $excludedPages
+                )
+            );
+        }
+        $pages = $queryBuilder->execute()
             ->fetchAll();
         $pagesConfiguredForAutomaticExport = [];
         if (!empty($pages)) {
