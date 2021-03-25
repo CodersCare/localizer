@@ -100,7 +100,8 @@ class SelectorRepository extends AbstractRepository
                             'languages' => $configuration['languages'],
                             'start' => $configuration['start'],
                             'end' => $configuration['end'],
-                            'sortexports' => $configuration['sortexports']
+                            'sortexports' => $configuration['sortexports'],
+                            'plainxmlexports' => $configuration['plainxmlexports']
                         ]
                     )
                 ],
@@ -279,7 +280,7 @@ class SelectorRepository extends AbstractRepository
                         'cruser_id' => $this->getBackendUser()->user['uid'],
                         'pretranslatecontent' => 0,
                         'overrideexistingtranslations' => 1,
-                        'sortexports' => (int)$configuration['sortexports'],
+                        'sortexports' => (int)$configuration['sortexports']
                     ],
                     [
                         PDO::PARAM_INT,

@@ -134,6 +134,7 @@ class SelectorController extends AbstractController
             'selected_deadline'
         ) : '';
         $this->configuration['sortexports'] = $localizer['sortexports'];
+        $this->configuration['plainxmlexports'] = $localizer['plainxmlexports'];
 
         if (GeneralUtility::_GP('selected_cart') === 'new') {
             $this->cartId = (int)$this->selectorRepository->createNewCart($this->id, $this->localizerId);

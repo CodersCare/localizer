@@ -81,7 +81,9 @@ class SendFile
                                         $configuration['projectKey'],
                                         '',
                                         '',
-                                        $configuration['outFolder']
+                                        $configuration['outFolder'],
+                                        '',
+                                        (bool)$configuration['plainxmlexports']
                                     );
                                     if (isset($configuration['file'])) {
                                         $this->path = str_replace('.xml', '', $configuration['file']) . '.xml';

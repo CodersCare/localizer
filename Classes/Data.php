@@ -152,7 +152,8 @@ trait Data
                 'out_folder',
                 'in_folder',
                 'source_locale',
-                'target_locale'
+                'target_locale',
+                'plainxmlexports'
             )
             ->from(Constants::TABLE_LOCALIZER_SETTINGS)
             ->where(
@@ -180,7 +181,8 @@ trait Data
                 $row['username'],
                 $row['password'],
                 $row['out_folder'],
-                $row['in_folder']
+                $row['in_folder'],
+                (bool)$row['plainxmlexports']
             );
             if ($row['type'] !== '0' || $api->checkAndCreateFolders() === true) {
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
@@ -234,6 +236,7 @@ trait Data
                         'password' => $row['password'],
                         'workflow' => $row['workflow'],
                         'source' => $sourceLocale['lg_collate_locale'],
+                        'plainxmlexports' => (bool)$row['plainxmlexports'],
                     ],
                 ];
             }

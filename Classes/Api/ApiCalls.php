@@ -79,6 +79,11 @@ class ApiCalls
     protected $inFolder;
 
     /**
+     * @var bool
+     */
+    protected $plainXmlExports;
+
+    /**
      * @var string
      */
     protected $deadline = '';
@@ -132,6 +137,7 @@ class ApiCalls
      * @param string $password
      * @param string $outFolder
      * @param string $inFolder
+     * @param bool $plainXmlExports
      */
     public function __construct(
         $type,
@@ -141,7 +147,8 @@ class ApiCalls
         $username = '',
         $password = '',
         $outFolder = '',
-        $inFolder = ''
+        $inFolder = '',
+        $plainXmlExports = false
     ) {
         $this->connectorName = Constants::CONNECTOR_NAME;
         $this->connectorVersion = Constants::CONNECTOR_VERSION;
@@ -153,6 +160,7 @@ class ApiCalls
         $this->setPassword($password);
         $this->setOutFolder($outFolder);
         $this->setInFolder($inFolder);
+        $this->setPlainXmlExports($plainXmlExports);
     }
 
     /**
@@ -223,6 +231,14 @@ class ApiCalls
         if ($inFolder !== '') {
             $this->inFolder = trim($inFolder, '\/');
         }
+    }
+
+    /**
+     * @param bool $plainXmlExports
+     */
+    public function setPlainXmlExports($plainXmlExports)
+    {
+        $this->plainXmlExports = $plainXmlExports;
     }
 
     /**
@@ -430,54 +446,65 @@ class ApiCalls
     {
         if ($this->checkAndCreateFolder($this->outFolder, 'outgoing') === true) {
             $xmlPath = Environment::getPublicPath() . '/' . $this->outFolder . '/' . $fileName;
-            $zipPath = str_replace('.xml', '', $xmlPath) . '.zip';
-            $zipFile = fopen($zipPath, 'w') or new Exception('Can not create ZIP file');
-            $instructionFile = file_get_contents(
-                ExtensionManagementUtility::extPath(
-                    'localizer'
-                ) . '/Resources/Private/Templates/Provider/instruction.xml'
-            );
-            if (file_exists($zipPath) && !empty($instructionFile)) {
-                $instructions = $this->getInstructions();
-                $sourceLocale = GeneralUtility::trimExplode('_', str_replace('-', '_', $source));
-                $targetLocale = GeneralUtility::trimExplode('_', str_replace('-', '_', $instructions['locales'][0]));
-                $sourceLanguage = strtolower($sourceLocale[0]);
-                $sourceCountry = $sourceLocale[1] ? strtolower($sourceLocale[1]) : strtolower($sourceLocale[0]);
-                $targetLanguage = strtolower($targetLocale[0]);
-                $targetCountry = $targetLocale[1] ? strtolower($targetLocale[1]) : strtolower($targetLocale[0]);
-                $markContentArray = [
-                    'DEADLINE' => $instructions['deadline'],
-                    'FILE_NAME' => $fileName,
-                    'PROJECT_CONTACT' => $this->getBackendUser()->user['email'],
-                    'PROJECT_NAME' => date('Y-m-d') . '_Typo3CMS_' . strtoupper($sourceLanguage) . '-' . strtoupper(
-                            $targetLanguage
-                        ),
-                    'PROJECT_SETTINGS' => $this->projectKey,
-                    'SOURCE_COUNTRY' => $sourceCountry,
-                    'SOURCE_LANGUAGE' => $sourceLanguage,
-                    'TARGET_COUNTRY' => $targetCountry,
-                    'TARGET_LANGUAGE' => $targetLanguage,
-                    'WORKFLOW' => $this->workflow,
-                ];
-                $zip = new ZipArchive;
-                if ($zip->open($zipPath) === true) {
-                    if ($attachInstruction) {
-                        $instructionFileContent = GeneralUtility::makeInstance(
-                            MarkerBasedTemplateService::class
-                        )->substituteMarkerArray(
-                            $instructionFile,
-                            $markContentArray,
-                            '###|###',
-                            true,
-                            true
-                        );
-                        $zip->addFromString('instruction.xml', $instructionFileContent);
-                    }
-                    $zip->addFromString($fileName, $fileContent);
-                    $zip->close();
+            if ($this->plainXmlExports) {
+                $xmlFile = fopen($xmlPath, 'w') or new Exception('Can not create XML file');
+                if (file_exists($xmlPath)) {
+                    fwrite($xmlFile, $fileContent);
+                    fclose($xmlFile);
+                } else {
+                    throw new Exception('Missing files for export into hotfolder');
                 }
             } else {
-                throw new Exception('Missing files for export into hotfolder');
+                $zipPath = str_replace('.xml', '', $xmlPath) . '.zip';
+                $zipFile = fopen($zipPath, 'w') or new Exception('Can not create ZIP file');
+                $instructionFile = file_get_contents(
+                    ExtensionManagementUtility::extPath(
+                        'localizer'
+                    ) . '/Resources/Private/Templates/Provider/instruction.xml'
+                );
+                if (file_exists($zipPath) && !empty($instructionFile)) {
+                    $instructions = $this->getInstructions();
+                    $sourceLocale = GeneralUtility::trimExplode('_', str_replace('-', '_', $source));
+                    $targetLocale = GeneralUtility::trimExplode('_',
+                        str_replace('-', '_', $instructions['locales'][0]));
+                    $sourceLanguage = strtolower($sourceLocale[0]);
+                    $sourceCountry = $sourceLocale[1] ? strtolower($sourceLocale[1]) : strtolower($sourceLocale[0]);
+                    $targetLanguage = strtolower($targetLocale[0]);
+                    $targetCountry = $targetLocale[1] ? strtolower($targetLocale[1]) : strtolower($targetLocale[0]);
+                    $markContentArray = [
+                        'DEADLINE' => $instructions['deadline'],
+                        'FILE_NAME' => $fileName,
+                        'PROJECT_CONTACT' => $this->getBackendUser()->user['email'],
+                        'PROJECT_NAME' => date('Y-m-d') . '_Typo3CMS_' . strtoupper($sourceLanguage) . '-' . strtoupper(
+                                $targetLanguage
+                            ),
+                        'PROJECT_SETTINGS' => $this->projectKey,
+                        'SOURCE_COUNTRY' => $sourceCountry,
+                        'SOURCE_LANGUAGE' => $sourceLanguage,
+                        'TARGET_COUNTRY' => $targetCountry,
+                        'TARGET_LANGUAGE' => $targetLanguage,
+                        'WORKFLOW' => $this->workflow,
+                    ];
+                    $zip = new ZipArchive;
+                    if ($zip->open($zipPath) === true) {
+                        if ($attachInstruction) {
+                            $instructionFileContent = GeneralUtility::makeInstance(
+                                MarkerBasedTemplateService::class
+                            )->substituteMarkerArray(
+                                $instructionFile,
+                                $markContentArray,
+                                '###|###',
+                                true,
+                                true
+                            );
+                            $zip->addFromString('instruction.xml', $instructionFileContent);
+                        }
+                        $zip->addFromString($fileName, $fileContent);
+                        $zip->close();
+                    }
+                } else {
+                    throw new Exception('Missing files for export into hotfolder');
+                }
             }
         }
     }
