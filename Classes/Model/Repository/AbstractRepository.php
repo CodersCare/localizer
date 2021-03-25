@@ -190,6 +190,7 @@ class AbstractRepository
                     'start' => $configuration['start'],
                     'end' => $configuration['end'],
                     'sortexports' => $configuration['sortexports'],
+                    'plainxmlexports' => $configuration['plainxmlexports']
                 ];
             }
         }

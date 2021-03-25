@@ -198,6 +198,14 @@ return [
                 'default' => 1,
             ],
         ],
+        'plainxmlexports' => [
+            'exclude' => 1,
+            'label'   => $l10n . ':tx_localizer_settings.l10nmgr_plainxmlexports',
+            'config'  => [
+                'type'    => 'check',
+                'default' => 0,
+            ],
+        ],
         'allow_adding_to_export' => [
             'exclude' => 1,
             'label' => $l10n . ':tx_localizer_settings.allow_adding_to_export',
@@ -286,11 +294,12 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, deadline, projectkey, --palette--;;2, --palette--;;3, l10n_cfg, sortexports, source_locale, target_locale'],
+        '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, deadline, projectkey, --palette--;;2, --palette--;;3, l10n_cfg, --palette--;;4, source_locale, target_locale'],
     ],
     'palettes' => [
         '1' => ['showitem' => 'project_settings,last_error'],
         '2' => ['showitem' => 'automatic_export_pages,allow_adding_to_export'],
         '3' => ['showitem' => 'automatic_export_minimum_age,collect_pages_marked_for_export'],
+        '4' => ['showitem' => 'sortexports, plainxmlexports'],
     ],
 ];

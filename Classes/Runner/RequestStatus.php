@@ -49,13 +49,18 @@ class RequestStatus
                 if (isset($configuration['inFolder'])) {
                     if (isset($configuration['file'])) {
                         $this->path = Environment::getPublicPath() . '/' . trim(
-                                $configuration['inFolder'],
-                                '\/'
-                            ) . '/' . str_replace(
+                            $configuration['inFolder'],
+                            '\/'
+                        ) . '/';
+                        if ($configuration['plainxmlexports']) {
+                            $this->path .= $configuration['file'];
+                        } else {
+                            $this->path .= str_replace(
                                 '.xml',
                                 '',
                                 $configuration['file']
                             ) . '.zip';
+                        }
                     }
                 }
                 break;
