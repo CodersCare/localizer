@@ -120,7 +120,7 @@ trait Data
     protected function getLocalizerSettings($uid)
     {
         $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid,type,url,workflow,projectkey,username,password,project_settings,out_folder,in_folder,source_locale,target_locale',
+            'uid,type,url,workflow,projectkey,username,password,project_settings,out_folder,in_folder,source_locale,target_locale,plainxmlexports',
             Constants::TABLE_LOCALIZER_SETTINGS,
             'deleted = 0 AND hidden = 0 AND uid = ' . (int)$uid
         );
@@ -141,7 +141,8 @@ trait Data
                 $row['username'],
                 $row['password'],
                 $row['out_folder'],
-                $row['in_folder']
+                $row['in_folder'],
+                (bool)$row['plainxmlexports']
             );
             if ($row['type'] !== '0' || $api->checkAndCreateFolders() === true) {
                 $sourceLocale = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
@@ -164,6 +165,7 @@ trait Data
                         'password' => $row['password'],
                         'workflow' => $row['workflow'],
                         'source' => $sourceLocale['lg_collate_locale'],
+                        'plainxmlexports' => (bool)$row['plainxmlexports'],
                     ],
                 ];
             }

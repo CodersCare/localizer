@@ -80,6 +80,8 @@ class SelectorRepository extends AbstractRepository
                     'languages' => $configuration['languages'],
                     'start' => $configuration['start'],
                     'end' => $configuration['end'],
+                    'sortexports' => $configuration['sortexports'],
+                    'plainxmlexports' => $configuration['plainxmlexports']
                 ]
             ),
         ];
