@@ -27,14 +27,14 @@ class SelectorRepository extends AbstractRepository
         $localizerLanguages = $this->getLocalizerLanguages($localizerId);
 
         $fields = [
-            'pid'           => (int)$pageId,
-            'uid_local'     => (int)$localizerId,
+            'pid' => (int)$pageId,
+            'uid_local' => (int)$localizerId,
             'source_locale' => 1,
-            'all_locale'    => 1,
-            'crdate'        => time(),
-            'cruser_id'     => (int)$this->getBackendUser()->user['uid'],
-            'status'        => (int)Constants::STATUS_CART_ADDED,
-            'tstamp'        => time(),
+            'all_locale' => 1,
+            'crdate' => time(),
+            'cruser_id' => (int)$this->getBackendUser()->user['uid'],
+            'status' => (int)Constants::STATUS_CART_ADDED,
+            'tstamp' => time(),
         ];
         $this->getDatabaseConnection()
             ->exec_INSERTquery(
@@ -44,13 +44,13 @@ class SelectorRepository extends AbstractRepository
             );
         $cartId = $this->getDatabaseConnection()->sql_insert_id();
         $fields = [
-            'pid'         => (int)$pageId,
-            'uid_local'   => (int)$cartId,
+            'pid' => (int)$pageId,
+            'uid_local' => (int)$cartId,
             'uid_foreign' => (int)$localizerLanguages['source'],
-            'tablenames'  => 'static_languages',
-            'source'      => Constants::TABLE_LOCALIZER_CART,
-            'ident'       => 'source',
-            'sorting'     => 1,
+            'tablenames' => 'static_languages',
+            'source' => Constants::TABLE_LOCALIZER_CART,
+            'ident' => 'source',
+            'sorting' => 1,
         ];
         $this->getDatabaseConnection()
             ->exec_INSERTquery(
@@ -73,12 +73,14 @@ class SelectorRepository extends AbstractRepository
         $fieldArray = [
             'configuration' => json_encode(
                 [
-                    'pid'       => (int)$pageId,
-                    'tstamp'    => time(),
-                    'tables'    => $configuration['tables'],
+                    'pid' => (int)$pageId,
+                    'tstamp' => time(),
+                    'tables' => $configuration['tables'],
                     'languages' => $configuration['languages'],
-                    'start'     => $configuration['start'],
-                    'end'       => $configuration['end'],
+                    'start' => $configuration['start'],
+                    'end' => $configuration['end'],
+                    'sortexports' => $configuration['sortexports'],
+                    'plainxmlexports' => $configuration['plainxmlexports']
                 ]
             ),
         ];
@@ -115,11 +117,11 @@ class SelectorRepository extends AbstractRepository
                                 if ($configuration['languages'][$languageId]) {
                                     $identifier = md5($tableName . '.' . $recordId . '.' . $languageId);
                                     $checkedValues[$identifier] = [
-                                        'pid'        => (int)$pageId,
+                                        'pid' => (int)$pageId,
                                         'identifier' => $identifier,
-                                        'cart'       => (int)$cartId,
-                                        'tablename'  => $tableName,
-                                        'recordId'   => (int)$recordId,
+                                        'cart' => (int)$cartId,
+                                        'tablename' => $tableName,
+                                        'recordId' => (int)$recordId,
                                         'languageId' => (int)$languageId,
                                     ];
                                 }
@@ -191,16 +193,16 @@ class SelectorRepository extends AbstractRepository
                     ->exec_INSERTquery(
                         Constants::TABLE_L10NMGR_CONFIGURATION,
                         [
-                            'pid'                          => (int)$pageId,
-                            'title'                        => 'Cart Configuration ' . (int)$cartId,
-                            'sourceLangStaticId'           => (int)$localizerLanguages['source'],
-                            'filenameprefix'               => 'cart_' . (int)$cartId . '_',
-                            'depth'                        => -2,
-                            'tablelist'                    => implode(',', array_keys($configuration['tables'])),
-                            'crdate'                       => time(),
-                            'tstamp'                       => time(),
-                            'cruser_id'                    => $this->getBackendUser()->user['uid'],
-                            'pretranslatecontent'          => 0,
+                            'pid' => (int)$pageId,
+                            'title' => 'Cart Configuration ' . (int)$cartId,
+                            'sourceLangStaticId' => (int)$localizerLanguages['source'],
+                            'filenameprefix' => 'cart_' . (int)$cartId . '_',
+                            'depth' => -2,
+                            'tablelist' => implode(',', array_keys($configuration['tables'])),
+                            'crdate' => time(),
+                            'tstamp' => time(),
+                            'cruser_id' => $this->getBackendUser()->user['uid'],
+                            'pretranslatecontent' => 0,
                             'overrideexistingtranslations' => 1,
                         ]
                     );
@@ -229,9 +231,9 @@ class SelectorRepository extends AbstractRepository
                     Constants::TABLE_L10NMGR_CONFIGURATION,
                     'uid = ' . (int)$uid,
                     [
-                        'tstamp'  => time(),
+                        'tstamp' => time(),
                         'exclude' => $excludeItems,
-                        'pages'   => $pageIds,
+                        'pages' => $pageIds,
                     ],
                     ['tstamp']
                 );
@@ -254,9 +256,9 @@ class SelectorRepository extends AbstractRepository
                     'uid = ' . (int)$cartId,
                     [
                         'uid_foreign' => (int)$configurationId,
-                        'status'      => CONSTANTS::STATUS_CART_FINALIZED,
-                        'action'      => CONSTANTS::ACTION_EXPORT_FILE,
-                        'tstamp'      => time(),
+                        'status' => CONSTANTS::STATUS_CART_FINALIZED,
+                        'action' => CONSTANTS::ACTION_EXPORT_FILE,
+                        'tstamp' => time(),
                     ],
                     ['uid_foreign', 'status', 'time']
                 );
@@ -264,7 +266,7 @@ class SelectorRepository extends AbstractRepository
                 ->exec_INSERTquery(
                     Constants::TABLE_LOCALIZER_L10NMGR_MM,
                     [
-                        'uid_local'   => (int)$localizerId,
+                        'uid_local' => (int)$localizerId,
                         'uid_foreign' => (int)$configurationId,
                     ],
                     ['uid_local', 'uid_foreign']
@@ -458,9 +460,9 @@ class SelectorRepository extends AbstractRepository
             $this->getDatabaseConnection()->sql_free_result($res);
         }
         return [
-            'records'           => $records,
+            'records' => $records,
             'referencedRecords' => $referencedRecords,
-            'identifiedStatus'  => $identifiedStatus,
+            'identifiedStatus' => $identifiedStatus,
         ];
     }
 

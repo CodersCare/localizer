@@ -104,12 +104,18 @@ class DownloadFile
                             default:
                                 $zip = new ZipArchive;
                                 $file = str_replace('\\', '', $files['hotfolder']);
-                                if ($zip->open($file) === true) {
-                                    $zip->extractTo(dirname($files['local']));
-                                    $zip->close();
-                                    //unlink($file);
+                                if ($configuration['plainxmlexports']) {
+                                    if (!copy($file, $files['local'])) {
+                                        throw new Exception('File could not successfully be copied');
+                                    }
                                 } else {
-                                    throw new Exception('File could not successfully be unzipped');
+                                    if ($zip->open($file) === true) {
+                                        $zip->extractTo(dirname($files['local']));
+                                        $zip->close();
+                                        //unlink($file);
+                                    } else {
+                                        throw new Exception('File could not successfully be unzipped');
+                                    }
                                 }
                         }
                         $response[] = [

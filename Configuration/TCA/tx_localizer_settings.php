@@ -184,7 +184,27 @@ return [
                 ],
             ],
         ],
+<<<<<<< HEAD
         'allow_adding_to_export'          => [
+=======
+        'sortexports' => [
+            'exclude' => 1,
+            'label'   => $l10n . ':tx_localizer_settings.l10nmgr_sortexports',
+            'config'  => [
+                'type'    => 'check',
+                'default' => 1,
+            ],
+        ],
+        'plainxmlexports' => [
+            'exclude' => 1,
+            'label'   => $l10n . ':tx_localizer_settings.l10nmgr_plainxmlexports',
+            'config'  => [
+                'type'    => 'check',
+                'default' => 0,
+            ],
+        ],
+        'allow_adding_to_export' => [
+>>>>>>> c955e9d... [FEATURE] ZIP packages with additional instructions can be disabled
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.allow_adding_to_export',
             'config'  => [
@@ -274,12 +294,13 @@ return [
         ],
     ],
     'types'       => [
-        '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, projectkey, --palette--;;2, --palette--;;3, l10n_cfg, source_locale, target_locale'],
+        '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, deadline, projectkey, --palette--;;2, --palette--;;3, l10n_cfg, --palette--;;4, source_locale, target_locale'],
         '1' => ['showitem' => 'hidden, --palette--;;1, type, title, description, url, projectkey, username, password, --palette--;;2, --palette--;;3, l10n_cfg, source_locale, target_locale'],
     ],
     'palettes'    => [
         '1' => ['showitem' => 'project_settings,last_error'],
         '2' => ['showitem' => 'automatic_export_pages,allow_adding_to_export'],
         '3' => ['showitem' => 'automatic_export_minimum_age,collect_pages_marked_for_export'],
+        '4' => ['showitem' => 'sortexports, plainxmlexports'],
     ],
 ];

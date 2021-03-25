@@ -55,6 +55,12 @@
             <trans-unit id="tx_localizer_settings.l10n_cfg">
                 <source>Allowed L10nmgr Configurations</source>
             </trans-unit>
+            <trans-unit id="tx_localizer_settings.l10nmgr_sortexports">
+                <source>Activate sorting per table for L10nmgr exports</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings.l10nmgr_plainxmlexports">
+                <source>Deactivate ZIP packages</source>
+            </trans-unit>
             <trans-unit id="tx_localizer_settings.automatic_export_minimum_age">
                 <source>Minimum age of the latest change (min) after that a record will be scheduled for automatic
                     export.

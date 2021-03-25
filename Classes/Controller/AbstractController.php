@@ -95,7 +95,7 @@ abstract class AbstractController extends BaseScriptClass
     /**
      * Initializing the module
      *
-     * @return void
+     * @return array
      */
     public function init()
     {
@@ -152,7 +152,7 @@ abstract class AbstractController extends BaseScriptClass
             $localizer = $this->availableLocalizers[$this->localizerId];
             $this->getLocalizerSettings($localizer['type']);
         }
-
+        return $localizer;
     }
 
     /**

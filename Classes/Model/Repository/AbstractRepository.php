@@ -63,10 +63,12 @@ class AbstractRepository
             $configuration = json_decode($selectedCart['configuration'], true);
             if (!empty($configuration)) {
                 return [
-                    'tables'    => $configuration['tables'],
+                    'tables' => $configuration['tables'],
                     'languages' => $configuration['languages'],
-                    'start'     => $configuration['start'],
-                    'end'       => $configuration['end'],
+                    'start' => $configuration['start'],
+                    'end' => $configuration['end'],
+                    'sortexports' => $configuration['sortexports'],
+                    'plainxmlexports' => $configuration['plainxmlexports']
                 ];
             }
         }

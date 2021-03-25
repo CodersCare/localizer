@@ -47,8 +47,19 @@ class RequestStatus
             case '0':
                 if (isset($configuration['inFolder'])) {
                     if (isset($configuration['file'])) {
-                        $this->path = PATH_site . trim($configuration['inFolder'], '\/') . '/' . str_replace('.xml', '',
-                                $configuration['file']) . '.zip';
+                        $this->path = PATH_site . trim(
+                            $configuration['inFolder'],
+                            '\/'
+                        ) . '/';
+                        if ($configuration['plainxmlexports']) {
+                            $this->path .= $configuration['file'];
+                        } else {
+                            $this->path .= str_replace(
+                                '.xml',
+                                '',
+                                $configuration['file']
+                            ) . '.zip';
+                        }
                     }
                 }
                 break;

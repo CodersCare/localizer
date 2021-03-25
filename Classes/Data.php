@@ -45,7 +45,7 @@ trait Data
     {
         $this->result = [
             'success' => [],
-            'error'   => [],
+            'error' => [],
         ];
         $this->apiPool = [];
         $this->data = [];
@@ -82,9 +82,9 @@ trait Data
     protected function addErrorResult($uid, $status, $previousStatus, $lastError, $action = 0)
     {
         $this->result['error'][(int)$uid] = [
-            'status'          => (int)$status,
+            'status' => (int)$status,
             'previous_status' => (int)$previousStatus,
-            'last_error'      => (string)$lastError,
+            'last_error' => (string)$lastError,
         ];
         if ($action > 0) {
             $this->result['error'][(int)$uid]['action'] = $action;
@@ -103,9 +103,9 @@ trait Data
             $response = json_encode($response);
         }
         $this->result['success'][(int)$uid] = [
-            'status'     => (int)$status,
+            'status' => (int)$status,
             'last_error' => '',
-            'action'     => (int)$action,
+            'action' => (int)$action,
         ];
         if ($response !== '') {
             $this->result['success'][(int)$uid]['response'] = (string)$response;
@@ -120,7 +120,7 @@ trait Data
     protected function getLocalizerSettings($uid)
     {
         $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid,type,url,workflow,projectkey,username,password,project_settings,out_folder,in_folder,source_locale,target_locale',
+            'uid,type,url,workflow,projectkey,username,password,project_settings,out_folder,in_folder,source_locale,target_locale,plainxmlexports',
             Constants::TABLE_LOCALIZER_SETTINGS,
             'deleted = 0 AND hidden = 0 AND uid = ' . (int)$uid
         );
@@ -139,7 +139,8 @@ trait Data
                 $row['username'],
                 $row['password'],
                 $row['out_folder'],
-                $row['in_folder']
+                $row['in_folder'],
+                (bool)$row['plainxmlexports']
             );
             if ($row['type'] !== '0' || $api->checkAndCreateFolders() === true) {
                 $sourceLocale = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
@@ -150,18 +151,19 @@ trait Data
                     " AND ident='source' AND tablenames='static_languages' AND source='tx_localizer_settings'"
                 );
                 $this->apiPool[$uid] = [
-                    'api'      => $api,
+                    'api' => $api,
                     'settings' => [
-                        'type'       => $row['type'],
-                        'url'        => $row['url'],
-                        'outFolder'  => $row['out_folder'],
-                        'inFolder'   => $row['in_folder'],
+                        'type' => $row['type'],
+                        'url' => $row['url'],
+                        'outFolder' => $row['out_folder'],
+                        'inFolder' => $row['in_folder'],
                         'projectKey' => $row['projectkey'],
-                        'token'      => $api->getToken(),
-                        'username'   => $row['username'],
-                        'password'   => $row['password'],
-                        'workflow'   => $row['workflow'],
-                        'source'     => $sourceLocale['lg_collate_locale'],
+                        'token' => $api->getToken(),
+                        'username' => $row['username'],
+                        'password' => $row['password'],
+                        'workflow' => $row['workflow'],
+                        'source' => $sourceLocale['lg_collate_locale'],
+                        'plainxmlexports' => (bool)$row['plainxmlexports'],
                     ],
                 ];
             }
