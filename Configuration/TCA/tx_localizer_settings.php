@@ -184,9 +184,6 @@ return [
                 ],
             ],
         ],
-<<<<<<< HEAD
-        'allow_adding_to_export'          => [
-=======
         'sortexports' => [
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.l10nmgr_sortexports',
@@ -204,7 +201,6 @@ return [
             ],
         ],
         'allow_adding_to_export' => [
->>>>>>> c955e9d... [FEATURE] ZIP packages with additional instructions can be disabled
             'exclude' => 1,
             'label'   => $l10n . ':tx_localizer_settings.allow_adding_to_export',
             'config'  => [
