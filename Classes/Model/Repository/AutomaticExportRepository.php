@@ -48,7 +48,8 @@ class AutomaticExportRepository extends AbstractRepository
         $pagesConfiguredForAutomaticExport = $this->getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             'pages',
-            'localizer_include_with_automatic_export > 0 AND uid NOT IN (' . $safeExcludedPageUids . ') ' .
+            'localizer_include_with_automatic_export > 0' .
+            $safeExcludedPageUids ? (' AND uid NOT IN (' . $safeExcludedPageUids . ') ') : ' ' .
             BackendUtility::BEenableFields('pages') . BackendUtility::deleteClause('pages'),
             '',
             '',
