@@ -18,13 +18,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * FileDownloader $COMMENT$
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 class FileDownloader extends AbstractHandler
 {
-    use Data, File, Language;
+    use Data;
+    use File;
+    use Language;
 
     /**
      * @param $id
@@ -87,7 +86,7 @@ class FileDownloader extends AbstractHandler
      * @throws FolderDoesNotExistException
      * @throws Exception
      */
-    function run()
+    public function run()
     {
         if ($this->canRun() === true) {
             foreach ($this->data as $row) {
@@ -163,9 +162,8 @@ class FileDownloader extends AbstractHandler
                         $this->getIso2ForLocale($fileStatus['locale'])
                     ),
                 ];
-            } else {
-                //fixme:errorhandling
             }
+            //fixme:errorhandling
         }
         $configuration = array_merge(
             $localizerSettings,
@@ -220,9 +218,8 @@ class FileDownloader extends AbstractHandler
 
     /**
      * @param int $time
-     * @return void
      */
-    function finish($time)
+    public function finish($time)
     {
         $this->dataFinish($time);
     }

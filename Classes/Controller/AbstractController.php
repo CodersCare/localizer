@@ -14,8 +14,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Abstract for modules of the 'localizer' extension.
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
  */
 abstract class AbstractController extends BaseModule
 {
@@ -168,8 +166,6 @@ abstract class AbstractController extends BaseModule
 
     /**
      * Override default settings based on registered type settings for a specific localizer
-     *
-     * @return void
      */
     protected function getLocalizerSettings($type)
     {
@@ -177,15 +173,11 @@ abstract class AbstractController extends BaseModule
 
     /**
      * Main function, starting the rendering of the list.
-     *
-     * @return void
      */
     abstract protected function main();
 
     /**
      * Initialize function menu array
-     *
-     * @return void
      */
     public function menuConfig()
     {
@@ -206,12 +198,9 @@ abstract class AbstractController extends BaseModule
 
     /**
      * Outputting the accumulated content to screen
-     *
-     * @return void
      */
     protected function printContent()
     {
         echo $this->content;
     }
-
 }

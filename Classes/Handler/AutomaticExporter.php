@@ -17,13 +17,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * FileExporter takes care to create file(s) that can be sent to Localizer
  *
  * @author      Jo Hasenau<info@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 class AutomaticExporter extends AbstractCartHandler
 {
-    use Data, Language, AddFileToMatrix;
+    use Data;
+    use Language;
+    use AddFileToMatrix;
 
     /**
      * @var string
@@ -256,5 +255,4 @@ class AutomaticExporter extends AbstractCartHandler
     protected function acquire()
     {
     }
-
 }

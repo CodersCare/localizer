@@ -11,9 +11,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * AddFileToMatrix
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 trait AddFileToMatrix
 {
@@ -154,8 +151,7 @@ trait AddFileToMatrix
             ->fetch();
         if (!empty($row)) {
             return $row['static_lang_isocode'];
-        } else {
-            return 0;
         }
+        return 0;
     }
 }

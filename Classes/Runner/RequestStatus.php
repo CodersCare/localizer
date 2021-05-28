@@ -11,9 +11,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Requests translation status from Localizer
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 class RequestStatus
 {
@@ -32,9 +29,6 @@ class RequestStatus
      */
     protected $response = [];
 
-    /**
-     *
-     */
     public function __construct()
     {
     }

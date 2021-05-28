@@ -12,9 +12,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * ErrorResetter resets status in Localizer cart to status before error occured so that this can rerun.
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 class ErrorResetter extends AbstractHandler
 {
@@ -98,9 +95,8 @@ class ErrorResetter extends AbstractHandler
 
     /**
      * @param int $time
-     * @return void
      */
-    function finish($time)
+    public function finish($time)
     {
         // nothing to do here
     }

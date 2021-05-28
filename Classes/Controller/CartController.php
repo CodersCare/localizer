@@ -16,8 +16,6 @@ use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
  * Module 'Cart' for the 'localizer' extension.
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
  */
 class CartController extends AbstractController
 {
@@ -104,7 +102,6 @@ class CartController extends AbstractController
     /**
      * Initialize function menu array
      *
-     * @return void
      * @todo Define visibility
      */
     public function menuConfig()
@@ -118,8 +115,6 @@ class CartController extends AbstractController
 
     /**
      * Initializing the module
-     *
-     * @return void
      */
     public function init()
     {
@@ -139,8 +134,6 @@ class CartController extends AbstractController
 
     /**
      * Main function, starting the rendering of the list.
-     *
-     * @return void
      */
     protected function main()
     {
@@ -195,8 +188,8 @@ class CartController extends AbstractController
                                     <input type="checkbox" disabled="disabled">' . $label . '
                                 </label>&nbsp;<label class="btn btn-' . $legendItem['cssClass'] . ' active">
                                 <input type="checkbox" disabled="disabled">' . $GLOBALS['LANG']->sL(
-                        'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.cart'
-                    ) . '
+                    'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.cart'
+                ) . '
                             </label>
                             </div>
                         </td>
@@ -212,8 +205,8 @@ class CartController extends AbstractController
             ';
 
         $this->content .= '<form action="' . htmlspecialchars(
-                $dblist->listURL()
-            ) . '" method="post" name="dblistForm">';
+            $dblist->listURL()
+        ) . '" method="post" name="dblistForm">';
         $this->content .= $this->getCartConfigurator($dblist->listURL());
         if ($access || ($this->id === 0 && $this->search_levels > 0 && strlen($this->search_field) > 0)) {
             $this->pointer = MathUtility::forceIntegerInRange($this->pointer, 0, 100000);
@@ -449,5 +442,4 @@ class CartController extends AbstractController
         $generatedRecordInfo = 'var localizerRecordInfo = \'' . json_encode($recordInfo) . '\';';
         return $generatedRecordInfo;
     }
-
 }

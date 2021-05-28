@@ -15,9 +15,6 @@ use ZipArchive;
  * ApiCalls Class used to make calls to the Localizer API
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 class ApiCalls
 {
@@ -101,7 +98,7 @@ class ApiCalls
     /**
      * @var array
      */
-    protected $projectLanguages = null;
+    protected $projectLanguages;
 
     /**
      * @var array
@@ -116,12 +113,12 @@ class ApiCalls
     /**
      * @var null
      */
-    protected $projectInformation = null;
+    protected $projectInformation;
 
     /**
      * @var null
      */
-    protected $folderInformation = null;
+    protected $folderInformation;
 
     /**
      * @var string
@@ -299,7 +296,7 @@ class ApiCalls
      * If time is set equals 0 will reset deadline,
      * If time is null will get current time and adds 24hours (default) to it;
      *
-     * @param null|int $time
+     * @param int|null $time
      */
     public function setDeadline($time = null)
     {
@@ -407,8 +404,8 @@ class ApiCalls
     /**
      * The purpose of this method is to send original content (or files) to cost.
      *
-     * @param String $fileContent The content of the file you wish to send
-     * @param String $fileName Name the file will have in the Localizer
+     * @param string $fileContent The content of the file you wish to send
+     * @param string $fileName Name the file will have in the Localizer
      * @param bool $attachInstructions
      * @throws Exception This Exception contains details of an eventual error
      */
@@ -420,8 +417,8 @@ class ApiCalls
     /**
      * Sends 1 file to the Localizer
      *
-     * @param String $fileContent The content of the file you wish to send
-     * @param String $fileName Name the file will have in the Localizer
+     * @param string $fileContent The content of the file you wish to send
+     * @param string $fileName Name the file will have in the Localizer
      * @param string $source Source language of the file
      * @param bool $attachInstruction
      * @throws Exception
@@ -437,8 +434,8 @@ class ApiCalls
     /**
      * Stores 1 file into the local Localizer 'out' folder
      *
-     * @param String $fileContent The content of the file you wish to send
-     * @param String $fileName Name the file will have in the Localizer
+     * @param string $fileContent The content of the file you wish to send
+     * @param string $fileName Name the file will have in the Localizer
      * @param string $source Source language of the file
      * @throws Exception This Exception contains details of an eventual error
      */
@@ -465,8 +462,10 @@ class ApiCalls
                 if (file_exists($zipPath) && !empty($instructionFile)) {
                     $instructions = $this->getInstructions();
                     $sourceLocale = GeneralUtility::trimExplode('_', str_replace('-', '_', $source));
-                    $targetLocale = GeneralUtility::trimExplode('_',
-                        str_replace('-', '_', $instructions['locales'][0]));
+                    $targetLocale = GeneralUtility::trimExplode(
+                        '_',
+                        str_replace('-', '_', $instructions['locales'][0])
+                    );
                     $sourceLanguage = strtolower($sourceLocale[0]);
                     $sourceCountry = $sourceLocale[1] ? strtolower($sourceLocale[1]) : strtolower($sourceLocale[0]);
                     $targetLanguage = strtolower($targetLocale[0]);
@@ -476,8 +475,8 @@ class ApiCalls
                         'FILE_NAME' => $fileName,
                         'PROJECT_CONTACT' => $this->getBackendUser()->user['email'],
                         'PROJECT_NAME' => date('Y-m-d') . '_Typo3CMS_' . strtoupper($sourceLanguage) . '-' . strtoupper(
-                                $targetLanguage
-                            ),
+                            $targetLanguage
+                        ),
                         'PROJECT_SETTINGS' => $this->projectKey,
                         'SOURCE_COUNTRY' => $sourceCountry,
                         'SOURCE_LANGUAGE' => $sourceLanguage,
@@ -485,7 +484,7 @@ class ApiCalls
                         'TARGET_LANGUAGE' => $targetLanguage,
                         'WORKFLOW' => $this->workflow,
                     ];
-                    $zip = new ZipArchive;
+                    $zip = new ZipArchive();
                     if ($zip->open($zipPath) === true) {
                         if ($attachInstruction) {
                             $instructionFileContent = GeneralUtility::makeInstance(
@@ -522,23 +521,20 @@ class ApiCalls
             $folder = Environment::getPublicPath() . '/' . $folder;
             if (file_exists($folder) && is_writable($folder)) {
                 return true;
-            } else {
+            }
+            if (!file_exists($folder)) {
+                GeneralUtility::mkdir_deep($folder);
                 if (!file_exists($folder)) {
-                    GeneralUtility::mkdir_deep($folder);
-                    if (!file_exists($folder)) {
-                        $this->lastError = 'Path to ' . $type . ' folder could not be created.';
-                        throw new Exception($this->lastError);
-                    }
-                    return true;
-                } else {
-                    $this->lastError = 'Path to ' . $type . ' folder exists but is not writable.';
+                    $this->lastError = 'Path to ' . $type . ' folder could not be created.';
                     throw new Exception($this->lastError);
                 }
+                return true;
             }
-        } else {
-            $this->lastError = 'Path to ' . $type . ' folder is missing.';
+            $this->lastError = 'Path to ' . $type . ' folder exists but is not writable.';
             throw new Exception($this->lastError);
         }
+        $this->lastError = 'Path to ' . $type . ' folder is missing.';
+        throw new Exception($this->lastError);
     }
 
     /**
@@ -584,7 +580,7 @@ class ApiCalls
     }
 
     /**
-     * @param String $fileName Name the file will have in the Localizer
+     * @param string $fileName Name the file will have in the Localizer
      * @param string $source Source language of the file
      * @throws Exception This Exception contains details of an eventual error
      */
@@ -626,5 +622,4 @@ class ApiCalls
         }
         return true;
     }
-
 }

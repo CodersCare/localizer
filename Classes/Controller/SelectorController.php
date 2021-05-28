@@ -20,15 +20,12 @@ use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
  * Module 'Selector' for the 'localizer' extension.
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
  */
 class SelectorController extends AbstractController
 {
     /**
      * @var SelectorRepository
      */
-
     protected $selectorRepository;
 
     /**
@@ -114,8 +111,6 @@ class SelectorController extends AbstractController
 
     /**
      * Initializing the module
-     *
-     * @return void
      */
     public function init()
     {
@@ -146,7 +141,6 @@ class SelectorController extends AbstractController
     /**
      * Main function, starting the rendering of the list.
      *
-     * @return void
      * @throws Exception
      */
     protected function main()
@@ -199,8 +193,8 @@ class SelectorController extends AbstractController
                                     <input type="checkbox" disabled="disabled">' . $label . '
                                 </label>&nbsp;<label class="btn btn-' . $legendItem['cssClass'] . ' active">
                                 <input type="checkbox" disabled="disabled">' . $GLOBALS['LANG']->sL(
-                            'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.cart'
-                        ) . '
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.cart'
+                    ) . '
                             </label>
                             </div>
                         </td>
@@ -559,8 +553,8 @@ class SelectorController extends AbstractController
         if (count($languages) > 1) {
             $languageSelector .= '<li class="select-all"><a href="#" class="small" tabIndex="-1">
                         <input type="checkbox" />&nbsp;' . $this->getLanguageService()->sL(
-                    'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:languages.selector.all'
-                ) . '</a></li>';
+                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:languages.selector.all'
+            ) . '</a></li>';
         }
         if (!empty($languages)) {
             foreach ($languages as $language) {
@@ -612,8 +606,8 @@ class SelectorController extends AbstractController
         if (count($tables) > 1) {
             $tableSelector .= '<li class="select-all"><a href="#" class="small" tabIndex="-1">
                         <input type="checkbox" />&nbsp;' . $this->getLanguageService()->sL(
-                    'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:tables.selector.all'
-                ) . '</a></li>';
+                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:tables.selector.all'
+            ) . '</a></li>';
         }
         $tableSelector .= '<li><a href="#" class="small" tabIndex="-1">
             <input name="configured_tables[pages]-dummy" type="checkbox" checked="checked" disabled="disabled">
@@ -856,5 +850,4 @@ class SelectorController extends AbstractController
         }
         return $referenceLocalizer;
     }
-
 }

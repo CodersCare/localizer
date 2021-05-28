@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('TYPO3_MODE')) {
-    die ('Access denied.');
+    die('Access denied.');
 }
 
 $l10n = 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf';
@@ -179,7 +179,7 @@ return [
                 'autoSizeMax' => 10,
                 'minitems' => 0,
                 'maxitems' => 99,
-                "MM" => "tx_localizer_settings_l10n_cfg_mm",
+                'MM' => 'tx_localizer_settings_l10n_cfg_mm',
                 'fieldControl' => [
                     'addRecord' => [
                         'disabled' => false,

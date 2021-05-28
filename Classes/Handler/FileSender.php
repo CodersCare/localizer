@@ -16,13 +16,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * FileSender takes care to send file(s) to Localizer
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 class FileSender extends AbstractHandler
 {
-    use Data, Language;
+    use Data;
+    use Language;
 
     /**
      * @var string
@@ -87,7 +85,6 @@ class FileSender extends AbstractHandler
     }
 
     /**
-     *
      * @throws Exception
      */
     public function run()
@@ -240,7 +237,6 @@ class FileSender extends AbstractHandler
 
     /**
      * @param int $time
-     * @return void
      */
     public function finish($time)
     {

@@ -11,9 +11,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Language
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 trait Language
 {
@@ -40,9 +37,9 @@ trait Language
                         '%' .
                         $queryBuilder->escapeLikeWildcards(
                             str_replace(
-                            '-',
-                            '%',
-                            $locale
+                                '-',
+                                '%',
+                                $locale
                             )
                         ) .
                         '%'
@@ -132,7 +129,7 @@ trait Language
         if (count($uidList) > 0) {
             $field = 'lg_collate_locale';
             $orgField = $field;
-            $uidList = GeneralUtility::intExplode(',', join(',', $uidList), true);
+            $uidList = GeneralUtility::intExplode(',', implode(',', $uidList), true);
             if ((bool)$fixUnderLine === true) {
                 $field = 'REPLACE(' . $field . ', "_", "-") as ' . $field;
             }
