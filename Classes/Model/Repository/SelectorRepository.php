@@ -324,7 +324,7 @@ class SelectorRepository extends AbstractRepository
         foreach (array_keys($translatableTables) as $table) {
             $additionalWhere = '';
             if (BackendUtility::isTableWorkspaceEnabled($table)) {
-                $additionalWhere .= ' AND ' . $table . '.t3ver_id = 0';
+                $additionalWhere .= ' AND ' . $table . '.t3ver_wsid = 0';
             }
             if ($start) {
                 $additionalWhere .= ' AND ' . $table . '.tstamp >= ' . $start;
