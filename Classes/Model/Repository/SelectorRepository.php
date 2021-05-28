@@ -15,8 +15,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Repository for the module 'Selector' for the 'localizer' extension.
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
  */
 class SelectorRepository extends AbstractRepository
 {
@@ -213,7 +211,7 @@ class SelectorRepository extends AbstractRepository
      *
      * @param $pageIds
      * @param $cartId
-     * @return array|NULL
+     * @return array|null
      */
     public function loadStoredTriples($pageIds, $cartId)
     {
@@ -650,7 +648,6 @@ class SelectorRepository extends AbstractRepository
                         $table . '.' . $tstampField,
                         (int)$start
                     )
-
                 );
             }
             if ($end) {
@@ -659,7 +656,6 @@ class SelectorRepository extends AbstractRepository
                         $table . '.' . $tstampField,
                         (int)$end
                     )
-
                 );
             }
             $queryBuilder->groupBy(
@@ -693,9 +689,9 @@ class SelectorRepository extends AbstractRepository
             $checkedRecords = [];
             while ($record = $statement->fetch()) {
                 if ($record['localizer_status'] && $record['outdated'] > $record['last_action'] && GeneralUtility::inList(
-                        $record['changed'],
-                        0
-                    )
+                    $record['changed'],
+                    0
+                )
                 ) {
                     $record['localizer_status'] = 71;
                 }
@@ -753,5 +749,4 @@ class SelectorRepository extends AbstractRepository
             'identifiedStatus' => $identifiedStatus,
         ];
     }
-
 }

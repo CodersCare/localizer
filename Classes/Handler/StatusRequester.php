@@ -15,9 +15,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * StatusRequester takes care to request the translation status for file(s) from Localizer
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 class StatusRequester extends AbstractHandler
 {
@@ -159,9 +156,8 @@ class StatusRequester extends AbstractHandler
 
     /**
      * @param int $time
-     * @return void
      */
-    function finish($time)
+    public function finish($time)
     {
         $this->dataFinish($time);
     }

@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('TYPO3_MODE')) {
-    die ('Access denied.');
+    die('Access denied.');
 }
 
 $l10n = 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:';

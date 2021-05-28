@@ -12,8 +12,6 @@ use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
  * Module 'Settings' for the 'localizer' extension.
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
  */
 class SettingsController extends AbstractController
 {
@@ -86,8 +84,6 @@ class SettingsController extends AbstractController
 
     /**
      * Initializing the module
-     *
-     * @return void
      */
     public function init()
     {
@@ -108,8 +104,6 @@ class SettingsController extends AbstractController
 
     /**
      * Main function, starting the rendering of the list.
-     *
-     * @return void
      */
     protected function main()
     {
@@ -287,8 +281,8 @@ class SettingsController extends AbstractController
         $this->content = $this->moduleTemplate->header($header . $this->pageinfo['title']);
         if ($this->id > 0) {
             $this->content .= '<form action="' . htmlspecialchars(
-                    $dblist->listURL()
-                ) . '" method="post" name="dblistForm">';
+                $dblist->listURL()
+            ) . '" method="post" name="dblistForm">';
             $this->content .= $dblist->HTMLcode;
             $this->content .= '<input type="hidden" name="cmd_table" /><input type="hidden" name="cmd" /></form>';
             if ($dblist->HTMLcode) {
@@ -308,10 +302,10 @@ class SettingsController extends AbstractController
                         'id="checkLargeControl"'
                     );
                     $this->content .= '<label for="checkLargeControl">' . BackendUtility::wrapInHelp(
-                            'xMOD_csh_corebe',
-                            'list_options',
-                            $GLOBALS['LANG']->getLL('largeControl')
-                        ) . '</label><br />';
+                        'xMOD_csh_corebe',
+                        'list_options',
+                        $GLOBALS['LANG']->getLL('largeControl')
+                    ) . '</label><br />';
                 }
                 if ($this->modTSconfig['properties']['enableClipBoard'] === 'selectable') {
                     if ($dblist->showClipboard) {
@@ -324,10 +318,10 @@ class SettingsController extends AbstractController
                             'id="checkShowClipBoard"'
                         );
                         $this->content .= '<label for="checkShowClipBoard">' . BackendUtility::wrapInHelp(
-                                'xMOD_csh_corebe',
-                                'list_options',
-                                $GLOBALS['LANG']->getLL('showClipBoard')
-                            ) . '</label><br />';
+                            'xMOD_csh_corebe',
+                            'list_options',
+                            $GLOBALS['LANG']->getLL('showClipBoard')
+                        ) . '</label><br />';
                     }
                 }
                 if ($this->modTSconfig['properties']['enableLocalizationView'] === 'selectable') {
@@ -340,10 +334,10 @@ class SettingsController extends AbstractController
                         'id="checkLocalization"'
                     );
                     $this->content .= '<label for="checkLocalization">' . BackendUtility::wrapInHelp(
-                            'xMOD_csh_corebe',
-                            'list_options',
-                            $GLOBALS['LANG']->getLL('localization')
-                        ) . '</label><br />';
+                        'xMOD_csh_corebe',
+                        'list_options',
+                        $GLOBALS['LANG']->getLL('localization')
+                    ) . '</label><br />';
                 }
                 $this->content .= '
 						</form>

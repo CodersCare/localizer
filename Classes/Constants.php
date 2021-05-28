@@ -6,9 +6,6 @@ namespace Localizationteam\Localizer;
  * Constants for Localizer TYPO3 connector
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 class Constants
 {
@@ -62,7 +59,6 @@ class Constants
     const HANDLER_FILEIMPORTER_START = self::HANDLER_FILEDOWNLOADER_FINISH;
     const HANDLER_FILEIMPORTER_FINISH = self::STATUS_CART_FILE_IMPORTED;
     const HANDLER_FILEIMPORTER_MAX_FILES = 2147483647;
-
 
     const TABLE_BACKEND_USERS = 'be_users';
     const TABLE_LOCALIZER_CART = 'tx_localizer_cart';

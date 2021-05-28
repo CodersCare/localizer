@@ -9,9 +9,6 @@ use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
  * File
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 trait File
 {

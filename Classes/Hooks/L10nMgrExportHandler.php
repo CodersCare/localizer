@@ -13,9 +13,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * L10nMgrExportHandler
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 class L10nMgrExportHandler implements PostSaveInterface
 {
@@ -23,7 +20,6 @@ class L10nMgrExportHandler implements PostSaveInterface
 
     /**
      * @param array $params
-     * @return void
      */
     public function postExportAction(array $params)
     {

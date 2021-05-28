@@ -11,8 +11,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Repository for the module 'Selector' for the 'localizer' extension.
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
  */
 class AutomaticExportRepository extends AbstractRepository
 {
@@ -20,7 +18,7 @@ class AutomaticExportRepository extends AbstractRepository
      * Loads available carts, which have not been finalized yet
      *
      * @param int $localizerId
-     * @return array|NULL
+     * @return array|null
      */
     public function loadUnfinishedButSentCarts($localizerId)
     {
@@ -59,7 +57,7 @@ class AutomaticExportRepository extends AbstractRepository
      * Loads pages that are configured to be exported autimatically based on a given age
      *
      * @param int $age
-     * @return array|NULL
+     * @return array|null
      */
     public function loadPagesConfiguredForAutomaticExport($age, $excludedPages)
     {
@@ -109,7 +107,7 @@ class AutomaticExportRepository extends AbstractRepository
      * @param int $localizer
      * @param int $age
      * @param array $excludedPages
-     * @return array|NULL
+     * @return array|null
      */
     public function loadPagesAddedToSpecificAutomaticExport($localizer, $age, $excludedPages)
     {
@@ -212,5 +210,4 @@ class AutomaticExportRepository extends AbstractRepository
                 );
         }
     }
-
 }

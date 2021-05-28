@@ -12,9 +12,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * AbstractCartHandler $COMMENT$
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 abstract class AbstractCartHandler
 {
@@ -33,7 +30,7 @@ abstract class AbstractCartHandler
      */
     abstract public function init($id = 1);
 
-    abstract function run();
+    abstract public function run();
 
     final public function __destruct()
     {
@@ -44,9 +41,8 @@ abstract class AbstractCartHandler
 
     /**
      * @param int $time
-     * @return void
      */
-    abstract function finish($time);
+    abstract public function finish($time);
 
     /**
      * @param int $time
@@ -77,7 +73,7 @@ abstract class AbstractCartHandler
     /**
      * @return string
      */
-    final function getProcessId()
+    final public function getProcessId()
     {
         return $this->processId;
     }

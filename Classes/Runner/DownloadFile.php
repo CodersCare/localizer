@@ -11,9 +11,6 @@ use ZipArchive;
  * Download translated files from Localizer
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 class DownloadFile
 {
@@ -66,7 +63,7 @@ class DownloadFile
                     }
                 }
                 break;
-            default :
+            default:
                 if (isset($configuration['processFiles'])) {
                     $this->processFiles = $configuration['processFiles'];
                     if (isset($configuration['token'])) {
@@ -104,7 +101,7 @@ class DownloadFile
                     try {
                         switch ($this->api->type) {
                             default:
-                                $zip = new ZipArchive;
+                                $zip = new ZipArchive();
                                 $file = str_replace('\\', '', $files['hotfolder']);
                                 if ($configuration['plainxmlexports']) {
                                     if (!copy($file, $files['local'])) {
@@ -114,7 +111,7 @@ class DownloadFile
                                     if ($zip->open($file) === true) {
                                         $zip->extractTo(dirname($files['local']));
                                         $zip->close();
-                                        //unlink($file);
+                                    //unlink($file);
                                     } else {
                                         throw new Exception('File could not successfully be unzipped');
                                     }

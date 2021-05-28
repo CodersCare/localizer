@@ -15,3 +15,11 @@
 .project
 .webprj
 nbproject
+
+# php-cs-fixer
+.php-cs-fixer.cache
+
+# composer
+composer.lock
+public
+vendor
