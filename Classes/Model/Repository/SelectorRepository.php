@@ -639,7 +639,7 @@ class SelectorRepository extends AbstractRepository
             if (BackendUtility::isTableWorkspaceEnabled($table) && ExtensionManagementUtility::isLoaded('workspaces')) {
                 $queryBuilder->andWhere(
                     $queryBuilder->expr()->eq(
-                        $table . '.t3ver_id',
+                        $table . '.t3ver_wsid',
                         0
                     )
                 );
