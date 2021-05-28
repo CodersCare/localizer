@@ -185,7 +185,7 @@ class SelectorController extends AbstractController
             $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
             $header = 'LOCALIZER Selector';
             if (isset($this->pageinfo['title'])) {
-                $header .= ' : ';
+                $header .= ': ';
             }
             $this->content = $this->moduleTemplate->header($header . $this->pageinfo['title']);
             $legendCells = '';
@@ -480,7 +480,7 @@ class SelectorController extends AbstractController
                     $this->cartRecord = $cart;
                 }
                 $cartSelector .= '<li' . $selected . '>
-                    <a href="' . $url . '&id=' . $this->id . '&selected_cart=' . $id . '&selected_localizer=' . $this->localizerId . '">[' . $cart['uid'] . '] ' . $user . ' : ' . $date . '</a>
+                    <a href="' . $url . '&id=' . $this->id . '&selected_cart=' . $id . '&selected_localizer=' . $this->localizerId . '">[' . $cart['uid'] . '] ' . $user . ': ' . $date . '</a>
                 </li>';
             }
         }
@@ -727,7 +727,7 @@ class SelectorController extends AbstractController
             $id = (int)$this->cartRecord['uid'];
             $date = date('r', $this->cartRecord['crdate']);
             $user = $this->getBackendUser()->user['username'];
-            $translationLocalizer = $this->moduleTemplate->header('[' . $id . '] ' . $user . ' : ' . $date);
+            $translationLocalizer = $this->moduleTemplate->header('[' . $id . '] ' . $user . ': ' . $date);
         }
         $translationLocalizer .= '<div class="table-responsive localizer-selector-matrix"><table class="table table-striped table-bordered table-hover">';
         $translationLocalizer .= '<thead><tr><th>&#160;</th>';
@@ -752,7 +752,7 @@ class SelectorController extends AbstractController
                     $translationLocalizer .= '<tr class="parent-' . $table . '-' . $uid . '"><th class="active text-nowrap record-header">' .
                         '<button class="btn btn-default btn-sm" data-tableid="' . $table . '-' . $uid .
                         '" data-toggle="tooltip" data-placement="top" data-title="Select all languages for this record">' .
-                        '<strong>' . $title . '</strong> : ' .
+                        '<strong>' . $title . '</strong>: ' .
                         GeneralUtility::fixed_lgd_cs(
                             $record[$labelField],
                             50
@@ -837,7 +837,7 @@ class SelectorController extends AbstractController
                     <td class="text-nowrap record-header">' . $level . $treeNodes .
                         '<button class="btn btn-default btn-sm" data-tableid="' . $table . '-' . $record['uid'] .
                         '" data-toggle="tooltip" data-placement="top" data-title="Select all languages for this record">
-                        <strong>' . $this->translatableTables[$table] . '</strong> : ' .
+                        <strong>' . $this->translatableTables[$table] . '</strong>: ' .
                         GeneralUtility::fixed_lgd_cs(
                             $record[$labelField],
                             50
