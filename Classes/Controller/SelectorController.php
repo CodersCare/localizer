@@ -115,19 +115,11 @@ class SelectorController extends AbstractController
     public function init()
     {
         $localizer = parent::init();
-        $this->configuration['languages'] = GeneralUtility::_GP('configured_languages') ? GeneralUtility::_GP(
-            'configured_languages'
-        ) : [];
-        $this->configuration['tables'] = GeneralUtility::_GP('configured_tables') ? GeneralUtility::_GP(
-            'configured_tables'
-        ) : [];
-        $this->configuration['start'] = GeneralUtility::_GP('configured_start') ? GeneralUtility::_GP(
-            'configured_start'
-        ) : 0;
-        $this->configuration['end'] = GeneralUtility::_GP('configured_end') ? GeneralUtility::_GP('configured_end') : 0;
-        $this->configuration['deadline'] = GeneralUtility::_GP('selected_deadline') ? GeneralUtility::_GP(
-            'selected_deadline'
-        ) : '';
+        $this->configuration['languages'] = GeneralUtility::_GP('configured_languages') ?: [];
+        $this->configuration['tables'] = GeneralUtility::_GP('configured_tables') ?: [];
+        $this->configuration['start'] = GeneralUtility::_GP('configured_start') ?: 0;
+        $this->configuration['end'] = GeneralUtility::_GP('configured_end') ?: 0;
+        $this->configuration['deadline'] = GeneralUtility::_GP('selected_deadline') ?: '';
         $this->configuration['sortexports'] = $localizer['sortexports'];
         $this->configuration['plainxmlexports'] = $localizer['plainxmlexports'];
 
