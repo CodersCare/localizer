@@ -10,9 +10,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * AbstractTask
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 class AbstractTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 {
@@ -29,7 +26,7 @@ class AbstractTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      * to be handled and logged by the client implementations.
      * Should return TRUE on successful execution, FALSE on error.
      *
-     * @return boolean Returns TRUE on successful execution, FALSE on error
+     * @return bool Returns TRUE on successful execution, FALSE on error
      * @throws Exception
      */
     public function execute()

@@ -19,13 +19,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * FileExporter takes care to create file(s) that can be sent to Localizer
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 class FileExporter extends AbstractCartHandler
 {
-    use AddFileToMatrix, Data, Language;
+    use AddFileToMatrix;
+    use Data;
+    use Language;
 
     /**
      * @var int
@@ -111,9 +110,6 @@ class FileExporter extends AbstractCartHandler
         return $acquired;
     }
 
-    /**
-     *
-     */
     public function run()
     {
         if ($this->canRun() === true) {
@@ -203,9 +199,8 @@ class FileExporter extends AbstractCartHandler
                 $excludeItems
             );
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -302,9 +297,8 @@ class FileExporter extends AbstractCartHandler
 
     /**
      * @param int $time
-     * @return void
      */
-    function finish($time)
+    public function finish($time)
     {
         $this->dataFinish($time);
     }

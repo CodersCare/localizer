@@ -11,15 +11,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Repository for the module 'Cart' for the 'localizer' extension.
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
  */
 class CartRepository extends AbstractRepository
 {
     /**
      * Loads available backend users
      *
-     * @return array|NULL
+     * @return array|null
      */
     public function loadAvailableUsers()
     {
@@ -83,7 +81,7 @@ class CartRepository extends AbstractRepository
      * @param $id
      * @param $classes
      * @param $user
-     * @return array|NULL
+     * @return array|null
      */
     public function getRecordInfo($id, $classes, $user)
     {
@@ -225,5 +223,4 @@ class CartRepository extends AbstractRepository
         }
         return $availableCarts;
     }
-
 }

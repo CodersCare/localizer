@@ -15,8 +15,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Repository for the module 'Selector' for the 'localizer' extension.
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
  */
 class AbstractRepository
 {
@@ -24,7 +22,7 @@ class AbstractRepository
 
     /**
      * @param int $localizerId
-     * @return array|FALSE|NULL
+     * @return array|false|null
      */
     public function getLocalizerLanguages($localizerId)
     {
@@ -113,7 +111,7 @@ class AbstractRepository
 
     /**
      * @param array $systemLanguages
-     * @return array|FALSE|NULL
+     * @return array|false|null
      */
     public function getStaticLanguages($systemLanguages)
     {
@@ -200,7 +198,7 @@ class AbstractRepository
     /**
      * Loads available localizer settings
      *
-     * @return array|NULL
+     * @return array|null
      */
     public function loadAvailableLocalizers()
     {
@@ -229,7 +227,7 @@ class AbstractRepository
      * Loads available carts, which have not been finalized yet
      *
      * @param int $localizerId
-     * @return array|NULL
+     * @return array|null
      */
     public function loadAvailableCarts($localizerId)
     {
@@ -268,7 +266,7 @@ class AbstractRepository
      *
      * @param int $pageId
      * @param int $cartId
-     * @return array|NULL
+     * @return array|null
      */
     public function loadAvailablePages($pageId, $cartId)
     {
@@ -344,7 +342,7 @@ class AbstractRepository
      * Loads available pages for carts
      *
      * @param int $cartId
-     * @return array|NULL
+     * @return array|null
      */
     public function loadAvailableLanguages($cartId)
     {
@@ -385,7 +383,7 @@ class AbstractRepository
      * Loads available pages for carts
      *
      * @param int $cartId
-     * @return array|NULL
+     * @return array|null
      */
     public function loadAvailableTables($cartId)
     {

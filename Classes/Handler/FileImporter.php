@@ -18,13 +18,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * FileImporter $COMMENT$
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 class FileImporter extends AbstractHandler
 {
-    use Data, File;
+    use Data;
+    use File;
 
     /**
      * @param $id
@@ -83,7 +81,7 @@ class FileImporter extends AbstractHandler
         return $acquired;
     }
 
-    function run()
+    public function run()
     {
         if ($this->canRun() === true) {
             foreach ($this->data as $row) {
@@ -144,7 +142,7 @@ class FileImporter extends AbstractHandler
                 CommandUtility::getCommand('php') . ' ' .
                 Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3 ' .
                 'l10nmanager:import' .
-                ' -t importFile'.
+                ' -t importFile' .
                 ' --file ' . CommandUtility::escapeShellArgument($fileNameAndPath) . ' 2>&1';
             $statusCode = 200;
             $output = '';
@@ -192,9 +190,8 @@ class FileImporter extends AbstractHandler
 
     /**
      * @param int $time
-     * @return void
      */
-    function finish($time)
+    public function finish($time)
     {
         $this->dataFinish($time);
     }

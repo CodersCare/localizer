@@ -14,8 +14,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Data
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
  *
  * @method string getProcessId() must be defined in implementing class
  */
@@ -169,8 +167,8 @@ trait Data
                 $apiClass = ApiCalls::class;
             } else {
                 $apiClass = 'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase(
-                        $row['type']
-                    ) . '\\Api\\ApiCalls';
+                    $row['type']
+                ) . '\\Api\\ApiCalls';
             }
             $api = GeneralUtility::makeInstance(
                 $apiClass,
@@ -304,5 +302,4 @@ trait Data
             }
         }
     }
-
 }

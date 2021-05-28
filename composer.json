@@ -27,5 +27,8 @@
     "typo3/cms": {
       "extension-key": "localizer"
     }
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.0"
   }
 }

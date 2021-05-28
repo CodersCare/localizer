@@ -186,8 +186,8 @@ class BaseModule
     {
         // Page / user TSconfig settings and blinding of menu-items
         $this->modTSconfig['properties'] = BackendUtility::getPagesTSconfig(
-                $this->id
-            )['mod.'][$this->MCONF['name'] . '.'] ?? [];
+            $this->id
+        )['mod.'][$this->MCONF['name'] . '.'] ?? [];
         $this->MOD_MENU['function'] = $this->mergeExternalItems(
             $this->MCONF['name'],
             'function',
@@ -225,12 +225,12 @@ class BaseModule
         if (is_array($mergeArray)) {
             foreach ($mergeArray as $k => $v) {
                 if (((string)$v['ws'] === '' || $this->getBackendUser()->workspace === 0 && GeneralUtility::inList(
+                    $v['ws'],
+                    'online'
+                )) || $this->getBackendUser()->workspace === -1 && GeneralUtility::inList(
                             $v['ws'],
-                            'online'
-                        )) || $this->getBackendUser()->workspace === -1 && GeneralUtility::inList(
-                        $v['ws'],
-                        'offline'
-                    ) || $this->getBackendUser()->workspace > 0 && GeneralUtility::inList(
+                            'offline'
+                        ) || $this->getBackendUser()->workspace > 0 && GeneralUtility::inList(
                         $v['ws'],
                         'custom'
                     )) {

@@ -11,9 +11,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Send file to Localizer
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
- * @package     TYPO3
- * @subpackage  localizer
- *
  */
 class SendFile
 {
@@ -71,7 +68,7 @@ class SendFile
                     if (isset($configuration['source'])) {
                         $this->source = $configuration['source'];
                         switch ((string)$configuration['type']) {
-                            case '0' :
+                            case '0':
                                 if (isset($configuration['outFolder'])) {
                                     $this->api = GeneralUtility::makeInstance(
                                         ApiCalls::class,
@@ -103,7 +100,7 @@ class SendFile
                                     );
                                 }
                                 break;
-                            default :
+                            default:
                                 if (ExtensionManagementUtility::isLoaded($configuration['type'])) {
                                     if (isset($configuration['projectKey'])) {
                                         $this->api = GeneralUtility::makeInstance(
@@ -154,7 +151,6 @@ class SendFile
     }
 
     /**
-     *
      * @throws Exception
      */
     public function run()

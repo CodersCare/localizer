@@ -9,7 +9,6 @@ $MLANG = [
     ],
 ];
 
-
 $MCONF = [
     'name' => 'localizer_localizersettings',
 ];
