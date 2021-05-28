@@ -702,15 +702,10 @@ class SelectorController extends AbstractController
         if (!empty($this->configuration[$variableName])) {
             $value = ' value="' . $this->configuration[$variableName] . '"';
         }
+        $icon = $this->iconFactory->getIcon('actions-calendar', Icon::SIZE_SMALL)->render();
         $dateTimeSelector = '<li class="input-group">';
-        $dateTimeSelector .= '<input type="text" data-date-type="datetime" name="configured_' . $variableName . '" id="input-configured-' . $variableName . '"' . $value . ' class="t3js-datetimepicker form-control t3js-clearable" data-toggle="tooltip" data-placement="top" data-title="Pick ' . $variableName . ' date and time" />
-        <label class="btn btn-default" for="input-configured-' . $variableName . '">
-            <span class="t3js-icon icon icon-size-small icon-state-default icon-actions-edit-pick-date" data-identifier="actions-edit-pick-date">
-                <span class="icon-markup">
-                    <img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-edit-pick-date.svg" width="16" height="16">
-                </span>
-            </span>
-        </label>';
+        $dateTimeSelector .= '<input type="text" data-date-type="datetime" name="configured_' . $variableName . '" id="input-configured-' . $variableName . '"' . $value . ' class="t3js-datetimepicker form-control t3js-clearable" data-toggle="tooltip" data-placement="top" data-title="Pick ' . $variableName . ' date and time" />';
+        $dateTimeSelector .= '<label class="btn btn-default" for="input-configured-' . $variableName . '">' . $icon . '</label>';
         $dateTimeSelector .= '</li>';
         return $dateTimeSelector;
     }
