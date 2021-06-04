@@ -192,7 +192,7 @@ define(['jquery', 'bootstrap'], function ($) {
       '<a href="#" class="btn btn-default" ' +
       'onclick="top.TYPO3.InfoWindow.showItem(\'tx_localizer_settings_l10n_exportdata_mm\', ' + id + '); return false;"' +
       'data-uid="' + id + '">' +
-      '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-info" data-identifier="actions-info">' +
+      '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-document-info" data-identifier="actions-document-info">' +
       '<span class="icon-markup"><svg class="icon-color" role="img">' +
       '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-info"></use>' +
       '</svg></span>' +
