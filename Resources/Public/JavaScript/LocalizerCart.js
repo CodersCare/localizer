@@ -120,9 +120,10 @@ define(['jquery', 'bootstrap'], function ($) {
             'onclick=""' +
             'data-uid="">' +
             '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-upload" data-identifier="actions-upload">' +
-            '<span class="icon-markup">' +
-            '<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-upload.svg" width="16" height="16">' +
-            '</span></span></a>' +
+            '<span class="icon-markup"><svg class="icon-color" role="img">' +
+            '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-upload"></use>' +
+            '</svg></span>' +
+            '</span></a>' +
             '</div> ');
     };
 
@@ -148,9 +149,10 @@ define(['jquery', 'bootstrap'], function ($) {
                 'data-title="Import this file"' +
                 'data-uid="' + id + '">' +
                 '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-upload" data-identifier="actions-upload">' +
-                '<span class="icon-markup">' +
-                '<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-upload.svg" width="16" height="16">' +
-                '</span></span></a>'
+                '<span class="icon-markup"><svg class="icon-color" role="img">' +
+                '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-upload"></use>' +
+                '</svg></span>' +
+                '</span></a>'
             ) : '') +
             (values.status !== 80 && values.action !== 70 ? (
                 '</div> <div class="btn-group btn-group-preview" role="group">' +
@@ -160,17 +162,19 @@ define(['jquery', 'bootstrap'], function ($) {
                 'data-title="' + previewTooltip + '"' +
                 'data-uid="' + id + '">' +
                 '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-document-view" data-identifier="actions-document-view">' +
-                '<span class="icon-markup">' +
-                '<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-document-view.svg" width="16" height="16">' +
-                '</span></span></a>' +
+                '<span class="icon-markup"><svg class="icon-color" role="img">' +
+                '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-document-view"></use>' +
+                '</svg></span>' +
+                '</span></a>' +
                 '</div> <div class="btn-group btn-group-edit" role="group">' +
                 '<a href="#" class="btn btn-default" ' +
                 'onclick="' + editOnClick + '"' +
                 'data-uid="' + id + '">' +
                 '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-open" data-identifier="actions-open">' +
-                '<span class="icon-markup">' +
-                '<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-open.svg" width="16" height="16">' +
-                '</span></span></a>'
+                '<span class="icon-markup"><svg class="icon-color" role="img">' +
+                '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-open"></use>' +
+                '</svg></span>' +
+                '</span></a>'
             ) : '') +
             (values.action === 70 ? (
                 '</div> <div class="btn-group btn-group-scheduled" role="group">' +
@@ -179,18 +183,20 @@ define(['jquery', 'bootstrap'], function ($) {
                 'data-title="Scheduled for import"' +
                 'data-uid="' + id + '">' +
                 '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-document-history-open" data-identifier="actions-document-history-open">' +
-                '<span class="icon-markup">' +
-                '<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-document-history-open.svg" width="16" height="16">' +
-                '</span></span></a>'
+                '<span class="icon-markup"><svg class="icon-color" role="img">' +
+                '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-document-history-open"></use>' +
+                '</svg></span>' +
+                '</span></a>'
             ) : '') +
             '</div> <div class="btn-group" role="group">' +
             '<a href="#" class="btn btn-default" ' +
             'onclick="top.TYPO3.InfoWindow.showItem(\'tx_localizer_settings_l10n_exportdata_mm\', ' + id + '); return false;"' +
             'data-uid="' + id + '">' +
-            '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-document-info" data-identifier="actions-document-info">' +
-            '<span class="icon-markup">' +
-            '<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-document-info.svg" width="16" height="16">' +
-            '</span></span></a>' +
+            '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-info" data-identifier="actions-info">' +
+            '<span class="icon-markup"><svg class="icon-color" role="img">' +
+            '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-info"></use>' +
+            '</svg></span>' +
+            '</span></a>' +
             '</div>' +
             '</li>');
     };
@@ -222,9 +228,10 @@ define(['jquery', 'bootstrap'], function ($) {
                 'data-toggle="tooltip" data-placement="right" ' +
                 'data-title="Scheduled for import">' +
                 '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-document-history-open" data-identifier="actions-document-history-open">' +
-                '<span class="icon-markup">' +
-                '<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-document-history-open.svg" width="16" height="16">' +
-                '</span></span></a>' +
+                '<span class="icon-markup"><svg class="icon-color" role="img">' +
+                '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-document-history-open"></use>' +
+                '</svg></span>' +
+                '</span></a>' +
                 '</div> ');
             var ul = li.closest('ul');
             if (!ul.find('.toggle-status .btn-group-import').length) {

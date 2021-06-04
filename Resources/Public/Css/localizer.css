@@ -234,8 +234,15 @@
     background: #567949;
 }
 
-#recordlist-tx_localizer_cart .table-hover tr:hover .btn {
-    color: #ffffff;
+#recordlist-tx_localizer_cart .table-hover tr .col-control .btn {
+    color: #000!important;
+}
+
+#recordlist-tx_localizer_cart .table-hover tr:hover .localizerCarts .btn,
+#recordlist-tx_localizer_cart .table-hover tr .col-control .btn-info:hover,
+#recordlist-tx_localizer_cart .table-hover tr .col-control .btn-success:hover,
+#recordlist-tx_localizer_cart .table-hover tr .col-control .btn-warning:hover {
+    color: #fff!important;
 }
 
 #recordlist-tx_localizer_cart .table-fit > .table tr > td {
