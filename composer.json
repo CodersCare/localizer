@@ -8,13 +8,14 @@
     "Localizer"
   ],
   "license": "GPL-3.0-or-later",
-  "version": "10.2.0",
+  "version": "10.2.1",
   "support": {
     "issues": "https://gitlab.com/Coders.Care/localizer/issues"
   },
   "require": {
     "typo3/cms-core": "^10.4",
-    "localizationteam/l10nmgr": "^10.0",
+    "localizationteam/l10nmgr": "^10",
+    "sjbr/static-info-tables": "^6.9",
     "ext-zip": "*",
     "ext-json": "*"
   },
