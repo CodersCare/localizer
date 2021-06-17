@@ -183,3 +183,8 @@ CREATE TABLE pages
     localizer_include_with_automatic_export tinyint(4) DEFAULT '0' NOT NULL,
     localizer_include_with_specific_export  text
 );
+
+CREATE TABLE tx_l10nmgr_cfg
+(
+    tx_localizer_id int(11) DEFAULT '0' NOT NULL
+);
