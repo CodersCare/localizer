@@ -439,7 +439,9 @@ class AbstractRepository
                 )
                 && isset($translatableTables[$configuration['foreign_table']])
             ) {
-                /**@var $relationHandler RelationHandler * */
+                if (empty($record[$fieldName])) {
+                    continue;
+                }
                 $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
                 $relationHandler->start(
                     $fieldName,
