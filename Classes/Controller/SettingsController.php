@@ -76,7 +76,7 @@ class SettingsController extends AbstractController
         $this->MCONF = [
             'name' => $this->moduleName,
         ];
-        $this->getBackendUser()->modAccess($this->MCONF, 1);
+        $this->getBackendUser()->modAccess($this->MCONF);
         $this->getLanguageService()->includeLLFile(
             'EXT:localizer/Resources/Private/Language/locallang_localizer_settings.xlf'
         );
