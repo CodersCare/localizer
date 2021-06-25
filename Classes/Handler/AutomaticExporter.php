@@ -225,8 +225,16 @@ class AutomaticExporter extends AbstractCartHandler
     protected function findTranslatableTables($pid)
     {
         $translatableTables = ['pages' => $GLOBALS['LANG']->sL($GLOBALS['TCA']['pages']['ctrl']['title'])];
+
+        // TODO: This snipped does mainly the same like the one in SelectorController:611.
+        //       But it checks first if the table is translatable, which might lead to less SQL Queries
         foreach (array_keys($GLOBALS['TCA']) as $table) {
             if (BackendUtility::isTableLocalizable($table)) {
+                // TODO: We can use the selectorRepository->findRecordByPid here.
+                //       But first we need to figure out if the Restrictions there are really needed.
+                // $selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
+                // $recordExists = $selectorRepository->findRecordByPid($pid, $table);
+
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
                 $queryBuilder->getRestrictions();
                 $recordExists = $queryBuilder
