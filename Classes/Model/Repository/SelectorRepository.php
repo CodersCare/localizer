@@ -278,7 +278,8 @@ class SelectorRepository extends AbstractRepository
                         'cruser_id' => $this->getBackendUser()->user['uid'],
                         'pretranslatecontent' => 0,
                         'overrideexistingtranslations' => 1,
-                        'sortexports' => (int)$configuration['sortexports']
+                        'sortexports' => (int)$configuration['sortexports'],
+                        'tx_localizer_id' => (int)$localizerId,
                     ],
                     [
                         PDO::PARAM_INT,
@@ -292,7 +293,8 @@ class SelectorRepository extends AbstractRepository
                         PDO::PARAM_INT,
                         PDO::PARAM_INT,
                         PDO::PARAM_INT,
-                        PDO::PARAM_INT
+                        PDO::PARAM_INT,
+                        PDO::PARAM_INT,
                     ]
                 );
                 return $databaseConnection->lastInsertId(Constants::TABLE_L10NMGR_CONFIGURATION);
