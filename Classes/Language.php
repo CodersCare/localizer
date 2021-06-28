@@ -111,11 +111,9 @@ trait Language
             ->fetchAll();
         $languageUids = [];
         if (!empty($rows)) {
-            foreach ($rows as $row) {
-                $languageUids['uid_foreign'] = $row;
-            }
+            $languageUids = array_column($rows, 'uid_foreign');
         }
-        return array_keys($languageUids);
+        return $languageUids;
     }
 
     /**
