@@ -66,26 +66,22 @@ class DownloadFile
             default:
                 if (isset($configuration['processFiles'])) {
                     $this->processFiles = $configuration['processFiles'];
-                    if (isset($configuration['token'])) {
-                        if (isset($configuration['url'])) {
-                            if (isset($configuration['projectKey'])) {
-                                $this->api = GeneralUtility::makeInstance(
-                                    'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase(
-                                        $configuration['type']
-                                    ) . '\\Api\\ApiCalls',
-                                    $configuration['type'],
-                                    $configuration['url'],
-                                    $configuration['workflow'],
-                                    $configuration['projectKey'],
-                                    $configuration['username'],
-                                    $configuration['password'],
-                                    ''
-                                );
-                                $this->api->setToken($configuration['token']);
-                                if (isset($configuration['file'])) {
-                                    $this->path = $configuration['file'] . '.xml';
-                                }
-                            }
+                    if (isset($configuration['token'], $configuration['url'], $configuration['projectKey'])) {
+                        $this->api = GeneralUtility::makeInstance(
+                            'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase(
+                                $configuration['type']
+                            ) . '\\Api\\ApiCalls',
+                            $configuration['type'],
+                            $configuration['url'],
+                            $configuration['workflow'],
+                            $configuration['projectKey'],
+                            $configuration['username'],
+                            $configuration['password'],
+                            ''
+                        );
+                        $this->api->setToken($configuration['token']);
+                        if (isset($configuration['file'])) {
+                            $this->path = $configuration['file'] . '.xml';
                         }
                     }
                 }
