@@ -101,7 +101,7 @@ class SelectorController extends AbstractController
         ];
         $this->selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-        $this->getBackendUser()->modAccess($this->MCONF, 1);
+        $this->getBackendUser()->modAccess($this->MCONF);
         $this->getLanguageService()->includeLLFile(
             'EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf'
         );

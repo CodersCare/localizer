@@ -93,7 +93,7 @@ class CartController extends AbstractController
             'name' => $this->moduleName,
         ];
         $this->cartRepository = GeneralUtility::makeInstance(CartRepository::class);
-        $this->getBackendUser()->modAccess($this->MCONF, 1);
+        $this->getBackendUser()->modAccess($this->MCONF);
         $this->getLanguageService()->includeLLFile(
             'EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf'
         );
