@@ -161,6 +161,7 @@ class FileDownloader extends AbstractHandler
                         $fileStatus['file'],
                         $this->getIso2ForLocale($fileStatus['locale'])
                     ),
+                    'remoteFilename' => $fileStatus['file'],
                 ];
             }
             //fixme:errorhandling
