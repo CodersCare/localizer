@@ -57,6 +57,7 @@ $config->setRiskyAllowed(true)
     ->setFinder(
         PhpCsFixer\Finder::create()
             ->in(__DIR__)
+            ->exclude('public')
     );
 
 return $config;
