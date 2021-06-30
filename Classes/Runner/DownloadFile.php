@@ -122,14 +122,11 @@ class DownloadFile
                 }
                 break;
             default:
-                foreach ($this->processFiles as $files) {
+                foreach ($this->processFiles as $file) {
                     try {
-                        $fileContent = $this->api->getFile(
-                            basename($files['remote']),
-                            dirname($files['remote'])
-                        );
-                        $this->adjustContent($fileContent, $files['locale']);
-                        file_put_contents($files['local'], $fileContent);
+                        $fileContent = $this->api->getFile($file);
+                        $this->adjustContent($fileContent, $file['locale']);
+                        file_put_contents($file['local'], $fileContent);
                         $response[] = [
                             'http_status_code' => '200',
                         ];
