@@ -8,8 +8,6 @@ use Localizationteam\Localizer\Model\Repository\SelectorRepository;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -610,45 +608,33 @@ class SelectorController extends AbstractController
             ) .
             '</a></li>';
         $this->translatableTables = ['pages' => $GLOBALS['LANG']->sL($GLOBALS['TCA']['pages']['ctrl']['title'])];
+        // TODO: Maybe we can use AutomaticExporter::findTranslatableTables($this->id)
         foreach (array_keys($GLOBALS['TCA']) as $table) {
             if ($table === 'pages') {
                 continue;
             }
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
-            $queryBuilder->getRestrictions()
-                ->removeAll()
-                ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
-            $recordExists = $queryBuilder
-                ->select('*')
-                ->from($table)
-                ->where(
-                    $queryBuilder->expr()->eq(
-                        'pid',
-                        (int)$this->id
-                    )
-                )
-                ->execute()
-                ->fetch();
-            if ((!empty($recordExists) || isset($availableTables[$table])) &&
-                BackendUtility::isTableLocalizable($table) &&
-                ($this->getBackendUser()->isAdmin() ||
-                    $this->getBackendUser()->check('tables_modify', $table))
-            ) {
-                $checked = '';
-                if (isset($this->configuration['tables'][$table]) || isset($availableTables[$table])) {
-                    $this->translatableTables[$table] = $GLOBALS['LANG']->sL($GLOBALS['TCA'][$table]['ctrl']['title']);
-                    $checked = ' checked="checked"';
-                }
-                $tableSelector .= '<li><a href="#" class="small" tabIndex="-1"><input name="configured_tables[' . $table . ']" type="checkbox" ' . $checked . ' />&nbsp;' .
-                    $GLOBALS['LANG']->sL($GLOBALS['TCA'][$table]['ctrl']['title']) . '</a></li>';
-                if ($table === 'sys_file_reference') {
+
+            if (BackendUtility::isTableLocalizable($table)) {
+                $recordExists = $this->selectorRepository->checkForRecordsOnPage($this->id, $table);
+                if ((!empty($recordExists) || isset($availableTables[$table])) &&
+                    ($this->getBackendUser()->isAdmin() || $this->getBackendUser()->check('tables_modify', $table))
+                ) {
                     $checked = '';
-                    if (isset($this->configuration['tables']['sys_file_metadata']) || isset($availableTables['sys_file_metadata'])) {
-                        $this->translatableTables['sys_file_metadata'] = $GLOBALS['LANG']->sL($GLOBALS['TCA']['sys_file_metadata']['ctrl']['title']);
+                    if (isset($this->configuration['tables'][$table]) || isset($availableTables[$table])) {
+                        $this->translatableTables[$table] = $GLOBALS['LANG']->sL($GLOBALS['TCA'][$table]['ctrl']['title']);
                         $checked = ' checked="checked"';
                     }
-                    $tableSelector .= '<li><ul class="sys-file-metadata"><li><a href="#" class="small" tabIndex="-1">+&nbsp;<input name="configured_tables[sys_file_metadata]" type="checkbox" ' . $checked . ' />&nbsp;' .
-                        $GLOBALS['LANG']->sL($GLOBALS['TCA']['sys_file_metadata']['ctrl']['title']) . '</a></li></ul></li>';
+                    $tableSelector .= '<li><a href="#" class="small" tabIndex="-1"><input name="configured_tables[' . $table . ']" type="checkbox" ' . $checked . ' />&nbsp;' .
+                        $GLOBALS['LANG']->sL($GLOBALS['TCA'][$table]['ctrl']['title']) . '</a></li>';
+                    if ($table === 'sys_file_reference') {
+                        $checked = '';
+                        if (isset($this->configuration['tables']['sys_file_metadata']) || isset($availableTables['sys_file_metadata'])) {
+                            $this->translatableTables['sys_file_metadata'] = $GLOBALS['LANG']->sL($GLOBALS['TCA']['sys_file_metadata']['ctrl']['title']);
+                            $checked = ' checked="checked"';
+                        }
+                        $tableSelector .= '<li><ul class="sys-file-metadata"><li><a href="#" class="small" tabIndex="-1">+&nbsp;<input name="configured_tables[sys_file_metadata]" type="checkbox" ' . $checked . ' />&nbsp;' .
+                            $GLOBALS['LANG']->sL($GLOBALS['TCA']['sys_file_metadata']['ctrl']['title']) . '</a></li></ul></li>';
+                    }
                 }
             }
         }

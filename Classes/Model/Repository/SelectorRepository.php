@@ -8,6 +8,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -18,6 +19,37 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SelectorRepository extends AbstractRepository
 {
+    public function checkForRecordsOnPage(int $pid, string $table): bool
+    {
+        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable($table);
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+
+        $count = $queryBuilder->count('*')->from($table)->where($queryBuilder->expr()->eq('pid', $pid))->execute()->fetchOne();
+
+        return $count > 0;
+    }
+
+    public function findRecordByPid(int $pid, string $table)
+    {
+        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable($table);
+
+        // TODO: Do we need the restrictions here?
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+
+        return $queryBuilder
+            ->select('*')
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->eq('pid', $pid)
+            )
+            ->execute()
+            ->fetchAssociative();
+    }
+
     /**
      * Creates a new cart, when this option is selected in the cart selector
      *
