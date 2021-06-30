@@ -260,13 +260,15 @@ class DataHandler
             }
             // Setting icon:
             $msg = '';
+            $extPath = PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath('l10nmgr'));
             if ($flags['new'] && !$flags['unknown'] && !$flags['noChange'] && !$flags['update']) {
                 $msg .= 'None of ' . $flags['new'] . ' elements are translated.';
-                $output = '<img src="../' . PathUtility::stripPathSitePrefix(
-                    ExtensionManagementUtility::extPath('l10nmgr')
-                ) . 'Resources/Public/Images/flags_new.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars(
-                        $msg
-                    ) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = sprintf(
+                    '<img src="../%sResources/Public/Images/flags_new.png" hspace="2" width="10" height="16" alt="%s" title="%s" />',
+                    $extPath,
+                    htmlspecialchars($msg),
+                    htmlspecialchars($msg),
+                );
             } elseif ($flags['new'] || $flags['update']) {
                 if ($flags['update']) {
                     $msg .= $flags['update'] . ' elements to update. ';
@@ -274,41 +276,45 @@ class DataHandler
                 if ($flags['new']) {
                     $msg .= $flags['new'] . ' new elements found. ';
                 }
-                $output = '<img src="../' . PathUtility::stripPathSitePrefix(
-                    ExtensionManagementUtility::extPath('l10nmgr')
-                ) . 'Resources/Public/Images/flags_update.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars(
-                        $msg
-                    ) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = sprintf(
+                    '<img src="../%sResources/Public/Images/flags_update.png" hspace="2" width="10" height="16" alt="%s" title="%s" />',
+                    $extPath,
+                    htmlspecialchars($msg),
+                    htmlspecialchars($msg),
+                );
             } elseif ($flags['unknown']) {
                 $msg .= 'Translation status is unknown for ' . $flags['unknown'] . ' elements. Please check and update. ';
-                $output = '<img src="../' . PathUtility::stripPathSitePrefix(
-                    ExtensionManagementUtility::extPath('l10nmgr')
-                ) . 'Resources/Public/Images/flags_unknown.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars(
-                        $msg
-                    ) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = sprintf(
+                    '<img src="../%sResources/Public/Images/flags_unknown.png" hspace="2" width="10" height="16" alt="%s" title="%s" />',
+                    $extPath,
+                    htmlspecialchars($msg),
+                    htmlspecialchars($msg),
+                );
             } elseif ($flags['noChange']) {
                 $msg .= 'All ' . $flags['noChange'] . ' translations OK';
-                $output = '<img src="../' . PathUtility::stripPathSitePrefix(
-                    ExtensionManagementUtility::extPath('l10nmgr')
-                ) . 'Resources/Public/Images/flags_ok.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars(
-                        $msg
-                    ) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = sprintf(
+                    '<img src="../%sResources/Public/Images/flags_ok.png" hspace="2" width="10" height="16" alt="%s" title="%s" />',
+                    $extPath,
+                    htmlspecialchars($msg),
+                    htmlspecialchars($msg),
+                );
             } else {
                 $msg .= 'Nothing to do. ';
                 $msg .= '[n/?/u/ok=' . implode('/', $flags) . ']';
-                $output = '<img src="../' . PathUtility::stripPathSitePrefix(
-                    ExtensionManagementUtility::extPath('l10nmgr')
-                ) . 'Resources/Public/Images/flags_none.png" hspace="2" width="10" height="16" alt="' . htmlspecialchars(
-                        $msg
-                    ) . '" title="' . htmlspecialchars($msg) . '" />';
+                $output = sprintf(
+                    '<img src="../%sResources/Public/Images/flags_none.png" hspace="2" width="10" height="16" alt="%s" title="%s" />',
+                    $extPath,
+                    htmlspecialchars($msg),
+                    htmlspecialchars($msg),
+                );
             }
-            $output = !$noLink ? '<a href="#" onclick="' . htmlspecialchars(
-                'parent.list_frame.location.href="' . $GLOBALS['BACK_PATH'] . PathUtility::stripPathSitePrefix(
-                        ExtensionManagementUtility::extPath('l10nmgr')
-                    ) . 'cm2/index.php?table=' . $p[0] . '&uid=' . $p[1] . '&languageList=' . rawurlencode(
-                        $languageList
-                    ) . '"; return false;'
-            ) . '" target="listframe">' . $output . '</a>' : $output;
+            if (!$noLink) {
+                $output = sprintf(
+                    '<a href="#" onclick="%s" target="listframe">%s</a>',
+                    htmlspecialchars('parent.list_frame.location.href="' . $GLOBALS['BACK_PATH'] . $extPath . 'cm2/index.php?table=' . $p[0] . '&uid=' . $p[1] . '&languageList=' . rawurlencode($languageList) . '"; return false;'),
+                    $output
+                );
+            }
         }
         return $output;
     }
