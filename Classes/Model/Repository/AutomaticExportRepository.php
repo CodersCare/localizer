@@ -4,8 +4,6 @@ namespace Localizationteam\Localizer\Model\Repository;
 
 use Localizationteam\Localizer\Constants;
 use PDO;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Repository for the module 'Selector' for the 'localizer' extension.
@@ -22,9 +20,7 @@ class AutomaticExportRepository extends AbstractRepository
      */
     public function loadUnfinishedButSentCarts($localizerId)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-            Constants::TABLE_LOCALIZER_CART
-        );
+        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
         $queryBuilder->getRestrictions();
         return $queryBuilder
             ->select('*')
@@ -61,7 +57,7 @@ class AutomaticExportRepository extends AbstractRepository
      */
     public function loadPagesConfiguredForAutomaticExport($age, $excludedPages)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable('pages');
         $queryBuilder->getRestrictions();
         $queryBuilder
             ->select('*')
@@ -111,7 +107,7 @@ class AutomaticExportRepository extends AbstractRepository
      */
     public function loadPagesAddedToSpecificAutomaticExport($localizer, $age, $excludedPages)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable('pages');
         $pages = $queryBuilder
             ->select('pages.*')
             ->from('pages')
@@ -186,7 +182,7 @@ class AutomaticExportRepository extends AbstractRepository
             }
         }
         if (!empty($insertValues)) {
-            GeneralUtility::makeInstance(ConnectionPool::class)
+            self::getConnectionPool()
                 ->getConnectionForTable(Constants::TABLE_CARTDATA_MM)
                 ->bulkInsert(
                     Constants::TABLE_CARTDATA_MM,

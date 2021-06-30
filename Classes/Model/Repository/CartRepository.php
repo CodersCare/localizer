@@ -4,8 +4,6 @@ namespace Localizationteam\Localizer\Model\Repository;
 
 use Localizationteam\Localizer\Constants;
 use PDO;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Repository for the module 'Cart' for the 'localizer' extension.
@@ -21,9 +19,7 @@ class CartRepository extends AbstractRepository
      */
     public function loadAvailableUsers()
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-            Constants::TABLE_BACKEND_USERS
-        );
+        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_BACKEND_USERS);
         $users = $queryBuilder
             ->select(Constants::TABLE_BACKEND_USERS . '.*')
             ->from(Constants::TABLE_BACKEND_USERS)
@@ -86,9 +82,7 @@ class CartRepository extends AbstractRepository
     public function getRecordInfo($id, $classes, $user)
     {
         $user = $user === 0 || $user ? $user : $this->getBackendUser()->user['uid'];
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-            Constants::TABLE_LOCALIZER_CART
-        );
+        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
         $queryBuilder
             ->select('uid', 'uid_local', 'uid_foreign', 'previous_status', 'action')
             ->from(Constants::TABLE_LOCALIZER_CART)
@@ -124,9 +118,7 @@ class CartRepository extends AbstractRepository
         }
         if (!empty($availableCarts)) {
             foreach ($availableCarts as $cartId => &$cart) {
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-                    Constants::TABLE_EXPORTDATA_MM
-                );
+                $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
                 $exportData = $queryBuilder
                     ->select(
                         Constants::TABLE_EXPORTDATA_MM . '.uid',

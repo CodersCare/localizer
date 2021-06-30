@@ -6,7 +6,6 @@ use Localizationteam\Localizer\Constants;
 use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -61,9 +60,7 @@ class SelectorRepository extends AbstractRepository
     {
         $localizerLanguages = $this->getLocalizerLanguages($localizerId);
 
-        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(
-            Constants::TABLE_LOCALIZER_CART
-        );
+        $databaseConnection = self::getConnectionPool()->getConnectionForTable(Constants::TABLE_LOCALIZER_CART);
         $databaseConnection->insert(
             Constants::TABLE_LOCALIZER_CART,
             [
@@ -89,7 +86,7 @@ class SelectorRepository extends AbstractRepository
         );
 
         $cartId = $databaseConnection->lastInsertId(Constants::TABLE_LOCALIZER_CART);
-        GeneralUtility::makeInstance(ConnectionPool::class)
+        self::getConnectionPool()
             ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
             ->insert(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
             ->values(
@@ -117,7 +114,7 @@ class SelectorRepository extends AbstractRepository
      */
     public function storeConfiguration($pageId, $cartId, $configuration)
     {
-        GeneralUtility::makeInstance(ConnectionPool::class)
+        self::getConnectionPool()
             ->getConnectionForTable(Constants::TABLE_LOCALIZER_CART)
             ->update(
                 Constants::TABLE_LOCALIZER_CART,
@@ -186,7 +183,7 @@ class SelectorRepository extends AbstractRepository
         $insertValues = array_diff_assoc($checkedValues, $storedTriples);
         $deleteValues = array_diff_assoc($storedTriples, $checkedValues);
         if (!empty($insertValues)) {
-            GeneralUtility::makeInstance(ConnectionPool::class)
+            self::getConnectionPool()
                 ->getConnectionForTable(Constants::TABLE_CARTDATA_MM)
                 ->bulkInsert(
                     Constants::TABLE_CARTDATA_MM,
@@ -210,9 +207,7 @@ class SelectorRepository extends AbstractRepository
                 );
         }
         if (!empty($deleteValues)) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-                Constants::TABLE_CARTDATA_MM
-            );
+            $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
             $queryBuilder
                 ->delete(Constants::TABLE_CARTDATA_MM)
                 ->where(
@@ -248,9 +243,7 @@ class SelectorRepository extends AbstractRepository
     public function loadStoredTriples($pageIds, $cartId)
     {
         $pageIds = implode(',', GeneralUtility::intExplode(',', implode(',', array_keys($pageIds))));
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-            Constants::TABLE_CARTDATA_MM
-        );
+        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
         $queryBuilder->getRestrictions()
             ->removeAll();
         $triples = $queryBuilder
@@ -293,9 +286,7 @@ class SelectorRepository extends AbstractRepository
         if ($localizerId > 0 && $cartId > 0) {
             $localizerLanguages = $this->getLocalizerLanguages($localizerId);
             if (!empty($localizerLanguages)) {
-                $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(
-                    Constants::TABLE_L10NMGR_CONFIGURATION
-                );
+                $databaseConnection = self::getConnectionPool()->getConnectionForTable(Constants::TABLE_L10NMGR_CONFIGURATION);
                 $databaseConnection->insert(
                     Constants::TABLE_L10NMGR_CONFIGURATION,
                     [
@@ -348,7 +339,7 @@ class SelectorRepository extends AbstractRepository
     {
         if ($localizerId > 0 && $cartId > 0) {
             $pageIds = implode(',', GeneralUtility::intExplode(',', implode(',', array_keys($pageIds))));
-            GeneralUtility::makeInstance(ConnectionPool::class)
+            self::getConnectionPool()
                 ->getConnectionForTable(Constants::TABLE_L10NMGR_CONFIGURATION)
                 ->update(
                     Constants::TABLE_L10NMGR_CONFIGURATION,
@@ -380,7 +371,7 @@ class SelectorRepository extends AbstractRepository
     public function finalizeCart($localizerId, $cartId, $configurationId, $deadline = '')
     {
         if ($cartId > 0) {
-            GeneralUtility::makeInstance(ConnectionPool::class)
+            self::getConnectionPool()
                 ->getConnectionForTable(Constants::TABLE_LOCALIZER_CART)
                 ->update(
                     Constants::TABLE_LOCALIZER_CART,
@@ -402,7 +393,7 @@ class SelectorRepository extends AbstractRepository
                         PDO::PARAM_INT
                     ]
                 );
-            GeneralUtility::makeInstance(ConnectionPool::class)
+            self::getConnectionPool()
                 ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_L10NMGR_MM)
                 ->insert(Constants::TABLE_LOCALIZER_L10NMGR_MM)
                 ->values(
@@ -412,9 +403,7 @@ class SelectorRepository extends AbstractRepository
                     ]
                 )
                 ->execute();
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-                Constants::TABLE_LOCALIZER_L10NMGR_MM
-            );
+            $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_L10NMGR_MM);
             $countConfigurations = $queryBuilder
                 ->count('*')
                 ->from(Constants::TABLE_LOCALIZER_L10NMGR_MM)
@@ -426,7 +415,7 @@ class SelectorRepository extends AbstractRepository
                 )
                 ->execute()
                 ->fetchColumn(0);
-            GeneralUtility::makeInstance(ConnectionPool::class)
+            self::getConnectionPool()
                 ->getConnectionForTable(Constants::TABLE_LOCALIZER_SETTINGS)
                 ->update(
                     Constants::TABLE_LOCALIZER_SETTINGS,
@@ -480,7 +469,7 @@ class SelectorRepository extends AbstractRepository
             $deleteField = $GLOBALS['TCA'][$table]['ctrl']['delete'];
             $languageField = $GLOBALS['TCA'][$table]['ctrl']['languageField'];
             $transOrigPointerField = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
+            $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable($table);
             $queryBuilder->getRestrictions()
                 ->removeAll();
             $queryBuilder
