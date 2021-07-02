@@ -104,7 +104,7 @@ class AbstractRepository
             )
             ->groupBy('settings.uid')
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
     }
 
     /**
@@ -131,7 +131,7 @@ class AbstractRepository
                 )
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
         $staticLanguages = [];
         if (!empty($languages)) {
             foreach ($languages as $language) {
@@ -172,7 +172,7 @@ class AbstractRepository
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         if (!empty($selectedCart['configuration'])) {
             $configuration = json_decode($selectedCart['configuration'], true);
             if (!empty($configuration)) {
@@ -205,7 +205,7 @@ class AbstractRepository
             ->select('*')
             ->from(Constants::TABLE_LOCALIZER_SETTINGS)
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
         $availableLocalizers = [];
         if (!empty($localizers)) {
             foreach ($localizers as $localizer) {
@@ -248,7 +248,7 @@ class AbstractRepository
                 )
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
     }
 
     /**
@@ -284,7 +284,7 @@ class AbstractRepository
             )
             ->groupBy('pid')
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
         $availablePages = [];
         if (!empty($pages)) {
             foreach ($pages as $page) {
@@ -311,7 +311,7 @@ class AbstractRepository
                     )
                 )
                 ->execute()
-                ->fetchAll();
+                ->fetchAllAssociative();
             $pageTitles = [];
             if (!empty($titles)) {
                 foreach ($titles as $title) {
@@ -355,7 +355,7 @@ class AbstractRepository
             )
             ->groupBy('languageId')
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
         $availableLanguages = [];
         if (!empty($languages)) {
             foreach ($languages as $language) {
@@ -388,7 +388,7 @@ class AbstractRepository
             )
             ->groupBy('tableName')
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
         $availableTables = [];
         if (!empty($tables)) {
             foreach ($tables as $table) {

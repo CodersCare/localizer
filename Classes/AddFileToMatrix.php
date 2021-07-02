@@ -104,7 +104,7 @@ trait AddFileToMatrix
                 )
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
         if (count($localizerLanguageRows) > 0) {
             foreach ($localizerLanguageRows as $lRow) {
                 $lRow['uid_local'] = $uid;
@@ -148,7 +148,7 @@ trait AddFileToMatrix
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         if (!empty($row)) {
             return $row['static_lang_isocode'];
         }

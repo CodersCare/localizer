@@ -47,7 +47,7 @@ trait Language
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         if ($row) {
             if (isset($row['lg_iso_2'])) {
                 $iso2 = trim($row['lg_iso_2']);
@@ -108,7 +108,7 @@ trait Language
                 )
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
         $languageUids = [];
         if (!empty($rows)) {
             $languageUids = array_column($rows, 'uid_foreign');
@@ -146,7 +146,7 @@ trait Language
                     )
                 )
                 ->execute()
-                ->fetchAll();
+                ->fetchAllAssociative();
             if (!empty($rows)) {
                 $locale = [];
                 foreach ($rows as $row) {

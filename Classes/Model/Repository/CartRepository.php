@@ -61,7 +61,7 @@ class CartRepository extends AbstractRepository
                 Constants::TABLE_BACKEND_USERS . '.username'
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
         $availableUsers = [];
         if (!empty($users)) {
             foreach ($users as $user) {
@@ -109,7 +109,7 @@ class CartRepository extends AbstractRepository
                 )
             );
         }
-        $carts = $queryBuilder->execute()->fetchAll();
+        $carts = $queryBuilder->execute()->fetchAllAssociative();
         $availableCarts = [];
         if (!empty($carts)) {
             foreach ($carts as $cart) {
@@ -174,7 +174,7 @@ class CartRepository extends AbstractRepository
                         Constants::TABLE_EXPORTDATA_MM . '.status'
                     )
                     ->execute()
-                    ->fetchAll();
+                    ->fetchAllAssociative();
                 $cart['exportData'] = [];
                 if (!empty($exportData)) {
                     foreach ($exportData as $data) {
