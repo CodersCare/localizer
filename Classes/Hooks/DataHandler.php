@@ -204,7 +204,7 @@ class DataHandler
                     )
                 )
                 ->execute()
-                ->fetchAll();
+                ->fetchAllAssociative();
         } else {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
                 'tx_l10nmgr_index'
@@ -248,7 +248,7 @@ class DataHandler
                     )
                 )
                 ->execute()
-                ->fetchAll();
+                ->fetchAllAssociative();
         }
         $flags = [];
         if (is_array($records)) {

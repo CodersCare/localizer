@@ -211,7 +211,7 @@ class FileSender extends AbstractHandler
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
 
         if (!empty($carts['deadline'])) {
             $deadline = (int)$carts['deadline'];

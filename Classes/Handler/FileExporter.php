@@ -279,7 +279,7 @@ class FileExporter extends AbstractCartHandler
                 )
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
         if (empty($rows) === false) {
             foreach ($rows as $row) {
                 $this->addFileToMatrix(

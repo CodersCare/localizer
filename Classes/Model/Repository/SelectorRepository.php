@@ -262,7 +262,7 @@ class SelectorRepository extends AbstractRepository
                 )
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
         $storedTriples = [];
         if (!empty($triples)) {
             foreach ($triples as $triple) {
@@ -710,7 +710,7 @@ class SelectorRepository extends AbstractRepository
 
             $records[$table] = [];
             $checkedRecords = [];
-            while ($record = $statement->fetch()) {
+            while ($record = $statement->fetchAssociative()) {
                 if ($record['localizer_status'] && $record['outdated'] > $record['last_action'] && GeneralUtility::inList(
                     $record['changed'],
                     0

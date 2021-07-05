@@ -55,7 +55,7 @@ class Cart
                 ->execute();
             if ($resource) {
                 $keys = [];
-                while ($row = $resource->fetch()) {
+                while ($row = $resource->fetchAssociative()) {
                     $keys[$row['uid']] = $row['uid'];
                 }
                 foreach ($params['items'] as $key => $item) {

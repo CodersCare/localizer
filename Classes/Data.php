@@ -65,7 +65,7 @@ trait Data
                 )
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
     }
 
     protected function loadCart()
@@ -83,7 +83,7 @@ trait Data
                 )
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
     }
 
     /**
@@ -161,7 +161,7 @@ trait Data
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         if ($row['type'] === '0' || ExtensionManagementUtility::isLoaded($row['type'])) {
             if ($row['type'] === '0') {
                 $apiClass = ApiCalls::class;
@@ -220,7 +220,7 @@ trait Data
                         )
                     )
                     ->execute()
-                    ->fetch();
+                    ->fetchAssociative();
                 $this->apiPool[$uid] = [
                     'api' => $api,
                     'settings' => [

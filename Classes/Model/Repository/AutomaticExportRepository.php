@@ -46,7 +46,7 @@ class AutomaticExportRepository extends AbstractRepository
                 )
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
     }
 
     /**
@@ -86,8 +86,7 @@ class AutomaticExportRepository extends AbstractRepository
                 )
             );
         }
-        $pages = $queryBuilder->execute()
-            ->fetchAll();
+        $pages = $queryBuilder->execute()->fetchAllAssociative();
         $pagesConfiguredForAutomaticExport = [];
         if (!empty($pages)) {
             foreach ($pages as $page) {
@@ -136,7 +135,7 @@ class AutomaticExportRepository extends AbstractRepository
                 )
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
         $pagesAddedToSpecificAutomaticExport = [];
         if (!empty($pages)) {
             foreach ($pages as $page) {
