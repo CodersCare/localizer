@@ -39,10 +39,11 @@ class DownloadFile
      */
     public function init(array $configuration)
     {
-        switch ($configuration['type']) {
-            case '0':
-                if (isset($configuration['processFiles'])) {
-                    $this->processFiles = $configuration['processFiles'];
+        if (isset($configuration['processFiles'])) {
+            $this->processFiles = $configuration['processFiles'];
+
+            switch ($configuration['type']) {
+                case '0':
                     if (isset($configuration['inFolder'])) {
                         if (isset($configuration['projectKey'])) {
                             $this->api = GeneralUtility::makeInstance(
@@ -61,11 +62,8 @@ class DownloadFile
                             }
                         }
                     }
-                }
-                break;
-            default:
-                if (isset($configuration['processFiles'])) {
-                    $this->processFiles = $configuration['processFiles'];
+                    break;
+                default:
                     if (isset($configuration['token'], $configuration['url'], $configuration['projectKey'])) {
                         $this->api = GeneralUtility::makeInstance(
                             'Localizationteam\\' . GeneralUtility::underscoredToUpperCamelCase(
@@ -84,7 +82,7 @@ class DownloadFile
                             $this->path = $configuration['file'] . '.xml';
                         }
                     }
-                }
+            }
         }
     }
 
