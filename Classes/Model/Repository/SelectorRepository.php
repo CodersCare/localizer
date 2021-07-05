@@ -244,8 +244,7 @@ class SelectorRepository extends AbstractRepository
     {
         $pageIds = implode(',', GeneralUtility::intExplode(',', implode(',', array_keys($pageIds))));
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
-        $queryBuilder->getRestrictions()
-            ->removeAll();
+        $queryBuilder->getRestrictions()->removeAll();
         $triples = $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_CARTDATA_MM)
@@ -470,8 +469,7 @@ class SelectorRepository extends AbstractRepository
             $languageField = $GLOBALS['TCA'][$table]['ctrl']['languageField'];
             $transOrigPointerField = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
             $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable($table);
-            $queryBuilder->getRestrictions()
-                ->removeAll();
+            $queryBuilder->getRestrictions()->removeAll();
             $queryBuilder
                 ->selectLiteral(
                     $table . '.*, 

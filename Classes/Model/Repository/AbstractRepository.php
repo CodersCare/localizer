@@ -7,7 +7,6 @@ use Localizationteam\Localizer\Constants;
 use PDO;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Database\RelationHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -27,8 +26,7 @@ class AbstractRepository
     public function getLocalizerLanguages($localizerId)
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
-        $queryBuilder->getRestrictions()
-            ->removeAll();
+        $queryBuilder->getRestrictions()->removeAll();
         return $queryBuilder
             ->selectLiteral('MAX(sourceLanguage.uid) source, GROUP_CONCAT(targetLanguage.uid) target')
             ->from(Constants::TABLE_LOCALIZER_SETTINGS, 'settings')
@@ -119,8 +117,7 @@ class AbstractRepository
             $systemLanguageUids[] = (int)$language['uid'];
         }
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_SYS_LANGUAGE);
-        $queryBuilder->getRestrictions()
-            ->removeAll();
+        $queryBuilder->getRestrictions()->removeAll();
         $languages = $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_SYS_LANGUAGE)
@@ -263,10 +260,6 @@ class AbstractRepository
         $pageId = (int)$pageId;
         $cartId = (int)$cartId;
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
-        $queryBuilder->getRestrictions()
-            ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-            ->add(GeneralUtility::makeInstance(HiddenRestriction::class));
         $pages = $queryBuilder
             ->select('pid')
             ->from(Constants::TABLE_CARTDATA_MM)
