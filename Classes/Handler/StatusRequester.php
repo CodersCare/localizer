@@ -26,7 +26,7 @@ class StatusRequester extends AbstractHandler
      */
     public function init($id = 1)
     {
-        parent::initProcessId();
+        $this->initProcessId();
         if ($this->acquire() === true) {
             $this->initRun();
         }

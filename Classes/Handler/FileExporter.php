@@ -64,7 +64,7 @@ class FileExporter extends AbstractCartHandler
     {
         $this->id = $id;
         $this->selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
-        parent::initProcessId();
+        $this->initProcessId();
         if ($this->acquire() === true) {
             $this->initRun();
         }
