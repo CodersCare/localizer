@@ -131,7 +131,11 @@ class FileExporter extends AbstractCartHandler
                                 $language
                             );
                             if ($configuredLanguageExport) {
-                                $this->processExport($configuration, $language);
+                                $output = $this->processExport($configuration, $language);
+
+                                if ($output['http_status_code'] > 0) {
+                                    throw new Exception('Failed export to file with: ' . $output['response']['command'] . '. Output was: ' . $output['response']['output'], 1625730835);
+                                }
                             }
                         }
                         $this->selectorRepository->updateL10nmgrConfiguration(
@@ -242,10 +246,13 @@ class FileExporter extends AbstractCartHandler
         $statusCode = 200;
         $output = '';
         $action = CommandUtility::exec($command, $output, $statusCode);
+
         return [
             'http_status_code' => $statusCode,
             'response' => [
                 'action' => $action,
+                'command' => $command,
+                'output' => $output,
             ],
         ];
     }
