@@ -3,6 +3,7 @@
 namespace Localizationteam\Localizer;
 
 use Exception;
+use Localizationteam\Localizer\Model\Repository\LanguageRepository;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -15,47 +16,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 trait Language
 {
     /**
-     * @param string $locale
-     * @return string
      * @throws Exception
      */
-    protected function getIso2ForLocale($locale)
+    protected function getIso2ForLocale(string $locale, int $pid = 1): string
     {
-        $iso2 = '';
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-            Constants::TABLE_STATIC_LANGUAGES
-        );
-        $queryBuilder->getRestrictions()
-            ->removeAll();
-        $row = $queryBuilder
-            ->select('lg_iso_2')
-            ->from(Constants::TABLE_STATIC_LANGUAGES)
-            ->where(
-                $queryBuilder->expr()->like(
-                    'lg_collate_locale',
-                    $queryBuilder->createNamedParameter(
-                        '%' .
-                        $queryBuilder->escapeLikeWildcards(
-                            str_replace(
-                                '-',
-                                '%',
-                                $locale
-                            )
-                        ) .
-                        '%'
-                    )
-                )
-            )
-            ->execute()
-            ->fetchAssociative();
-        if ($row) {
-            if (isset($row['lg_iso_2'])) {
-                $iso2 = trim($row['lg_iso_2']);
-            }
-        }
+        $languageRepository = GeneralUtility::makeInstance(LanguageRepository::class);
+        $iso2 = $languageRepository->getIsoTwoCodeByLocale($locale, $pid);
+
         if ($iso2 === '') {
-            throw new Exception($locale . ' can not be found in TYPO3 "static_languages". Please inform your admin!');
+            throw new Exception($locale . ' can not be found in TYPO3 SiteConfiguration". Please inform your admin!');
         }
+
         return $iso2;
     }
 

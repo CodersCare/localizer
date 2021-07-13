@@ -107,7 +107,8 @@ class FileDownloader extends AbstractHandler
                                 $response = $this->processDownload(
                                     $localizerSettings,
                                     $row['filename'],
-                                    $originalResponse['files']
+                                    $originalResponse['files'],
+                                    $row['pid']
                                 );
                                 $this->processResponse($row['uid'], $response);
                             } else {
@@ -141,7 +142,7 @@ class FileDownloader extends AbstractHandler
      * @return array
      * @throws FolderDoesNotExistException
      */
-    protected function processDownload(array $localizerSettings, $originalFileName, array $files)
+    protected function processDownload(array $localizerSettings, $originalFileName, array $files, int $pid = 1)
     {
         $processFiles = [];
         foreach ($files as $fileStatus) {
@@ -152,7 +153,7 @@ class FileDownloader extends AbstractHandler
                     'hotfolder' => $this->getRemoteFilename($fileStatus['file'], ''),
                     'remote' => $this->getRemoteFilename(
                         $fileStatus['file'],
-                        $this->getIso2ForLocale($fileStatus['locale'])
+                        $this->getIso2ForLocale($fileStatus['locale'], $pid)
                     ),
                     'remoteFilename' => $fileStatus['file'],
                 ];
