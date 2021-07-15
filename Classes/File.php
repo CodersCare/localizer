@@ -14,11 +14,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 trait File
 {
     /**
-     * @var string
-     */
-    protected $downloadPath = '';
-
-    /**
      * @param string $fileName
      * @param string $locale
      * @return string
@@ -26,13 +21,10 @@ trait File
      */
     protected function getLocalFilename($fileName, $locale)
     {
-        if ($this->downloadPath === '') {
-            $this->downloadPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/in/';
+        $downloadPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/in/' . strtolower($locale);
+        if (!@is_dir($downloadPath)) {
+            GeneralUtility::mkdir_deep($downloadPath);
         }
-        $path = $this->downloadPath . strtolower($locale);
-        if (!@is_dir($path)) {
-            GeneralUtility::mkdir_deep($path);
-        }
-        return $path . $fileName;
+        return $downloadPath . '/' . $fileName;
     }
 }
