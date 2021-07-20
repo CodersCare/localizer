@@ -78,10 +78,7 @@ abstract class AbstractCartHandler
         return $this->processId;
     }
 
-    /**
-     * @return bool
-     */
-    abstract protected function acquire();
+    abstract protected function acquire(): bool;
 
     final protected function initProcessId()
     {

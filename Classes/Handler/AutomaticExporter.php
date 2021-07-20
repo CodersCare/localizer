@@ -260,7 +260,8 @@ class AutomaticExporter extends AbstractCartHandler
     {
     }
 
-    protected function acquire()
+    protected function acquire(): bool
     {
+        return false;
     }
 }

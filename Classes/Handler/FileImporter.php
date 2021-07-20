@@ -31,7 +31,7 @@ class FileImporter extends AbstractHandler
     public function init($id = 1)
     {
         $this->initProcessId();
-        if ($this->acquire() === true) {
+        if ($this->acquire()) {
             $this->initRun();
         }
         if ($this->canRun()) {
@@ -40,12 +40,8 @@ class FileImporter extends AbstractHandler
         }
     }
 
-    /**
-     * @return bool
-     */
-    protected function acquire()
+    protected function acquire(): bool
     {
-        $acquired = false;
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_EXPORTDATA_MM
         );
@@ -75,10 +71,8 @@ class FileImporter extends AbstractHandler
             ->set('processid', $this->processId)
             ->setMaxResults(Constants::HANDLER_FILEIMPORTER_MAX_FILES)
             ->execute();
-        if ($affectedRows > 0) {
-            $acquired = true;
-        }
-        return $acquired;
+
+        return $affectedRows > 0;
     }
 
     public function run()

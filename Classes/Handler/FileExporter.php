@@ -65,7 +65,7 @@ class FileExporter extends AbstractCartHandler
         $this->id = $id;
         $this->selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
         $this->initProcessId();
-        if ($this->acquire() === true) {
+        if ($this->acquire()) {
             $this->initRun();
         }
         if ($this->canRun()) {
@@ -74,12 +74,8 @@ class FileExporter extends AbstractCartHandler
         }
     }
 
-    /**
-     * @return bool
-     */
-    protected function acquire()
+    protected function acquire(): bool
     {
-        $acquired = false;
         $time = time();
         $affectedRows = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable(Constants::TABLE_LOCALIZER_CART)
@@ -104,10 +100,7 @@ class FileExporter extends AbstractCartHandler
                 ]
             );
 
-        if ($affectedRows > 0) {
-            $acquired = true;
-        }
-        return $acquired;
+        return $affectedRows > 0;
     }
 
     public function run()

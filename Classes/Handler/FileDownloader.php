@@ -32,7 +32,7 @@ class FileDownloader extends AbstractHandler
     public function init($id = 1)
     {
         $this->initProcessId();
-        if ($this->acquire() === true) {
+        if ($this->acquire()) {
             $this->initRun();
         }
         if ($this->canRun()) {
@@ -41,12 +41,8 @@ class FileDownloader extends AbstractHandler
         }
     }
 
-    /**
-     * @return bool
-     */
-    protected function acquire()
+    protected function acquire(): bool
     {
-        $acquired = false;
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_EXPORTDATA_MM
         );
@@ -76,10 +72,8 @@ class FileDownloader extends AbstractHandler
             ->set('processid', $this->processId)
             ->setMaxResults(Constants::HANDLER_FILEDOWNLOADER_MAX_FILES)
             ->execute();
-        if ($affectedRows > 0) {
-            $acquired = true;
-        }
-        return $acquired;
+
+        return $affectedRows > 0;
     }
 
     /**
