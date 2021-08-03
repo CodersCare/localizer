@@ -42,7 +42,6 @@ class StatusRequester extends AbstractHandler
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_EXPORTDATA_MM
         );
-        $queryBuilder->getRestrictions();
         $affectedRows = $queryBuilder
             ->update(Constants::TABLE_EXPORTDATA_MM)
             ->where(

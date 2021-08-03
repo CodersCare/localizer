@@ -236,7 +236,6 @@ class AutomaticExporter extends AbstractCartHandler
                 // $recordExists = $selectorRepository->findRecordByPid($pid, $table);
 
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
-                $queryBuilder->getRestrictions();
                 $recordExists = $queryBuilder
                     ->select('*')
                     ->from($table)

@@ -136,7 +136,6 @@ trait Data
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_LOCALIZER_SETTINGS
         );
-        $queryBuilder->getRestrictions();
         $row = $queryBuilder
             ->select(
                 'uid',
@@ -186,7 +185,6 @@ trait Data
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
                     Constants::TABLE_LOCALIZER_LANGUAGE_MM
                 );
-                $queryBuilder->getRestrictions();
                 $sourceLocale = $queryBuilder
                     ->select('*')
                     ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
