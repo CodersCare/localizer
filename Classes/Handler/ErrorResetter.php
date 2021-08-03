@@ -22,17 +22,13 @@ class ErrorResetter extends AbstractHandler
     public function init($id = 1)
     {
         $this->initProcessId();
-        if ($this->acquire() === true) {
+        if ($this->acquire()) {
             $this->initRun();
         }
     }
 
-    /**
-     * @return bool
-     */
-    protected function acquire()
+    protected function acquire(): bool
     {
-        $acquired = false;
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_EXPORTDATA_MM
         );
@@ -58,10 +54,8 @@ class ErrorResetter extends AbstractHandler
             ->set('tstamp', time())
             ->set('processid', $this->processId)
             ->execute();
-        if ($affectedRows > 0) {
-            $acquired = true;
-        }
-        return $acquired;
+
+        return $affectedRows > 0;
     }
 
     public function run()

@@ -27,7 +27,7 @@ class StatusRequester extends AbstractHandler
     public function init($id = 1)
     {
         $this->initProcessId();
-        if ($this->acquire() === true) {
+        if ($this->acquire()) {
             $this->initRun();
         }
         if ($this->canRun()) {
@@ -36,10 +36,7 @@ class StatusRequester extends AbstractHandler
         }
     }
 
-    /**
-     * @return bool
-     */
-    protected function acquire()
+    protected function acquire(): bool
     {
         $acquired = false;
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
@@ -74,10 +71,8 @@ class StatusRequester extends AbstractHandler
             ->set('tstamp', time())
             ->set('processid', $this->processId)
             ->execute();
-        if ($affectedRows > 0) {
-            $acquired = true;
-        }
-        return $acquired;
+
+        return $affectedRows > 0;
     }
 
     /**
