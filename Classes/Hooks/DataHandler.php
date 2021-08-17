@@ -117,12 +117,10 @@ class DataHandler
                 $tceMain->datamap[$table][$id]['target_locale'] = $incomingFieldArray['target_locale'];
                 $allLocale = 1;
             }
-            if (isset($incomingFieldArray['all_locale'])) {
-                if ((bool)$incomingFieldArray['all_locale'] === true) {
-                    $incomingFieldArray['target_locale'] = implode(',', $targetLanguagesUidList);
-                    $tceMain->datamap[$table][$id]['target_locale'] = $incomingFieldArray['target_locale'];
-                    $allLocale = 1;
-                }
+            if (isset($incomingFieldArray['all_locale']) && (bool)$incomingFieldArray['all_locale'] === true) {
+                $incomingFieldArray['target_locale'] = implode(',', $targetLanguagesUidList);
+                $tceMain->datamap[$table][$id]['target_locale'] = $incomingFieldArray['target_locale'];
+                $allLocale = 1;
             }
             $incomingFieldArray['all_locale'] = $allLocale;
             $tceMain->datamap[$table]['id']['all_locale'] = $allLocale;
