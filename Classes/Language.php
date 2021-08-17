@@ -63,7 +63,7 @@ trait Language
      * @param array $row
      * @return bool
      */
-    protected function translateAll(array &$row)
+    protected function translateAll(array $row)
     {
         $translateAll = false;
         if (isset($row['all_locale'])) {
