@@ -53,7 +53,8 @@ class Cart
                     )
                 )
                 ->execute();
-            if ($resource) {
+
+            if ($resource->rowCount() > 0) {
                 $keys = [];
                 while ($row = $resource->fetchAssociative()) {
                     $keys[$row['uid']] = $row['uid'];
