@@ -58,11 +58,10 @@ class Cart
                 while ($row = $resource->fetchAssociative()) {
                     $keys[$row['uid']] = $row['uid'];
                 }
+
                 foreach ($params['items'] as $key => $item) {
-                    if ($item[1] > 0) {
-                        if (isset($keys[$item[1]]) === false) {
-                            unset($params['items'][$key]);
-                        }
+                    if (($item[1] > 0) && isset($keys[$item[1]]) === false) {
+                        unset($params['items'][$key]);
                     }
                 }
             } else {
