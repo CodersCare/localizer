@@ -61,11 +61,11 @@ abstract class AbstractCartHandler
                     'processid' => '',
                 ],
                 [
-                    'processid' => $this->processId
+                    'processid' => $this->processId,
                 ],
                 [
                     Connection::PARAM_INT,
-                    Connection::PARAM_STR
+                    Connection::PARAM_STR,
                 ]
             );
     }

@@ -191,7 +191,7 @@ class AutomaticExportRepository extends AbstractRepository
                         'cart',
                         'tablename',
                         'recordId',
-                        'languageId'
+                        'languageId',
                     ],
                     [
                         PDO::PARAM_INT,
@@ -199,7 +199,7 @@ class AutomaticExportRepository extends AbstractRepository
                         PDO::PARAM_INT,
                         PDO::PARAM_STR,
                         PDO::PARAM_INT,
-                        PDO::PARAM_INT
+                        PDO::PARAM_INT,
                     ]
                 );
         }

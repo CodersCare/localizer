@@ -81,7 +81,7 @@ class SelectorRepository extends AbstractRepository
                 PDO::PARAM_INT,
                 PDO::PARAM_INT,
                 PDO::PARAM_INT,
-                PDO::PARAM_INT
+                PDO::PARAM_INT,
             ]
         );
 
@@ -128,15 +128,15 @@ class SelectorRepository extends AbstractRepository
                             'start' => $configuration['start'],
                             'end' => $configuration['end'],
                             'sortexports' => $configuration['sortexports'],
-                            'plainxmlexports' => $configuration['plainxmlexports']
+                            'plainxmlexports' => $configuration['plainxmlexports'],
                         ]
-                    )
+                    ),
                 ],
                 [
-                    'uid' => (int)$cartId
+                    'uid' => (int)$cartId,
                 ],
                 [
-                    PDO::PARAM_STR
+                    PDO::PARAM_STR,
                 ]
             );
     }
@@ -194,7 +194,7 @@ class SelectorRepository extends AbstractRepository
                         'cart',
                         'tablename',
                         'recordId',
-                        'languageId'
+                        'languageId',
                     ],
                     [
                         PDO::PARAM_INT,
@@ -202,7 +202,7 @@ class SelectorRepository extends AbstractRepository
                         PDO::PARAM_INT,
                         PDO::PARAM_STR,
                         PDO::PARAM_INT,
-                        PDO::PARAM_INT
+                        PDO::PARAM_INT,
                     ]
                 );
         }
@@ -348,12 +348,12 @@ class SelectorRepository extends AbstractRepository
                         'pages' => $pageIds,
                     ],
                     [
-                        'uid' => (int)$uid
+                        'uid' => (int)$uid,
                     ],
                     [
                         PDO::PARAM_INT,
                         PDO::PARAM_STR,
-                        PDO::PARAM_STR
+                        PDO::PARAM_STR,
                     ]
                 );
         }
@@ -379,17 +379,17 @@ class SelectorRepository extends AbstractRepository
                         'status' => CONSTANTS::STATUS_CART_FINALIZED,
                         'action' => CONSTANTS::ACTION_EXPORT_FILE,
                         'deadline' => strtotime($deadline, time()),
-                        'tstamp' => time()
+                        'tstamp' => time(),
                     ],
                     [
-                        'uid' => (int)$cartId
+                        'uid' => (int)$cartId,
                     ],
                     [
                         PDO::PARAM_INT,
                         PDO::PARAM_INT,
                         PDO::PARAM_INT,
                         PDO::PARAM_INT,
-                        PDO::PARAM_INT
+                        PDO::PARAM_INT,
                     ]
                 );
             self::getConnectionPool()
@@ -422,10 +422,10 @@ class SelectorRepository extends AbstractRepository
                         'l10n_cfg' => $countConfigurations,
                     ],
                     [
-                        'uid' => (int)$localizerId
+                        'uid' => (int)$localizerId,
                     ],
                     [
-                        PDO::PARAM_INT
+                        PDO::PARAM_INT,
                     ]
                 );
         }

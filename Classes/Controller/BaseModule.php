@@ -70,7 +70,7 @@ class BaseModule
      * @var array
      */
     public $MOD_MENU = [
-        'function' => []
+        'function' => [],
     ];
 
     /**
