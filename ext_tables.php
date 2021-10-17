@@ -36,7 +36,7 @@ if (TYPO3_MODE === 'BE') {
             'name' => 'localizer_localizerselector',
             'icon' => 'EXT:localizer/Resources/Public/Icons/module-localizer-selector.svg',
             'labels' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf',
-            'navigationComponentId' => 'TYPO3/CMS/Backend/PageTree/PageTreeElement'
+            'navigationComponentId' => 'TYPO3/CMS/Backend/PageTree/PageTreeElement',
         ]
     );
 
@@ -54,7 +54,7 @@ if (TYPO3_MODE === 'BE') {
             'name' => 'localizer_localizercart',
             'icon' => 'EXT:localizer/Resources/Public/Icons/module-localizer-cart.svg',
             'labels' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf',
-            'navigationComponentId' => 'TYPO3/CMS/Backend/PageTree/PageTreeElement'
+            'navigationComponentId' => 'TYPO3/CMS/Backend/PageTree/PageTreeElement',
         ]
     );
 
@@ -72,7 +72,7 @@ if (TYPO3_MODE === 'BE') {
             'name' => 'localizer_localizersettings',
             'icon' => 'EXT:localizer/Resources/Public/Icons/module-localizer-settings.svg',
             'labels' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_settings.xlf',
-            'navigationComponentId' => 'TYPO3/CMS/Backend/PageTree/PageTreeElement'
+            'navigationComponentId' => 'TYPO3/CMS/Backend/PageTree/PageTreeElement',
         ]
     );
 

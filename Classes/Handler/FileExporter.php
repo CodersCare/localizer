@@ -92,11 +92,11 @@ class FileExporter extends AbstractCartHandler
                     'action' => Constants::ACTION_EXPORT_FILE,
                     'last_error' => null,
                     'processid' => '',
-                    'uid' => (int)$this->id
+                    'uid' => (int)$this->id,
                 ],
                 [
                     Connection::PARAM_INT,
-                    Connection::PARAM_STR
+                    Connection::PARAM_STR,
                 ]
             );
 

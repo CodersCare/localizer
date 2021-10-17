@@ -1,7 +1,7 @@
 <?php
 // The following rule set is taken from TYPO3 10.4.
 // Keep up to date with most recent supported TYPO3 version.
-// See: https://github.com/TYPO3/TYPO3.CMS/blob/10.4/Build/.php_cs
+// See: https://github.com/TYPO3/typo3/blob/10.4/Build/php-cs-fixer.php
 $config = new \PhpCsFixer\Config();
 $config->setRiskyAllowed(true)
     ->setRules([
@@ -52,12 +52,13 @@ $config->setRiskyAllowed(true)
         'single_quote' => true,
         'single_line_comment_style' => ['comment_types' => ['hash']],
         'single_trait_insert_per_statement' => true,
+        'trailing_comma_in_multiline' => ['elements' => ['arrays']],
         'whitespace_after_comma_in_array' => true,
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()
+            ->exclude(['vendor', 'public'])
             ->in(__DIR__)
-            ->exclude('public')
     );
 
 return $config;
