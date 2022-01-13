@@ -10,7 +10,6 @@ use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Runner\DownloadFile;
 use PDO;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -76,8 +75,7 @@ class FileDownloader extends AbstractHandler
     }
 
     /**
-     * @throws FolderDoesNotExistException
-     * @throws Exception
+     * @throws \TYPO3\CMS\Core\Exception
      */
     public function run()
     {
@@ -139,11 +137,16 @@ class FileDownloader extends AbstractHandler
      * @param array $localizerSettings
      * @param string $originalFileName
      * @param array $files
+     * @param int $pid
      * @return array
-     * @throws FolderDoesNotExistException
+     * @throws Exception
      */
-    protected function processDownload(array $localizerSettings, $originalFileName, array $files, int $pid = 1)
-    {
+    protected function processDownload(
+        array $localizerSettings,
+        string $originalFileName,
+        array $files,
+        int $pid = 1
+    ): array {
         $processFiles = [];
         foreach ($files as $fileStatus) {
             if ($fileStatus['status'] === Constants::API_TRANSLATION_STATUS_TRANSLATED) {
@@ -177,7 +180,7 @@ class FileDownloader extends AbstractHandler
      * @param string $locale
      * @return string
      */
-    protected function getRemoteFilename($fileName, $locale)
+    protected function getRemoteFilename(string $fileName, string $locale): string
     {
         return $locale . '\\' . $fileName;
     }
@@ -186,7 +189,7 @@ class FileDownloader extends AbstractHandler
      * @param int $uid
      * @param array $responses
      */
-    protected function processResponse($uid, $responses)
+    protected function processResponse(int $uid, array $responses)
     {
         $success = true;
         foreach ($responses as $response) {
@@ -214,7 +217,7 @@ class FileDownloader extends AbstractHandler
     /**
      * @param int $time
      */
-    public function finish($time)
+    public function finish(int $time)
     {
         $this->dataFinish($time);
     }

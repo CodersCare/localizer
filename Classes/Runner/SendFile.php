@@ -173,7 +173,7 @@ class SendFile
     /**
      * @return string
      */
-    public function getResponse()
+    public function getResponse(): string
     {
         return $this->response ?: '';
     }

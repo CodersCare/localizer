@@ -18,7 +18,7 @@ class AutomaticExportRepository extends AbstractRepository
      * @param int $localizerId
      * @return array|null
      */
-    public function loadUnfinishedButSentCarts($localizerId)
+    public function loadUnfinishedButSentCarts(int $localizerId): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
         return $queryBuilder
@@ -52,9 +52,10 @@ class AutomaticExportRepository extends AbstractRepository
      * Loads pages that are configured to be exported autimatically based on a given age
      *
      * @param int $age
-     * @return array|null
+     * @param array $excludedPages
+     * @return array
      */
-    public function loadPagesConfiguredForAutomaticExport($age, $excludedPages)
+    public function loadPagesConfiguredForAutomaticExport(int $age, array $excludedPages): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable('pages');
 
@@ -101,9 +102,9 @@ class AutomaticExportRepository extends AbstractRepository
      * @param int $localizer
      * @param int $age
      * @param array $excludedPages
-     * @return array|null
+     * @return array
      */
-    public function loadPagesAddedToSpecificAutomaticExport($localizer, $age, $excludedPages)
+    public function loadPagesAddedToSpecificAutomaticExport(int $localizer, int $age, array $excludedPages): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable('pages');
         $pages = $queryBuilder
@@ -152,7 +153,7 @@ class AutomaticExportRepository extends AbstractRepository
      * @param array $configuration
      * @param array $automaticTriples
      */
-    public function storeCart($pageIds, $cartId, $configuration, $automaticTriples)
+    public function storeCart(array $pageIds, int $cartId, array $configuration, array $automaticTriples)
     {
         $insertValues = [];
         $pageId = key($pageIds);
@@ -167,7 +168,7 @@ class AutomaticExportRepository extends AbstractRepository
                                     $insertValues[$identifier] = [
                                         'pid' => (int)$pageId,
                                         'identifier' => $identifier,
-                                        'cart' => (int)$cartId,
+                                        'cart' => $cartId,
                                         'tablename' => $tableName,
                                         'recordId' => (int)$recordId,
                                         'languageId' => (int)$languageId,

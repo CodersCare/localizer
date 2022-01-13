@@ -9,7 +9,6 @@ use Localizationteam\Localizer\File;
 use PDO;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Utility\CommandUtility;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -119,9 +118,8 @@ class FileImporter extends AbstractHandler
      * @param string $originalFileName
      * @param array $files
      * @return array
-     * @throws FolderDoesNotExistException
      */
-    protected function processImport($originalFileName, array $files)
+    protected function processImport(string $originalFileName, array $files): array
     {
         $response = [];
         foreach ($files as $fileStatus) {
@@ -156,7 +154,7 @@ class FileImporter extends AbstractHandler
      * @param int $uid
      * @param array $responses
      */
-    protected function processResponse($uid, $responses)
+    protected function processResponse(int $uid, array $responses)
     {
         $success = true;
         foreach ($responses as $response) {
@@ -184,7 +182,7 @@ class FileImporter extends AbstractHandler
     /**
      * @param int $time
      */
-    public function finish($time)
+    public function finish(int $time)
     {
         $this->dataFinish($time);
     }

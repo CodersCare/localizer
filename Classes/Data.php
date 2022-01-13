@@ -2,12 +2,12 @@
 
 namespace Localizationteam\Localizer;
 
-use Exception;
 use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\Messaging\FlashMessage;
 use Localizationteam\Localizer\Model\Repository\LocalizerSettingsRepository;
 use PDO;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -90,19 +90,19 @@ trait Data
     /**
      * @param int $uid
      * @param int $status
-     * @param $previousStatus
+     * @param int $previousStatus
      * @param string $lastError
      * @param int $action
      */
-    protected function addErrorResult($uid, $status, $previousStatus, $lastError, $action = 0)
+    protected function addErrorResult(int $uid, int $status, int $previousStatus, string $lastError, int $action = 0)
     {
-        $this->result['error'][(int)$uid] = [
-            'status' => (int)$status,
-            'previous_status' => (int)$previousStatus,
-            'last_error' => (string)$lastError,
+        $this->result['error'][$uid] = [
+            'status' => $status,
+            'previous_status' => $previousStatus,
+            'last_error' => $lastError,
         ];
         if ($action > 0) {
-            $this->result['error'][(int)$uid]['action'] = $action;
+            $this->result['error'][$uid]['action'] = $action;
         }
     }
 
@@ -112,18 +112,18 @@ trait Data
      * @param int $action
      * @param mixed $response
      */
-    protected function addSuccessResult($uid, $status, $action = 0, $response = '')
+    protected function addSuccessResult(int $uid, int $status, int $action = 0, $response = '')
     {
         if (is_array($response)) {
             $response = json_encode($response);
         }
-        $this->result['success'][(int)$uid] = [
-            'status' => (int)$status,
+        $this->result['success'][$uid] = [
+            'status' => $status,
             'last_error' => null,
-            'action' => (int)$action,
+            'action' => $action,
         ];
         if ($response !== '') {
-            $this->result['success'][(int)$uid]['response'] = (string)$response;
+            $this->result['success'][$uid]['response'] = (string)$response;
         }
     }
 
@@ -132,7 +132,7 @@ trait Data
      * @return bool|array
      * @throws Exception
      */
-    protected function getLocalizerSettings($uid)
+    protected function getLocalizerSettings(int $uid)
     {
         /** @var LocalizerSettingsRepository $localizerSettingsRepository */
         $localizerSettingsRepository = GeneralUtility::makeInstance(LocalizerSettingsRepository::class);
@@ -246,7 +246,7 @@ trait Data
     /**
      * @param int $time
      */
-    protected function dataFinish($time)
+    protected function dataFinish(int $time)
     {
         $this->persistsResult($time);
     }
@@ -254,11 +254,11 @@ trait Data
     /**
      * @param int $time
      */
-    protected function persistsResult($time)
+    protected function persistsResult(int $time)
     {
         if ($this->canPersist === true) {
             foreach ($this->result['error'] as $uid => $fields) {
-                $fields['tstamp'] = (int)$time;
+                $fields['tstamp'] = $time;
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
                     Constants::TABLE_LOCALIZER_CART
                 );
@@ -276,7 +276,7 @@ trait Data
                 $queryBuilder->execute();
             }
             foreach ($this->result['success'] as $uid => $fields) {
-                $fields['tstamp'] = (int)$time;
+                $fields['tstamp'] = $time;
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
                     Constants::TABLE_EXPORTDATA_MM
                 );

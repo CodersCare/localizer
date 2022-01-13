@@ -26,13 +26,13 @@ trait AddFileToMatrix
      * @param int $action
      */
     protected function addFileToMatrix(
-        $pid,
-        $localizerId,
-        $exportDataId,
-        $l10nConfigurationId,
-        $fileName,
-        $translationLanguage,
-        $action = 0
+        int $pid,
+        int $localizerId,
+        int $exportDataId,
+        int $l10nConfigurationId,
+        string $fileName,
+        int $translationLanguage,
+        int $action = 0
     ) {
         $time = time();
         $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(
@@ -42,16 +42,16 @@ trait AddFileToMatrix
             ->insert(
                 Constants::TABLE_EXPORTDATA_MM,
                 [
-                    'pid' => (int)$pid,
+                    'pid' => $pid,
                     'crdate' => $time,
                     'cruser_id' => $this->getBackendUser()->user['uid'],
                     'status' => Constants::STATUS_CART_FILE_EXPORTED,
-                    'action' => (int)$action,
-                    'uid_local' => (int)$localizerId,
-                    'uid_export' => (int)$exportDataId,
-                    'uid_foreign' => (int)$l10nConfigurationId,
-                    'localizer_path' => $this->getRootPath((int)$pid),
-                    'filename' => (string)$fileName,
+                    'action' => $action,
+                    'uid_local' => $localizerId,
+                    'uid_export' => $exportDataId,
+                    'uid_foreign' => $l10nConfigurationId,
+                    'localizer_path' => $this->getRootPath($pid),
+                    'filename' => $fileName,
                     'source_locale' => 1,
                     'target_locale' => 1,
                 ],
@@ -85,7 +85,7 @@ trait AddFileToMatrix
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'uid_local',
-                        (int)$localizerId
+                        $localizerId
                     ),
                     $queryBuilder->expr()->orX(
                         $queryBuilder->expr()->eq(
@@ -94,7 +94,7 @@ trait AddFileToMatrix
                         ),
                         $queryBuilder->expr()->eq(
                             'uid_foreign',
-                            (int)$isoCodeTargetLanguage
+                            $isoCodeTargetLanguage
                         )
                     ),
                     $queryBuilder->expr()->eq(
@@ -124,7 +124,7 @@ trait AddFileToMatrix
      * @param int $uid
      * @return mixed
      */
-    protected function getRootPath($uid)
+    protected function getRootPath(int $uid)
     {
         return BackendUtility::getRecordPath($uid, '', 0);
     }
@@ -133,7 +133,7 @@ trait AddFileToMatrix
      * @param int $sysLanguageId
      * @return int
      */
-    protected function getLanguageIsoCode($sysLanguageId)
+    protected function getLanguageIsoCode(int $sysLanguageId): int
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_language');
         $queryBuilder->getRestrictions()

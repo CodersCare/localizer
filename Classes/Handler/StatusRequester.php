@@ -75,7 +75,7 @@ class StatusRequester extends AbstractHandler
     }
 
     /**
-     * @throws Exception
+     * @throws \TYPO3\CMS\Core\Exception
      */
     public function run()
     {
@@ -119,9 +119,9 @@ class StatusRequester extends AbstractHandler
 
     /**
      * @param int $uid
-     * @param array|string $response
+     * @param mixed $response
      */
-    protected function processResponse($uid, array $response)
+    protected function processResponse(int $uid, $response)
     {
         $translationStatus = 0;
         if (isset($response['files'])) {
@@ -151,7 +151,7 @@ class StatusRequester extends AbstractHandler
     /**
      * @param int $time
      */
-    public function finish($time)
+    public function finish(int $time)
     {
         $this->dataFinish($time);
     }

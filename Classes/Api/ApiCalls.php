@@ -137,19 +137,19 @@ class ApiCalls
      * @param bool $plainXmlExports
      */
     public function __construct(
-        $type,
-        $url = '',
-        $workflow = '',
-        $projectKey = '',
-        $username = '',
-        $password = '',
-        $outFolder = '',
-        $inFolder = '',
-        $plainXmlExports = false
+        int $type,
+        string $url = '',
+        string $workflow = '',
+        string $projectKey = '',
+        string $username = '',
+        string $password = '',
+        string $outFolder = '',
+        string $inFolder = '',
+        bool $plainXmlExports = false
     ) {
         $this->connectorName = Constants::CONNECTOR_NAME;
         $this->connectorVersion = Constants::CONNECTOR_VERSION;
-        $this->type = (int)$type;
+        $this->type = $type;
         $this->setUrl($url);
         $this->setWorkflow($workflow);
         $this->setProjectKey($projectKey);
@@ -163,47 +163,47 @@ class ApiCalls
     /**
      * @param string $url
      */
-    public function setUrl($url)
+    public function setUrl(string $url)
     {
         if ($url !== '') {
-            $this->url = (string)$url;
+            $this->url = $url;
         }
     }
 
     /**
      * @param string $workflow
      */
-    public function setWorkflow($workflow)
+    public function setWorkflow(string $workflow)
     {
         if ($workflow !== '') {
-            $this->workflow = (string)$workflow;
+            $this->workflow = $workflow;
         }
     }
 
     /**
      * @param string $projectKey
      */
-    public function setProjectKey($projectKey)
+    public function setProjectKey(string $projectKey)
     {
         if ($projectKey !== '') {
-            $this->projectKey = (string)$projectKey;
+            $this->projectKey = $projectKey;
         }
     }
 
     /**
      * @param string $username
      */
-    public function setUsername($username)
+    public function setUsername(string $username)
     {
         if ($username !== '') {
-            $this->username = (string)$username;
+            $this->username = $username;
         }
     }
 
     /**
      * @param string $password
      */
-    public function setPassword($password)
+    public function setPassword(string $password)
     {
         if ($password !== '') {
             $this->password = $password;
@@ -213,7 +213,7 @@ class ApiCalls
     /**
      * @param string $outFolder
      */
-    public function setOutFolder($outFolder)
+    public function setOutFolder(string $outFolder)
     {
         if ($outFolder !== '') {
             $this->outFolder = trim($outFolder, '\/');
@@ -223,7 +223,7 @@ class ApiCalls
     /**
      * @param string $inFolder
      */
-    public function setInFolder($inFolder)
+    public function setInFolder(string $inFolder)
     {
         if ($inFolder !== '') {
             $this->inFolder = trim($inFolder, '\/');
@@ -233,7 +233,7 @@ class ApiCalls
     /**
      * @param bool $plainXmlExports
      */
-    public function setPlainXmlExports($plainXmlExports)
+    public function setPlainXmlExports(bool $plainXmlExports)
     {
         $this->plainXmlExports = $plainXmlExports;
     }
@@ -243,11 +243,9 @@ class ApiCalls
      *
      * @param string $connectorName
      */
-    public function setConnectorName($connectorName)
+    public function setConnectorName(string $connectorName)
     {
-        if (is_string($connectorName)) {
-            $this->connectorName = $connectorName;
-        }
+        $this->connectorName = $connectorName;
     }
 
     /**
@@ -255,34 +253,32 @@ class ApiCalls
      *
      * @param string $connectorVersion
      */
-    public function setConnectorVersion($connectorVersion)
+    public function setConnectorVersion(string $connectorVersion)
     {
-        if (is_string($connectorVersion)) {
-            $this->connectorVersion = $connectorVersion;
-        }
+        $this->connectorVersion = $connectorVersion;
     }
 
     /**
      * returns a valid token if connection is established
      * @return string
      */
-    public function getToken()
+    public function getToken(): string
     {
         return $this->token;
     }
 
     /**
-     * @param $token
+     * @param string $token
      */
-    public function setToken($token)
+    public function setToken(string $token)
     {
-        if (is_string($token) && $token !== '') {
+        if ($token !== '') {
             $this->token = $token;
         }
     }
 
     /**
-     * @return mixed
+     * @return string|bool
      */
     public function getLastError()
     {
@@ -296,7 +292,7 @@ class ApiCalls
      * If time is set equals 0 will reset deadline,
      * If time is null will get current time and adds 24hours (default) to it;
      *
-     * @param int|null $time
+     * @param mixed $time
      */
     public function setDeadline($time = null)
     {
@@ -323,7 +319,7 @@ class ApiCalls
     /**
      * @return int
      */
-    protected function getDefaultDeadlineOffset()
+    protected function getDefaultDeadlineOffset(): int
     {
         if ($this->deadlineOffset == 0 || $this->deadlineOffset < 0) {
             $this->deadlineOffset = Constants::DEADLINE_OFFSET;
@@ -334,7 +330,7 @@ class ApiCalls
     /**
      * @param int $offset
      */
-    public function setDefaultDeadlineOffset($offset = 0)
+    public function setDefaultDeadlineOffset(int $offset = 0)
     {
         $this->deadlineOffset = (int)$offset;
     }
@@ -355,7 +351,7 @@ class ApiCalls
      * @param bool $asJson
      * @return string|array
      */
-    public function getFolderInformation($asJson = false)
+    public function getFolderInformation(bool $asJson = false)
     {
         if ($this->folderInformation === null) {
             $this->folderInformation = [
@@ -409,7 +405,7 @@ class ApiCalls
      * @param bool $attachInstructions
      * @throws Exception This Exception contains details of an eventual error
      */
-    public function sandboxSendContent($fileContent, $fileName, $attachInstructions = true)
+    public function sandboxSendContent(string $fileContent, string $fileName, bool $attachInstructions = true)
     {
         $this->sendFile($fileContent, $fileName, 'sandbox', $attachInstructions);
     }
@@ -423,7 +419,7 @@ class ApiCalls
      * @param bool $attachInstruction
      * @throws Exception
      */
-    public function sendFile($fileContent, $fileName, $source, $attachInstruction = true)
+    public function sendFile(string $fileContent, string $fileName, string $source, bool $attachInstruction = true)
     {
         switch ($this->type) {
             default:
@@ -437,10 +433,15 @@ class ApiCalls
      * @param string $fileContent The content of the file you wish to send
      * @param string $fileName Name the file will have in the Localizer
      * @param string $source Source language of the file
+     * @param bool $attachInstruction
      * @throws Exception This Exception contains details of an eventual error
      */
-    protected function storeFileIntoLocalHotfolder($fileContent, $fileName, $source, $attachInstruction)
-    {
+    protected function storeFileIntoLocalHotfolder(
+        string $fileContent,
+        string $fileName,
+        string $source,
+        bool $attachInstruction
+    ) {
         if ($this->checkAndCreateFolder($this->outFolder, 'outgoing') === true) {
             $xmlPath = Environment::getPublicPath() . '/' . $this->outFolder . '/' . $fileName;
             if ($this->plainXmlExports) {
@@ -474,9 +475,7 @@ class ApiCalls
                         'DEADLINE' => $instructions['deadline'],
                         'FILE_NAME' => $fileName,
                         'PROJECT_CONTACT' => $this->getBackendUser()->user['email'],
-                        'PROJECT_NAME' => date('Y-m-d') . '_Typo3CMS_' . strtoupper($sourceLanguage) . '-' . strtoupper(
-                            $targetLanguage
-                        ),
+                        'PROJECT_NAME' => date('Y-m-d') . '_Typo3CMS_' . strtoupper($sourceLanguage) . '-' . strtoupper($targetLanguage),
                         'PROJECT_SETTINGS' => $this->projectKey,
                         'SOURCE_COUNTRY' => $sourceCountry,
                         'SOURCE_LANGUAGE' => $sourceLanguage,
@@ -515,7 +514,7 @@ class ApiCalls
      * @return bool
      * @throws Exception
      */
-    protected function checkAndCreateFolder($folder, $type)
+    protected function checkAndCreateFolder(string $folder, string $type): bool
     {
         if ($folder) {
             $folder = Environment::getPublicPath() . '/' . $folder;
@@ -558,7 +557,7 @@ class ApiCalls
     /**
      * @return bool
      */
-    protected function isDeadlineSet()
+    protected function isDeadlineSet(): bool
     {
         return $this->deadline !== '';
     }
@@ -566,7 +565,7 @@ class ApiCalls
     /**
      * @return bool
      */
-    protected function isLocalesSet()
+    protected function isLocalesSet(): bool
     {
         return count($this->locales) > 0;
     }
@@ -574,7 +573,7 @@ class ApiCalls
     /**
      * @return bool
      */
-    protected function hasMetaData()
+    protected function hasMetaData(): bool
     {
         return count($this->metaData) > 0;
     }
@@ -584,7 +583,7 @@ class ApiCalls
      * @param string $source Source language of the file
      * @throws Exception This Exception contains details of an eventual error
      */
-    public function sendInstructions($fileName, $source)
+    public function sendInstructions(string $fileName, string $source)
     {
         $instructions = $this->getInstructions();
         if (is_array($instructions)) {
@@ -602,7 +601,7 @@ class ApiCalls
      * @return bool
      * @throws Exception
      */
-    public function areSettingsValid()
+    public function areSettingsValid(): bool
     {
         return $this->checkAndCreateFolders();
     }
@@ -612,7 +611,7 @@ class ApiCalls
      * @return bool True if the folders exist and are writable
      * @throws Exception
      */
-    public function checkAndCreateFolders()
+    public function checkAndCreateFolders(): bool
     {
         if (!$this->checkAndCreateFolder($this->outFolder, 'outgoing')) {
             return false;

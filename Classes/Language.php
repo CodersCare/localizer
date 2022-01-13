@@ -34,7 +34,7 @@ trait Language
      * @param array $row
      * @return bool
      */
-    protected function translateAll(array $row)
+    protected function translateAll(array $row): bool
     {
         $translateAll = false;
         if (isset($row['all_locale'])) {
@@ -45,10 +45,10 @@ trait Language
 
     /**
      * @param int $uidLocal
-     * @param $table
+     * @param string $table
      * @return array
      */
-    protected function getAllTargetLanguageUids($uidLocal, $table)
+    protected function getAllTargetLanguageUids(int $uidLocal, string $table): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_LOCALIZER_LANGUAGE_MM
@@ -62,7 +62,7 @@ trait Language
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'uid_local',
-                        (int)$uidLocal
+                        $uidLocal
                     ),
                     $queryBuilder->expr()->eq(
                         'tablenames',
@@ -92,14 +92,14 @@ trait Language
      * @param bool $fixUnderLine
      * @return array
      */
-    protected function getStaticLanguagesCollateLocale(array $uidList, $fixUnderLine = false)
+    protected function getStaticLanguagesCollateLocale(array $uidList, bool $fixUnderLine = false): array
     {
         $collateLocale = [];
         if (count($uidList) > 0) {
             $field = 'lg_collate_locale';
             $orgField = $field;
             $uidList = GeneralUtility::intExplode(',', implode(',', $uidList), true);
-            if ((bool)$fixUnderLine === true) {
+            if ($fixUnderLine === true) {
                 $field = 'REPLACE(' . $field . ', "_", "-") as ' . $field;
             }
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(

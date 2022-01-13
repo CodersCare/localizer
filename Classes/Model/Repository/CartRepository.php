@@ -15,9 +15,9 @@ class CartRepository extends AbstractRepository
     /**
      * Loads available backend users
      *
-     * @return array|null
+     * @return array
      */
-    public function loadAvailableUsers()
+    public function loadAvailableUsers(): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_BACKEND_USERS);
         $users = $queryBuilder
@@ -74,12 +74,12 @@ class CartRepository extends AbstractRepository
     /**
      * Loads additional information about the listed cart records
      *
-     * @param $id
-     * @param $classes
-     * @param $user
+     * @param int $id
+     * @param array $classes
+     * @param int $user
      * @return array|null
      */
-    public function getRecordInfo($id, $classes, $user)
+    public function getRecordInfo(int $id, array $classes, int $user): array
     {
         $user = $user === 0 || $user ? $user : $this->getBackendUser()->user['uid'];
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
@@ -90,7 +90,7 @@ class CartRepository extends AbstractRepository
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         Constants::TABLE_LOCALIZER_CART . '.uid_local',
-                        (int)$id
+                        $id
                     ),
                     $queryBuilder->expr()->gt(
                         Constants::TABLE_LOCALIZER_CART . '.status',
@@ -105,7 +105,7 @@ class CartRepository extends AbstractRepository
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->eq(
                     Constants::TABLE_LOCALIZER_CART . '.cruser_id',
-                    (int)$user
+                    $user
                 )
             );
         }

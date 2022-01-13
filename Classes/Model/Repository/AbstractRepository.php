@@ -24,7 +24,7 @@ class AbstractRepository
      * @param int $localizerId
      * @return array|false|null
      */
-    public function getLocalizerLanguages($localizerId)
+    public function getLocalizerLanguages(int $localizerId)
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
         $queryBuilder->getRestrictions()->removeAll();
@@ -106,11 +106,16 @@ class AbstractRepository
             ->fetchAssociative();
     }
 
+    public static function getConnectionPool(): object
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
+    }
+
     /**
      * @param array $systemLanguages
-     * @return array|false|null
+     * @return array
      */
-    public function getStaticLanguages($systemLanguages)
+    public function getStaticLanguages(array $systemLanguages): array
     {
         $systemLanguageUids = [];
         $systemLanguageUids[] = '0';
@@ -153,7 +158,7 @@ class AbstractRepository
      * @param int $cartId
      * @return array
      */
-    public function loadConfiguration($cartId)
+    public function loadConfiguration(int $cartId): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
         $queryBuilder->getRestrictions()
@@ -190,9 +195,9 @@ class AbstractRepository
     /**
      * Loads available localizer settings
      *
-     * @return array|null
+     * @return array
      */
-    public function loadAvailableLocalizers()
+    public function loadAvailableLocalizers(): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
         $queryBuilder->getRestrictions()
@@ -219,7 +224,7 @@ class AbstractRepository
      * @param int $localizerId
      * @return array|null
      */
-    public function loadAvailableCarts($localizerId)
+    public function loadAvailableCarts(int $localizerId): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
         $queryBuilder->getRestrictions()
@@ -254,9 +259,9 @@ class AbstractRepository
      *
      * @param int $pageId
      * @param int $cartId
-     * @return array|null
+     * @return array
      */
-    public function loadAvailablePages($pageId, $cartId)
+    public function loadAvailablePages(int $pageId, int $cartId): array
     {
         $pageId = (int)$pageId;
         $cartId = (int)$cartId;
@@ -324,9 +329,9 @@ class AbstractRepository
      * Loads available pages for carts
      *
      * @param int $cartId
-     * @return array|null
+     * @return array
      */
-    public function loadAvailableLanguages($cartId)
+    public function loadAvailableLanguages(int $cartId): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
         $queryBuilder->getRestrictions()
@@ -363,9 +368,9 @@ class AbstractRepository
      * Loads available pages for carts
      *
      * @param int $cartId
-     * @return array|null
+     * @return array
      */
-    public function loadAvailableTables($cartId)
+    public function loadAvailableTables(int $cartId): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
         $queryBuilder->getRestrictions()
@@ -396,11 +401,11 @@ class AbstractRepository
      * Gets all related child records of a parent record based on the reference index
      *
      * @param array $record
-     * @param int $table
+     * @param string $table
      * @param array $translatableTables
-     * @return array $relations
+     * @return array
      */
-    protected function checkRelations($record, $table, $translatableTables)
+    protected function checkRelations(array $record, string $table, array $translatableTables): array
     {
         $relations = [];
         foreach ($GLOBALS['TCA'][$table]['columns'] as $fieldName => $column) {
@@ -420,6 +425,7 @@ class AbstractRepository
                 if (empty($record[$fieldName])) {
                     continue;
                 }
+                /** @var RelationHandler $relationHandler */
                 $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
                 $relationHandler->start(
                     $fieldName,
@@ -437,10 +443,5 @@ class AbstractRepository
         }
 
         return $relations;
-    }
-
-    public static function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

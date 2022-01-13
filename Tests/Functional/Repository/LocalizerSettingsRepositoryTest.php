@@ -10,9 +10,15 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class LocalizerSettingsRepositoryTest extends FunctionalTestCase
 {
-    protected ObjectManagerInterface $objectManager;
+    /**
+     * @var ObjectManagerInterface
+     */
+    protected $objectManager;
 
-    protected LocalizerSettingsRepository $repository;
+    /**
+     * @var LocalizerSettingsRepository
+     */
+    protected $repository;
 
     protected $testExtensionsToLoad = [
         'typo3conf/ext/localizer',

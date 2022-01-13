@@ -78,7 +78,7 @@ class FileSender extends AbstractHandler
     }
 
     /**
-     * @throws Exception
+     * @throws \TYPO3\CMS\Core\Exception
      */
     public function run()
     {
@@ -162,7 +162,7 @@ class FileSender extends AbstractHandler
     /**
      * @return string
      */
-    protected function getUploadPath()
+    protected function getUploadPath(): string
     {
         if ($this->uploadPath === '') {
             $this->uploadPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/out/';
@@ -174,7 +174,7 @@ class FileSender extends AbstractHandler
      * @param array $row
      * @return int
      */
-    protected function addDeadline(&$row)
+    protected function addDeadline(array &$row): int
     {
         $deadline = '';
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
@@ -215,7 +215,7 @@ class FileSender extends AbstractHandler
      * @param array $row
      * @return array
      */
-    protected function addMetaData(&$row)
+    protected function addMetaData(array &$row): array
     {
         $metaData = [];
         $hooks = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['localizer']['addMetaData'];
@@ -230,7 +230,7 @@ class FileSender extends AbstractHandler
     /**
      * @param int $time
      */
-    public function finish($time)
+    public function finish(int $time)
     {
         $this->dataFinish($time);
     }

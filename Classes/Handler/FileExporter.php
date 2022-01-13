@@ -57,10 +57,10 @@ class FileExporter extends AbstractCartHandler
     protected $exportTree = [];
 
     /**
-     * @param $id
+     * @param int $id
      * @throws Exception
      */
-    public function init($id = 1)
+    public function init(int $id = 1)
     {
         $this->id = $id;
         $this->selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
@@ -110,10 +110,10 @@ class FileExporter extends AbstractCartHandler
             if (isset($row['configuration'])) {
                 $localizer = (int)$row['uid_local'];
                 $cart = (int)$row['uid'];
-                $configuration = (int)$row['uid_foreign'];
+                $configurationId = (int)$row['uid_foreign'];
                 $configurationData = BackendUtility::getRecord(
                     Constants::TABLE_L10NMGR_CONFIGURATION,
-                    $configuration
+                    $configurationId
                 );
                 $pid = (int)$configurationData['pid'];
                 $cartConfiguration = json_decode($row['configuration'], true);
@@ -127,25 +127,28 @@ class FileExporter extends AbstractCartHandler
                             $configuredLanguageExport = $this->configureRecordsForLanguage(
                                 $localizer,
                                 $cart,
-                                $configuration,
+                                $configurationId,
                                 $language
                             );
                             if ($configuredLanguageExport) {
-                                $output = $this->processExport($configuration, $language);
+                                $output = $this->processExport($configurationId, $language);
 
                                 if ($output['http_status_code'] > 0) {
-                                    throw new Exception('Failed export to file with: ' . $output['response']['command'] . '. Output was: ' . $output['response']['output'], 1625730835);
+                                    throw new Exception(
+                                        'Failed export to file with: ' . $output['response']['command'] . '. Output was: ' . $output['response']['output'],
+                                        1625730835
+                                    );
                                 }
                             }
                         }
                         $this->selectorRepository->updateL10nmgrConfiguration(
-                            $configuration,
+                            $configurationId,
                             $localizer,
                             $cart,
                             $pageIds,
                             ''
                         );
-                        $this->registerFilesForLocalizer($localizer, $configuration, $pid);
+                        $this->registerFilesForLocalizer($localizer, $configurationId, $pid);
                     }
                 }
             } else {
@@ -161,13 +164,13 @@ class FileExporter extends AbstractCartHandler
     }
 
     /**
-     * @param $localizer
-     * @param $cart
-     * @param $configuration
-     * @param $language
+     * @param int $localizer
+     * @param int $cart
+     * @param int $configurationId
+     * @param int $language
      * @return bool
      */
-    protected function configureRecordsForLanguage($localizer, $cart, $configuration, $language)
+    protected function configureRecordsForLanguage(int $localizer, int $cart, int $configurationId, int $language): bool
     {
         $this->exportTree = [];
         if (!empty($this->content['records'])) {
@@ -189,7 +192,7 @@ class FileExporter extends AbstractCartHandler
             $excludeItems = implode(',', $this->exportTree);
             $pageIds = $this->selectorRepository->loadAvailablePages(0, $cart);
             $this->selectorRepository->updateL10nmgrConfiguration(
-                $configuration,
+                $configurationId,
                 $localizer,
                 $cart,
                 $pageIds,
@@ -201,11 +204,11 @@ class FileExporter extends AbstractCartHandler
     }
 
     /**
-     * @param $table
-     * @param $uid
-     * @param $language
+     * @param string $table
+     * @param int $uid
+     * @param int $language
      */
-    protected function checkReferences($table, $uid, $language)
+    protected function checkReferences(string $table, int $uid, int $language)
     {
         foreach ($this->content['referencedRecords'][$table][$uid] as $referencedTable => $records) {
             if (!empty($records)) {
@@ -224,24 +227,23 @@ class FileExporter extends AbstractCartHandler
     }
 
     /**
-     * @param $configuration
-     * @param $language
+     * @param int $configurationId
+     * @param int $language
      * @return array
      */
-    protected function processExport($configuration, $language)
+    protected function processExport(int $configurationId, int $language): array
     {
         $context = Environment::getContext()->__toString();
         $command = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
             CommandUtility::getCommand('php') . ' ' .
             Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3' .
             ' l10nmanager:export' .
-            ' -c ' . CommandUtility::escapeShellArgument($configuration) .
-            ' -t ' . CommandUtility::escapeShellArgument($language)
-        ;
+            ' -c ' . CommandUtility::escapeShellArgument($configurationId) .
+            ' -t ' . CommandUtility::escapeShellArgument($language);
         if ($this->getBackendUser()->user['realName']) {
             $command .= ' --customer ' . CommandUtility::escapeShellArgument($this->getBackendUser()->user['realName']);
         }
-        $command .=  ' 2>&1';
+        $command .= ' 2>&1';
 
         $statusCode = 200;
         $output = '';
@@ -262,7 +264,7 @@ class FileExporter extends AbstractCartHandler
      * @param int $configurationId
      * @param int $pid
      */
-    protected function registerFilesForLocalizer($localizerId, $configurationId, $pid)
+    protected function registerFilesForLocalizer(int $localizerId, int $configurationId, int $pid)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_L10NMGR_EXPORTDATA
@@ -298,7 +300,7 @@ class FileExporter extends AbstractCartHandler
     /**
      * @param int $time
      */
-    public function finish($time)
+    public function finish(int $time)
     {
         $this->dataFinish($time);
     }
@@ -307,7 +309,7 @@ class FileExporter extends AbstractCartHandler
      * @param int $uid
      * @param array $responses
      */
-    protected function processResponses($uid, $responses)
+    protected function processResponses(int $uid, array $responses)
     {
         $success = true;
         foreach ($responses as $response) {
@@ -344,7 +346,7 @@ class FileExporter extends AbstractCartHandler
     /**
      * @return string
      */
-    protected function getUploadPath()
+    protected function getUploadPath(): string
     {
         if ($this->uploadPath === '') {
             $this->uploadPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/out/';

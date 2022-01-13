@@ -170,7 +170,7 @@ class BaseModule
      * Returns the Backend User
      * @return BackendUserAuthentication
      */
-    protected function getBackendUser()
+    protected function getBackendUser(): BackendUserAuthentication
     {
         return $GLOBALS['BE_USER'];
     }
@@ -185,9 +185,7 @@ class BaseModule
     public function menuConfig()
     {
         // Page / user TSconfig settings and blinding of menu-items
-        $this->modTSconfig['properties'] = BackendUtility::getPagesTSconfig(
-            $this->id
-        )['mod.'][$this->MCONF['name'] . '.'] ?? [];
+        $this->modTSconfig['properties'] = BackendUtility::getPagesTSconfig($this->id)['mod.'][$this->MCONF['name'] . '.'] ?? [];
         $this->MOD_MENU['function'] = $this->mergeExternalItems(
             $this->MCONF['name'],
             'function',
@@ -219,7 +217,7 @@ class BaseModule
      * @internal
      * @see \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(), menuConfig()
      */
-    public function mergeExternalItems($modName, $menuKey, $menuArr)
+    public function mergeExternalItems(string $modName, string $menuKey, array $menuArr): array
     {
         $mergeArray = $GLOBALS['TBE_MODULES_EXT'][$modName]['MOD_MENU'][$menuKey];
         if (is_array($mergeArray)) {
@@ -240,7 +238,7 @@ class BaseModule
      * Returns the Language Service
      * @return LanguageService
      */
-    protected function getLanguageService()
+    protected function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];
     }
@@ -249,10 +247,10 @@ class BaseModule
      * Loads $this->extClassConf with the configuration for the CURRENT function of the menu.
      *
      * @param string $MM_key The key to MOD_MENU for which to fetch configuration. 'function' is default since it is first and foremost used to get information per "extension object" (I think that is what its called)
-     * @param string $MS_value The value-key to fetch from the config array. If NULL (default) MOD_SETTINGS[$MM_key] will be used. This is useful if you want to force another function than the one defined in MOD_SETTINGS[function]. Call this in init() function of your Script Class: handleExternalFunctionValue('function', $forcedSubModKey)
+     * @param string|null $MS_value The value-key to fetch from the config array. If NULL (default) MOD_SETTINGS[$MM_key] will be used. This is useful if you want to force another function than the one defined in MOD_SETTINGS[function]. Call this in init() function of your Script Class: handleExternalFunctionValue('function', $forcedSubModKey)
      * @see getExternalItemConfig(), init()
      */
-    public function handleExternalFunctionValue($MM_key = 'function', $MS_value = null)
+    public function handleExternalFunctionValue(string $MM_key = 'function', string $MS_value = null)
     {
         if ($MS_value === null) {
             $MS_value = $this->MOD_SETTINGS[$MM_key];
@@ -270,7 +268,7 @@ class BaseModule
      * @return mixed The value from the TBE_MODULES_EXT array.
      * @see handleExternalFunctionValue()
      */
-    public function getExternalItemConfig($modName, $menuKey, $value = '')
+    public function getExternalItemConfig(string $modName, string $menuKey, string $value = '')
     {
         if (isset($GLOBALS['TBE_MODULES_EXT'][$modName])) {
             return (string)$value !== '' ? $GLOBALS['TBE_MODULES_EXT'][$modName]['MOD_MENU'][$menuKey][$value] : $GLOBALS['TBE_MODULES_EXT'][$modName]['MOD_MENU'][$menuKey];
@@ -330,7 +328,7 @@ class BaseModule
      * @return string
      * @throws Exception
      */
-    public function getExtObjContent()
+    public function getExtObjContent(): string
     {
         $savedContent = $this->content;
         $this->content = '';
@@ -347,7 +345,7 @@ class BaseModule
     public function extObjContent()
     {
         if ($this->extObj === null) {
-            /**@var $flashMessage FlashMessage **/
+            /**@var $flashMessage FlashMessage * */
             $flashMessage = GeneralUtility::makeInstance(
                 FlashMessage::class,
                 $this->getLanguageService()->sL(
@@ -371,7 +369,7 @@ class BaseModule
     /**
      * @return PageRenderer
      */
-    protected function getPageRenderer()
+    protected function getPageRenderer(): PageRenderer
     {
         if ($this->pageRenderer === null) {
             $this->pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);

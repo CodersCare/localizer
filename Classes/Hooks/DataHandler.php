@@ -36,10 +36,10 @@ class DataHandler
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $tceMain
      */
     public function processDatamap_postProcessFieldArray(
-        $status,
-        $table,
-        $id,
-        &$fieldArray,
+        string $status,
+        string $table,
+        int $id,
+        array &$fieldArray,
         \TYPO3\CMS\Core\DataHandling\DataHandler &$tceMain
     ) {
         if ($table === Constants::TABLE_LOCALIZER_SETTINGS) {
@@ -50,7 +50,6 @@ class DataHandler
                 }
                 $checkArray = array_merge($currentRecord, $fieldArray);
                 if ($checkArray['type'] === 0 || $checkArray['type'] === '0') {
-                    /** @var ApiCalls $localizerApi */
                     $localizerApi = new ApiCalls(
                         $checkArray['type'],
                         $checkArray['url'],
@@ -89,10 +88,10 @@ class DataHandler
     /**
      * @return bool
      */
-    protected function isSaveAction()
+    protected function isSaveAction(): bool
     {
         return
-            isset($_REQUEST['doSave']) && (bool)$_REQUEST['doSave'];
+            isset($_REQUEST['doSave']) && $_REQUEST['doSave'];
     }
 
     /**
@@ -103,7 +102,7 @@ class DataHandler
      */
     public function processDatamap_preProcessFieldArray(
         array &$incomingFieldArray,
-        $table,
+        string $table,
         $id,
         \TYPO3\CMS\Core\DataHandling\DataHandler &$tceMain
     ) {
@@ -131,7 +130,7 @@ class DataHandler
      * @param int $settingsId
      * @return array
      */
-    protected function getAllTargetUids($settingsId)
+    protected function getAllTargetUids(int $settingsId): array
     {
         $originalValues = BackendUtility::getRecord(Constants::TABLE_EXPORTDATA_MM, $settingsId);
         return $this->getAllTargetLanguageUids($originalValues['uid_local'], Constants::TABLE_LOCALIZER_SETTINGS);
@@ -140,12 +139,12 @@ class DataHandler
     /**
      * Hook for displaying small icon in page tree, web>List and page module.
      *
-     * @param $p
-     * @param $pObj
+     * @param array $p
+     * @param mixed $pObj
      *
      * @return string [type]...
      */
-    public function recStatInfo($p, $pObj)
+    public function recStatInfo(array $p, $pObj): string
     {
         if (!empty($this->getBackendUser()->groupData['allowed_languages']) || $this->getBackendUser()->isAdmin()) {
             return $this->calcStat(
@@ -156,7 +155,7 @@ class DataHandler
         return '';
     }
 
-    public function calcStat($p, $languageList, $noLink = false)
+    public function calcStat($p, $languageList, $noLink = false): string
     {
         $output = '';
         if ($p[0] != 'pages') {
@@ -265,7 +264,7 @@ class DataHandler
                     '<img src="../%sResources/Public/Images/flags_new.png" hspace="2" width="10" height="16" alt="%s" title="%s" />',
                     $extPath,
                     htmlspecialchars($msg),
-                    htmlspecialchars($msg),
+                    htmlspecialchars($msg)
                 );
             } elseif ($flags['new'] || $flags['update']) {
                 if ($flags['update']) {
@@ -278,7 +277,7 @@ class DataHandler
                     '<img src="../%sResources/Public/Images/flags_update.png" hspace="2" width="10" height="16" alt="%s" title="%s" />',
                     $extPath,
                     htmlspecialchars($msg),
-                    htmlspecialchars($msg),
+                    htmlspecialchars($msg)
                 );
             } elseif ($flags['unknown']) {
                 $msg .= 'Translation status is unknown for ' . $flags['unknown'] . ' elements. Please check and update. ';
@@ -286,7 +285,7 @@ class DataHandler
                     '<img src="../%sResources/Public/Images/flags_unknown.png" hspace="2" width="10" height="16" alt="%s" title="%s" />',
                     $extPath,
                     htmlspecialchars($msg),
-                    htmlspecialchars($msg),
+                    htmlspecialchars($msg)
                 );
             } elseif ($flags['noChange']) {
                 $msg .= 'All ' . $flags['noChange'] . ' translations OK';
@@ -294,7 +293,7 @@ class DataHandler
                     '<img src="../%sResources/Public/Images/flags_ok.png" hspace="2" width="10" height="16" alt="%s" title="%s" />',
                     $extPath,
                     htmlspecialchars($msg),
-                    htmlspecialchars($msg),
+                    htmlspecialchars($msg)
                 );
             } else {
                 $msg .= 'Nothing to do. ';
@@ -303,7 +302,7 @@ class DataHandler
                     '<img src="../%sResources/Public/Images/flags_none.png" hspace="2" width="10" height="16" alt="%s" title="%s" />',
                     $extPath,
                     htmlspecialchars($msg),
-                    htmlspecialchars($msg),
+                    htmlspecialchars($msg)
                 );
             }
             if (!$noLink) {

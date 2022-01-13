@@ -9,7 +9,9 @@ use TYPO3\CMS\Core\Database\Connection;
 class LocalizerSettingsRepository extends AbstractRepository
 {
     /**
-     * @throws \Doctrine\DBAL\Driver\Exception
+     * @param int $uid
+     * @param array $fields
+     * @return array
      */
     public function findByUid(int $uid, array $fields = ['*']): array
     {
@@ -17,10 +19,9 @@ class LocalizerSettingsRepository extends AbstractRepository
         return $connection->select($fields, Constants::TABLE_LOCALIZER_SETTINGS, ['uid' => $uid])->fetchAssociative();
     }
 
-    public function findAll(): array
+    public static function getConnectionForTable($table): Connection
     {
-        $connection = self::getConnectionForTable(Constants::TABLE_LOCALIZER_SETTINGS);
-        return $connection->select(['*'], Constants::TABLE_LOCALIZER_SETTINGS)->fetchAllAssociative();
+        return self::getConnectionPool()->getConnectionForTable($table);
     }
 
     public function loadAvailableLocalizers(): array
@@ -35,12 +36,18 @@ class LocalizerSettingsRepository extends AbstractRepository
         return $availableLocalizers;
     }
 
+    public function findAll(): array
+    {
+        $connection = self::getConnectionForTable(Constants::TABLE_LOCALIZER_SETTINGS);
+        return $connection->select(['*'], Constants::TABLE_LOCALIZER_SETTINGS)->fetchAllAssociative();
+    }
+
     /**
      * @param int $localizerId
      * @return array|false|null
      * @todo Make the return type an array in any case to be able to add return type
      */
-    public function getLocalizerLanguages($localizerId)
+    public function getLocalizerLanguages(int $localizerId)
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
         $queryBuilder->getRestrictions()->removeAll();
@@ -120,10 +127,5 @@ class LocalizerSettingsRepository extends AbstractRepository
             ->groupBy('settings.uid')
             ->execute()
             ->fetchAssociative();
-    }
-
-    public static function getConnectionForTable($table): Connection
-    {
-        return self::getConnectionPool()->getConnectionForTable($table);
     }
 }

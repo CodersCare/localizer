@@ -3,7 +3,6 @@
 namespace Localizationteam\Localizer;
 
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -17,9 +16,8 @@ trait File
      * @param string $fileName
      * @param string $locale
      * @return string
-     * @throws FolderDoesNotExistException
      */
-    protected function getLocalFilename($fileName, $locale)
+    protected function getLocalFilename(string $fileName, string $locale): string
     {
         $downloadPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/in/' . strtolower($locale);
         if (!@is_dir($downloadPath)) {

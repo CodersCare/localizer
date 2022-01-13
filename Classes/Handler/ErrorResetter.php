@@ -88,7 +88,7 @@ class ErrorResetter extends AbstractHandler
     /**
      * @param int $time
      */
-    public function finish($time)
+    public function finish(int $time)
     {
         // nothing to do here
     }

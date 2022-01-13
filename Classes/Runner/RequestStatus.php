@@ -87,7 +87,7 @@ class RequestStatus
     /**
      * @param array $configuration
      */
-    public function run($configuration)
+    public function run(array $configuration)
     {
         switch ($configuration['type']) {
             case '0':
@@ -128,7 +128,7 @@ class RequestStatus
     /**
      * @return array
      */
-    public function getResponse()
+    public function getResponse(): array
     {
         return $this->response;
     }

@@ -4,8 +4,6 @@ namespace Localizationteam\Localizer\Controller;
 
 use Localizationteam\Localizer\Model\Repository\AbstractRepository;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Backend\Routing\Exception\ResourceNotFoundException;
-use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -78,8 +76,6 @@ abstract class AbstractController extends BaseModule
      * Then checks for module functions that have hooked in, and renders menu etc.
      *
      * @return ResponseInterface the response with the content
-     * @throws ResourceNotFoundException
-     * @throws RouteNotFoundException
      */
     public function mainAction(): ResponseInterface
     {
@@ -102,8 +98,9 @@ abstract class AbstractController extends BaseModule
      *
      * @return array
      */
-    public function init()
+    public function init(): array
     {
+        $localizer = [];
         $this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
         $this->id = (int)GeneralUtility::_GP('id');
         $this->availableLocalizers = $this->abstractRepository->loadAvailableLocalizers();
@@ -189,9 +186,9 @@ abstract class AbstractController extends BaseModule
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    protected function getBackPath()
+    protected function getBackPath(): string
     {
         return $this->backPath;
     }

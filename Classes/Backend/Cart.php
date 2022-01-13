@@ -21,7 +21,7 @@ class Cart
      * @param array $params
      * @param mixed $obj
      */
-    public function filterList(&$params, $obj)
+    public function filterList(array &$params, $obj)
     {
         if ($obj instanceof TcaSelectItems) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(

@@ -85,7 +85,7 @@ class SettingsController extends AbstractController
     /**
      * Initializing the module
      */
-    public function init()
+    public function init(): array
     {
         parent::init();
         $this->MCONF = $GLOBALS['MCONF'];
@@ -280,9 +280,7 @@ class SettingsController extends AbstractController
         }
         $this->content = $this->moduleTemplate->header($header . $this->pageinfo['title']);
         if ($this->id > 0) {
-            $this->content .= '<form action="' . htmlspecialchars(
-                $dblist->listURL()
-            ) . '" method="post" name="dblistForm">';
+            $this->content .= '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" name="dblistForm">';
             $this->content .= $dblist->HTMLcode;
             $this->content .= '<input type="hidden" name="cmd_table" /><input type="hidden" name="cmd" /></form>';
             if ($dblist->HTMLcode) {

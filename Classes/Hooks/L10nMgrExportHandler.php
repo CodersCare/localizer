@@ -92,9 +92,8 @@ class L10nMgrExportHandler implements PostSaveInterface
      * @param int $uid
      * @return array
      */
-    protected function getRootline(
-        $uid
-    ) {
+    protected function getRootline(int $uid): array
+    {
         $rootLineList = BackendUtility::BEgetRootLine($uid);
         $rootLine = [];
         foreach ($rootLineList as $page) {
@@ -107,7 +106,7 @@ class L10nMgrExportHandler implements PostSaveInterface
     /**
      * @return int
      */
-    protected function getSrcPid()
+    protected function getSrcPid(): int
     {
         return (int)$_GET['srcPID'];
     }

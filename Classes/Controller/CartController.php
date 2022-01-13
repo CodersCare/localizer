@@ -116,7 +116,7 @@ class CartController extends AbstractController
     /**
      * Initializing the module
      */
-    public function init()
+    public function init(): array
     {
         parent::init();
         $this->userId = (int)GeneralUtility::_GP('selected_user');
@@ -204,9 +204,7 @@ class CartController extends AbstractController
             </div>
             ';
 
-        $this->content .= '<form action="' . htmlspecialchars(
-            $dblist->listURL()
-        ) . '" method="post" name="dblistForm">';
+        $this->content .= '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" name="dblistForm">';
         $this->content .= $this->getCartConfigurator($dblist->listURL());
         if ($access || ($this->id === 0 && $this->search_levels > 0 && strlen($this->search_field) > 0)) {
             $this->pointer = MathUtility::forceIntegerInRange($this->pointer, 0, 100000);
@@ -344,7 +342,7 @@ class CartController extends AbstractController
      * @param string $url
      * @return string
      */
-    protected function getCartConfigurator($url)
+    protected function getCartConfigurator(string $url): string
     {
         $localizerConfigurator = '<div class="localizer-matrix-configurator"><ul class="list-inline">';
         $localizerConfigurator .= $this->getLocalizerSelector($url);
@@ -362,7 +360,7 @@ class CartController extends AbstractController
      * @param string $url
      * @return string
      */
-    protected function getLocalizerSelector($url)
+    protected function getLocalizerSelector(string $url): string
     {
         if (count($this->availableLocalizers) === 1) {
             $this->localizerId = key($this->availableLocalizers);
@@ -401,7 +399,7 @@ class CartController extends AbstractController
      * @param string $url
      * @return string
      */
-    protected function getUserSelector($url)
+    protected function getUserSelector(string $url): string
     {
         $availableUsers = $this->cartRepository->loadAvailableUsers();
         $userSelector = '<li class="dropdown">
@@ -436,7 +434,7 @@ class CartController extends AbstractController
      *
      * @return string
      */
-    protected function generateRecordInfo()
+    protected function generateRecordInfo(): string
     {
         $recordInfo = $this->cartRepository->getRecordInfo($this->localizerId, $this->statusClasses, $this->userId);
         $generatedRecordInfo = 'var localizerRecordInfo = \'' . json_encode($recordInfo) . '\';';

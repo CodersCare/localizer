@@ -105,7 +105,6 @@ class DownloadFile
                                     if ($zip->open($file) === true) {
                                         $zip->extractTo(dirname($files['local']));
                                         $zip->close();
-                                    //unlink($file);
                                     } else {
                                         throw new Exception('File could not successfully be unzipped');
                                     }
@@ -140,7 +139,7 @@ class DownloadFile
      * @param string $content
      * @param string $iso2
      */
-    protected function adjustContent(&$content, $iso2)
+    protected function adjustContent(string &$content, string $iso2)
     {
         $search = '<t3_targetLang>';
         $position = strpos($content, $search);
@@ -151,7 +150,7 @@ class DownloadFile
     /**
      * @return string
      */
-    public function getResponse()
+    public function getResponse(): string
     {
         return $this->response;
     }

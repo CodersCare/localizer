@@ -56,7 +56,7 @@ class SelectorRepository extends AbstractRepository
      * @param int $localizerId
      * @return int
      */
-    public function createNewCart($pageId, $localizerId)
+    public function createNewCart(int $pageId, int $localizerId): int
     {
         $localizerLanguages = $this->getLocalizerLanguages($localizerId);
 
@@ -70,7 +70,7 @@ class SelectorRepository extends AbstractRepository
                 'all_locale' => 1,
                 'crdate' => time(),
                 'cruser_id' => (int)$this->getBackendUser()->user['uid'],
-                'status' => (int)Constants::STATUS_CART_ADDED,
+                'status' => Constants::STATUS_CART_ADDED,
                 'tstamp' => time(),
             ],
             [
@@ -91,7 +91,7 @@ class SelectorRepository extends AbstractRepository
             ->insert(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
             ->values(
                 [
-                    'pid' => (int)$pageId,
+                    'pid' => $pageId,
                     'uid_local' => (int)$cartId,
                     'uid_foreign' => (int)$localizerLanguages['source'],
                     'tablenames' => 'static_languages',
@@ -110,9 +110,9 @@ class SelectorRepository extends AbstractRepository
      *
      * @param int $pageId
      * @param int $cartId
-     * @param $configuration
+     * @param array $configuration
      */
-    public function storeConfiguration($pageId, $cartId, $configuration)
+    public function storeConfiguration(int $pageId, int $cartId, array $configuration)
     {
         self::getConnectionPool()
             ->getConnectionForTable(Constants::TABLE_LOCALIZER_CART)
@@ -149,7 +149,7 @@ class SelectorRepository extends AbstractRepository
      * @param array $configuration
      * @param array $storedTriples
      */
-    public function storeCart($pageIds, $cartId, $configuration, $storedTriples)
+    public function storeCart(array $pageIds, int $cartId, array $configuration, array $storedTriples)
     {
         if (empty($storedTriples)) {
             $storedTriples = $this->loadStoredTriples($pageIds, $cartId);
@@ -168,7 +168,7 @@ class SelectorRepository extends AbstractRepository
                                     $checkedValues[$identifier] = [
                                         'pid' => (int)$pageId,
                                         'identifier' => $identifier,
-                                        'cart' => (int)$cartId,
+                                        'cart' => $cartId,
                                         'tablename' => $tableName,
                                         'recordId' => (int)$recordId,
                                         'languageId' => (int)$languageId,
@@ -225,7 +225,7 @@ class SelectorRepository extends AbstractRepository
                         ),
                         $queryBuilder->expr()->eq(
                             'cart',
-                            (int)$cartId
+                            $cartId
                         )
                     )
                 )
@@ -236,11 +236,11 @@ class SelectorRepository extends AbstractRepository
     /**
      * Loads all items that might already be in the cart
      *
-     * @param $pageIds
-     * @param $cartId
-     * @return array|null
+     * @param array $pageIds
+     * @param int $cartId
+     * @return array
      */
-    public function loadStoredTriples($pageIds, $cartId)
+    public function loadStoredTriples(array $pageIds, int $cartId): array
     {
         $pageIds = implode(',', GeneralUtility::intExplode(',', implode(',', array_keys($pageIds))));
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
@@ -280,7 +280,7 @@ class SelectorRepository extends AbstractRepository
      * @param array $configuration
      * @return int
      */
-    public function storeL10nmgrConfiguration($pageId, $localizerId, $cartId, $configuration)
+    public function storeL10nmgrConfiguration(int $pageId, int $localizerId, int $cartId, array $configuration): int
     {
         if ($localizerId > 0 && $cartId > 0) {
             $localizerLanguages = $this->getLocalizerLanguages($localizerId);
@@ -334,8 +334,13 @@ class SelectorRepository extends AbstractRepository
      * @param array $pageIds
      * @param string $excludeItems
      */
-    public function updateL10nmgrConfiguration($uid, $localizerId, $cartId, $pageIds, $excludeItems)
-    {
+    public function updateL10nmgrConfiguration(
+        int $uid,
+        int $localizerId,
+        int $cartId,
+        array $pageIds,
+        string $excludeItems
+    ) {
         if ($localizerId > 0 && $cartId > 0) {
             $pageIds = implode(',', GeneralUtility::intExplode(',', implode(',', array_keys($pageIds))));
             self::getConnectionPool()
@@ -348,7 +353,7 @@ class SelectorRepository extends AbstractRepository
                         'pages' => $pageIds,
                     ],
                     [
-                        'uid' => (int)$uid,
+                        'uid' => $uid,
                     ],
                     [
                         PDO::PARAM_INT,
@@ -367,7 +372,7 @@ class SelectorRepository extends AbstractRepository
      * @param int $configurationId
      * @param string $deadline
      */
-    public function finalizeCart($localizerId, $cartId, $configurationId, $deadline = '')
+    public function finalizeCart(int $localizerId, int $cartId, int $configurationId, string $deadline = '')
     {
         if ($cartId > 0) {
             self::getConnectionPool()
@@ -382,7 +387,7 @@ class SelectorRepository extends AbstractRepository
                         'tstamp' => time(),
                     ],
                     [
-                        'uid' => (int)$cartId,
+                        'uid' => $cartId,
                     ],
                     [
                         PDO::PARAM_INT,
@@ -397,8 +402,8 @@ class SelectorRepository extends AbstractRepository
                 ->insert(Constants::TABLE_LOCALIZER_L10NMGR_MM)
                 ->values(
                     [
-                        'uid_local' => (int)$localizerId,
-                        'uid_foreign' => (int)$configurationId,
+                        'uid_local' => $localizerId,
+                        'uid_foreign' => $configurationId,
                     ]
                 )
                 ->execute();
@@ -409,7 +414,7 @@ class SelectorRepository extends AbstractRepository
                 ->where(
                     $queryBuilder->expr()->eq(
                         'uid_local',
-                        (int)$localizerId
+                        $localizerId
                     )
                 )
                 ->execute()
@@ -422,7 +427,7 @@ class SelectorRepository extends AbstractRepository
                         'l10n_cfg' => $countConfigurations,
                     ],
                     [
-                        'uid' => (int)$localizerId,
+                        'uid' => $localizerId,
                     ],
                     [
                         PDO::PARAM_INT,
@@ -440,14 +445,18 @@ class SelectorRepository extends AbstractRepository
      * For performance reasons it is essential to collect as much of that information
      * within just one query or while generating the array of result rows
      *
-     * @param $id
-     * @param $pageIds
-     * @param $translatableTables
+     * @param int $id
+     * @param array $pageIds
+     * @param array $translatableTables
      * @param array $configuration
      * @return array
      */
-    public function getRecordsOnPages($id, $pageIds, $translatableTables, $configuration = [])
-    {
+    public function getRecordsOnPages(
+        int $id,
+        array $pageIds,
+        array $translatableTables,
+        array $configuration = []
+    ): array {
         $records = [];
         $referencedRecords = [];
         $identifiedStatus = [];
@@ -472,10 +481,10 @@ class SelectorRepository extends AbstractRepository
             $queryBuilder->getRestrictions()->removeAll();
             $queryBuilder
                 ->selectLiteral(
-                    $table . '.*, 
-                    triples.languageId localizer_language, 
-                    MAX(carts.status) localizer_status, 
-                    MAX(carts.tstamp) last_action, 
+                    $table . '.*,
+                    triples.languageId localizer_language,
+                    MAX(carts.status) localizer_status,
+                    MAX(carts.tstamp) last_action,
                     GROUP_CONCAT(DISTINCT translations.' . $transOrigPointerField . ') translated,
                     GROUP_CONCAT(DISTINCT outdated.' . $transOrigPointerField . ') changed,
                     MAX(outdated.tstamp) outdated'
@@ -565,7 +574,6 @@ class SelectorRepository extends AbstractRepository
                     )
                 );
             } else {
-                /** @var $queryBuilder \Doctrine\DBAL\Query\QueryBuilder **/
                 $queryBuilder->leftJoin(
                     $table,
                     $table,
@@ -709,11 +717,7 @@ class SelectorRepository extends AbstractRepository
             $records[$table] = [];
             $checkedRecords = [];
             while ($record = $statement->fetchAssociative()) {
-                if ($record['localizer_status'] && $record['outdated'] > $record['last_action'] && GeneralUtility::inList(
-                    $record['changed'],
-                    0
-                )
-                ) {
+                if ($record['localizer_status'] && $record['outdated'] > $record['last_action'] && GeneralUtility::inList($record['changed'], 0)) {
                     $record['localizer_status'] = 71;
                 }
                 $identifier = md5($table . '.' . $record['uid'] . '.' . $record['localizer_language']);

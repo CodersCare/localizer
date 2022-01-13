@@ -110,7 +110,7 @@ class SelectorController extends AbstractController
     /**
      * Initializing the module
      */
-    public function init()
+    public function init(): array
     {
         $localizer = parent::init();
         $this->configuration['languages'] = GeneralUtility::_GP('configured_languages') ?: [];
@@ -331,7 +331,12 @@ class SelectorController extends AbstractController
             $this->cartId,
             $this->configuration
         );
-        $this->selectorRepository->finalizeCart($this->localizerId, $this->cartId, $configurationId, $this->configuration['deadline']);
+        $this->selectorRepository->finalizeCart(
+            $this->localizerId,
+            $this->cartId,
+            $configurationId,
+            $this->configuration['deadline']
+        );
     }
 
     /**
@@ -359,10 +364,10 @@ class SelectorController extends AbstractController
     /**
      * Generates the configurator for the selector matrix form
      *
-     * @param $url
+     * @param string $url
      * @return string
      */
-    protected function getLocalizerConfigurator($url)
+    protected function getLocalizerConfigurator(string $url): string
     {
         $localizerConfigurator = '<div class="localizer-matrix-configurator"><ul class="list-inline">';
         $localizerConfigurator .= $this->getLocalizerSelector($url);
@@ -385,7 +390,7 @@ class SelectorController extends AbstractController
                 'configuratorFinalize'
             )
             )) {
-            $localizerConfigurator .= '<li><button class="btn btn-success" type="button" 
+            $localizerConfigurator .= '<li><button class="btn btn-success" type="button"
                 data-toggle="modal" data-target="#t3-modal-finalizecart">' .
                 $GLOBALS['LANG']->sL(
                     'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:finalize'
@@ -400,10 +405,10 @@ class SelectorController extends AbstractController
      * Generates the localizer selector for the configurator
      * which might be used to select one of the available localizer settings
      *
-     * @param $url
+     * @param string $url
      * @return string
      */
-    protected function getLocalizerSelector($url)
+    protected function getLocalizerSelector(string $url): string
     {
         if (count($this->availableLocalizers) === 1) {
             $this->localizerId = key($this->availableLocalizers);
@@ -437,10 +442,10 @@ class SelectorController extends AbstractController
      * Generates the cart selector for the configurator
      * which might be used to create a new cart or select an existing cart
      *
-     * @param $url
+     * @param string $url
      * @return string
      */
-    protected function getCartSelector($url)
+    protected function getCartSelector(string $url): string
     {
         $availableCarts = $this->selectorRepository->loadAvailableCarts($this->localizerId);
         $cartSelector = '<li class="dropdown">
@@ -477,10 +482,10 @@ class SelectorController extends AbstractController
      * Generates the page selector for the configurator
      * which might be used to select a page to be working on within this cart
      *
-     * @param $url
+     * @param string $url
      * @return string
      */
-    protected function getPageSelector($url)
+    protected function getPageSelector(string $url): string
     {
         $availablePages = $this->selectorRepository->loadAvailablePages($this->id, $this->cartId);
         if (empty($availablePages) || count($availablePages) === 1) {
@@ -516,7 +521,7 @@ class SelectorController extends AbstractController
      *
      * @return string
      */
-    protected function getLanguageSelector()
+    protected function getLanguageSelector(): string
     {
         $translationConfigurationProvider = GeneralUtility::makeInstance(TranslationConfigurationProvider::class);
         $systemLanguages = $translationConfigurationProvider->getSystemLanguages();
@@ -581,7 +586,7 @@ class SelectorController extends AbstractController
      *
      * @return string
      */
-    protected function getTableSelector()
+    protected function getTableSelector(): string
     {
         $availableTables = $this->selectorRepository->loadAvailableTables($this->cartId);
         $tableSelector = '<li class="dropdown">
@@ -655,7 +660,7 @@ class SelectorController extends AbstractController
      *
      * @return string
      */
-    protected function getTimeFrameSelector()
+    protected function getTimeFrameSelector(): string
     {
         $timeFrameSelector = $this->getDateTimeSelector('start');
         $timeFrameSelector .= $this->getDateTimeSelector('end');
@@ -668,7 +673,7 @@ class SelectorController extends AbstractController
      * @param $variableName
      * @return string
      */
-    protected function getDateTimeSelector($variableName)
+    protected function getDateTimeSelector($variableName): string
     {
         $value = '';
         if (!empty($this->configuration[$variableName])) {
@@ -687,7 +692,7 @@ class SelectorController extends AbstractController
      *
      * @return string
      */
-    protected function getTranslationLocalizer()
+    protected function getTranslationLocalizer(): string
     {
         $translationLocalizer = '';
         if (!empty($this->cartRecord)) {
@@ -700,7 +705,7 @@ class SelectorController extends AbstractController
         $translationLocalizer .= '<thead><tr><th>&#160;</th>';
         foreach ($this->languages as $languageId => $languageInfo) {
             $translationLocalizer .= '<th scope="col" class="text-center text-nowrap language-header column-hover">' .
-                '<button class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" 
+                '<button class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top"
                     data-title="Select all records for ' . $languageInfo['title'] . '&nbsp;[' . $languageInfo['language_isocode'] . ']"
                 >' . $this->iconFactory->getIcon($languageInfo['flagIcon'], Icon::SIZE_SMALL) . ' ' .
                 $languageInfo['language_isocode'] . '</button></th>';
@@ -743,12 +748,12 @@ class SelectorController extends AbstractController
     /**
      * Generates a single matrix cell containing information about the table, the record, the language and the status
      *
-     * @param $table
-     * @param $uid
-     * @param $placement
+     * @param string $table
+     * @param int $uid
+     * @param string $placement
      * @return string
      */
-    protected function generateLocalizerCells($table, $uid, $placement = 'top')
+    protected function generateLocalizerCells(string $table, int $uid, string $placement = 'top'): string
     {
         $cells = '';
         $GPvars = GeneralUtility::_GP('localizerSelectorCart');
@@ -776,14 +781,18 @@ class SelectorController extends AbstractController
      * Generates the translation matrix for referenced records that are children of records in the main matrix
      * and puts them into a tree structure below their parent element
      *
-     * @param $referencedTable
-     * @param $referencedUid
+     * @param string $referencedTable
+     * @param int $referencedUid
      * @param string $level
      * @param string $parents
      * @return string
      */
-    protected function getReferenceLocalizer($referencedTable, $referencedUid, $level = '', $parents = '')
-    {
+    protected function getReferenceLocalizer(
+        string $referencedTable,
+        int $referencedUid,
+        string $level = '',
+        string $parents = ''
+    ): string {
         $referenceLocalizer = '';
         if (!empty($this->data['referencedRecords'][$referencedTable][$referencedUid])) {
             foreach ($this->data['referencedRecords'][$referencedTable][$referencedUid] as $table => $referencedRecords) {

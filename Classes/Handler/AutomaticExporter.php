@@ -60,10 +60,10 @@ class AutomaticExporter extends AbstractCartHandler
     protected $availableLocalizers = [];
 
     /**
-     * @param $id
+     * @param int $id
      * @throws Exception
      */
-    public function init($id = 0)
+    public function init(int $id = 0)
     {
         $this->selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
         $this->automaticExportRepository = GeneralUtility::makeInstance(AutomaticExportRepository::class);
@@ -219,10 +219,10 @@ class AutomaticExporter extends AbstractCartHandler
     }
 
     /**
-     * @param $pid
+     * @param int $pid
      * @return array
      */
-    protected function findTranslatableTables($pid)
+    protected function findTranslatableTables(int $pid): array
     {
         $translatableTables = ['pages' => $GLOBALS['LANG']->sL($GLOBALS['TCA']['pages']['ctrl']['title'])];
 

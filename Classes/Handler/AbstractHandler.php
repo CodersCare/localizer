@@ -29,10 +29,10 @@ abstract class AbstractHandler
     private $limit = 0;
 
     /**
-     * @param $id
+     * @param int $id
      * @throws Exception
      */
-    abstract public function init($id = 1);
+    abstract public function init(int $id = 1);
 
     abstract public function run();
 
@@ -46,12 +46,12 @@ abstract class AbstractHandler
     /**
      * @param int $time
      */
-    abstract public function finish($time);
+    abstract public function finish(int $time);
 
     /**
      * @param int $time
      */
-    protected function releaseAcquiredItems($time = 0)
+    protected function releaseAcquiredItems(int $time = 0)
     {
         if ($time == 0) {
             $time = time();
@@ -77,7 +77,7 @@ abstract class AbstractHandler
     /**
      * @return string
      */
-    final public function getProcessId()
+    final public function getProcessId(): string
     {
         return $this->processId;
     }
@@ -97,7 +97,7 @@ abstract class AbstractHandler
     /**
      * @param int $limit
      */
-    protected function setLimit($limit)
+    protected function setLimit(int $limit)
     {
         $this->limit = $limit;
     }
@@ -110,7 +110,7 @@ abstract class AbstractHandler
     /**
      * @return bool
      */
-    final protected function canRun()
+    final protected function canRun(): bool
     {
         return (bool)$this->run;
     }

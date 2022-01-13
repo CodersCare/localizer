@@ -15,7 +15,7 @@ class AbstractTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 {
 
     /**
-     * @var AbstractHandler
+     * @var string
      */
     protected $handlerClass;
 
@@ -29,7 +29,7 @@ class AbstractTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      * @return bool Returns TRUE on successful execution, FALSE on error
      * @throws Exception
      */
-    public function execute()
+    public function execute(): bool
     {
         /** @var AbstractHandler $handler */
         $handler = GeneralUtility::makeInstance($this->handlerClass);
