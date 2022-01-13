@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<static_languages>
+		<uid>30</uid>
+		<pid>0</pid>
+		<lg_name_en>English</lg_name_en>
+	</static_languages>
+	<static_languages>
+		<uid>37</uid>
+		<pid>0</pid>
+		<lg_name_en>French</lg_name_en>
+	</static_languages>
+	<static_languages>
+		<uid>59</uid>
+		<pid>0</pid>
+		<lg_name_en>Italian</lg_name_en>
+	</static_languages>
+</dataset>

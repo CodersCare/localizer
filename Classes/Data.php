@@ -5,6 +5,7 @@ namespace Localizationteam\Localizer;
 use Exception;
 use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\Messaging\FlashMessage;
+use Localizationteam\Localizer\Model\Repository\LocalizerSettingsRepository;
 use PDO;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -133,34 +134,28 @@ trait Data
      */
     protected function getLocalizerSettings($uid)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-            Constants::TABLE_LOCALIZER_SETTINGS
-        );
-        $row = $queryBuilder
-            ->select(
-                'uid',
-                'type',
-                'url',
-                'workflow',
-                'projectkey',
-                'username',
-                'password',
-                'project_settings',
-                'out_folder',
-                'in_folder',
-                'source_locale',
-                'target_locale',
-                'plainxmlexports'
-            )
-            ->from(Constants::TABLE_LOCALIZER_SETTINGS)
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'uid',
-                    (int)$uid
-                )
-            )
-            ->execute()
-            ->fetchAssociative();
+        /** @var LocalizerSettingsRepository $localizerSettingsRepository */
+        $localizerSettingsRepository = GeneralUtility::makeInstance(LocalizerSettingsRepository::class);
+
+        $fields = [
+            'uid',
+            'type',
+            'title',
+            'url',
+            'workflow',
+            'projectkey',
+            'username',
+            'password',
+            'project_settings',
+            'out_folder',
+            'in_folder',
+            'source_locale',
+            'target_locale',
+            'plainxmlexports',
+        ];
+
+        $row = $localizerSettingsRepository->findByUid((int)$uid, $fields);
+
         if ($row['type'] === '0' || ExtensionManagementUtility::isLoaded($row['type'])) {
             if ($row['type'] === '0') {
                 $apiClass = ApiCalls::class;

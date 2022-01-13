@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<!-- getLocalizerLanguages -->
+	<tx_localizer_language_mm>
+		<uid>1</uid>
+		<uid_local>3</uid_local>
+		<uid_foreign>30</uid_foreign>
+		<tablenames>static_languages</tablenames>
+		<ident>source</ident>
+		<source>tx_localizer_settings</source>
+	</tx_localizer_language_mm>
+	<tx_localizer_language_mm>
+		<uid>2</uid>
+		<uid_local>3</uid_local>
+		<uid_foreign>37</uid_foreign>
+		<tablenames>static_languages</tablenames>
+		<ident>target</ident>
+		<source>tx_localizer_settings</source>
+	</tx_localizer_language_mm>
+	<tx_localizer_language_mm>
+		<uid>3</uid>
+		<uid_local>3</uid_local>
+		<uid_foreign>59</uid_foreign>
+		<tablenames>static_languages</tablenames>
+		<ident>target</ident>
+		<source>tx_localizer_settings</source>
+	</tx_localizer_language_mm>
+</dataset>

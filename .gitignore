@@ -23,3 +23,8 @@ nbproject
 composer.lock
 public
 vendor
+
+# testing
+/.Build
+/Build/.phpunit.result.cache
+/var/log

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<!--findRecordsByUid-->
+	<tx_localizer_settings>
+		<uid>1</uid>
+		<pid>1</pid>
+		<type>localizer_beebox</type>
+		<title>Beebox</title>
+		<url>https://www.example.com</url>
+		<projectkey>ed7eaf29-4439-4287-b434-7753a5920d05</projectkey>
+		<username>foo</username>
+		<password>bar</password>
+		<project_settings>
+			{"sourceLocale":"en","sourceLocaleName":"English (en)","sourceLocaleRTL":false,"targetLocales":["zh-CN","zh-HK","de","it","es"],"targetLocaleNames":["Chinese (Simplified, PRC) (zh-CN)","Chinese (Traditional, Hong Kong S.A.R.) (zh-HK)","German (de)","Italian (it)","Spanish (es)"],"targetLocaleItems":[{"v":"zh-CN","t":"Chinese (Simplified, PRC) (zh-CN)"},{"v":"zh-HK","t":"Chinese (Traditional, Hong Kong S.A.R.) (zh-HK)"},{"v":"de","t":"German (de)"},{"v":"it","t":"Italian (it)"},{"v":"es","t":"Spanish (es)"}],"extensions":[".xml"]}
+		</project_settings>
+		<l10n_cfg>1</l10n_cfg>
+		<sortexports>1</sortexports>
+		<plainxmlexports>0</plainxmlexports>
+		<uid_local>0</uid_local>
+		<uid_foreign>0</uid_foreign>
+		<allow_adding_to_export>0</allow_adding_to_export>
+		<automatic_export_pages>0</automatic_export_pages>
+		<collect_pages_marked_for_export>0</collect_pages_marked_for_export>
+		<automatic_export_minimum_age>0</automatic_export_minimum_age>
+		<source_locale>0</source_locale>
+		<target_locale>2,3</target_locale>
+	</tx_localizer_settings>
+
+	<tx_localizer_settings>
+		<uid>2</uid>
+		<pid>1</pid>
+		<type>0</type>
+		<title>HotFolders</title>
+		<url>https://www.example.com</url>
+		<projectkey>ed7eaf29-4439-4287-b434-7753a5920d05</projectkey>
+		<username>foo</username>
+		<password>bar</password>
+		<project_settings>
+			{"sourceLocale":"en","sourceLocaleName":"English (en)","sourceLocaleRTL":false,"targetLocales":["zh-CN","zh-HK","de","it","es"],"targetLocaleNames":["Chinese (Simplified, PRC) (zh-CN)","Chinese (Traditional, Hong Kong S.A.R.) (zh-HK)","German (de)","Italian (it)","Spanish (es)"],"targetLocaleItems":[{"v":"zh-CN","t":"Chinese (Simplified, PRC) (zh-CN)"},{"v":"zh-HK","t":"Chinese (Traditional, Hong Kong S.A.R.) (zh-HK)"},{"v":"de","t":"German (de)"},{"v":"it","t":"Italian (it)"},{"v":"es","t":"Spanish (es)"}],"extensions":[".xml"]}
+		</project_settings>
+		<l10n_cfg>1</l10n_cfg>
+		<sortexports>1</sortexports>
+		<plainxmlexports>0</plainxmlexports>
+		<uid_local>0</uid_local>
+		<uid_foreign>0</uid_foreign>
+		<allow_adding_to_export>0</allow_adding_to_export>
+		<automatic_export_pages>0</automatic_export_pages>
+		<collect_pages_marked_for_export>0</collect_pages_marked_for_export>
+		<automatic_export_minimum_age>0</automatic_export_minimum_age>
+		<source_locale>0</source_locale>
+		<target_locale>2,3</target_locale>
+	</tx_localizer_settings>
+
+	<!-- getLocalizerLanguages -->
+	<tx_localizer_settings>
+		<uid>3</uid>
+	</tx_localizer_settings>
+</dataset>

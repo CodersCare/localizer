@@ -1,13 +1,41 @@
+# Select image from https://hub.docker.com/_/php/
+image: edbizarro/gitlab-ci-pipeline-php:7.4-alpine
+
+# Select what we should cache
+cache:
+  key: $CI_COMMIT_REF_NAME
+  paths:
+  - .Build/
+
 stages:
-  - lint
+  - build
+  - code quality
+  - test
+
+install:
+  stage: build
+  script:
+    - composer install
+
+services:
+  - mysql
+
+lint:
+  stage: code quality
+  script:
+    - composer run ci:php:lint
 
 php-cs-fixer:
-  image: composer:2.1
-  stage: lint
-  before_script:
-    - export COMPOSER_ALLOW_SUPERUSER=1
-    - export COMPOSER_CACHE_DIR=/cache/composer
-    - export COMPOSER_NO_INTERACTION=1
-    - composer req --ignore-platform-reqs --update-no-dev friendsofphp/php-cs-fixer ^3.0
+  stage: code quality
   script:
-    - ./vendor/bin/php-cs-fixer fix --dry-run
+    - composer run ci:php:php-cs-fixer:dry
+
+tests:functional:
+  stage: test
+  script:
+    - composer run ci:tests:functional
+    - ls -lah
+  artifacts:
+    reports:
+      junit: functional-test-report.xml
+      cobertura: functional-tests-coverage.xml
