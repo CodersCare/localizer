@@ -109,6 +109,7 @@ class SelectorController extends AbstractController
 
     /**
      * Initializing the module
+     * @return array
      */
     public function init(): array
     {
@@ -126,6 +127,7 @@ class SelectorController extends AbstractController
         } else {
             $this->cartId = (int)GeneralUtility::_GP('selected_cart');
         }
+        return [];
     }
 
     /**

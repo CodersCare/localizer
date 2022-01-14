@@ -76,11 +76,13 @@ class FileDownloader extends AbstractHandler
 
     /**
      * @throws \TYPO3\CMS\Core\Exception
+     * @throws Exception
      */
     public function run()
     {
         if ($this->canRun() === true) {
             foreach ($this->data as $row) {
+                DebugUtility::debug($row);
                 $localizerSettings = $this->getLocalizerSettings($row['uid_local']);
                 if ($localizerSettings === false) {
                     $this->addErrorResult(
@@ -151,12 +153,12 @@ class FileDownloader extends AbstractHandler
         foreach ($files as $fileStatus) {
             if ($fileStatus['status'] === Constants::API_TRANSLATION_STATUS_TRANSLATED) {
                 $processFiles['processFiles'][] = [
-                    'locale' => $fileStatus['locale'],
-                    'local' => $this->getLocalFilename($originalFileName, $fileStatus['locale']),
+                    'locale' => (string)$fileStatus['locale'],
+                    'local' => $this->getLocalFilename($originalFileName, (string)$fileStatus['locale']),
                     'hotfolder' => $this->getRemoteFilename($fileStatus['file'], ''),
                     'remote' => $this->getRemoteFilename(
                         $fileStatus['file'],
-                        $this->getIso2ForLocale($fileStatus['locale'], $pid)
+                        $this->getIso2ForLocale((string)$fileStatus['locale'], $pid)
                     ),
                     'remoteFilename' => $fileStatus['file'],
                 ];

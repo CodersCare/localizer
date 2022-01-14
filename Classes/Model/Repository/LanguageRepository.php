@@ -4,6 +4,7 @@ namespace Localizationteam\Localizer\Model\Repository;
 
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class LanguageRepository extends AbstractRepository
@@ -14,6 +15,7 @@ class LanguageRepository extends AbstractRepository
         $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($pid);
         $languages = $site->getAllLanguages();
 
+        DebugUtility::debug($languages);
         $filteredLanguages = array_filter($languages, function (SiteLanguage $language) use ($locale) {
             return strpos($language->getLocale(), $locale) !== false;
         });

@@ -130,6 +130,7 @@ class CartController extends AbstractController
         $this->returnUrl = GeneralUtility::sanitizeLocalUrl(GeneralUtility::_GP('returnUrl'));
         $this->cmd = GeneralUtility::_GP('cmd');
         $this->cmd_table = GeneralUtility::_GP('cmd_table');
+        return [];
     }
 
     /**
@@ -156,7 +157,6 @@ class CartController extends AbstractController
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
         $dblist->returnUrl = $this->returnUrl;
         $dblist->allFields = $this->MOD_SETTINGS['bigControlPanel'] || $this->table ? 1 : 0;
-        $dblist->localizationView = $this->MOD_SETTINGS['localization'];
         $dblist->showClipboard = 0;
         $dblist->showIcon = 0;
         $dblist->disableSingleTableView = $this->modTSconfig['properties']['disableSingleTableView'];
