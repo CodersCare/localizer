@@ -176,7 +176,7 @@ class FileSender extends AbstractHandler
      */
     protected function addDeadline(array &$row): int
     {
-        $deadline = '';
+        $deadline = 0;
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_EXPORTDATA_MM
         );

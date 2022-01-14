@@ -100,6 +100,7 @@ class SettingsController extends AbstractController
         $this->returnUrl = GeneralUtility::sanitizeLocalUrl(GeneralUtility::_GP('returnUrl'));
         $this->cmd = GeneralUtility::_GP('cmd');
         $this->cmd_table = GeneralUtility::_GP('cmd_table');
+        return [];
     }
 
     /**
@@ -129,7 +130,6 @@ class SettingsController extends AbstractController
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
         $dblist->returnUrl = $this->returnUrl;
         $dblist->allFields = $this->MOD_SETTINGS['bigControlPanel'] || $this->table ? 1 : 0;
-        $dblist->localizationView = $this->MOD_SETTINGS['localization'];
         $dblist->showClipboard = 1;
         $dblist->disableSingleTableView = $this->modTSconfig['properties']['disableSingleTableView'];
         $dblist->listOnlyInSingleTableMode = $this->modTSconfig['properties']['listOnlyInSingleTableView'];

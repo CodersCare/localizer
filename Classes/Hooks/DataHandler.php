@@ -31,14 +31,14 @@ class DataHandler
      *
      * @param string $status
      * @param string $table
-     * @param int $id
+     * @param mixed $id
      * @param array $fieldArray
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $tceMain
      */
     public function processDatamap_postProcessFieldArray(
         string $status,
         string $table,
-        int $id,
+        $id,
         array &$fieldArray,
         \TYPO3\CMS\Core\DataHandling\DataHandler &$tceMain
     ) {
@@ -51,14 +51,14 @@ class DataHandler
                 $checkArray = array_merge($currentRecord, $fieldArray);
                 if ($checkArray['type'] === 0 || $checkArray['type'] === '0') {
                     $localizerApi = new ApiCalls(
-                        $checkArray['type'],
-                        $checkArray['url'],
-                        $checkArray['workflow'],
-                        $checkArray['projectkey'],
-                        $checkArray['username'],
-                        $checkArray['password'],
-                        $checkArray['out_folder'],
-                        $checkArray['in_folder']
+                        (int)$checkArray['type'],
+                        (string)$checkArray['url'],
+                        (string)$checkArray['workflow'],
+                        (string)$checkArray['projectkey'],
+                        (string)$checkArray['username'],
+                        (string)$checkArray['password'],
+                        (string)$checkArray['out_folder'],
+                        (string)$checkArray['in_folder']
                     );
                     try {
                         $valid = $localizerApi->areSettingsValid();
