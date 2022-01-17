@@ -183,7 +183,7 @@ define(['jquery', 'bootstrap'], function ($) {
         'data-uid="' + id + '">' +
         '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-document-history-open" data-identifier="actions-document-history-open">' +
         '<span class="icon-markup"><svg class="icon-color" role="img">' +
-        '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-document-history-open"></use>' +
+        '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-history"></use>' +
         '</svg></span>' +
         '</span></a>'
       ) : '') +
@@ -228,7 +228,7 @@ define(['jquery', 'bootstrap'], function ($) {
         'data-title="Scheduled for import">' +
         '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-document-history-open" data-identifier="actions-document-history-open">' +
         '<span class="icon-markup"><svg class="icon-color" role="img">' +
-        '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-document-history-open"></use>' +
+        '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-history"></use>' +
         '</svg></span>' +
         '</span></a>' +
         '</div> ')
