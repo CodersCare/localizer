@@ -6,11 +6,13 @@ use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\File;
+use Localizationteam\Localizer\Language;
 use PDO;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\CommandUtility;
 use TYPO3\CMS\Core\Utility\DebugUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * FileImporter $COMMENT$
@@ -21,6 +23,7 @@ class FileImporter extends AbstractHandler
 {
     use Data;
     use File;
+    use Language;
 
     /**
      * @param $id
@@ -88,7 +91,7 @@ class FileImporter extends AbstractHandler
                         );
                     } else {
                         if (isset($originalResponse['files'])) {
-                            $response = $this->processImport($row['filename'], $originalResponse['files']);
+                            $response = $this->processImport($row, $originalResponse['files']);
                             $this->processResponse($row['uid'], $response);
                         } else {
                             $this->addErrorResult(
@@ -114,11 +117,12 @@ class FileImporter extends AbstractHandler
     }
 
     /**
-     * @param string $originalFileName
+     * @param array $row
      * @param array $files
      * @return array
+     * @throws Exception
      */
-    protected function processImport(string $originalFileName, array $files): array
+    protected function processImport(array $row, array $files): array
     {
         $response = [];
         foreach ($files as $fileStatus) {
@@ -126,7 +130,8 @@ class FileImporter extends AbstractHandler
             if (file_exists($instructionXmlPath)) {
                 unlink($instructionXmlPath);
             }
-            $fileNameAndPath = $this->getLocalFilename($originalFileName, $fileStatus['locale']);
+            $iso2 = $this->getIso2ForLocale($row);
+            $fileNameAndPath = $this->getLocalFilename($row['filename'], $iso2);
             $context = Environment::getContext()->__toString();
             $command = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
                 CommandUtility::getCommand('php') . ' ' .
@@ -141,8 +146,8 @@ class FileImporter extends AbstractHandler
                 'http_status_code' => $statusCode,
                 'response' => [
                     'action' => $action,
-                    'file' => $originalFileName,
-                    'locale' => $fileStatus['locale'],
+                    'file' => $row['filename'],
+                    'locale' => $iso2,
                 ],
             ];
         }
