@@ -6,7 +6,6 @@ use Exception;
 use Localizationteam\Localizer\Model\Repository\LanguageRepository;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -17,15 +16,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 trait Language
 {
     /**
+     * @param array $row
+     * @return string
      * @throws Exception
      */
-    protected function getIso2ForLocale(string $locale, int $pid = 1): string
+    protected function getIso2ForLocale(array $row): string
     {
+        /** @var LanguageRepository $languageRepository */
         $languageRepository = GeneralUtility::makeInstance(LanguageRepository::class);
-        $iso2 = $languageRepository->getIsoTwoCodeByLocale($locale, $pid);
+        $iso2 = $languageRepository->getIsoTwoCodeByTargetLocaleId($row['target_locale'], $row['pid']);
 
         if ($iso2 === '') {
-            throw new Exception($locale . ' can not be found in TYPO3 SiteConfiguration". Please inform your admin!');
+            throw new Exception('ID ' . $row['target_locale'] . ' can not be found in TYPO3 SiteConfiguration or is missing the hreflang configuration. Please inform your admin!');
         }
 
         return $iso2;

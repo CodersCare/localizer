@@ -134,8 +134,7 @@ define(['jquery', 'bootstrap'], function ($) {
     var previewOnClick = ''
     var previewTooltip = ''
     if (values.status === 70) {
-      //previewOnClick = "window.open('/uploads/tx_l10nmgr/jobs/in/" + values.locale + "/" + values.filename + "', 'Import File', 'width=1024,height=768'); window.open('/uploads/tx_l10nmgr/jobs/out/" + values.filename + "', 'Export File', 'width=1024,height=768'); return false;";
-      previewOnClick = 'window.open(\'/uploads/tx_l10nmgr/jobs/in/' + values.filename + '\', \'Import File\', \'width=1024,height=768\'); window.open(\'/uploads/tx_l10nmgr/jobs/out/' + values.filename + '\', \'Export File\', \'width=1024,height=768\'); return false;'
+      previewOnClick = 'window.open(\'/uploads/tx_l10nmgr/jobs/in/' + values.locale + '/' + values.filename + '\', \'Import File\', \'width=1024,height=768\'); window.open(\'/uploads/tx_l10nmgr/jobs/out/' + values.filename + '\', \'Export File\', \'width=1024,height=768\'); return false;'
       previewTooltip = 'Click twice to preview both files'
     } else {
       previewOnClick = 'window.open(\'/uploads/tx_l10nmgr/jobs/out/' + values.filename + '\', \'Export File\', \'width=1024,height=768\'); return false;'

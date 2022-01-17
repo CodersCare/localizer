@@ -82,7 +82,6 @@ class FileDownloader extends AbstractHandler
     {
         if ($this->canRun() === true) {
             foreach ($this->data as $row) {
-                DebugUtility::debug($row);
                 $localizerSettings = $this->getLocalizerSettings($row['uid_local']);
                 if ($localizerSettings === false) {
                     $this->addErrorResult(
@@ -108,7 +107,7 @@ class FileDownloader extends AbstractHandler
                                     $localizerSettings,
                                     $row['filename'],
                                     $originalResponse['files'],
-                                    $row['pid']
+                                    $row
                                 );
                                 $this->processResponse($row['uid'], $response);
                             } else {
@@ -139,7 +138,7 @@ class FileDownloader extends AbstractHandler
      * @param array $localizerSettings
      * @param string $originalFileName
      * @param array $files
-     * @param int $pid
+     * @param array $row
      * @return array
      * @throws Exception
      */
@@ -147,19 +146,17 @@ class FileDownloader extends AbstractHandler
         array $localizerSettings,
         string $originalFileName,
         array $files,
-        int $pid = 1
+        array $row
     ): array {
         $processFiles = [];
+        $iso2 = $this->getIso2ForLocale($row);
         foreach ($files as $fileStatus) {
             if ($fileStatus['status'] === Constants::API_TRANSLATION_STATUS_TRANSLATED) {
                 $processFiles['processFiles'][] = [
-                    'locale' => (string)$fileStatus['locale'],
-                    'local' => $this->getLocalFilename($originalFileName, (string)$fileStatus['locale']),
+                    'locale' => $iso2,
+                    'local' => $this->getLocalFilename($originalFileName, $iso2),
                     'hotfolder' => $this->getRemoteFilename($fileStatus['file'], ''),
-                    'remote' => $this->getRemoteFilename(
-                        $fileStatus['file'],
-                        $this->getIso2ForLocale((string)$fileStatus['locale'], $pid)
-                    ),
+                    'remote' => $this->getRemoteFilename($fileStatus['file'], $iso2),
                     'remoteFilename' => $fileStatus['file'],
                 ];
             }
