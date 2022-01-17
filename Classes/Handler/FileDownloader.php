@@ -160,7 +160,6 @@ class FileDownloader extends AbstractHandler
                     'remoteFilename' => $fileStatus['file'],
                 ];
             }
-            //fixme:errorhandling
         }
         $configuration = array_merge(
             $localizerSettings,
