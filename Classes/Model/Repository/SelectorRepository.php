@@ -25,7 +25,10 @@ class SelectorRepository extends AbstractRepository
             ->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
-        $count = $queryBuilder->count('*')->from($table)->where($queryBuilder->expr()->eq('pid', $pid))->execute()->fetchOne();
+        $count = $queryBuilder->count('*')->from($table)->where($queryBuilder->expr()->eq(
+            'pid',
+            $pid
+        ))->execute()->fetchOne();
 
         return $count > 0;
     }
@@ -717,7 +720,10 @@ class SelectorRepository extends AbstractRepository
             $records[$table] = [];
             $checkedRecords = [];
             while ($record = $statement->fetchAssociative()) {
-                if ($record['localizer_status'] && $record['outdated'] > $record['last_action'] && GeneralUtility::inList($record['changed'], 0)) {
+                if ($record['localizer_status'] && $record['outdated'] > $record['last_action'] && GeneralUtility::inList(
+                    $record['changed'],
+                    0
+                )) {
                     $record['localizer_status'] = 71;
                 }
                 $identifier = md5($table . '.' . $record['uid'] . '.' . $record['localizer_language']);

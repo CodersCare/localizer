@@ -223,7 +223,10 @@ class BaseModule
         if (is_array($mergeArray)) {
             foreach ($mergeArray as $k => $v) {
                 $currentWorkspace = $this->getBackendUser()->workspace;
-                $wsOnline = ((string)$v['ws'] === '' || $currentWorkspace === 0 && GeneralUtility::inList($v['ws'], 'online'));
+                $wsOnline = ((string)$v['ws'] === '' || $currentWorkspace === 0 && GeneralUtility::inList(
+                    $v['ws'],
+                    'online'
+                ));
                 $wsOffline = $currentWorkspace === -1 && GeneralUtility::inList($v['ws'], 'offline');
                 $wsCustom = $currentWorkspace > 0 && GeneralUtility::inList($v['ws'], 'custom');
                 if ($wsOnline || $wsOffline || $wsCustom) {
