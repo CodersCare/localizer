@@ -51,7 +51,7 @@ class DataHandler
                 $checkArray = array_merge($currentRecord, $fieldArray);
                 if ($checkArray['type'] === 0 || $checkArray['type'] === '0') {
                     $localizerApi = new ApiCalls(
-                        (int)$checkArray['type'],
+                        (string)$checkArray['type'],
                         (string)$checkArray['url'],
                         (string)$checkArray['workflow'],
                         (string)$checkArray['projectkey'],
