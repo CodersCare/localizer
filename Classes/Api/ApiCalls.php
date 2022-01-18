@@ -21,7 +21,7 @@ class ApiCalls
     use BackendUser;
 
     /**
-     * @var int
+     * @var string
      */
     public $type;
 
@@ -126,7 +126,7 @@ class ApiCalls
     protected $lastError = '';
 
     /**
-     * @param int $type
+     * @param string $type
      * @param string $url
      * @param string $workflow
      * @param string $projectKey
@@ -137,7 +137,7 @@ class ApiCalls
      * @param bool $plainXmlExports
      */
     public function __construct(
-        int $type,
+        string $type,
         string $url = '',
         string $workflow = '',
         string $projectKey = '',
