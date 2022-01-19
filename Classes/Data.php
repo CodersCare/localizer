@@ -226,7 +226,7 @@ trait Data
                         'username' => $row['username'],
                         'password' => $row['password'],
                         'workflow' => $row['workflow'],
-                        'source' => $sourceLocale['lg_collate_locale'],
+                        'source' => str_replace('_', '-', $sourceLocale['lg_collate_locale']),
                         'plainxmlexports' => (bool)$row['plainxmlexports'],
                     ],
                 ];
