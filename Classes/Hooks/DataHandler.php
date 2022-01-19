@@ -7,6 +7,7 @@ use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\BackendUser;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Language;
+use Localizationteam\Localizer\Model\Repository\LanguageRepository;
 use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -133,7 +134,8 @@ class DataHandler
     protected function getAllTargetUids(int $settingsId): array
     {
         $originalValues = BackendUtility::getRecord(Constants::TABLE_EXPORTDATA_MM, $settingsId);
-        return $this->getAllTargetLanguageUids($originalValues['uid_local'], Constants::TABLE_LOCALIZER_SETTINGS);
+        $languageRepository = GeneralUtility::makeInstance(LanguageRepository::class);
+        return $languageRepository->getAllTargetLanguageUids($originalValues['uid_local'], Constants::TABLE_LOCALIZER_SETTINGS);
     }
 
     /**

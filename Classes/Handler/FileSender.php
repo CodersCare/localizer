@@ -6,6 +6,7 @@ use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
+use Localizationteam\Localizer\Model\Repository\LanguageRepository;
 use Localizationteam\Localizer\Runner\SendFile;
 use PDO;
 use TYPO3\CMS\Core\Core\Environment;
@@ -117,12 +118,14 @@ class FileSender extends AbstractHandler
                         }
                         $translateAll = $this->translateAll($row);
                         if ($translateAll === false) {
-                            $targetLocalesUids = $this->getAllTargetLanguageUids(
+                            /** @var LanguageRepository $languageRepository */
+                            $languageRepository = GeneralUtility::makeInstance(LanguageRepository::class);
+                            $targetLocalesUids = $languageRepository->getAllTargetLanguageUids(
                                 $row['uid'],
                                 Constants::TABLE_EXPORTDATA_MM
                             );
                             $additionalConfiguration['targetLocales'] =
-                                $this->getStaticLanguagesCollateLocale($targetLocalesUids, true);
+                                $languageRepository->getStaticLanguagesCollateLocale($targetLocalesUids, true);
                         }
                         $configuration = array_merge(
                             (array)$localizerSettings,

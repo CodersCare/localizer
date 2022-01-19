@@ -28,7 +28,7 @@ class LanguageRepository extends AbstractRepository
      * @param string $table
      * @return array
      */
-    protected function getAllTargetLanguageUids(int $uidLocal, string $table): array
+    public function getAllTargetLanguageUids(int $uidLocal, string $table): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_LOCALIZER_LANGUAGE_MM
@@ -72,7 +72,7 @@ class LanguageRepository extends AbstractRepository
      * @param bool $fixUnderLine
      * @return array
      */
-    protected function getStaticLanguagesCollateLocale(array $uidList, bool $fixUnderLine = false): array
+    public function getStaticLanguagesCollateLocale(array $uidList, bool $fixUnderLine = false): array
     {
         $collateLocale = [];
         if (count($uidList) > 0) {
@@ -115,7 +115,7 @@ class LanguageRepository extends AbstractRepository
      * @param int $uid
      * @return int
      */
-    protected function getSystemLanguageIdByTargetLanguage(int $uid): int
+    public function getSystemLanguageIdByTargetLanguage(int $uid): int
     {
         $systemLanguageId = 0;
         if ($uid > 0) {
