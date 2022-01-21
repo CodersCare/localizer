@@ -5,6 +5,7 @@ namespace Localizationteam\Localizer\Handler;
 use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
+use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Runner\RequestStatus;
 use PDO;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -19,6 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class StatusRequester extends AbstractHandler
 {
     use Data;
+    use Language;
 
     /**
      * @param $id
@@ -95,6 +97,7 @@ class StatusRequester extends AbstractHandler
                         [
                             'uid' => $row['uid'],
                             'file' => $row['filename'],
+                            'target' => $this->getIso2ForLocale($row),
                         ]
                     );
                     /** @var RequestStatus $runner */
