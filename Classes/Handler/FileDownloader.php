@@ -191,7 +191,11 @@ class FileDownloader extends AbstractHandler
     {
         $success = true;
         foreach ($responses as $response) {
-            if ($response['http_status_code'] > 399) {
+            if (!is_array($response)) {
+                $success = false;
+                continue;
+            }
+            if ($response['http_status_code'] && $response['http_status_code'] > 399) {
                 DebugUtility::debug($response, __METHOD__ . ':' . __LINE__);
                 $success = false;
             }

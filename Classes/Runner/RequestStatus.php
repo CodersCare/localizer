@@ -116,7 +116,8 @@ class RequestStatus
             default:
                 try {
                     $this->response = $this->api->getWorkProgress(
-                        (array)$this->path
+                        (array)$this->path,
+                        $configuration['target']
                     );
                     $this->response['http_status_code'] = '200';
                 } catch (Exception $e) {
