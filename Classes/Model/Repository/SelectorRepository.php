@@ -310,7 +310,7 @@ class SelectorRepository extends AbstractRepository
                         PDO::PARAM_INT,
                         PDO::PARAM_STR,
                         PDO::PARAM_INT,
-                        PDO::PARAM_INT,
+                        PDO::PARAM_STR,
                         PDO::PARAM_INT,
                         PDO::PARAM_STR,
                         PDO::PARAM_INT,
