@@ -35,7 +35,7 @@ class LanguageRepository extends AbstractRepository
         );
         $queryBuilder->getRestrictions()
             ->removeAll();
-        $rows = $queryBuilder
+        $result = $queryBuilder
             ->select('uid_foreign')
             ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
             ->where(
@@ -58,8 +58,8 @@ class LanguageRepository extends AbstractRepository
                     )
                 )
             )
-            ->execute()
-            ->fetchAllAssociative();
+            ->execute();
+        $rows = $this->fetchAllAssociative($result);
         $languageUids = [];
         if (!empty($rows)) {
             $languageUids = array_column($rows, 'uid_foreign');
@@ -87,7 +87,7 @@ class LanguageRepository extends AbstractRepository
             );
             $queryBuilder->getRestrictions()
                 ->removeAll();
-            $rows = $queryBuilder
+            $result = $queryBuilder
                 ->selectLiteral($field)
                 ->from(Constants::TABLE_STATIC_LANGUAGES)
                 ->where(
@@ -96,8 +96,8 @@ class LanguageRepository extends AbstractRepository
                         $queryBuilder->createNamedParameter($uidList, Connection::PARAM_INT_ARRAY)
                     )
                 )
-                ->execute()
-                ->fetchAllAssociative();
+                ->execute();
+            $rows = $this->fetchAllAssociative($result);
             if (!empty($rows)) {
                 $locale = [];
                 foreach ($rows as $row) {
@@ -124,7 +124,7 @@ class LanguageRepository extends AbstractRepository
             );
             $queryBuilder->getRestrictions()
                 ->removeAll();
-            $systemLanguageId = $queryBuilder
+            $result = $queryBuilder
                 ->select('uid')
                 ->from(Constants::TABLE_SYS_LANGUAGE)
                 ->where(
@@ -133,8 +133,8 @@ class LanguageRepository extends AbstractRepository
                         $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
                     )
                 )
-                ->execute()
-                ->fetchColumn();
+                ->execute();
+            $systemLanguageId = $this->fetchOne($result);
         }
         return $systemLanguageId;
     }

@@ -78,7 +78,7 @@ trait AddFileToMatrix
         );
         $queryBuilder->getRestrictions()
             ->removeAll();
-        $localizerLanguageRows = $queryBuilder
+        $result = $queryBuilder
             ->select('uid_foreign', 'tablenames', 'ident', 'sorting')
             ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
             ->where(
@@ -103,8 +103,8 @@ trait AddFileToMatrix
                     )
                 )
             )
-            ->execute()
-            ->fetchAllAssociative();
+            ->execute();
+        $localizerLanguageRows = $this->fetchAllAssociative($result);
         if (count($localizerLanguageRows) > 0) {
             foreach ($localizerLanguageRows as $lRow) {
                 $lRow['uid_local'] = $uid;
@@ -138,7 +138,7 @@ trait AddFileToMatrix
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_language');
         $queryBuilder->getRestrictions()
             ->removeAll();
-        $row = $queryBuilder
+        $result = $queryBuilder
             ->select('static_lang_isocode')
             ->from('sys_language')
             ->where(
@@ -147,8 +147,8 @@ trait AddFileToMatrix
                     (int)$sysLanguageId
                 )
             )
-            ->execute()
-            ->fetchAssociative();
+            ->execute();
+        $row = $this->fetchAssociative($result);
         if (!empty($row)) {
             return $row['static_lang_isocode'];
         }

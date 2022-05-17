@@ -236,7 +236,7 @@ class AutomaticExporter extends AbstractCartHandler
                 // $recordExists = $selectorRepository->findRecordByPid($pid, $table);
 
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
-                $recordExists = $queryBuilder
+                $result = $queryBuilder
                     ->select('*')
                     ->from($table)
                     ->where(
@@ -245,8 +245,8 @@ class AutomaticExporter extends AbstractCartHandler
                             (int)$pid
                         )
                     )
-                    ->execute()
-                    ->fetchColumn(0);
+                    ->execute();
+                $recordExists = $this->fetchOne($result);
                 if (!empty($recordExists)) {
                     $translatableTables[$table] = $GLOBALS['LANG']->sL($GLOBALS['TCA'][$table]['ctrl']['title']);
                 }
