@@ -3,6 +3,7 @@
 namespace Localizationteam\Localizer\Backend;
 
 use Localizationteam\Localizer\Constants;
+use Localizationteam\Localizer\Data;
 use PDO;
 use TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -15,7 +16,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Cart
 {
-    protected static $data = [];
+    use Data;
 
     /**
      * @param array $params
@@ -29,7 +30,7 @@ class Cart
             );
             $queryBuilder->getRestrictions()
                 ->removeAll();
-            $resource = $queryBuilder
+            $result = $queryBuilder
                 ->select('uid_foreign AS uid')
                 ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
                 ->where(
@@ -54,9 +55,9 @@ class Cart
                 )
                 ->execute();
 
-            if ($resource->rowCount() > 0) {
+            if ($result->rowCount() > 0) {
                 $keys = [];
-                while ($row = $resource->fetchAssociative()) {
+                while ($row = $this->fetchAssociative($result)) {
                     $keys[$row['uid']] = $row['uid'];
                 }
 

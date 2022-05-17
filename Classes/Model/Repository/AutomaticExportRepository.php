@@ -21,7 +21,7 @@ class AutomaticExportRepository extends AbstractRepository
     public function loadUnfinishedButSentCarts(int $localizerId): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
-        return $queryBuilder
+        $result = $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_LOCALIZER_CART)
             ->where(
@@ -44,8 +44,8 @@ class AutomaticExportRepository extends AbstractRepository
                     )
                 )
             )
-            ->execute()
-            ->fetchAllAssociative();
+            ->execute();
+        return $this->fetchAllAssociative($result);
     }
 
     /**
@@ -86,7 +86,8 @@ class AutomaticExportRepository extends AbstractRepository
                 )
             );
         }
-        $pages = $queryBuilder->execute()->fetchAllAssociative();
+        $result = $queryBuilder->execute();
+        $pages = $this->fetchAllAssociative($result);
         $pagesConfiguredForAutomaticExport = [];
         if (!empty($pages)) {
             foreach ($pages as $page) {
@@ -107,7 +108,7 @@ class AutomaticExportRepository extends AbstractRepository
     public function loadPagesAddedToSpecificAutomaticExport(int $localizer, int $age, array $excludedPages): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable('pages');
-        $pages = $queryBuilder
+        $result = $queryBuilder
             ->select('pages.*')
             ->from('pages')
             ->leftJoin(
@@ -134,8 +135,8 @@ class AutomaticExportRepository extends AbstractRepository
                     $queryBuilder->expr()->isNotNull('mm.uid')
                 )
             )
-            ->execute()
-            ->fetchAllAssociative();
+            ->execute();
+        $pages = $this->fetchAllAssociative($result);
         $pagesAddedToSpecificAutomaticExport = [];
         if (!empty($pages)) {
             foreach ($pages as $page) {

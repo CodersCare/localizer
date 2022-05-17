@@ -6,6 +6,7 @@ use Exception;
 use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\BackendUser;
 use Localizationteam\Localizer\Constants;
+use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\LanguageRepository;
 use PDO;
@@ -25,6 +26,7 @@ class DataHandler
 {
     use BackendUser;
     use Language;
+    use Data;
 
     /**
      * hook to post process TCA - Field Array
@@ -173,7 +175,7 @@ class DataHandler
                 $noLanguage = 1;
                 $languageValues = GeneralUtility::intExplode(',', $languageList, true);
             }
-            $records = $queryBuilder
+            $result = $queryBuilder
                 ->select('*')
                 ->from('tx_l10nmgr_index')
                 ->where(
@@ -202,8 +204,8 @@ class DataHandler
                         )
                     )
                 )
-                ->execute()
-                ->fetchAllAssociative();
+                ->execute();
+            $records = $this->fetchAllAssociative($result);
         } else {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
                 'tx_l10nmgr_index'
@@ -217,7 +219,7 @@ class DataHandler
                 $noLanguage = 1;
                 $languageValues = GeneralUtility::intExplode(',', $languageList, true);
             }
-            $records = $queryBuilder
+            $result = $queryBuilder
                 ->select('*')
                 ->from('tx_l10nmgr_index')
                 ->where(
@@ -246,8 +248,8 @@ class DataHandler
                         )
                     )
                 )
-                ->execute()
-                ->fetchAllAssociative();
+                ->execute();
+            $records = $this->fetchAllAssociative($result);
         }
         $flags = [];
         if (is_array($records)) {

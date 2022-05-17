@@ -271,7 +271,7 @@ class FileExporter extends AbstractCartHandler
         );
         $queryBuilder->getRestrictions()
             ->removeAll();
-        $rows = $queryBuilder
+        $result = $queryBuilder
             ->select('uid', 'translation_lang', 'filename')
             ->from(Constants::TABLE_L10NMGR_EXPORTDATA)
             ->where(
@@ -280,8 +280,8 @@ class FileExporter extends AbstractCartHandler
                     (int)$configurationId
                 )
             )
-            ->execute()
-            ->fetchAllAssociative();
+            ->execute();
+        $rows = $this->fetchAllAssociative($result);
         if (empty($rows) === false) {
             foreach ($rows as $row) {
                 $this->addFileToMatrix(

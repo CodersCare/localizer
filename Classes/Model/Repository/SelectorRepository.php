@@ -25,10 +25,11 @@ class SelectorRepository extends AbstractRepository
             ->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
-        $count = $queryBuilder->count('*')->from($table)->where($queryBuilder->expr()->eq(
+        $result = $queryBuilder->count('*')->from($table)->where($queryBuilder->expr()->eq(
             'pid',
             $pid
-        ))->execute()->fetchOne();
+        ))->execute();
+        $count = $this->fetchOne($result);
 
         return $count > 0;
     }
@@ -42,14 +43,14 @@ class SelectorRepository extends AbstractRepository
             ->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
-        return $queryBuilder
+        $result = $queryBuilder
             ->select('*')
             ->from($table)
             ->where(
                 $queryBuilder->expr()->eq('pid', $pid)
             )
-            ->execute()
-            ->fetchAssociative();
+            ->execute();
+        return $this->fetchAssociative($result);
     }
 
     /**
@@ -248,7 +249,7 @@ class SelectorRepository extends AbstractRepository
         $pageIds = implode(',', GeneralUtility::intExplode(',', implode(',', array_keys($pageIds))));
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
         $queryBuilder->getRestrictions()->removeAll();
-        $triples = $queryBuilder
+        $result = $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_CARTDATA_MM)
             ->where(
@@ -263,8 +264,8 @@ class SelectorRepository extends AbstractRepository
                     )
                 )
             )
-            ->execute()
-            ->fetchAllAssociative();
+            ->execute();
+        $triples = $this->fetchAllAssociative($result);
         $storedTriples = [];
         if (!empty($triples)) {
             foreach ($triples as $triple) {
@@ -411,7 +412,7 @@ class SelectorRepository extends AbstractRepository
                 )
                 ->execute();
             $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_L10NMGR_MM);
-            $countConfigurations = $queryBuilder
+            $result = $queryBuilder
                 ->count('*')
                 ->from(Constants::TABLE_LOCALIZER_L10NMGR_MM)
                 ->where(
@@ -420,8 +421,8 @@ class SelectorRepository extends AbstractRepository
                         $localizerId
                     )
                 )
-                ->execute()
-                ->fetchColumn(0);
+                ->execute();
+            $countConfigurations = $this->fetchOne($result);
             self::getConnectionPool()
                 ->getConnectionForTable(Constants::TABLE_LOCALIZER_SETTINGS)
                 ->update(
@@ -715,11 +716,11 @@ class SelectorRepository extends AbstractRepository
                 }
             }
 
-            $statement = $queryBuilder->execute();
+            $result = $queryBuilder->execute();
 
             $records[$table] = [];
             $checkedRecords = [];
-            while ($record = $statement->fetchAssociative()) {
+            while ($record = $this->fetchAssociative($result)) {
                 if ($record['localizer_status'] && $record['outdated'] > $record['last_action'] && GeneralUtility::inList(
                     $record['changed'],
                     0

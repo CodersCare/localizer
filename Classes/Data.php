@@ -2,6 +2,7 @@
 
 namespace Localizationteam\Localizer;
 
+use Doctrine\DBAL\Driver\Statement;
 use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\Messaging\FlashMessage;
 use Localizationteam\Localizer\Model\Repository\LocalizerSettingsRepository;
@@ -56,7 +57,7 @@ trait Data
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_EXPORTDATA_MM
         );
-        $this->data = $queryBuilder
+        $result = $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_EXPORTDATA_MM)
             ->where(
@@ -65,8 +66,8 @@ trait Data
                     $queryBuilder->createNamedParameter($this->getProcessId(), PDO::PARAM_STR)
                 )
             )
-            ->execute()
-            ->fetchAllAssociative();
+            ->execute();
+        $this->data = $this->fetchAllAssociative($result);
     }
 
     protected function loadCart()
@@ -74,7 +75,7 @@ trait Data
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_LOCALIZER_CART
         );
-        $this->data = $queryBuilder
+        $result = $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_LOCALIZER_CART)
             ->where(
@@ -83,8 +84,8 @@ trait Data
                     $queryBuilder->createNamedParameter($this->getProcessId(), PDO::PARAM_STR)
                 )
             )
-            ->execute()
-            ->fetchAllAssociative();
+            ->execute();
+        $this->data = $this->fetchAllAssociative($result);
     }
 
     /**
@@ -180,7 +181,7 @@ trait Data
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
                     Constants::TABLE_LOCALIZER_LANGUAGE_MM
                 );
-                $sourceLocale = $queryBuilder
+                $result = $queryBuilder
                     ->select('*')
                     ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
                     ->leftJoin(
@@ -212,8 +213,8 @@ trait Data
                             )
                         )
                     )
-                    ->execute()
-                    ->fetchAssociative();
+                    ->execute();
+                $sourceLocale = $this->fetchAssociative($result);
                 $this->apiPool[$uid] = [
                     'api' => $api,
                     'settings' => [
@@ -294,5 +295,41 @@ trait Data
                 $queryBuilder->execute();
             }
         }
+    }
+
+    /**
+     * @param $result Statement|\Doctrine\DBAL\Driver\ResultStatement|int
+     * @return mixed
+     */
+    public function fetchOne($result)
+    {
+        if (method_exists($result, 'fetchOne')) {
+            return $result->fetchOne();
+        }
+        return $result->fetchColumn();
+    }
+
+    /**
+     * @param $result Statement|\Doctrine\DBAL\Driver\ResultStatement|int
+     * @return mixed
+     */
+    public function fetchAssociative($result)
+    {
+        if (method_exists($result, 'fetchAssociative')) {
+            return $result->fetchAssociative();
+        }
+        return $result->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @param $result Statement|\Doctrine\DBAL\Driver\ResultStatement|int
+     * @return mixed
+     */
+    public function fetchAllAssociative($result)
+    {
+        if (method_exists($result, 'fetchAllAssociative')) {
+            return $result->fetchAllAssociative();
+        }
+        return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 }

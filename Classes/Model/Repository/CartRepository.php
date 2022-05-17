@@ -20,7 +20,7 @@ class CartRepository extends AbstractRepository
     public function loadAvailableUsers(): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_BACKEND_USERS);
-        $users = $queryBuilder
+        $result = $queryBuilder
             ->select(Constants::TABLE_BACKEND_USERS . '.*')
             ->from(Constants::TABLE_BACKEND_USERS)
             ->leftJoin(
@@ -60,8 +60,8 @@ class CartRepository extends AbstractRepository
             ->addOrderBy(
                 Constants::TABLE_BACKEND_USERS . '.username'
             )
-            ->execute()
-            ->fetchAllAssociative();
+            ->execute();
+        $users = $this->fetchAllAssociative($result);
         $availableUsers = [];
         if (!empty($users)) {
             foreach ($users as $user) {
@@ -109,7 +109,8 @@ class CartRepository extends AbstractRepository
                 )
             );
         }
-        $carts = $queryBuilder->execute()->fetchAllAssociative();
+        $result = $queryBuilder->execute();
+        $carts = $this->fetchAllAssociative($result);
         $availableCarts = [];
         if (!empty($carts)) {
             foreach ($carts as $cart) {
@@ -119,7 +120,7 @@ class CartRepository extends AbstractRepository
         if (!empty($availableCarts)) {
             foreach ($availableCarts as $cartId => &$cart) {
                 $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
-                $exportData = $queryBuilder
+                $result = $queryBuilder
                     ->select(
                         Constants::TABLE_EXPORTDATA_MM . '.uid',
                         Constants::TABLE_EXPORTDATA_MM . '.uid_local',
@@ -173,8 +174,8 @@ class CartRepository extends AbstractRepository
                     ->orderBy(
                         Constants::TABLE_EXPORTDATA_MM . '.status'
                     )
-                    ->execute()
-                    ->fetchAllAssociative();
+                    ->execute();
+                $exportData = $this->fetchAllAssociative($result);
                 $cart['exportData'] = [];
                 if (!empty($exportData)) {
                     foreach ($exportData as $data) {

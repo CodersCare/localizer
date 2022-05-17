@@ -38,4 +38,3 @@ tests:functional:
   artifacts:
     reports:
       junit: functional-test-report.xml
-      cobertura: functional-tests-coverage.xml

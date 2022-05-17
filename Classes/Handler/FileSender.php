@@ -183,7 +183,7 @@ class FileSender extends AbstractHandler
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_EXPORTDATA_MM
         );
-        $carts = $queryBuilder
+        $result = $queryBuilder
             ->selectLiteral(
                 'COALESCE (
                 NULLIF(' . Constants::TABLE_EXPORTDATA_MM . '.deadline, 0), ' .
@@ -205,8 +205,8 @@ class FileSender extends AbstractHandler
                     (int)$row['uid']
                 )
             )
-            ->execute()
-            ->fetchAssociative();
+            ->execute();
+        $carts = $this->fetchAssociative($result);
 
         if (!empty($carts['deadline'])) {
             $deadline = (int)$carts['deadline'];

@@ -16,7 +16,8 @@ class LocalizerSettingsRepository extends AbstractRepository
     public function findByUid(int $uid, array $fields = ['*']): array
     {
         $connection = self::getConnectionForTable(Constants::TABLE_LOCALIZER_SETTINGS);
-        return $connection->select($fields, Constants::TABLE_LOCALIZER_SETTINGS, ['uid' => $uid])->fetchAssociative();
+        $result = $connection->select($fields, Constants::TABLE_LOCALIZER_SETTINGS, ['uid' => $uid]);
+        return $this->fetchAssociative($result);
     }
 
     public static function getConnectionForTable($table): Connection
@@ -39,7 +40,8 @@ class LocalizerSettingsRepository extends AbstractRepository
     public function findAll(): array
     {
         $connection = self::getConnectionForTable(Constants::TABLE_LOCALIZER_SETTINGS);
-        return $connection->select(['*'], Constants::TABLE_LOCALIZER_SETTINGS)->fetchAllAssociative();
+        $result = $connection->select(['*'], Constants::TABLE_LOCALIZER_SETTINGS);
+        return $this->fetchAllAssociative($result);
     }
 
     /**
@@ -51,7 +53,7 @@ class LocalizerSettingsRepository extends AbstractRepository
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
         $queryBuilder->getRestrictions()->removeAll();
-        return $queryBuilder
+        $result = $queryBuilder
             ->selectLiteral('MAX(sourceLanguage.uid) source, GROUP_CONCAT(targetLanguage.uid) target')
             ->from(Constants::TABLE_LOCALIZER_SETTINGS, 'settings')
             ->leftJoin(
@@ -125,7 +127,7 @@ class LocalizerSettingsRepository extends AbstractRepository
                 )
             )
             ->groupBy('settings.uid')
-            ->execute()
-            ->fetchAssociative();
+            ->execute();
+        return $this->fetchAssociative($result);
     }
 }
