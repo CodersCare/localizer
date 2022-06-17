@@ -135,6 +135,10 @@ return [
                         $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_IMPORTED,
                         \Localizationteam\Localizer\Constants::STATUS_CART_FILE_IMPORTED,
                     ],
+                    [
+                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_SUCCESS_REPORTED,
+                        \Localizationteam\Localizer\Constants::STATUS_CART_SUCCESS_REPORTED,
+                    ],
                     [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.100', '100'],
                     [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-1', '-1'],
                     [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-900', '-900'],
@@ -187,6 +191,10 @@ return [
                         $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_IMPORTED,
                         \Localizationteam\Localizer\Constants::STATUS_CART_FILE_IMPORTED,
                     ],
+                    [
+                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_SUCCESS_REPORTED,
+                        \Localizationteam\Localizer\Constants::STATUS_CART_SUCCESS_REPORTED,
+                    ],
                     [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.100', '100'],
                     [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-1', '-1'],
                     [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-900', '-900'],
@@ -225,6 +233,10 @@ return [
                     [
                         $l10n . 'tx_localizer_settings_l10n_exportdata_mm.action.I.' . \Localizationteam\Localizer\Constants::ACTION_IMPORT_FILE,
                         \Localizationteam\Localizer\Constants::ACTION_IMPORT_FILE,
+                    ],
+                    [
+                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.action.I.' . \Localizationteam\Localizer\Constants::ACTION_REPORT_SUCCESS,
+                        \Localizationteam\Localizer\Constants::ACTION_REPORT_SUCCESS,
                     ],
                 ],
                 'size' => 1,

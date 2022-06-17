@@ -171,7 +171,7 @@ class FileImporter extends AbstractHandler
             $this->addSuccessResult(
                 $uid,
                 Constants::STATUS_CART_FILE_IMPORTED,
-                0
+                Constants::ACTION_REPORT_SUCCESS
             );
         } else {
             $this->addErrorResult(

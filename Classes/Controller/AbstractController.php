@@ -152,6 +152,7 @@ abstract class AbstractController extends BaseModule
             '70' => $this->legend['50'],
             '71' => $this->legend['10'],
             '80' => $this->legend['50'],
+            '90' => $this->legend['50'],
         ];
 
         if (!empty($this->localizerId) && !empty($this->availableLocalizers[$this->localizerId])) {

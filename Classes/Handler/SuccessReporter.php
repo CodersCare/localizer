@@ -6,18 +6,18 @@ use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
-use Localizationteam\Localizer\Runner\RequestStatus;
+use Localizationteam\Localizer\Runner\ReportSuccess;
 use PDO;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * StatusRequester takes care to request the translation status for file(s) from Localizer
+ * SuccessReporter takes care to report back a successful import of a translation to the remote server
  *
- * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
+ * @author      Jo Hasenau<jh@cybercraft.de>
  */
-class StatusRequester extends AbstractHandler
+class SuccessReporter extends AbstractHandler
 {
     use Data;
     use Language;
@@ -49,15 +49,15 @@ class StatusRequester extends AbstractHandler
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->gte(
                         'status',
-                        Constants::HANDLER_STATUSREQUESTER_START
+                        Constants::HANDLER_SUCCESSREPORTER_START
                     ),
                     $queryBuilder->expr()->lt(
                         'status',
-                        Constants::HANDLER_STATUSREQUESTER_FINISH
+                        Constants::HANDLER_SUCCESSREPORTER_FINISH
                     ),
                     $queryBuilder->expr()->eq(
                         'action',
-                        Constants::ACTION_REQUEST_STATUS
+                        Constants::ACTION_REPORT_SUCCESS
                     ),
                     $queryBuilder->expr()->isNull(
                         'last_error'
@@ -99,8 +99,8 @@ class StatusRequester extends AbstractHandler
                             'target' => $this->getIso2ForLocale($row),
                         ]
                     );
-                    /** @var RequestStatus $runner */
-                    $runner = GeneralUtility::makeInstance(RequestStatus::class);
+                    /** @var ReportSuccess $runner */
+                    $runner = GeneralUtility::makeInstance(ReportSuccess::class);
                     $runner->init($configuration);
                     $runner->run($configuration);
                     $response = $runner->getResponse();
@@ -125,28 +125,8 @@ class StatusRequester extends AbstractHandler
      */
     protected function processResponse(int $uid, $response)
     {
-        $translationStatus = 0;
-        if (isset($response['files'])) {
-            foreach ($response['files'] as $fileStatus) {
-                if ((int)$fileStatus['status'] > $translationStatus) {
-                    $translationStatus = (int)$fileStatus['status'];
-                }
-            }
-            $action = Constants::ACTION_REQUEST_STATUS;
-            $status = Constants::STATUS_CART_TRANSLATION_IN_PROGRESS;
-            $originalResponse = '';
-            switch ($translationStatus) {
-                case Constants::API_TRANSLATION_STATUS_IN_PROGRESS:
-                case Constants::API_TRANSLATION_STATUS_WAITING:
-                    $status = Constants::STATUS_CART_TRANSLATION_IN_PROGRESS;
-                    break;
-                case Constants::API_TRANSLATION_STATUS_TRANSLATED:
-                    $status = Constants::STATUS_CART_TRANSLATION_FINISHED;
-                    $action = Constants::ACTION_DOWNLOAD_FILE;
-                    $originalResponse = $response;
-                    break;
-            }
-            $this->addSuccessResult($uid, $status, $action, $originalResponse);
+        if (isset($response['status'])) {
+            $this->addSuccessResult($uid, $response['status'], 0, $response);
         }
     }
 

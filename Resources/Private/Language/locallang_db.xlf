@@ -144,8 +144,11 @@
             <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.80">
                 <source>translation imported</source>
             </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.90">
+                <source>successful import reported</source>
+            </trans-unit>
             <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.100">
-                <source>Files on translation server deleted</source>
+                <source>files on translation server deleted</source>
             </trans-unit>
             <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.status.I.-1">
                 <source>error occured</source>
@@ -182,6 +185,9 @@
             </trans-unit>
             <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.action.I.70">
                 <source>import translated file(s)</source>
+            </trans-unit>
+            <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.action.I.80">
+                <source>report successful import to translation server</source>
             </trans-unit>
             <trans-unit id="tx_localizer_settings_l10n_exportdata_mm.action.I.90">
                 <source>delete files on translation server</source>
@@ -223,16 +229,13 @@
                 <source>Sends files marked as "send to " to a specific translation service</source>
             </trans-unit>
             <trans-unit id="statusRequesterTask_title">
-                <source>Requests translation status from translation server</source>
+                <source>Request translation status from translation server</source>
             </trans-unit>
             <trans-unit id="statusRequesterTask_desc">
-                <source>requests translation status for files marked as "request translation status" from the specific
-                    translation service
-                </source>
+                <source>requests translation status for files marked as "request translation status" from the specific translation service</source>
             </trans-unit>
-
             <trans-unit id="errorResetterTask_title">
-                <source>Resets translation server errors</source>
+                <source>Reset translation server errors</source>
             </trans-unit>
             <trans-unit id="errorResetterTask_desc">
                 <source>resets occurred errors to previous status so taks can be executed again</source>
@@ -248,6 +251,12 @@
             </trans-unit>
             <trans-unit id="fileImporterTask_desc">
                 <source>imports the translated files into TYPO3</source>
+            </trans-unit>
+            <trans-unit id="successReporterTask_title">
+                <source>Report back successful import to remote server</source>
+            </trans-unit>
+            <trans-unit id="successReporterTask_desc">
+                <source>Reports back successful import to remote server. - Can be omitted with hotfolder configurations without API access.</source>
             </trans-unit>
         </body>
     </file>
