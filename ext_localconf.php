@@ -72,4 +72,10 @@ if (TYPO3_MODE === 'BE') {
         'title' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:fileImporterTask_title',
         'description' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:fileImporterTask_desc',
     ];
+
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Localizationteam\\Localizer\\Task\\SuccessReporterTask'] = [
+        'extension' => 'localizer',
+        'title' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:successReporterTask_title',
+        'description' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:successReporterTask_desc',
+    ];
 }

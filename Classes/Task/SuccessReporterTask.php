@@ -3,17 +3,17 @@
 namespace Localizationteam\Localizer\Task;
 
 use Localizationteam\Localizer\Handler\AbstractHandler;
-use Localizationteam\Localizer\Handler\StatusRequester;
+use Localizationteam\Localizer\Handler\SuccessReporter;
 
 /**
- * StatusRequesterTask requests translation status from remote servers
+ * ReporterTask reports back to remote server if the import was successful
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  */
-class StatusRequesterTask extends AbstractTask
+class SuccessReporterTask extends AbstractTask
 {
     /**
      * @var AbstractHandler
      */
-    protected $handlerClass = StatusRequester::class;
+    protected $handlerClass = SuccessReporter::class;
 }

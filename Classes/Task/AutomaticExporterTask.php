@@ -6,7 +6,7 @@ use Localizationteam\Localizer\Handler\AbstractHandler;
 use Localizationteam\Localizer\Handler\AutomaticExporter;
 
 /**
- * FileSenderTask sends files to Localizer
+ * FileSenderTask exports records marked for automatic export
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  */

@@ -153,7 +153,7 @@ define(['jquery', 'bootstrap'], function ($) {
         '</svg></span>' +
         '</span></a>'
       ) : '') +
-      (values.status !== 80 && values.action !== 70 ? (
+      (values.status !== 90 && values.status !== 80 && values.action !== 70 ? (
         '</div> <div class="btn-group btn-group-preview" role="group">' +
         '<a href="#" class="btn btn-info" ' +
         'onclick="' + previewOnClick + '"' +
