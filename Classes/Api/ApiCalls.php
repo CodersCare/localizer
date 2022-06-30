@@ -442,7 +442,7 @@ class ApiCalls
         string $source,
         bool $attachInstruction
     ) {
-        if ($this->checkAndCreateFolder($this->outFolder, 'outgoing') === true) {
+        if ($this->outFolder && $this->checkAndCreateFolder($this->outFolder, 'outgoing') === true) {
             $xmlPath = Environment::getPublicPath() . '/' . $this->outFolder . '/' . $fileName;
             if ($this->plainXmlExports) {
                 $xmlFile = fopen($xmlPath, 'w') or new Exception('Can not create XML file');
@@ -613,10 +613,10 @@ class ApiCalls
      */
     public function checkAndCreateFolders(): bool
     {
-        if (!$this->checkAndCreateFolder($this->outFolder, 'outgoing')) {
+        if ($this->outFolder && !$this->checkAndCreateFolder($this->outFolder, 'outgoing')) {
             return false;
         }
-        if (!$this->checkAndCreateFolder($this->inFolder, 'incoming')) {
+        if ($this->inFolder && !$this->checkAndCreateFolder($this->inFolder, 'incoming')) {
             return false;
         }
         return true;
