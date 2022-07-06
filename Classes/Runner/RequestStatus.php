@@ -121,7 +121,7 @@ class RequestStatus
                     );
                     $this->response['http_status_code'] = '200';
                 } catch (Exception $e) {
-                    $this->response = $this->api->getLastError();
+                    $this->response[] = $this->api->getLastError();
                 }
         }
     }
