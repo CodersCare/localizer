@@ -110,7 +110,7 @@ class RequestStatus
                         ];
                     }
                 } catch (Exception $e) {
-                    $this->response = $e->getMessage();
+                    $this->response[] = $e->getMessage();
                 }
                 break;
             default:

@@ -180,6 +180,6 @@ class SendFile
 
     protected function setResponse()
     {
-        $this->response = $this->api->getLastError();
+        $this->response[] = $this->api->getLastError();
     }
 }
