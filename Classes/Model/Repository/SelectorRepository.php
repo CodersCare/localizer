@@ -482,7 +482,9 @@ class SelectorRepository extends AbstractRepository
             $languageField = $GLOBALS['TCA'][$table]['ctrl']['languageField'];
             $transOrigPointerField = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
             $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable($table);
-            $queryBuilder->getRestrictions()->removeAll();
+            $queryBuilder->getRestrictions()
+                ->removeAll()
+                ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
             $queryBuilder
                 ->selectLiteral(
                     $table . '.*,
@@ -512,7 +514,7 @@ class SelectorRepository extends AbstractRepository
                             'translations.' . $tstampField,
                             $queryBuilder->quoteIdentifier($table . '.' . $tstampField)
                         ),
-                        $queryBuilder->expr()->gte(
+                        $queryBuilder->expr()->eq(
                             'translations.deleted',
                             0
                         )
@@ -538,7 +540,7 @@ class SelectorRepository extends AbstractRepository
                             'triples.cart',
                             $queryBuilder->quoteIdentifier('carts.uid')
                         ),
-                        $queryBuilder->expr()->gte(
+                        $queryBuilder->expr()->eq(
                             'carts.deleted',
                             0
                         )
@@ -560,7 +562,7 @@ class SelectorRepository extends AbstractRepository
                             'outdated.' . $tstampField,
                             $queryBuilder->quoteIdentifier($table . '.tstamp')
                         ),
-                        $queryBuilder->expr()->gte(
+                        $queryBuilder->expr()->eq(
                             'outdated.deleted',
                             0
                         )
@@ -595,7 +597,7 @@ class SelectorRepository extends AbstractRepository
                             'translations.' . $tstampField,
                             $queryBuilder->quoteIdentifier($table . '.' . $tstampField)
                         ),
-                        $deleteField ? $queryBuilder->expr()->gte(
+                        $deleteField ? $queryBuilder->expr()->eq(
                             'translations.deleted',
                             0
                         ) : null
@@ -627,7 +629,7 @@ class SelectorRepository extends AbstractRepository
                             'triples.cart',
                             $queryBuilder->quoteIdentifier('carts.uid')
                         ),
-                        $queryBuilder->expr()->gte(
+                        $queryBuilder->expr()->eq(
                             'carts.deleted',
                             0
                         )
@@ -649,7 +651,7 @@ class SelectorRepository extends AbstractRepository
                             'outdated.' . $tstampField,
                             $queryBuilder->quoteIdentifier($table . '.' . $tstampField)
                         ),
-                        $deleteField ? $queryBuilder->expr()->gte(
+                        $deleteField ? $queryBuilder->expr()->eq(
                             'outdated.deleted',
                             0
                         ) : null
@@ -721,10 +723,8 @@ class SelectorRepository extends AbstractRepository
             $records[$table] = [];
             $checkedRecords = [];
             while ($record = $this->fetchAssociative($result)) {
-                if ($record['localizer_status'] && $record['outdated'] > $record['last_action'] && GeneralUtility::inList(
-                    $record['changed'],
-                    0
-                )) {
+                if ($record['localizer_status'] && $record['outdated'] > $record['last_action']
+                    && GeneralUtility::inList($record['changed'], 0)) {
                     $record['localizer_status'] = 71;
                 }
                 $identifier = md5($table . '.' . $record['uid'] . '.' . $record['localizer_language']);

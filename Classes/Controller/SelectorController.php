@@ -208,11 +208,9 @@ class SelectorController extends AbstractController
                 <input type="hidden" name="selected_localizerPid" value="' . $this->localizerPid . '" />
                 <input type="hidden" name="selected_cart" value="' . $this->cartId . '" />
                 <input type="hidden" name="id" value="' . $this->id . '" />';
-                if ($this->cartId > 0 && empty(GeneralUtility::_GP('configuratorStore')) && empty(
-                    GeneralUtility::_GP(
-                        'configuratorFinalize'
-                    )
-                    )) {
+                if ($this->cartId > 0 && empty(GeneralUtility::_GP('configuratorStore'))
+                    && empty(GeneralUtility::_GP('configuratorFinalize'))
+                ) {
                     $this->loadConfigurationAndCart();
                 }
                 if ($this->cartId > 0 && !empty(GeneralUtility::_GP('configuratorFinalize'))) {
@@ -221,11 +219,9 @@ class SelectorController extends AbstractController
                     $this->cartId = 0;
                 }
                 $this->content .= $this->getLocalizerConfigurator($dblist->listURL());
-                if ($this->cartId > 0 && !empty(GeneralUtility::_GP('configuratorStore')) && empty(
-                    GeneralUtility::_GP(
-                        'configuratorFinalize'
-                    )
-                    )) {
+                if ($this->cartId > 0 && !empty(GeneralUtility::_GP('configuratorStore'))
+                    && empty(GeneralUtility::_GP('configuratorFinalize'))
+                ) {
                     $this->storeConfigurationAndCart();
                 }
                 if ($this->localizerId) {
@@ -387,11 +383,9 @@ class SelectorController extends AbstractController
                 ) .
                 '</button></li>';
         }
-        if (!empty($this->configuration['languages']) && !empty($this->configuration['tables']) && empty(
-            GeneralUtility::_GP(
-                'configuratorFinalize'
-            )
-            )) {
+        if (!empty($this->configuration['languages']) && !empty($this->configuration['tables'])
+            && empty(GeneralUtility::_GP('configuratorFinalize'))
+        ) {
             $localizerConfigurator .= '<li><button class="btn btn-success" type="button"
                 data-toggle="modal" data-target="#t3-modal-finalizecart">' .
                 $GLOBALS['LANG']->sL(
