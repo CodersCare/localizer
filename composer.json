@@ -12,13 +12,14 @@
   "support": {
     "issues": "https://gitlab.com/Coders.Care/localizer/issues"
   },
+  "version": "11.0.0",
   "require": {
-    "typo3/cms-core": "^10.4",
-    "typo3/cms-extensionmanager": "^10.4",
-    "typo3/cms-scheduler": "^10.4",
-    "typo3/cms-install": "^10.4",
-    "localizationteam/l10nmgr": "^10",
-    "sjbr/static-info-tables": "^6.9",
+    "typo3/cms-core": "^10.4 || ^11.5",
+    "typo3/cms-extensionmanager": "^10.4 || ^11.5",
+    "typo3/cms-scheduler": "^10.4 || ^11.5",
+    "typo3/cms-install": "^10.4 || ^11.5",
+    "localizationteam/l10nmgr": "^11 || dev-master",
+    "sjbr/static-info-tables": "*",
     "ext-pdo": "*",
     "ext-json": "*",
     "ext-zip": "*"
