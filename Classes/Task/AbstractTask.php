@@ -13,7 +13,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class AbstractTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 {
-
     /**
      * @var string
      */

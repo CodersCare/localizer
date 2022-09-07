@@ -40,9 +40,9 @@ class SendFile
     protected $localFile = '';
 
     /**
-     * @var string
+     * @var array
      */
-    protected $response = '';
+    protected $response = [];
 
     /**
      * @var array
@@ -171,11 +171,11 @@ class SendFile
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getResponse(): string
     {
-        return $this->response ?: '';
+        return $this->response ?: [];
     }
 
     protected function setResponse()
