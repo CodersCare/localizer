@@ -25,9 +25,9 @@ class DownloadFile
     protected $processFiles;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $response = '';
+    protected $response = [];
 
     /**
      * @var string
@@ -132,7 +132,7 @@ class DownloadFile
                     }
                 }
         }
-        $this->response = json_encode($response);
+        $this->response = $response;
     }
 
     /**
@@ -148,7 +148,7 @@ class DownloadFile
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getResponse(): string
     {
