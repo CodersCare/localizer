@@ -150,7 +150,7 @@ class DownloadFile
     /**
      * @return array
      */
-    public function getResponse(): string
+    public function getResponse(): array
     {
         return $this->response;
     }
