@@ -81,7 +81,6 @@ abstract class AbstractController extends BaseModule
     {
         /** @var ResponseInterface $response */
         $response = func_num_args() === 2 ? func_get_arg(1) : null;
-        $GLOBALS['SOBE'] = $this;
         $this->init();
         $this->main();
         $this->moduleTemplate->setContent($this->content);
