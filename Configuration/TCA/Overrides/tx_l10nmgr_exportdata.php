@@ -48,6 +48,7 @@ $tempColumns = [
     ],
 
 ];
+
 $GLOBALS['TCA']['tx_l10nmgr_exportdata']['ctrl']['label'] = 'filename';
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tx_l10nmgr_exportdata', $tempColumns);

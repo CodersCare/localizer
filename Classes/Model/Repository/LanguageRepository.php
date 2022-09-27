@@ -1,16 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Model\Repository;
 
+use Doctrine\DBAL\Connection as ConnectionAlias;
+use Doctrine\DBAL\DBALException;
 use Localizationteam\Localizer\Constants;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class LanguageRepository extends AbstractRepository
 {
+    /**
+     * @param int $localeId
+     * @param int $pid
+     * @return string
+     * @throws SiteNotFoundException
+     */
     public function getIsoTwoCodeBySystemLanguageId(int $localeId, int $pid = 1): string
     {
         $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($pid);
@@ -35,30 +46,33 @@ class LanguageRepository extends AbstractRepository
         );
         $queryBuilder->getRestrictions()
             ->removeAll();
-        $result = $queryBuilder
-            ->select('uid_foreign')
-            ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-            ->where(
-                $queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->eq(
-                        'uid_local',
-                        $uidLocal
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'tablenames',
-                        $queryBuilder->createNamedParameter('static_languages', Connection::PARAM_STR)
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'source',
-                        $queryBuilder->createNamedParameter($table, Connection::PARAM_STR)
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'ident',
-                        $queryBuilder->createNamedParameter('target', Connection::PARAM_STR)
+        try {
+            $result = $queryBuilder
+                ->select('uid_foreign')
+                ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                ->where(
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq(
+                            'uid_local',
+                            $uidLocal
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'tablenames',
+                            $queryBuilder->createNamedParameter('static_languages', Connection::PARAM_STR)
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'source',
+                            $queryBuilder->createNamedParameter($table, Connection::PARAM_STR)
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'ident',
+                            $queryBuilder->createNamedParameter('target', Connection::PARAM_STR)
+                        )
                     )
                 )
-            )
-            ->execute();
+                ->execute();
+        } catch (DBALException $e) {
+        }
         $rows = $this->fetchAllAssociative($result);
         $languageUids = [];
         if (!empty($rows)) {
@@ -87,16 +101,19 @@ class LanguageRepository extends AbstractRepository
             );
             $queryBuilder->getRestrictions()
                 ->removeAll();
-            $result = $queryBuilder
-                ->selectLiteral($field)
-                ->from(Constants::TABLE_STATIC_LANGUAGES)
-                ->where(
-                    $queryBuilder->expr()->in(
-                        'uid',
-                        $queryBuilder->createNamedParameter($uidList, Connection::PARAM_INT_ARRAY)
+            try {
+                $result = $queryBuilder
+                    ->selectLiteral($field)
+                    ->from(Constants::TABLE_STATIC_LANGUAGES)
+                    ->where(
+                        $queryBuilder->expr()->in(
+                            'uid',
+                            $queryBuilder->createNamedParameter($uidList, ConnectionAlias::PARAM_INT_ARRAY)
+                        )
                     )
-                )
-                ->execute();
+                    ->execute();
+            } catch (DBALException $e) {
+            }
             $rows = $this->fetchAllAssociative($result);
             if (!empty($rows)) {
                 $locale = [];
@@ -124,16 +141,19 @@ class LanguageRepository extends AbstractRepository
             );
             $queryBuilder->getRestrictions()
                 ->removeAll();
-            $result = $queryBuilder
-                ->select('uid')
-                ->from(Constants::TABLE_SYS_LANGUAGE)
-                ->where(
-                    $queryBuilder->expr()->eq(
-                        'static_lang_isocode',
-                        $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
+            try {
+                $result = $queryBuilder
+                    ->select('uid')
+                    ->from(Constants::TABLE_SYS_LANGUAGE)
+                    ->where(
+                        $queryBuilder->expr()->eq(
+                            'static_lang_isocode',
+                            $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
+                        )
                     )
-                )
-                ->execute();
+                    ->execute();
+            } catch (DBALException $e) {
+            }
             $systemLanguageId = $this->fetchOne($result);
         }
         return $systemLanguageId;

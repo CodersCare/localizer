@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Runner;
 
 use Exception;
@@ -21,12 +23,12 @@ class ReportSuccess
     /**
      * @var string
      */
-    protected $path = '';
+    protected string $path = '';
 
     /**
      * @var array
      */
-    protected $response = [];
+    protected array $response = [];
 
     public function __construct()
     {
@@ -35,7 +37,7 @@ class ReportSuccess
     /**
      * @param array $configuration
      */
-    public function init(array $configuration)
+    public function init(array $configuration): void
     {
         switch ($configuration['type']) {
             case '0':
@@ -86,7 +88,7 @@ class ReportSuccess
     /**
      * @param array $configuration
      */
-    public function run(array $configuration)
+    public function run(array $configuration): void
     {
         switch ($configuration['type']) {
             case '0':

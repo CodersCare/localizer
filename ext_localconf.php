@@ -25,6 +25,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 $enableStatHook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
     \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class
 )->get('localizer', 'enable_stat_hook');
+
 if ($enableStatHook) {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks']['tx_localizer'] = 'Localizationteam\\Localizer\\Hooks\\DataHandler->recStatInfo';
 }

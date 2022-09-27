@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Model\Repository;
 
 use Localizationteam\Localizer\BackendUser;
@@ -24,9 +26,9 @@ class AbstractRepository
 
     /**
      * @param int $localizerId
-     * @return array|false|null
+     * @return array
      */
-    public function getLocalizerLanguages(int $localizerId)
+    public function getLocalizerLanguages(int $localizerId): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
         $queryBuilder->getRestrictions()->removeAll();
@@ -37,7 +39,7 @@ class AbstractRepository
                 'settings',
                 Constants::TABLE_LOCALIZER_LANGUAGE_MM,
                 'sourceMM',
-                $queryBuilder->expr()->andX(
+                (string)$queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'settings.uid',
                         $queryBuilder->quoteIdentifier('sourceMM.uid_local')
@@ -60,7 +62,7 @@ class AbstractRepository
                 'sourceMM',
                 Constants::TABLE_STATIC_LANGUAGES,
                 'sourceLanguage',
-                $queryBuilder->expr()->eq(
+                (string)$queryBuilder->expr()->eq(
                     'sourceLanguage.uid',
                     $queryBuilder->quoteIdentifier('sourceMM.uid_foreign')
                 )
@@ -69,7 +71,7 @@ class AbstractRepository
                 'settings',
                 Constants::TABLE_LOCALIZER_LANGUAGE_MM,
                 'targetMM',
-                $queryBuilder->expr()->andX(
+                (string)$queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'settings.uid',
                         $queryBuilder->quoteIdentifier('targetMM.uid_local')
@@ -92,7 +94,7 @@ class AbstractRepository
                 'targetMM',
                 Constants::TABLE_STATIC_LANGUAGES,
                 'targetLanguage',
-                $queryBuilder->expr()->eq(
+                (string)$queryBuilder->expr()->eq(
                     'targetLanguage.uid',
                     $queryBuilder->quoteIdentifier('targetMM.uid_foreign')
                 )
@@ -100,14 +102,17 @@ class AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'settings.uid',
-                    (int)$localizerId
+                    $localizerId
                 )
             )
             ->groupBy('settings.uid')
             ->execute();
-        return $this->fetchAssociative($result);
+        return (array)$this->fetchAssociative($result);
     }
 
+    /**
+     * @return object
+     */
     public static function getConnectionPool(): object
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);
@@ -173,7 +178,7 @@ class AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    (int)$cartId
+                    $cartId
                 )
             )
             ->execute();
@@ -224,7 +229,7 @@ class AbstractRepository
      * Loads available carts, which have not been finalized yet
      *
      * @param int $localizerId
-     * @return array|null
+     * @return array
      */
     public function loadAvailableCarts(int $localizerId): array
     {
@@ -244,7 +249,7 @@ class AbstractRepository
                     ),
                     $queryBuilder->expr()->eq(
                         'uid_local',
-                        (int)$localizerId
+                        $localizerId
                     ),
                     $queryBuilder->expr()->eq(
                         'status',
@@ -265,8 +270,6 @@ class AbstractRepository
      */
     public function loadAvailablePages(int $pageId, int $cartId): array
     {
-        $pageId = (int)$pageId;
-        $cartId = (int)$cartId;
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
         $result = $queryBuilder
             ->select('pid')
@@ -279,7 +282,7 @@ class AbstractRepository
                     ),
                     $queryBuilder->expr()->eq(
                         'cart',
-                        (int)$cartId
+                        $cartId
                     )
                 )
             )
@@ -350,7 +353,7 @@ class AbstractRepository
                     ),
                     $queryBuilder->expr()->eq(
                         'cart',
-                        (int)$cartId
+                        $cartId
                     )
                 )
             )
@@ -384,7 +387,7 @@ class AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'cart',
-                    (int)$cartId
+                    $cartId
                 )
             )
             ->groupBy('tableName')

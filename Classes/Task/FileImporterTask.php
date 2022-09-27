@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Task;
 
-use Localizationteam\Localizer\Handler\AbstractHandler;
 use Localizationteam\Localizer\Handler\FileImporter;
 
 /**
@@ -13,7 +14,7 @@ use Localizationteam\Localizer\Handler\FileImporter;
 class FileImporterTask extends AbstractTask
 {
     /**
-     * @var AbstractHandler
+     * @var string
      */
-    protected $handlerClass = FileImporter::class;
+    protected string $handlerClass = FileImporter::class;
 }

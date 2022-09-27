@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer;
 
 use Exception;
@@ -23,6 +25,7 @@ trait Language
         /** @var LanguageRepository $languageRepository */
         $languageRepository = GeneralUtility::makeInstance(LanguageRepository::class);
         $targetLanguages = $languageRepository->getAllTargetLanguageUids($row['uid'], Constants::TABLE_EXPORTDATA_MM);
+        $iso2 = '';
         if (count($targetLanguages) > 0) {
             $collateLocale = $languageRepository->getStaticLanguagesCollateLocale($targetLanguages, true);
             if (count($collateLocale) > 0) {

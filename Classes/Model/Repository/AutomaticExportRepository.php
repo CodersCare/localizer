@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Model\Repository;
 
 use Localizationteam\Localizer\Constants;
@@ -16,7 +18,7 @@ class AutomaticExportRepository extends AbstractRepository
      * Loads available carts, which have not been finalized yet
      *
      * @param int $localizerId
-     * @return array|null
+     * @return array
      */
     public function loadUnfinishedButSentCarts(int $localizerId): array
     {
@@ -32,7 +34,7 @@ class AutomaticExportRepository extends AbstractRepository
                     ),
                     $queryBuilder->expr()->eq(
                         'uid_local',
-                        (int)$localizerId
+                        $localizerId
                     ),
                     $queryBuilder->expr()->gte(
                         'status',
@@ -115,14 +117,14 @@ class AutomaticExportRepository extends AbstractRepository
                 'pages',
                 Constants::TABLE_LOCALIZER_SETTINGS_PAGES_MM,
                 'mm',
-                $queryBuilder->expr()->andX(
+                (string)$queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'mm.uid_local',
                         $queryBuilder->quoteIdentifier('pages.uid')
                     ),
                     $queryBuilder->expr()->eq(
                         'mm.uid_foreign',
-                        (int)$localizer
+                        $localizer
                     )
                 )
             )

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Api;
 
 use Exception;
@@ -23,107 +25,107 @@ class ApiCalls
     /**
      * @var string
      */
-    public $type;
+    public string $type;
 
     /**
      * @var string
      */
-    protected $connectorName;
+    protected string $connectorName;
 
     /**
      * @var string
      */
-    protected $connectorVersion;
+    protected string $connectorVersion;
 
     /**
      * @var string
      */
-    protected $token = '';
+    protected string $token = '';
 
     /**
      * @var string
      */
-    protected $url;
+    protected string $url;
 
     /**
      * @var string
      */
-    protected $projectKey;
+    protected string $projectKey;
 
     /**
      * @var string
      */
-    protected $workflow;
+    protected string $workflow;
 
     /**
      * @var string
      */
-    protected $username;
+    protected string $username;
 
     /**
      * @var string
      */
-    protected $password;
+    protected string $password;
 
     /**
      * @var string
      */
-    protected $outFolder;
+    protected string $outFolder;
 
     /**
      * @var string
      */
-    protected $inFolder;
+    protected string $inFolder;
 
     /**
      * @var bool
      */
-    protected $plainXmlExports;
+    protected bool $plainXmlExports;
 
     /**
      * @var string
      */
-    protected $deadline = '';
+    protected string $deadline = '';
 
     /**
      * @var int
      */
-    protected $deadlineOffset = 0;
+    protected int $deadlineOffset = 0;
 
     /**
      * @var array
      */
-    protected $metaData = [];
+    protected array $metaData = [];
 
     /**
      * @var array
      */
-    protected $projectLanguages;
+    protected array $projectLanguages;
 
     /**
      * @var array
      */
-    protected $locales = [];
+    protected array $locales = [];
 
     /**
      * @var string
      */
-    protected $sourceLanguage = '';
-
-    /**
-     * @var null
-     */
-    protected $projectInformation;
-
-    /**
-     * @var null
-     */
-    protected $folderInformation;
+    protected string $sourceLanguage = '';
 
     /**
      * @var string
      */
-    protected $lastError = '';
+    protected string $projectInformation = '';
+
+    /**
+     * @var array
+     */
+    protected array $folderInformation;
+
+    /**
+     * @var string
+     */
+    protected string $lastError = '';
 
     /**
      * @param string $type
@@ -163,7 +165,7 @@ class ApiCalls
     /**
      * @param string $url
      */
-    public function setUrl(string $url)
+    public function setUrl(string $url): void
     {
         if ($url !== '') {
             $this->url = $url;
@@ -173,7 +175,7 @@ class ApiCalls
     /**
      * @param string $workflow
      */
-    public function setWorkflow(string $workflow)
+    public function setWorkflow(string $workflow): void
     {
         if ($workflow !== '') {
             $this->workflow = $workflow;
@@ -183,7 +185,7 @@ class ApiCalls
     /**
      * @param string $projectKey
      */
-    public function setProjectKey(string $projectKey)
+    public function setProjectKey(string $projectKey): void
     {
         if ($projectKey !== '') {
             $this->projectKey = $projectKey;
@@ -193,7 +195,7 @@ class ApiCalls
     /**
      * @param string $username
      */
-    public function setUsername(string $username)
+    public function setUsername(string $username): void
     {
         if ($username !== '') {
             $this->username = $username;
@@ -203,7 +205,7 @@ class ApiCalls
     /**
      * @param string $password
      */
-    public function setPassword(string $password)
+    public function setPassword(string $password): void
     {
         if ($password !== '') {
             $this->password = $password;
@@ -213,7 +215,7 @@ class ApiCalls
     /**
      * @param string $outFolder
      */
-    public function setOutFolder(string $outFolder)
+    public function setOutFolder(string $outFolder): void
     {
         if ($outFolder !== '') {
             $this->outFolder = trim($outFolder, '\/');
@@ -223,7 +225,7 @@ class ApiCalls
     /**
      * @param string $inFolder
      */
-    public function setInFolder(string $inFolder)
+    public function setInFolder(string $inFolder): void
     {
         if ($inFolder !== '') {
             $this->inFolder = trim($inFolder, '\/');
@@ -233,7 +235,7 @@ class ApiCalls
     /**
      * @param bool $plainXmlExports
      */
-    public function setPlainXmlExports(bool $plainXmlExports)
+    public function setPlainXmlExports(bool $plainXmlExports): void
     {
         $this->plainXmlExports = $plainXmlExports;
     }
@@ -243,7 +245,7 @@ class ApiCalls
      *
      * @param string $connectorName
      */
-    public function setConnectorName(string $connectorName)
+    public function setConnectorName(string $connectorName): void
     {
         $this->connectorName = $connectorName;
     }
@@ -253,7 +255,7 @@ class ApiCalls
      *
      * @param string $connectorVersion
      */
-    public function setConnectorVersion(string $connectorVersion)
+    public function setConnectorVersion(string $connectorVersion): void
     {
         $this->connectorVersion = $connectorVersion;
     }
@@ -270,7 +272,7 @@ class ApiCalls
     /**
      * @param string $token
      */
-    public function setToken(string $token)
+    public function setToken(string $token): void
     {
         if ($token !== '') {
             $this->token = $token;
@@ -278,7 +280,7 @@ class ApiCalls
     }
 
     /**
-     * @return string|bool
+     * @return false|string
      */
     public function getLastError()
     {
@@ -292,9 +294,9 @@ class ApiCalls
      * If time is set equals 0 will reset deadline,
      * If time is null will get current time and adds 24hours (default) to it;
      *
-     * @param mixed $time
+     * @param mixed|null $time
      */
-    public function setDeadline($time = null)
+    public function setDeadline(mixed $time = null): void
     {
         if ($time == 0) { // only weak check as a string will cast to 0!!!
             $this->resetDeadline();
@@ -311,7 +313,7 @@ class ApiCalls
     /**
      * resets deadline
      */
-    public function resetDeadline()
+    public function resetDeadline(): void
     {
         $this->deadline = '';
     }
@@ -330,9 +332,9 @@ class ApiCalls
     /**
      * @param int $offset
      */
-    public function setDefaultDeadlineOffset(int $offset = 0)
+    public function setDefaultDeadlineOffset(int $offset = 0): void
     {
-        $this->deadlineOffset = (int)$offset;
+        $this->deadlineOffset = $offset;
     }
 
     /**
@@ -342,14 +344,14 @@ class ApiCalls
      * @param array $locales
      * @throws Exception
      */
-    public function setLocales(array $locales)
+    public function setLocales(array $locales): void
     {
         $this->locales = $locales;
     }
 
     /**
      * @param bool $asJson
-     * @return string|array
+     * @return array|false|string
      */
     public function getFolderInformation(bool $asJson = false)
     {
@@ -366,7 +368,7 @@ class ApiCalls
     /**
      * @param array $metaData
      */
-    public function setMetaData(array $metaData)
+    public function setMetaData(array $metaData): void
     {
         $this->metaData = $metaData;
     }
@@ -374,7 +376,7 @@ class ApiCalls
     /**
      * Resets instructions
      */
-    public function resetInstructions()
+    public function resetInstructions(): void
     {
         $this->resetDeadline();
         $this->resetLocales();
@@ -384,7 +386,7 @@ class ApiCalls
     /**
      * Resets locales
      */
-    public function resetLocales()
+    public function resetLocales(): void
     {
         $this->locales = [];
     }
@@ -392,7 +394,7 @@ class ApiCalls
     /**
      * Resets meta data
      */
-    public function resetMetaData()
+    public function resetMetaData(): void
     {
         $this->metaData = [];
     }
@@ -405,7 +407,7 @@ class ApiCalls
      * @param bool $attachInstructions
      * @throws Exception This Exception contains details of an eventual error
      */
-    public function sandboxSendContent(string $fileContent, string $fileName, bool $attachInstructions = true)
+    public function sandboxSendContent(string $fileContent, string $fileName, bool $attachInstructions = true): void
     {
         $this->sendFile($fileContent, $fileName, 'sandbox', $attachInstructions);
     }
@@ -419,12 +421,9 @@ class ApiCalls
      * @param bool $attachInstruction
      * @throws Exception
      */
-    public function sendFile(string $fileContent, string $fileName, string $source, bool $attachInstruction = true)
+    public function sendFile(string $fileContent, string $fileName, string $source, bool $attachInstruction = true): void
     {
-        switch ($this->type) {
-            default:
-                $this->storeFileIntoLocalHotfolder($fileContent, $fileName, $source, $attachInstruction);
-        }
+        $this->storeFileIntoLocalHotfolder($fileContent, $fileName, $source, $attachInstruction);
     }
 
     /**
@@ -441,7 +440,7 @@ class ApiCalls
         string $fileName,
         string $source,
         bool $attachInstruction
-    ) {
+    ): void {
         if ($this->outFolder && $this->checkAndCreateFolder($this->outFolder, 'outgoing') === true) {
             $xmlPath = Environment::getPublicPath() . '/' . $this->outFolder . '/' . $fileName;
             if ($this->plainXmlExports) {
@@ -537,7 +536,7 @@ class ApiCalls
     }
 
     /**
-     * @return array|bool
+     * @return array|false
      */
     public function getInstructions()
     {
@@ -583,7 +582,7 @@ class ApiCalls
      * @param string $source Source language of the file
      * @throws Exception This Exception contains details of an eventual error
      */
-    public function sendInstructions(string $fileName, string $source)
+    public function sendInstructions(string $fileName, string $source): void
     {
         $instructions = $this->getInstructions();
         if (is_array($instructions)) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Controller;
 
 /**
@@ -9,11 +11,11 @@ namespace Localizationteam\Localizer\Controller;
  */
 class LocalizerController extends BaseModule
 {
-    public function main()
+    public function main(): void
     {
     }
 
-    public function printContent()
+    public function printContent(): void
     {
         echo $this->content;
     }

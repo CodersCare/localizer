@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Tests\Functional\Repository;
 
+use Doctrine\DBAL\DBALException;
 use Localizationteam\Localizer\Model\Repository\LocalizerSettingsRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\TestingFramework\Core\Exception;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class LocalizerSettingsRepositoryTest extends FunctionalTestCase
@@ -13,12 +17,12 @@ class LocalizerSettingsRepositoryTest extends FunctionalTestCase
     /**
      * @var ObjectManagerInterface
      */
-    protected $objectManager;
+    protected mixed $objectManager;
 
     /**
      * @var LocalizerSettingsRepository
      */
-    protected $repository;
+    protected mixed $repository;
 
     protected $testExtensionsToLoad = [
         'typo3conf/ext/localizer',
@@ -32,7 +36,12 @@ class LocalizerSettingsRepositoryTest extends FunctionalTestCase
         'extensionmanager',
     ];
 
-    public function setUp(): void
+    /**
+     * @throws Exception
+     * @throws DBALException
+     * @throws \TYPO3\CMS\Extbase\Object\Exception
+     */
+    protected function setUp(): void
     {
         parent::setUp();
         $this->setUpBackendUserFromFixture(1);
@@ -81,7 +90,10 @@ class LocalizerSettingsRepositoryTest extends FunctionalTestCase
      */
     public function getLocalizerLanguagesWithWrongLocalizerIdHasNullValues(): void
     {
-        $this->importDataSet(__DIR__ . '/../Fixtures/tx_localizer_language_mm.xml');
+        try {
+            $this->importDataSet(__DIR__ . '/../Fixtures/tx_localizer_language_mm.xml');
+        } catch (Exception $e) {
+        }
 
         $languages = $this->repository->getLocalizerLanguages(1);
         self::assertArrayHasKey('source', $languages);
@@ -96,7 +108,10 @@ class LocalizerSettingsRepositoryTest extends FunctionalTestCase
      */
     public function getLocalizerLanguages(): void
     {
-        $this->importDataSet(__DIR__ . '/../Fixtures/tx_localizer_language_mm.xml');
+        try {
+            $this->importDataSet(__DIR__ . '/../Fixtures/tx_localizer_language_mm.xml');
+        } catch (Exception $e) {
+        }
 
         $languages = $this->repository->getLocalizerLanguages(3);
 
@@ -107,7 +122,7 @@ class LocalizerSettingsRepositoryTest extends FunctionalTestCase
         self::assertEquals('37,59', $languages['target']);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->repository);
         unset($this->objectManager);

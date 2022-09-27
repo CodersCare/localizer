@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Runner;
 
 use Exception;
@@ -17,49 +19,49 @@ class SendFile
     /**
      * @var ApiCalls
      */
-    protected $api;
+    protected ApiCalls $api;
 
     /**
      * @var string
      */
-    protected $path = '';
+    protected string $path = '';
 
     /**
      * @var int
      */
-    protected $type;
+    protected int $type;
 
     /**
      * @var string
      */
-    protected $source = '';
+    protected string $source = '';
 
     /**
      * @var string
      */
-    protected $localFile = '';
+    protected string $localFile = '';
 
     /**
      * @var array
      */
-    protected $response = [];
+    protected array $response = [];
 
     /**
      * @var array
      */
-    protected $targetLocales = [];
+    protected array $targetLocales = [];
 
-    protected $deadline = 0;
+    protected int $deadline = 0;
 
-    protected $metaData = [];
+    protected array $metaData = [];
 
-    protected $sendAttachment = false;
+    protected bool $sendAttachment = false;
 
     /**
      * @param array $configuration
      * @throws Exception
      */
-    public function init(array $configuration)
+    public function init(array $configuration): void
     {
         if (!isset($configuration['type'])) {
             throw new Exception('No type given. Please set one in the localizer settings');
@@ -130,7 +132,7 @@ class SendFile
     /**
      * @throws Exception
      */
-    public function run()
+    public function run(): void
     {
         $this->prepareInstructions();
         $this->sendFile();
@@ -140,7 +142,7 @@ class SendFile
     /**
      * @throws Exception
      */
-    protected function prepareInstructions()
+    protected function prepareInstructions(): void
     {
         $this->api->resetInstructions();
         if ($this->deadline > 0) {
@@ -160,7 +162,7 @@ class SendFile
     /**
      * @throws Exception
      */
-    protected function sendFile()
+    protected function sendFile(): void
     {
         $this->api->sendFile(
             file_get_contents($this->localFile),
@@ -173,12 +175,12 @@ class SendFile
     /**
      * @return array
      */
-    public function getResponse(): string
+    public function getResponse(): array
     {
         return $this->response ?: [];
     }
 
-    protected function setResponse()
+    protected function setResponse(): void
     {
         $this->response[] = $this->api->getLastError();
     }

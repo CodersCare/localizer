@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Task;
 
-use Localizationteam\Localizer\Handler\AbstractHandler;
 use Localizationteam\Localizer\Handler\SuccessReporter;
 
 /**
@@ -13,7 +14,7 @@ use Localizationteam\Localizer\Handler\SuccessReporter;
 class SuccessReporterTask extends AbstractTask
 {
     /**
-     * @var AbstractHandler
+     * @var string
      */
-    protected $handlerClass = SuccessReporter::class;
+    protected string $handlerClass = SuccessReporter::class;
 }

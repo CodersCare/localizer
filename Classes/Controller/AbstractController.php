@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Controller;
 
 use Localizationteam\Localizer\Model\Repository\AbstractRepository;
@@ -18,7 +20,7 @@ abstract class AbstractController extends BaseModule
     /**
      * @var array
      */
-    protected $pageinfo;
+    protected array $pageinfo;
 
     /**
      * Document template object
@@ -30,37 +32,37 @@ abstract class AbstractController extends BaseModule
     /**
      * @var int
      */
-    protected $localizerId;
+    protected int $localizerId;
 
     /**
      * @var int
      */
-    protected $localizerPid;
+    protected int $localizerPid;
 
     /**
      * @var array
      */
-    protected $legend = [];
+    protected array $legend = [];
 
     /**
      * @var array
      */
-    protected $statusClasses = [];
+    protected array $statusClasses = [];
 
     /**
      * @var string
      */
-    protected $backPath;
+    protected string $backPath;
 
     /**
      * @var AbstractRepository
      */
-    protected $abstractRepository;
+    protected AbstractRepository $abstractRepository;
 
     /**
      * @var array
      */
-    protected $availableLocalizers;
+    protected array $availableLocalizers;
 
     /**
      * Constructor
@@ -176,7 +178,7 @@ abstract class AbstractController extends BaseModule
     /**
      * Initialize function menu array
      */
-    public function menuConfig()
+    public function menuConfig(): void
     {
         $this->MOD_MENU = [
             'bigControlPanel' => '',

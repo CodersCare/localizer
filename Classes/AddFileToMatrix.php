@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer;
 
+use Doctrine\DBAL\DBALException;
 use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -33,7 +36,7 @@ trait AddFileToMatrix
         string $fileName,
         int $translationLanguage,
         int $action = 0
-    ) {
+    ): void {
         $time = time();
         $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(
             Constants::TABLE_EXPORTDATA_MM
@@ -78,44 +81,50 @@ trait AddFileToMatrix
         );
         $queryBuilder->getRestrictions()
             ->removeAll();
-        $result = $queryBuilder
-            ->select('uid_foreign', 'tablenames', 'ident', 'sorting')
-            ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-            ->where(
-                $queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->eq(
-                        'uid_local',
-                        $localizerId
-                    ),
-                    $queryBuilder->expr()->orX(
+        try {
+            $result = $queryBuilder
+                ->select('uid_foreign', 'tablenames', 'ident', 'sorting')
+                ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                ->where(
+                    $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->eq(
-                            'ident',
-                            $queryBuilder->createNamedParameter('source', PDO::PARAM_STR)
+                            'uid_local',
+                            $localizerId
+                        ),
+                        $queryBuilder->expr()->orX(
+                            $queryBuilder->expr()->eq(
+                                'ident',
+                                $queryBuilder->createNamedParameter('source')
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'uid_foreign',
+                                $isoCodeTargetLanguage
+                            )
                         ),
                         $queryBuilder->expr()->eq(
-                            'uid_foreign',
-                            $isoCodeTargetLanguage
+                            'source',
+                            $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS)
                         )
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'source',
-                        $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS, PDO::PARAM_STR)
                     )
                 )
-            )
-            ->execute();
+                ->execute();
+        } catch (DBALException $e) {
+        }
         $localizerLanguageRows = $this->fetchAllAssociative($result);
         if (count($localizerLanguageRows) > 0) {
             foreach ($localizerLanguageRows as $lRow) {
                 $lRow['uid_local'] = $uid;
                 $lRow['source'] = Constants::TABLE_EXPORTDATA_MM;
-                GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-                    ->insert(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-                    ->values(
-                        $lRow
-                    )
-                    ->execute();
+                try {
+                    GeneralUtility::makeInstance(ConnectionPool::class)
+                        ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                        ->insert(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                        ->values(
+                            $lRow
+                        )
+                        ->execute();
+                } catch (DBALException $e) {
+                }
             }
         }
     }
@@ -138,16 +147,19 @@ trait AddFileToMatrix
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_language');
         $queryBuilder->getRestrictions()
             ->removeAll();
-        $result = $queryBuilder
-            ->select('static_lang_isocode')
-            ->from('sys_language')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'uid',
-                    (int)$sysLanguageId
+        try {
+            $result = $queryBuilder
+                ->select('static_lang_isocode')
+                ->from('sys_language')
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'uid',
+                        $sysLanguageId
+                    )
                 )
-            )
-            ->execute();
+                ->execute();
+        } catch (DBALException $e) {
+        }
         $row = $this->fetchAssociative($result);
         if (!empty($row)) {
             return $row['static_lang_isocode'];

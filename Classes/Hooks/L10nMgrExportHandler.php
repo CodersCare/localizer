@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Hooks;
 
+use Doctrine\DBAL\DBALException;
 use Localizationteam\L10nmgr\View\PostSaveInterface;
 use Localizationteam\Localizer\AddFileToMatrix;
 use Localizationteam\Localizer\Constants;
@@ -31,49 +34,52 @@ class L10nMgrExportHandler implements PostSaveInterface
                     $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
                         Constants::TABLE_LOCALIZER_SETTINGS
                     );
-                    $result = $queryBuilder
-                        ->select(
-                            Constants::TABLE_LOCALIZER_SETTINGS . '.uid',
-                            Constants::TABLE_LOCALIZER_SETTINGS . '.pid',
-                            Constants::TABLE_LOCALIZER_SETTINGS . '.project_settings',
-                            'source_locale',
-                            'target_locale'
-                        )
-                        ->from(Constants::TABLE_LOCALIZER_SETTINGS)
-                        ->join(
-                            Constants::TABLE_LOCALIZER_SETTINGS,
-                            Constants::TABLE_LOCALIZER_L10NMGR_MM,
-                            'mm'
-                        )
-                        ->join(
-                            'mm',
-                            Constants::TABLE_L10NMGR_CONFIGURATION,
-                            Constants::TABLE_L10NMGR_CONFIGURATION
-                        )
-                        ->where(
-                            $queryBuilder->expr()->andX(
-                                $queryBuilder->expr()->eq(
-                                    Constants::TABLE_LOCALIZER_SETTINGS . '.uid',
-                                    $queryBuilder->quoteIdentifier('mm.uid_local')
-                                ),
-                                $queryBuilder->expr()->eq(
-                                    Constants::TABLE_L10NMGR_CONFIGURATION . '.uid',
-                                    $queryBuilder->quoteIdentifier('mm.uid_foreign')
-                                ),
-                                $queryBuilder->expr()->eq(
-                                    'mm.uid_foreign',
-                                    (int)$params['data']['l10ncfg_id']
-                                ),
-                                $queryBuilder->expr()->in(
-                                    Constants::TABLE_LOCALIZER_SETTINGS . '.pid',
-                                    $this->getRootline(
-                                        $this->getSrcPid()
+                    try {
+                        $result = $queryBuilder
+                            ->select(
+                                Constants::TABLE_LOCALIZER_SETTINGS . '.uid',
+                                Constants::TABLE_LOCALIZER_SETTINGS . '.pid',
+                                Constants::TABLE_LOCALIZER_SETTINGS . '.project_settings',
+                                'source_locale',
+                                'target_locale'
+                            )
+                            ->from(Constants::TABLE_LOCALIZER_SETTINGS)
+                            ->join(
+                                Constants::TABLE_LOCALIZER_SETTINGS,
+                                Constants::TABLE_LOCALIZER_L10NMGR_MM,
+                                'mm'
+                            )
+                            ->join(
+                                'mm',
+                                Constants::TABLE_L10NMGR_CONFIGURATION,
+                                Constants::TABLE_L10NMGR_CONFIGURATION
+                            )
+                            ->where(
+                                $queryBuilder->expr()->andX(
+                                    $queryBuilder->expr()->eq(
+                                        Constants::TABLE_LOCALIZER_SETTINGS . '.uid',
+                                        $queryBuilder->quoteIdentifier('mm.uid_local')
+                                    ),
+                                    $queryBuilder->expr()->eq(
+                                        Constants::TABLE_L10NMGR_CONFIGURATION . '.uid',
+                                        $queryBuilder->quoteIdentifier('mm.uid_foreign')
+                                    ),
+                                    $queryBuilder->expr()->eq(
+                                        'mm.uid_foreign',
+                                        (int)$params['data']['l10ncfg_id']
+                                    ),
+                                    $queryBuilder->expr()->in(
+                                        Constants::TABLE_LOCALIZER_SETTINGS . '.pid',
+                                        $this->getRootline(
+                                            $this->getSrcPid()
+                                        )
                                     )
                                 )
                             )
-                        )
-                        ->setMaxResults(1)
-                        ->execute();
+                            ->setMaxResults(1)
+                            ->execute();
+                    } catch (DBALException $e) {
+                    }
                     $row = $this->fetchAssociative($result);
                     if ($row['pid'] !== null) {
                         $this->addFileToMatrix(

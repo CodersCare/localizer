@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Task;
 
 use Exception;
@@ -16,7 +18,7 @@ class AbstractTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     /**
      * @var string
      */
-    protected $handlerClass;
+    protected string $handlerClass;
 
     /**
      * This is the main method that is called when a task is executed

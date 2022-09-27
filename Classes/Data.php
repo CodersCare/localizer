@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer;
 
-use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\ResultStatement;
 use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\Messaging\FlashMessage;
 use Localizationteam\Localizer\Model\Repository\LocalizerSettingsRepository;
@@ -24,24 +27,24 @@ trait Data
     /**
      * @var array
      */
-    protected $apiPool;
+    protected array $apiPool;
 
     /**
      * @var array
      */
-    protected $data;
+    protected array $data;
 
     /**
      * @var array
      */
-    protected $result;
+    protected array $result;
 
     /**
      * @var bool
      */
-    private $canPersist = false;
+    private bool $canPersist = false;
 
-    protected function initData()
+    protected function initData(): void
     {
         $this->result = [
             'success' => [],
@@ -52,7 +55,10 @@ trait Data
         $this->canPersist = true;
     }
 
-    protected function load()
+    /**
+     * @throws DBALException
+     */
+    protected function load(): void
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_EXPORTDATA_MM
@@ -63,14 +69,17 @@ trait Data
             ->where(
                 $queryBuilder->expr()->eq(
                     'processid',
-                    $queryBuilder->createNamedParameter($this->getProcessId(), PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter($this->getProcessId())
                 )
             )
             ->execute();
         $this->data = $this->fetchAllAssociative($result);
     }
 
-    protected function loadCart()
+    /**
+     * @throws DBALException
+     */
+    protected function loadCart(): void
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_LOCALIZER_CART
@@ -81,7 +90,7 @@ trait Data
             ->where(
                 $queryBuilder->expr()->eq(
                     'processid',
-                    $queryBuilder->createNamedParameter($this->getProcessId(), PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter($this->getProcessId())
                 )
             )
             ->execute();
@@ -95,7 +104,7 @@ trait Data
      * @param string $lastError
      * @param int $action
      */
-    protected function addErrorResult(int $uid, int $status, int $previousStatus, string $lastError, int $action = 0)
+    protected function addErrorResult(int $uid, int $status, int $previousStatus, string $lastError, int $action = 0): void
     {
         $this->result['error'][$uid] = [
             'status' => $status,
@@ -111,9 +120,9 @@ trait Data
      * @param int $uid
      * @param int $status
      * @param int $action
-     * @param mixed $response
+     * @param string $response
      */
-    protected function addSuccessResult(int $uid, int $status, int $action = 0, $response = '')
+    protected function addSuccessResult(int $uid, int $status, int $action = 0, string $response = ''): void
     {
         if (is_array($response)) {
             $response = json_encode($response);
@@ -130,10 +139,10 @@ trait Data
 
     /**
      * @param int $uid
-     * @return bool|array
+     * @return array
      * @throws Exception
      */
-    protected function getLocalizerSettings(int $uid)
+    protected function getLocalizerSettings(int $uid): array
     {
         /** @var LocalizerSettingsRepository $localizerSettingsRepository */
         $localizerSettingsRepository = GeneralUtility::makeInstance(LocalizerSettingsRepository::class);
@@ -155,7 +164,7 @@ trait Data
             'plainxmlexports',
         ];
 
-        $row = $localizerSettingsRepository->findByUid((int)$uid, $fields);
+        $row = $localizerSettingsRepository->findByUid($uid, $fields);
 
         if ($row['type'] === '0' || ExtensionManagementUtility::isLoaded($row['type'])) {
             if ($row['type'] === '0') {
@@ -181,39 +190,42 @@ trait Data
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
                     Constants::TABLE_LOCALIZER_LANGUAGE_MM
                 );
-                $result = $queryBuilder
-                    ->select('*')
-                    ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-                    ->leftJoin(
-                        Constants::TABLE_LOCALIZER_LANGUAGE_MM,
-                        Constants::TABLE_STATIC_LANGUAGES,
-                        Constants::TABLE_STATIC_LANGUAGES,
-                        $queryBuilder->expr()->eq(
-                            Constants::TABLE_STATIC_LANGUAGES . '.uid',
-                            $queryBuilder->quoteIdentifier(Constants::TABLE_LOCALIZER_LANGUAGE_MM . '.uid_foreign')
-                        )
-                    )
-                    ->where(
-                        $queryBuilder->expr()->andX(
-                            $queryBuilder->expr()->eq(
-                                'uid_local',
-                                (int)$row['uid']
-                            ),
-                            $queryBuilder->expr()->eq(
-                                'ident',
-                                $queryBuilder->createNamedParameter('source', PDO::PARAM_STR)
-                            ),
-                            $queryBuilder->expr()->eq(
-                                'tablenames',
-                                $queryBuilder->createNamedParameter('static_languages', PDO::PARAM_STR)
-                            ),
-                            $queryBuilder->expr()->eq(
-                                'source',
-                                $queryBuilder->createNamedParameter('tx_localizer_settings', PDO::PARAM_STR)
+                try {
+                    $result = $queryBuilder
+                        ->select('*')
+                        ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                        ->leftJoin(
+                            Constants::TABLE_LOCALIZER_LANGUAGE_MM,
+                            Constants::TABLE_STATIC_LANGUAGES,
+                            Constants::TABLE_STATIC_LANGUAGES,
+                            (string)$queryBuilder->expr()->eq(
+                                Constants::TABLE_STATIC_LANGUAGES . '.uid',
+                                $queryBuilder->quoteIdentifier(Constants::TABLE_LOCALIZER_LANGUAGE_MM . '.uid_foreign')
                             )
                         )
-                    )
-                    ->execute();
+                        ->where(
+                            $queryBuilder->expr()->andX(
+                                $queryBuilder->expr()->eq(
+                                    'uid_local',
+                                    (int)$row['uid']
+                                ),
+                                $queryBuilder->expr()->eq(
+                                    'ident',
+                                    $queryBuilder->createNamedParameter('source')
+                                ),
+                                $queryBuilder->expr()->eq(
+                                    'tablenames',
+                                    $queryBuilder->createNamedParameter('static_languages')
+                                ),
+                                $queryBuilder->expr()->eq(
+                                    'source',
+                                    $queryBuilder->createNamedParameter('tx_localizer_settings')
+                                )
+                            )
+                        )
+                        ->execute();
+                } catch (DBALException $e) {
+                }
                 $sourceLocale = $this->fetchAssociative($result);
                 $this->apiPool[$uid] = [
                     'api' => $api,
@@ -240,14 +252,14 @@ trait Data
             );
         }
         return $this->apiPool[$uid] === false ?
-            false :
+            [] :
             $this->apiPool[$uid]['settings'];
     }
 
     /**
      * @param int $time
      */
-    protected function dataFinish(int $time)
+    protected function dataFinish(int $time): void
     {
         $this->persistsResult($time);
     }
@@ -255,7 +267,7 @@ trait Data
     /**
      * @param int $time
      */
-    protected function persistsResult(int $time)
+    protected function persistsResult(int $time): void
     {
         if ($this->canPersist === true) {
             foreach ($this->result['error'] as $uid => $fields) {
@@ -274,7 +286,10 @@ trait Data
                 foreach ($fields as $key => $value) {
                     $queryBuilder->set($key, $value);
                 }
-                $queryBuilder->execute();
+                try {
+                    $queryBuilder->execute();
+                } catch (DBALException $e) {
+                }
             }
             foreach ($this->result['success'] as $uid => $fields) {
                 $fields['tstamp'] = $time;
@@ -292,16 +307,19 @@ trait Data
                 foreach ($fields as $key => $value) {
                     $queryBuilder->set($key, $value);
                 }
-                $queryBuilder->execute();
+                try {
+                    $queryBuilder->execute();
+                } catch (DBALException $e) {
+                }
             }
         }
     }
 
     /**
-     * @param $result Statement|\Doctrine\DBAL\Driver\ResultStatement|int
+     * @param ResultStatement $result
      * @return mixed
      */
-    public function fetchOne($result)
+    public function fetchOne(ResultStatement $result)
     {
         if (method_exists($result, 'fetchOne')) {
             return $result->fetchOne();
@@ -310,10 +328,10 @@ trait Data
     }
 
     /**
-     * @param $result Statement|\Doctrine\DBAL\Driver\ResultStatement|int
+     * @param ResultStatement $result
      * @return mixed
      */
-    public function fetchAssociative($result)
+    public function fetchAssociative(ResultStatement $result)
     {
         if (method_exists($result, 'fetchAssociative')) {
             return $result->fetchAssociative();
@@ -322,10 +340,10 @@ trait Data
     }
 
     /**
-     * @param $result Statement|\Doctrine\DBAL\Driver\ResultStatement|int
+     * @param ResultStatement $result
      * @return mixed
      */
-    public function fetchAllAssociative($result)
+    public function fetchAllAssociative(ResultStatement $result)
     {
         if (method_exists($result, 'fetchAllAssociative')) {
             return $result->fetchAllAssociative();
