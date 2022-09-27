@@ -17,12 +17,12 @@ class LocalizerSettingsRepositoryTest extends FunctionalTestCase
     /**
      * @var ObjectManagerInterface
      */
-    protected mixed $objectManager;
+    protected ObjectManagerInterface $objectManager;
 
     /**
      * @var LocalizerSettingsRepository
      */
-    protected mixed $repository;
+    protected LocalizerSettingsRepository $repository;
 
     protected $testExtensionsToLoad = [
         'typo3conf/ext/localizer',
