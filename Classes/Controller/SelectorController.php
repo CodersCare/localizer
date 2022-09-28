@@ -532,6 +532,12 @@ class SelectorController extends AbstractController
                 $languages[$language['title'] . '_' . $language['language_isocode'] . '_' . $language['uid']] = $language;
             }
             ksort($languages);
+        } elseif (!empty($systemLanguages)) {
+            foreach ($systemLanguages as $language) {
+                $language['language_isocode'] = $language['ISOcode'];
+                $languages[$language['title'] . '_' . $language['language_isocode'] . '_' . $language['uid']] = $language;
+            }
+            ksort($languages);
         }
         $languageSelector = '<li class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu4" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .
@@ -551,7 +557,6 @@ class SelectorController extends AbstractController
             foreach ($languages as $language) {
                 if ($language['uid'] > 0 &&
                     $this->getBackendUser()->checkLanguageAccess($language['uid'])
-                    && isset($targetLanguages[$language['static_lang_isocode']])
                 ) {
                     $checked = '';
                     if (isset($this->configuration['languages'][$language['uid']]) || isset($availableLanguages[$language['uid']])) {

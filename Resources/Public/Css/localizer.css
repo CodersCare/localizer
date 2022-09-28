@@ -47,6 +47,15 @@
     margin-bottom: 0.5em;
 }
 
+.localizer-matrix-configurator .list-inline > li > .dropdown-menu > li > a {
+    padding: 3px 20px;
+    white-space: nowrap;
+}
+
+.localizer-matrix-configurator .list-inline > li > .dropdown-menu > li.active > a {
+    background: #424242;
+}
+
 .localizer-matrix-configurator .list-inline > li > .dropdown-toggle:after {
     display: none;
 }
