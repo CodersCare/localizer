@@ -64,9 +64,9 @@ define(['jquery', 'bootstrap'], function ($) {
         }
         var controlCell = row.find('.col-control')
         firstCell.attr('colspan', 1).addClass('localizerCarts').wrapInner('<button type="button" ' +
-          'class="btn btn-' + record.cssClass + '" data-toggle="tooltip" data-placement="top" ' +
+          'class="btn btn-' + record.cssClass + '" data-bs-toggle="tooltip"  data-toggle="tooltip" data-placement="top" ' +
           'data-status="status" ' +
-          'data-title="Toggle all exports">')
+          ' title="Toggle all exports">')
         if (LocalizerCart.addExportCounters(record, firstCell)) {
           LocalizerCart.addImportButtonToCell(controlCell)
         }
@@ -92,9 +92,9 @@ define(['jquery', 'bootstrap'], function ($) {
           showImportButton = true
         }
         firstCell.append(' <button type="button" ' +
-          'class="btn btn-' + values.cssClass + '" data-toggle="tooltip" data-placement="top" ' +
+          'class="btn btn-' + values.cssClass + '" data-bs-toggle="tooltip"  data-toggle="tooltip" data-placement="top" ' +
           'data-status="' + exportStatus + '" ' +
-          'data-title="Toggle ' + values.counter + ' x ' + values.label + '">' + values.counter + '</button>')
+          ' title="Toggle ' + values.counter + ' x ' + values.label + '">' + values.counter + '</button>')
       })
     }
     firstCell.wrapInner('<li></li>')
@@ -105,9 +105,9 @@ define(['jquery', 'bootstrap'], function ($) {
   LocalizerCart.addExportData = function (record, firstCell) {
     $.each(record.exportData, function (exportId, values) {
       firstCell.append('<li class="toggle-status toggle-' + values.status + ' action1-' + values.action + '"><button type="button" ' +
-        'class="btn btn-' + values.cssClass + '" data-toggle="tooltip" data-placement="top" ' +
+        'class="btn btn-' + values.cssClass + '" data-bs-toggle="tooltip"  data-toggle="tooltip" data-placement="top" ' +
         'data-uid="' + exportId + '" ' +
-        'data-title="' + values.label + '">' + values.filename + ' [' + values.label + ']</button></li>')
+        ' title="' + values.label + '">' + values.filename + ' [' + values.label + ']</button></li>')
     })
     firstCell.wrapInner('<ul></ul>')
   }
@@ -116,7 +116,7 @@ define(['jquery', 'bootstrap'], function ($) {
     cell.prepend('<div class="btn-group btn-group-import" role="group">' +
       '<a href="#" class="btn btn-warning" ' +
       'data-toggle="tooltip" data-placement="right" ' +
-      'data-title="Import all returned files"' +
+      ' title="Import all returned files"' +
       'onclick=""' +
       'data-uid="">' +
       '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-upload" data-identifier="actions-upload">' +
@@ -145,7 +145,7 @@ define(['jquery', 'bootstrap'], function ($) {
         '<div class="btn-group btn-group-import" role="group">' +
         '<a href="#" class="btn btn-warning" ' +
         'data-toggle="tooltip" data-placement="top" ' +
-        'data-title="Import this file"' +
+        ' title="Import this file"' +
         'data-uid="' + id + '">' +
         '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-upload" data-identifier="actions-upload">' +
         '<span class="icon-markup"><svg class="icon-color" role="img">' +
@@ -158,7 +158,7 @@ define(['jquery', 'bootstrap'], function ($) {
         '<a href="#" class="btn btn-info" ' +
         'onclick="' + previewOnClick + '"' +
         'data-toggle="tooltip" data-placement="top" ' +
-        'data-title="' + previewTooltip + '"' +
+        ' title="' + previewTooltip + '"' +
         'data-uid="' + id + '">' +
         '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-document-view" data-identifier="actions-document-view">' +
         '<span class="icon-markup"><svg class="icon-color" role="img">' +
@@ -179,7 +179,7 @@ define(['jquery', 'bootstrap'], function ($) {
         '</div> <div class="btn-group btn-group-scheduled" role="group">' +
         '<a href="#" class="btn btn-success" ' +
         'data-toggle="tooltip" data-placement="top" ' +
-        'data-title="Scheduled for import"' +
+        ' title="Scheduled for import"' +
         'data-uid="' + id + '">' +
         '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-document-history-open" data-identifier="actions-document-history-open">' +
         '<span class="icon-markup"><svg class="icon-color" role="img">' +
@@ -225,7 +225,7 @@ define(['jquery', 'bootstrap'], function ($) {
       li.prepend('<div class="btn-group btn-group-scheduled" role="group">' +
         '<a href="#" class="btn btn-success" ' +
         'data-toggle="tooltip" data-placement="right" ' +
-        'data-title="Scheduled for import">' +
+        ' title="Scheduled for import">' +
         '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-document-history-open" data-identifier="actions-document-history-open">' +
         '<span class="icon-markup"><svg class="icon-color" role="img">' +
         '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-history"></use>' +

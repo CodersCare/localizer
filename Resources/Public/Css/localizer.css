@@ -12,11 +12,17 @@
     white-space: nowrap;
     vertical-align: top;
     width: auto !important;
-    margin-right: 30px;
+    margin-right: 0px;
+}
+
+.localizer-matrix-configurator .input-group input,
+.localizer-matrix-configurator .input-group label {
+    display: inline-block!important;
 }
 
 .localizer-matrix-configurator .input-group .form-control-clearable {
     display: block;
+    margin-right: 30px;
 }
 
 .localizer-matrix-configurator .input-group .form-control {
@@ -25,7 +31,7 @@
 }
 
 .localizer-matrix-configurator .input-group .form-control-clearable .close {
-    top: auto;
+    top: 9px;
     bottom: auto;
     margin-top: auto;
     line-height: 32px;
@@ -36,7 +42,13 @@
 }
 
 .localizer-matrix-configurator .list-inline > li {
+    display: inline-block;
+    padding: 0 10px 0 0;
     margin-bottom: 0.5em;
+}
+
+.localizer-matrix-configurator .list-inline > li > .dropdown-toggle:after {
+    display: none;
 }
 
 .localizer-matrix-configurator ul.sys-file-metadata {

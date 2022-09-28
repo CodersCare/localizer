@@ -125,7 +125,7 @@ define(['jquery', 'bootstrap'], function ($) {
       }
     )
     if ($('.t3js-clearable').length) {
-      require(['TYPO3/CMS/Backend/jquery.clearable'], function () {
+      require(['TYPO3/CMS/Backend/Input/Clearable'], function () {
         $('.t3js-clearable').clearable()
       })
     }

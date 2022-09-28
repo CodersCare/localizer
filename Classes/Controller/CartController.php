@@ -371,7 +371,7 @@ class CartController extends AbstractController
             $this->localizerPid = (int)$this->availableLocalizers[$this->localizerId]['pid'];
         }
         $localizerSelector = '<li class="dropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
+            <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu1" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .
             $GLOBALS['LANG']->sL(
                 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf:localizer.selector'
             ) .
@@ -407,7 +407,7 @@ class CartController extends AbstractController
     {
         $availableUsers = $this->cartRepository->loadAvailableUsers();
         $userSelector = '<li class="dropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
+            <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu2" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .
             $GLOBALS['LANG']->sL(
                 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf:user.selector'
             ) .

@@ -142,7 +142,7 @@ class SelectorController extends AbstractController
         $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
         $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/DateTimePicker');
         $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerSelector');
-        $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/jquery.clearable');
+        $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/Input/Clearable');
         $this->moduleTemplate->getPageRenderer()->addCssFile(
             ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css'
         );
@@ -412,7 +412,7 @@ class SelectorController extends AbstractController
             $this->localizerId = key($this->availableLocalizers);
         }
         $localizerSelector = '<li class="dropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
+            <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu1" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .
             $GLOBALS['LANG']->sL(
                 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:localizer.selector'
             ) .
@@ -447,7 +447,7 @@ class SelectorController extends AbstractController
     {
         $availableCarts = $this->selectorRepository->loadAvailableCarts($this->localizerId);
         $cartSelector = '<li class="dropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
+            <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu2" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .
             $GLOBALS['LANG']->sL(
                 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:cart.selector'
             ) .
@@ -490,7 +490,7 @@ class SelectorController extends AbstractController
             return '';
         }
         $pageSelector = '<li class="dropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
+            <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu3" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .
             $GLOBALS['LANG']->sL(
                 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:page.selector'
             ) .
@@ -534,7 +534,7 @@ class SelectorController extends AbstractController
             ksort($languages);
         }
         $languageSelector = '<li class="dropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
+            <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu4" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .
             $GLOBALS['LANG']->sL(
                 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:languages.selector'
             ) .
@@ -586,7 +586,7 @@ class SelectorController extends AbstractController
     {
         $availableTables = $this->selectorRepository->loadAvailableTables($this->cartId);
         $tableSelector = '<li class="dropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' .
+            <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu5" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .
             $GLOBALS['LANG']->sL(
                 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:tables.selector'
             ) .
@@ -677,7 +677,7 @@ class SelectorController extends AbstractController
         }
         $icon = $this->iconFactory->getIcon('actions-calendar', Icon::SIZE_SMALL)->render();
         $dateTimeSelector = '<li class="input-group">';
-        $dateTimeSelector .= '<input type="text" data-date-type="datetime" name="configured_' . $variableName . '" id="input-configured-' . $variableName . '"' . $value . ' class="t3js-datetimepicker form-control t3js-clearable" data-toggle="tooltip" data-placement="top" data-title="Pick ' . $variableName . ' date and time" />';
+        $dateTimeSelector .= '<input type="text" data-date-type="datetime" name="configured_' . $variableName . '" id="input-configured-' . $variableName . '"' . $value . ' class="t3js-datetimepicker form-control t3js-clearable" data-bs-toggle="tooltip"  data-toggle="tooltip" data-placement="top"  title="Pick ' . $variableName . ' date and time" />';
         $dateTimeSelector .= '<label class="btn btn-default" for="input-configured-' . $variableName . '">' . $icon . '</label>';
         $dateTimeSelector .= '</li>';
         return $dateTimeSelector;
@@ -701,8 +701,8 @@ class SelectorController extends AbstractController
         $translationLocalizer .= '<thead><tr><th>&#160;</th>';
         foreach ($this->languages as $languageId => $languageInfo) {
             $translationLocalizer .= '<th scope="col" class="text-center text-nowrap language-header column-hover">' .
-                '<button class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top"
-                    data-title="Select all records for ' . $languageInfo['title'] . '&nbsp;[' . $languageInfo['language_isocode'] . ']"
+                '<button class="btn btn-default btn-sm" data-bs-toggle="tooltip"  data-toggle="tooltip" data-placement="top"
+                     title="Select all records for ' . $languageInfo['title'] . '&nbsp;[' . $languageInfo['language_isocode'] . ']"
                 >' . $this->iconFactory->getIcon($languageInfo['flagIcon'], Icon::SIZE_SMALL) . ' ' .
                 $languageInfo['language_isocode'] . '</button></th>';
         }
@@ -719,7 +719,7 @@ class SelectorController extends AbstractController
                     $placement = $counter === 0 ? 'bottom' : 'top';
                     $translationLocalizer .= '<tr class="parent-' . $table . '-' . $uid . '"><th class="active text-nowrap record-header">' .
                         '<button class="btn btn-default btn-sm" data-tableid="' . $table . '-' . $uid .
-                        '" data-toggle="tooltip" data-placement="top" data-title="Select all languages for this record">' .
+                        '" data-bs-toggle="tooltip"  data-toggle="tooltip" data-placement="top"  title="Select all languages for this record">' .
                         '<strong>' . $title . '</strong>: ' .
                         GeneralUtility::fixed_lgd_cs(
                             $record[$labelField],
@@ -764,7 +764,7 @@ class SelectorController extends AbstractController
             $status = $this->statusClasses[(int)$this->data['identifiedStatus'][$identifier]['status']]['cssClass'];
             $cells .= '<td class="' . $status . ' language-record-marker column-hover ' . (int)$this->data['identifiedStatus'][$identifier]['status'] . '">' .
                 '<div class="btn-group" data-toggle="buttons">' .
-                '<label data-toggle="tooltip" data-placement="' . $placement . '" data-title="' . $title . '" class="btn btn-' . $status . ($checked ? ' active' : '') . '">' .
+                '<label data-bs-toggle="tooltip"  data-toggle="tooltip" data-placement="' . $placement . '"  title="' . $title . '" class="btn btn-' . $status . ($checked ? ' active' : '') . '">' .
                 '<input type="checkbox" name="' . $checkBoxId . '" autocomplete="off"' . $checked . ' />&#160;' .
                 '</label>' .
                 '</div>' .
@@ -808,7 +808,7 @@ class SelectorController extends AbstractController
                     $referenceLocalizer .= '<tr class="' . $parents . ' parent-' . $table . '-' . $record['uid'] . '">
                     <td class="text-nowrap record-header">' . $level . $treeNodes .
                         '<button class="btn btn-default btn-sm" data-tableid="' . $table . '-' . $record['uid'] .
-                        '" data-toggle="tooltip" data-placement="top" data-title="Select all languages for this record">
+                        '" data-bs-toggle="tooltip"  data-toggle="tooltip" data-placement="top"  title="Select all languages for this record">
                         <strong>' . $this->translatableTables[$table] . '</strong>: ' .
                         GeneralUtility::fixed_lgd_cs(
                             $record[$labelField],
