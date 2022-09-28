@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Model\Repository;
 
+use Doctrine\DBAL\Connection as ConnectionAlias;
 use Localizationteam\Localizer\Constants;
 use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -18,6 +20,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SelectorRepository extends AbstractRepository
 {
+    /**
+     * @param int $pid
+     * @param string $table
+     * @return bool
+     */
     public function checkForRecordsOnPage(int $pid, string $table): bool
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable($table);
@@ -34,6 +41,11 @@ class SelectorRepository extends AbstractRepository
         return $count > 0;
     }
 
+    /**
+     * @param int $pid
+     * @param string $table
+     * @return mixed
+     */
     public function findRecordByPid(int $pid, string $table)
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable($table);
@@ -68,8 +80,8 @@ class SelectorRepository extends AbstractRepository
         $databaseConnection->insert(
             Constants::TABLE_LOCALIZER_CART,
             [
-                'pid' => (int)$pageId,
-                'uid_local' => (int)$localizerId,
+                'pid' => $pageId,
+                'uid_local' => $localizerId,
                 'source_locale' => 1,
                 'all_locale' => 1,
                 'crdate' => time(),
@@ -125,7 +137,7 @@ class SelectorRepository extends AbstractRepository
                 [
                     'configuration' => json_encode(
                         [
-                            'pid' => (int)$pageId,
+                            'pid' => $pageId,
                             'tstamp' => time(),
                             'tables' => $configuration['tables'],
                             'languages' => $configuration['languages'],
@@ -137,7 +149,7 @@ class SelectorRepository extends AbstractRepository
                     ),
                 ],
                 [
-                    'uid' => (int)$cartId,
+                    'uid' => $cartId,
                 ],
                 [
                     PDO::PARAM_STR,
@@ -224,7 +236,7 @@ class SelectorRepository extends AbstractRepository
                             'identifier',
                             $queryBuilder->createNamedParameter(
                                 array_keys($deleteValues),
-                                Connection::PARAM_STR_ARRAY
+                                ConnectionAlias::PARAM_STR_ARRAY
                             )
                         ),
                         $queryBuilder->expr()->eq(
@@ -260,7 +272,7 @@ class SelectorRepository extends AbstractRepository
                     ),
                     $queryBuilder->expr()->eq(
                         'cart',
-                        (int)$cartId
+                        $cartId
                     )
                 )
             )
@@ -293,10 +305,10 @@ class SelectorRepository extends AbstractRepository
                 $databaseConnection->insert(
                     Constants::TABLE_L10NMGR_CONFIGURATION,
                     [
-                        'pid' => (int)$pageId,
-                        'title' => 'Cart Configuration ' . (int)$cartId,
+                        'pid' => $pageId,
+                        'title' => 'Cart Configuration ' . $cartId,
                         'sourceLangStaticId' => (int)$localizerLanguages['source'],
-                        'filenameprefix' => 'cart_' . (int)$cartId . '_',
+                        'filenameprefix' => 'cart_' . $cartId . '_',
                         'depth' => -2,
                         'tablelist' => implode(',', array_keys($configuration['tables'])),
                         'crdate' => time(),
@@ -305,7 +317,7 @@ class SelectorRepository extends AbstractRepository
                         'pretranslatecontent' => 0,
                         'overrideexistingtranslations' => 1,
                         'sortexports' => (int)$configuration['sortexports'],
-                        'tx_localizer_id' => (int)$localizerId,
+                        'tx_localizer_id' => $localizerId,
                     ],
                     [
                         PDO::PARAM_INT,
@@ -384,9 +396,9 @@ class SelectorRepository extends AbstractRepository
                 ->update(
                     Constants::TABLE_LOCALIZER_CART,
                     [
-                        'uid_foreign' => (int)$configurationId,
-                        'status' => CONSTANTS::STATUS_CART_FINALIZED,
-                        'action' => CONSTANTS::ACTION_EXPORT_FILE,
+                        'uid_foreign' => $configurationId,
+                        'status' => Constants::STATUS_CART_FINALIZED,
+                        'action' => Constants::ACTION_EXPORT_FILE,
                         'deadline' => strtotime($deadline, time()),
                         'tstamp' => time(),
                     ],
@@ -501,7 +513,7 @@ class SelectorRepository extends AbstractRepository
                     $table,
                     $table,
                     'translations',
-                    $queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->andX(
                         $queryBuilder->expr()->eq(
                             $table . '.uid',
                             $queryBuilder->quoteIdentifier('translations.l10n_parent')
@@ -523,7 +535,7 @@ class SelectorRepository extends AbstractRepository
                     $table,
                     Constants::TABLE_CARTDATA_MM,
                     'triples',
-                    $queryBuilder->expr()->eq(
+                    (string)$queryBuilder->expr()->eq(
                         'triples.tablename',
                         $queryBuilder->createNamedParameter($table, PDO::PARAM_STR)
                     )
@@ -531,7 +543,7 @@ class SelectorRepository extends AbstractRepository
                     'triples',
                     Constants::TABLE_LOCALIZER_CART,
                     'carts',
-                    $queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->andX(
                         $queryBuilder->expr()->gt(
                             'carts.status',
                             10
@@ -549,7 +561,7 @@ class SelectorRepository extends AbstractRepository
                     $table,
                     $table,
                     'outdated',
-                    $queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->andX(
                         $queryBuilder->expr()->eq(
                             'outdated.l10n_parent',
                             $queryBuilder->quoteIdentifier($table . '.uid')
@@ -584,7 +596,7 @@ class SelectorRepository extends AbstractRepository
                     $table,
                     $table,
                     'translations',
-                    $queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->andX(
                         $queryBuilder->expr()->in(
                             'translations.pid',
                             $pageIds
@@ -606,7 +618,7 @@ class SelectorRepository extends AbstractRepository
                     $table,
                     Constants::TABLE_CARTDATA_MM,
                     'triples',
-                    $queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->andX(
                         $queryBuilder->expr()->eq(
                             'triples.tablename',
                             $queryBuilder->createNamedParameter($table, PDO::PARAM_STR)
@@ -620,7 +632,7 @@ class SelectorRepository extends AbstractRepository
                     'triples',
                     Constants::TABLE_LOCALIZER_CART,
                     'carts',
-                    $queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->andX(
                         $queryBuilder->expr()->gt(
                             'carts.status',
                             10
@@ -638,7 +650,7 @@ class SelectorRepository extends AbstractRepository
                     $table,
                     $table,
                     'outdated',
-                    $queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->andX(
                         $queryBuilder->expr()->in(
                             'outdated.pid',
                             $pageIds
@@ -681,7 +693,7 @@ class SelectorRepository extends AbstractRepository
                 $queryBuilder->andWhere(
                     $queryBuilder->expr()->gte(
                         $table . '.' . $tstampField,
-                        (int)$start
+                        $start
                     )
                 );
             }
@@ -689,7 +701,7 @@ class SelectorRepository extends AbstractRepository
                 $queryBuilder->andWhere(
                     $queryBuilder->expr()->lte(
                         $table . '.' . $tstampField,
-                        (int)$end
+                        $end
                     )
                 );
             }
@@ -701,10 +713,8 @@ class SelectorRepository extends AbstractRepository
                 $sortBy = '';
                 if (isset($GLOBALS['TCA'][$table]['ctrl']['sortby'])) {
                     $sortBy = $GLOBALS['TCA'][$table]['ctrl']['sortby'];
-                } else {
-                    if (isset($GLOBALS['TCA'][$table]['ctrl']['default_sortby'])) {
-                        $sortBy = $GLOBALS['TCA'][$table]['ctrl']['default_sortby'];
-                    }
+                } elseif (isset($GLOBALS['TCA'][$table]['ctrl']['default_sortby'])) {
+                    $sortBy = $GLOBALS['TCA'][$table]['ctrl']['default_sortby'];
                 }
                 $TSconfig = BackendUtility::getPagesTSconfig($id);
                 if (isset($TSconfig['tx_l10nmgr']) && isset($TSconfig['tx_l10nmgr']['sortexports']) && isset($TSconfig['tx_l10nmgr']['sortexports'][$table])) {
@@ -728,7 +738,7 @@ class SelectorRepository extends AbstractRepository
                     $record['localizer_status'] = 71;
                 }
                 $identifier = md5($table . '.' . $record['uid'] . '.' . $record['localizer_language']);
-                $identifiedStatus[$identifier]['status'] = $record['localizer_status'] ? $record['localizer_status'] : 10;
+                $identifiedStatus[$identifier]['status'] = $record['localizer_status'] ?: 10;
                 if (!empty($record['translated'])) {
                     $translatedLaguages = GeneralUtility::intExplode(',', $record['translated']);
                     foreach ($translatedLaguages as $languageId) {

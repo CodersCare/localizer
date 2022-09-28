@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Controller;
 
 use Localizationteam\Localizer\BackendUser;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Model\Repository\CartRepository;
+use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -24,64 +27,64 @@ class CartController extends AbstractController
     /**
      * @var int
      */
-    protected $pointer;
+    protected int $pointer;
 
     /**
      * @var string
      */
-    protected $imagemode;
+    protected string $imagemode;
 
     /**
      * @var string
      */
-    protected $table;
+    protected string $table;
 
     /**
      * @var string
      */
-    protected $search_field;
+    protected string $search_field;
 
     /**
      * @var int
      */
-    protected $search_levels;
+    protected int $search_levels;
 
     /**
      * @var int
      */
-    protected $showLimit;
+    protected int $showLimit;
 
     /**
      * @var string
      */
-    protected $returnUrl;
+    protected string $returnUrl;
 
     /**
      * @var array
      */
-    protected $cmd;
+    protected array $cmd;
 
     /**
      * @var string
      */
-    protected $cmd_table;
+    protected string $cmd_table;
 
     /**
      * @var CartRepository
      */
-    protected $cartRepository;
+    protected CartRepository $cartRepository;
 
     /**
      * The name of the module
      *
      * @var string
      */
-    protected $moduleName = 'localizer_localizercart';
+    protected string $moduleName = 'localizer_localizercart';
 
     /**
      * @var int
      */
-    protected $userId;
+    protected int $userId;
 
     /**
      * Constructor
@@ -104,7 +107,7 @@ class CartController extends AbstractController
      *
      * @todo Define visibility
      */
-    public function menuConfig()
+    public function menuConfig(): void
     {
         $this->MOD_MENU = [
             'bigControlPanel' => '',
@@ -120,16 +123,16 @@ class CartController extends AbstractController
     {
         parent::init();
         $this->userId = (int)GeneralUtility::_GP('selected_user');
-        $this->pointer = GeneralUtility::_GP('pointer');
-        $this->imagemode = GeneralUtility::_GP('imagemode');
+        $this->pointer = (int)GeneralUtility::_GP('pointer');
+        $this->imagemode = (string)GeneralUtility::_GP('imagemode');
         $_GET['table'] = Constants::TABLE_LOCALIZER_CART;
-        $this->table = GeneralUtility::_GP('table');
-        $this->search_field = GeneralUtility::_GP('search_field');
+        $this->table = (string)GeneralUtility::_GP('table');
+        $this->search_field = (string)GeneralUtility::_GP('search_field');
         $this->search_levels = (int)GeneralUtility::_GP('search_levels');
-        $this->showLimit = GeneralUtility::_GP('showLimit');
-        $this->returnUrl = GeneralUtility::sanitizeLocalUrl(GeneralUtility::_GP('returnUrl'));
-        $this->cmd = GeneralUtility::_GP('cmd');
-        $this->cmd_table = GeneralUtility::_GP('cmd_table');
+        $this->showLimit = (int)GeneralUtility::_GP('showLimit');
+        $this->returnUrl = GeneralUtility::sanitizeLocalUrl((string)GeneralUtility::_GP('returnUrl'));
+        $this->cmd = (array)GeneralUtility::_GP('cmd');
+        $this->cmd_table = (string)GeneralUtility::_GP('cmd_table');
         return [];
     }
 
@@ -148,11 +151,14 @@ class CartController extends AbstractController
         $this->MOD_SETTINGS['bigControlPanel'] = true;
         $this->MOD_SETTINGS['clipBoard'] = false;
         $this->MOD_SETTINGS['localization'] = false;
-        /** @var $dblist DatabaseRecordList */
+        /** @var DatabaseRecordList $dblist */
         $dblist = GeneralUtility::makeInstance('TYPO3\\CMS\\Recordlist\\RecordList\\DatabaseRecordList');
         $dblist->backPath = $GLOBALS['BACK_PATH'];
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        $dblist->script = $uriBuilder->buildUriFromRoute('web_list');
+        try {
+            $dblist->script = $uriBuilder->buildUriFromRoute('web_list');
+        } catch (RouteNotFoundException $e) {
+        }
         $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
         $dblist->returnUrl = $this->returnUrl;
@@ -211,7 +217,7 @@ class CartController extends AbstractController
             $dblist->start($this->id, $this->table, $this->pointer, $this->search_field, 999, $this->showLimit);
             $dblist->setDispFields();
             $dblist->generateList();
-            $listUrl = substr($dblist->listURL(), strlen($GLOBALS['BACK_PATH']));
+            $listUrl = substr($dblist->listURL(), strlen((string)$GLOBALS['BACK_PATH']));
             $this->moduleTemplate->addJavaScriptCode(
                 'localizer_cart_list',
                 '
@@ -286,7 +292,7 @@ class CartController extends AbstractController
 					return list ? list : idList;
 				}
 
-				if (top.fsMod) top.fsMod.recentIds["web"] = ' . (int)$this->id . ';
+				if (top.fsMod) top.fsMod.recentIds["web"] = ' . $this->id . ';
 			'
             );
             $this->moduleTemplate->addJavaScriptCode(
@@ -314,10 +320,8 @@ class CartController extends AbstractController
             $this->content .= '
                     </form>
                 </div>';
-        } else {
-            if ($this->localizerId) {
-                $this->content .= '<div class="error">No cart items found for Localizer in this rootline</div>';
-            }
+        } elseif ($this->localizerId) {
+            $this->content .= '<div class="error">No cart items found for Localizer in this rootline</div>';
         }
         $this->content .= '<div id="t3-modal-importscheduled" class="t3-modal t3-blr-modal t3-modal-importscheduled modal fade t3-modal-notice">
             <div class="modal-dialog">
@@ -419,7 +423,7 @@ class CartController extends AbstractController
                 }
                 $userSelector .= '<li' . $selected . '>
                     <a href="' . $url . '&id=' . $this->id . '&selected_user=' . $id . '&selected_localizer=' . $this->localizerId . '">' .
-                    ($user['realName'] ? $user['realName'] : $user['username']) .
+                    ($user['realName'] ?: $user['username']) .
                     '</a>
                 </li>';
             }
@@ -437,7 +441,6 @@ class CartController extends AbstractController
     protected function generateRecordInfo(): string
     {
         $recordInfo = $this->cartRepository->getRecordInfo($this->localizerId, $this->statusClasses, $this->userId);
-        $generatedRecordInfo = 'var localizerRecordInfo = \'' . json_encode($recordInfo) . '\';';
-        return $generatedRecordInfo;
+        return 'var localizerRecordInfo = \'' . json_encode($recordInfo) . '\';';
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Model\Repository;
 
 use Localizationteam\Localizer\Constants;
@@ -27,7 +29,7 @@ class CartRepository extends AbstractRepository
                 Constants::TABLE_BACKEND_USERS,
                 Constants::TABLE_LOCALIZER_CART,
                 'cart',
-                $queryBuilder->expr()->andX(
+                (string)$queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         Constants::TABLE_BACKEND_USERS . '.uid',
                         $queryBuilder->quoteIdentifier('cart.cruser_id')
@@ -77,7 +79,7 @@ class CartRepository extends AbstractRepository
      * @param int $id
      * @param array $classes
      * @param int $user
-     * @return array|null
+     * @return array
      */
     public function getRecordInfo(int $id, array $classes, int $user): array
     {
@@ -137,7 +139,7 @@ class CartRepository extends AbstractRepository
                         Constants::TABLE_EXPORTDATA_MM,
                         Constants::TABLE_LOCALIZER_LANGUAGE_MM,
                         'targetMM',
-                        $queryBuilder->expr()->andX(
+                        (string)$queryBuilder->expr()->andX(
                             $queryBuilder->expr()->eq(
                                 Constants::TABLE_EXPORTDATA_MM . '.uid',
                                 $queryBuilder->quoteIdentifier('targetMM.uid_local')
@@ -160,7 +162,7 @@ class CartRepository extends AbstractRepository
                         'targetMM',
                         Constants::TABLE_STATIC_LANGUAGES,
                         Constants::TABLE_STATIC_LANGUAGES,
-                        $queryBuilder->expr()->eq(
+                        (string)$queryBuilder->expr()->eq(
                             Constants::TABLE_STATIC_LANGUAGES . '.uid',
                             $queryBuilder->quoteIdentifier('targetMM.uid_foreign')
                         )
@@ -188,7 +190,7 @@ class CartRepository extends AbstractRepository
                             '_',
                             '-',
                             strtolower(
-                                $export['lg_collate_locale'] ? $export['lg_collate_locale'] : $export['lg_iso_2']
+                                $export['lg_collate_locale'] ?: $export['lg_iso_2']
                             )
                         );
                         unset($export['lg_collate_locale']);

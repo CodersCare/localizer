@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Hooks;
 
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\BackendUser;
@@ -9,7 +12,6 @@ use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\LanguageRepository;
-use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -41,10 +43,10 @@ class DataHandler
     public function processDatamap_postProcessFieldArray(
         string $status,
         string $table,
-        $id,
+        string $id,
         array &$fieldArray,
-        \TYPO3\CMS\Core\DataHandling\DataHandler &$tceMain
-    ) {
+        \TYPO3\CMS\Core\DataHandling\DataHandler $tceMain
+    ): void {
         if ($table === Constants::TABLE_LOCALIZER_SETTINGS) {
             if ($this->isSaveAction()) {
                 $currentRecord = $tceMain->recordInfo($table, $id, '*');
@@ -100,15 +102,15 @@ class DataHandler
     /**
      * @param array $incomingFieldArray
      * @param string $table
-     * @param mixed $id
+     * @param string $id
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $tceMain
      */
     public function processDatamap_preProcessFieldArray(
         array &$incomingFieldArray,
         string $table,
-        $id,
-        \TYPO3\CMS\Core\DataHandling\DataHandler &$tceMain
-    ) {
+        string $id,
+        \TYPO3\CMS\Core\DataHandling\DataHandler $tceMain
+    ): void {
         if ($table === Constants::TABLE_EXPORTDATA_MM) {
             // if all languages are selected we skip other languages
             $targetLanguagesUidList = $this->getAllTargetUids($id);
@@ -130,12 +132,12 @@ class DataHandler
     }
 
     /**
-     * @param int $settingsId
+     * @param string $settingsId
      * @return array
      */
-    protected function getAllTargetUids(int $settingsId): array
+    protected function getAllTargetUids(string $settingsId): array
     {
-        $originalValues = BackendUtility::getRecord(Constants::TABLE_EXPORTDATA_MM, $settingsId);
+        $originalValues = BackendUtility::getRecord(Constants::TABLE_EXPORTDATA_MM, (int)$settingsId);
         $languageRepository = GeneralUtility::makeInstance(LanguageRepository::class);
         return $languageRepository->getAllTargetLanguageUids($originalValues['uid_local'], Constants::TABLE_LOCALIZER_SETTINGS);
     }
@@ -147,6 +149,7 @@ class DataHandler
      * @param mixed $pObj
      *
      * @return string [type]...
+     * @throws DBALException
      */
     public function recStatInfo(array $p, $pObj): string
     {
@@ -159,22 +162,29 @@ class DataHandler
         return '';
     }
 
-    public function calcStat($p, $languageList, $noLink = false): string
+    /**
+     * @param $p
+     * @param $languageList
+     * @param bool $noLink
+     * @return string
+     * @throws DBALException
+     */
+    public function calcStat($p, $languageList, bool $noLink = false): string
     {
         $output = '';
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            'tx_l10nmgr_index'
+        );
+        $queryBuilder->getRestrictions()
+            ->removeAll();
+        if ($languageList === 0) {
+            $noLanguage = '0';
+            $languageValues = [];
+        } else {
+            $noLanguage = '1';
+            $languageValues = GeneralUtility::intExplode(',', $languageList, true);
+        }
         if ($p[0] != 'pages') {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-                'tx_l10nmgr_index'
-            );
-            $queryBuilder->getRestrictions()
-                ->removeAll();
-            if ($languageList === 0) {
-                $noLanguage = 0;
-                $languageValues = [];
-            } else {
-                $noLanguage = 1;
-                $languageValues = GeneralUtility::intExplode(',', $languageList, true);
-            }
             $result = $queryBuilder
                 ->select('*')
                 ->from('tx_l10nmgr_index')
@@ -182,7 +192,7 @@ class DataHandler
                     $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->eq(
                             'tablename',
-                            $queryBuilder->createNamedParameter($p[0], PDO::PARAM_STR)
+                            $queryBuilder->createNamedParameter($p[0])
                         ),
                         $queryBuilder->expr()->eq(
                             'recuid',
@@ -194,31 +204,18 @@ class DataHandler
                                 $languageValues
                             ),
                             $queryBuilder->expr()->eq(
-                                0,
+                                '0',
                                 $noLanguage
                             )
                         ),
                         $queryBuilder->expr()->eq(
                             'workspaces',
-                            (int)$this->getBackendUser()->workspace
+                            $this->getBackendUser()->workspace
                         )
                     )
                 )
                 ->execute();
-            $records = $this->fetchAllAssociative($result);
         } else {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-                'tx_l10nmgr_index'
-            );
-            $queryBuilder->getRestrictions()
-                ->removeAll();
-            if ($languageList === 0) {
-                $noLanguage = 0;
-                $languageValues = [];
-            } else {
-                $noLanguage = 1;
-                $languageValues = GeneralUtility::intExplode(',', $languageList, true);
-            }
             $result = $queryBuilder
                 ->select('*')
                 ->from('tx_l10nmgr_index')
@@ -226,7 +223,7 @@ class DataHandler
                     $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->eq(
                             'tablename',
-                            $queryBuilder->createNamedParameter($p[0], PDO::PARAM_STR)
+                            $queryBuilder->createNamedParameter($p[0])
                         ),
                         $queryBuilder->expr()->eq(
                             'recpid',
@@ -238,19 +235,19 @@ class DataHandler
                                 $languageValues
                             ),
                             $queryBuilder->expr()->eq(
-                                0,
+                                '0',
                                 $noLanguage
                             )
                         ),
                         $queryBuilder->expr()->eq(
                             'workspaces',
-                            (int)$this->getBackendUser()->workspace
+                            $this->getBackendUser()->workspace
                         )
                     )
                 )
                 ->execute();
-            $records = $this->fetchAllAssociative($result);
         }
+        $records = $this->fetchAllAssociative($result);
         $flags = [];
         if (is_array($records)) {
             foreach ($records as $r) {
@@ -312,7 +309,7 @@ class DataHandler
             if (!$noLink) {
                 $output = sprintf(
                     '<a href="#" onclick="%s" target="listframe">%s</a>',
-                    htmlspecialchars('parent.list_frame.location.href="' . $GLOBALS['BACK_PATH'] . $extPath . 'cm2/index.php?table=' . $p[0] . '&uid=' . $p[1] . '&languageList=' . rawurlencode($languageList) . '"; return false;'),
+                    htmlspecialchars('parent.list_frame.location.href="' . $GLOBALS['BACK_PATH'] . $extPath . 'cm2/index.php?table=' . $p[0] . '&uid=' . $p[1] . '&languageList=' . rawurlencode((string)$languageList) . '"; return false;'),
                     $output
                 );
             }

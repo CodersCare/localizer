@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Handler;
 
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\LanguageRepository;
 use Localizationteam\Localizer\Runner\SendFile;
-use PDO;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -26,7 +28,7 @@ class FileSender extends AbstractHandler
     /**
      * @var string
      */
-    protected $uploadPath = '';
+    protected string $uploadPath = '';
 
     /**
      * @param $id
@@ -44,6 +46,10 @@ class FileSender extends AbstractHandler
         }
     }
 
+    /**
+     * @return bool
+     * @throws DBALException
+     */
     protected function acquire(): bool
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
@@ -66,7 +72,7 @@ class FileSender extends AbstractHandler
                     ),
                     $queryBuilder->expr()->eq(
                         'processid',
-                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter('')
                     )
                 )
             )
@@ -95,7 +101,7 @@ class FileSender extends AbstractHandler
                     );
                 } else {
                     $localizerSettings = $this->getLocalizerSettings($row['uid_local']);
-                    if ($localizerSettings === false) {
+                    if (empty($localizerSettings)) {
                         $this->addErrorResult(
                             $row['uid'],
                             Constants::STATUS_CART_ERROR,
@@ -128,17 +134,22 @@ class FileSender extends AbstractHandler
                                 $languageRepository->getStaticLanguagesCollateLocale($targetLocalesUids, true);
                         }
                         $configuration = array_merge(
-                            (array)$localizerSettings,
+                            $localizerSettings,
                             $additionalConfiguration
                         );
                         if ((int)$row['action'] === Constants::ACTION_SEND_FILE) {
                             /** @var SendFile $runner */
                             $runner = GeneralUtility::makeInstance(SendFile::class);
-                            $runner->init($configuration);
-                            $runner->run();
+                            try {
+                                $runner->init($configuration);
+                            } catch (Exception $e) {
+                            }
+                            try {
+                                $runner->run();
+                            } catch (Exception $e) {
+                            }
                             $response = $runner->getResponse();
-                            //fixme:: improve error handling
-                            if ($response === '') {
+                            if (empty($response)) {
                                 $this->addSuccessResult(
                                     $row['uid'],
                                     Constants::STATUS_CART_FILE_SENT,
@@ -154,7 +165,7 @@ class FileSender extends AbstractHandler
 
     /**
      * @param $fileName
-     * @return bool|string
+     * @return false|string
      */
     protected function getFileAndPath($fileName)
     {
@@ -177,35 +188,38 @@ class FileSender extends AbstractHandler
      * @param array $row
      * @return int
      */
-    protected function addDeadline(array &$row): int
+    protected function addDeadline(array $row): int
     {
         $deadline = 0;
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_EXPORTDATA_MM
         );
-        $result = $queryBuilder
-            ->selectLiteral(
-                'COALESCE (
-                NULLIF(' . Constants::TABLE_EXPORTDATA_MM . '.deadline, 0), ' .
-                Constants::TABLE_LOCALIZER_CART . '.deadline
-            ) deadline'
-            )
-            ->from(Constants::TABLE_EXPORTDATA_MM)
-            ->leftJoin(
-                Constants::TABLE_EXPORTDATA_MM,
-                Constants::TABLE_LOCALIZER_CART,
-                Constants::TABLE_LOCALIZER_CART,
-                $queryBuilder->expr()->eq(
-                    Constants::TABLE_LOCALIZER_CART . '.uid_foreign',
-                    $queryBuilder->quoteIdentifier(Constants::TABLE_EXPORTDATA_MM . '.uid_foreign')
+        try {
+            $result = $queryBuilder
+                ->selectLiteral(
+                    'COALESCE (
+                    NULLIF(' . Constants::TABLE_EXPORTDATA_MM . '.deadline, 0), ' .
+                    Constants::TABLE_LOCALIZER_CART . '.deadline
+                ) deadline'
                 )
-            )->where(
-                $queryBuilder->expr()->eq(
-                    Constants::TABLE_EXPORTDATA_MM . '.uid',
-                    (int)$row['uid']
+                ->from(Constants::TABLE_EXPORTDATA_MM)
+                ->leftJoin(
+                    Constants::TABLE_EXPORTDATA_MM,
+                    Constants::TABLE_LOCALIZER_CART,
+                    Constants::TABLE_LOCALIZER_CART,
+                    (string)$queryBuilder->expr()->eq(
+                        Constants::TABLE_LOCALIZER_CART . '.uid_foreign',
+                        $queryBuilder->quoteIdentifier(Constants::TABLE_EXPORTDATA_MM . '.uid_foreign')
+                    )
+                )->where(
+                    $queryBuilder->expr()->eq(
+                        Constants::TABLE_EXPORTDATA_MM . '.uid',
+                        (int)$row['uid']
+                    )
                 )
-            )
-            ->execute();
+                ->execute();
+        } catch (DBALException $e) {
+        }
         $carts = $this->fetchAssociative($result);
 
         if (!empty($carts['deadline'])) {

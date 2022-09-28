@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Handler;
 
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Runner\RequestStatus;
-use PDO;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -38,6 +40,10 @@ class StatusRequester extends AbstractHandler
         }
     }
 
+    /**
+     * @return bool
+     * @throws DBALException
+     */
     protected function acquire(): bool
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
@@ -64,7 +70,7 @@ class StatusRequester extends AbstractHandler
                     ),
                     $queryBuilder->expr()->eq(
                         'processid',
-                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter('')
                     )
                 )
             )
@@ -83,7 +89,7 @@ class StatusRequester extends AbstractHandler
         if ($this->canRun() === true) {
             foreach ($this->data as $row) {
                 $localizerSettings = $this->getLocalizerSettings($row['uid_local']);
-                if ($localizerSettings === false) {
+                if (empty($localizerSettings)) {
                     $this->addErrorResult(
                         $row['uid'],
                         Constants::STATUS_CART_ERROR,
@@ -91,14 +97,17 @@ class StatusRequester extends AbstractHandler
                         'LOCALIZER settings (' . $row['uid_local'] . ') not found'
                     );
                 } else {
-                    $configuration = array_merge(
-                        (array)$localizerSettings,
-                        [
-                            'uid' => $row['uid'],
-                            'file' => $row['filename'],
-                            'target' => $this->getIso2ForLocale($row),
-                        ]
-                    );
+                    try {
+                        $configuration = array_merge(
+                            $localizerSettings,
+                            [
+                                'uid' => $row['uid'],
+                                'file' => $row['filename'],
+                                'target' => $this->getIso2ForLocale($row),
+                            ]
+                        );
+                    } catch (Exception $e) {
+                    }
                     /** @var RequestStatus $runner */
                     $runner = GeneralUtility::makeInstance(RequestStatus::class);
                     $runner->init($configuration);

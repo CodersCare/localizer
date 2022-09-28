@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Handler;
 
 use Exception;
@@ -18,15 +20,15 @@ abstract class AbstractHandler
     /**
      * @var string
      */
-    protected $processId = '';
+    protected string $processId = '';
     /**
      * @var bool
      */
-    private $run = false;
+    private bool $run = false;
     /**
      * @var int
      */
-    private $limit = 0;
+    private int $limit = 0;
 
     /**
      * @param int $id
@@ -34,6 +36,9 @@ abstract class AbstractHandler
      */
     abstract public function init(int $id = 1);
 
+    /**
+     * @return mixed
+     */
     abstract public function run();
 
     final public function __destruct()
@@ -51,7 +56,7 @@ abstract class AbstractHandler
     /**
      * @param int $time
      */
-    protected function releaseAcquiredItems(int $time = 0)
+    protected function releaseAcquiredItems(int $time = 0): void
     {
         if ($time == 0) {
             $time = time();
@@ -82,14 +87,17 @@ abstract class AbstractHandler
         return $this->processId;
     }
 
+    /**
+     * @return bool
+     */
     abstract protected function acquire(): bool;
 
-    final protected function initProcessId()
+    final protected function initProcessId(): void
     {
         $this->processId = md5(uniqid('', true) . (microtime(true) * 10000));
     }
 
-    final protected function initRun()
+    final protected function initRun(): void
     {
         $this->run = true;
     }
@@ -97,12 +105,12 @@ abstract class AbstractHandler
     /**
      * @param int $limit
      */
-    protected function setLimit(int $limit)
+    protected function setLimit(int $limit): void
     {
         $this->limit = $limit;
     }
 
-    final protected function resetRun()
+    final protected function resetRun(): void
     {
         $this->run = false;
     }
@@ -112,6 +120,6 @@ abstract class AbstractHandler
      */
     final protected function canRun(): bool
     {
-        return (bool)$this->run;
+        return $this->run;
     }
 }

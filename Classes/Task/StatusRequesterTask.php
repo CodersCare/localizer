@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Task;
 
-use Localizationteam\Localizer\Handler\AbstractHandler;
 use Localizationteam\Localizer\Handler\StatusRequester;
 
 /**
@@ -13,7 +14,7 @@ use Localizationteam\Localizer\Handler\StatusRequester;
 class StatusRequesterTask extends AbstractTask
 {
     /**
-     * @var AbstractHandler
+     * @var string
      */
-    protected $handlerClass = StatusRequester::class;
+    protected string $handlerClass = StatusRequester::class;
 }

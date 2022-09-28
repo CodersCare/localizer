@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Handler;
 
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\AddFileToMatrix;
 use Localizationteam\Localizer\Data;
@@ -27,37 +30,37 @@ class AutomaticExporter extends AbstractCartHandler
     /**
      * @var string
      */
-    protected $uploadPath = '';
+    protected string $uploadPath = '';
 
     /**
      * @var SelectorRepository
      */
-    protected $selectorRepository;
+    protected SelectorRepository $selectorRepository;
 
     /**
      * @var AutomaticExportRepository
      */
-    protected $automaticExportRepository;
+    protected AutomaticExportRepository $automaticExportRepository;
 
     /**
      * @var array
      */
-    protected $content = [];
+    protected array $content = [];
 
     /**
      * @var array
      */
-    protected $triples = [];
+    protected array $triples = [];
 
     /**
      * @var array
      */
-    protected $exportTree = [];
+    protected array $exportTree = [];
 
     /**
      * @var array
      */
-    protected $availableLocalizers = [];
+    protected array $availableLocalizers = [];
 
     /**
      * @param int $id
@@ -189,7 +192,7 @@ class AutomaticExporter extends AbstractCartHandler
                                 }
                             }
                         }
-                        $cartId = (int)$this->selectorRepository->createNewCart(
+                        $cartId = $this->selectorRepository->createNewCart(
                             (int)$localizer['pid'],
                             (int)$localizer['uid']
                         );
@@ -236,16 +239,19 @@ class AutomaticExporter extends AbstractCartHandler
                 // $recordExists = $selectorRepository->findRecordByPid($pid, $table);
 
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
-                $result = $queryBuilder
-                    ->select('*')
-                    ->from($table)
-                    ->where(
-                        $queryBuilder->expr()->eq(
-                            'pid',
-                            (int)$pid
+                try {
+                    $result = $queryBuilder
+                        ->select('*')
+                        ->from($table)
+                        ->where(
+                            $queryBuilder->expr()->eq(
+                                'pid',
+                                $pid
+                            )
                         )
-                    )
-                    ->execute();
+                        ->execute();
+                } catch (DBALException $e) {
+                }
                 $recordExists = $this->fetchOne($result);
                 if (!empty($recordExists)) {
                     $translatableTables[$table] = $GLOBALS['LANG']->sL($GLOBALS['TCA'][$table]['ctrl']['title']);
@@ -255,10 +261,16 @@ class AutomaticExporter extends AbstractCartHandler
         return $translatableTables;
     }
 
-    public function finish($time)
+    /**
+     * @param $time
+     */
+    public function finish($time): void
     {
     }
 
+    /**
+     * @return bool
+     */
     protected function acquire(): bool
     {
         return false;

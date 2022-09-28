@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Backend;
 
+use Doctrine\DBAL\DBALException;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
-use PDO;
 use TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -22,7 +24,7 @@ class Cart
      * @param array $params
      * @param mixed $obj
      */
-    public function filterList(array &$params, $obj)
+    public function filterList(array &$params, $obj): void
     {
         if ($obj instanceof TcaSelectItems) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
@@ -30,30 +32,33 @@ class Cart
             );
             $queryBuilder->getRestrictions()
                 ->removeAll();
-            $result = $queryBuilder
-                ->select('uid_foreign AS uid')
-                ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-                ->where(
-                    $queryBuilder->expr()->andX(
-                        $queryBuilder->expr()->eq(
-                            'uid_local',
-                            (int)$params['row']['uid']
-                        ),
-                        $queryBuilder->expr()->eq(
-                            'tablenames',
-                            $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES, PDO::PARAM_STR)
-                        ),
-                        $queryBuilder->expr()->eq(
-                            'source',
-                            $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS, PDO::PARAM_STR)
-                        ),
-                        $queryBuilder->expr()->eq(
-                            'ident',
-                            $queryBuilder->createNamedParameter('target', PDO::PARAM_STR)
+            try {
+                $result = $queryBuilder
+                    ->select('uid_foreign AS uid')
+                    ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                    ->where(
+                        $queryBuilder->expr()->andX(
+                            $queryBuilder->expr()->eq(
+                                'uid_local',
+                                (int)$params['row']['uid']
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'tablenames',
+                                $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES)
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'source',
+                                $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS)
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'ident',
+                                $queryBuilder->createNamedParameter('target')
+                            )
                         )
                     )
-                )
-                ->execute();
+                    ->execute();
+            } catch (DBALException $e) {
+            }
 
             if ($result->rowCount() > 0) {
                 $keys = [];

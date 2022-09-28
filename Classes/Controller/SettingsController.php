@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Controller;
 
+use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -18,54 +21,54 @@ class SettingsController extends AbstractController
     /**
      * @var int
      */
-    protected $pointer;
+    protected int $pointer;
 
     /**
      * @var string
      */
-    protected $imagemode;
+    protected string $imagemode;
 
     /**
      * @var string
      */
-    protected $table;
+    protected string $table;
 
     /**
      * @var string
      */
-    protected $search_field;
+    protected string $search_field;
 
     /**
      * @var int
      */
-    protected $search_levels;
+    protected int $search_levels;
 
     /**
      * @var int
      */
-    protected $showLimit;
+    protected int $showLimit;
 
     /**
      * @var string
      */
-    protected $returnUrl;
+    protected string $returnUrl;
 
     /**
      * @var array
      */
-    protected $cmd;
+    protected array $cmd;
 
     /**
      * @var string
      */
-    protected $cmd_table;
+    protected string $cmd_table;
 
     /**
      * The name of the module
      *
      * @var string
      */
-    protected $moduleName = 'localizer_localizersettings';
+    protected string $moduleName = 'localizer_localizersettings';
 
     /**
      * Constructor
@@ -88,18 +91,18 @@ class SettingsController extends AbstractController
     public function init(): array
     {
         parent::init();
-        $this->MCONF = $GLOBALS['MCONF'];
+        $this->MCONF = (array)$GLOBALS['MCONF'];
         $this->id = (int)GeneralUtility::_GP('id');
-        $this->pointer = GeneralUtility::_GP('pointer');
-        $this->imagemode = GeneralUtility::_GP('imagemode');
+        $this->pointer = (int)GeneralUtility::_GP('pointer');
+        $this->imagemode = (string)GeneralUtility::_GP('imagemode');
         $_GET['table'] = 'tx_localizer_settings';
-        $this->table = GeneralUtility::_GP('table');
-        $this->search_field = GeneralUtility::_GP('search_field');
+        $this->table = (string)GeneralUtility::_GP('table');
+        $this->search_field = (string)GeneralUtility::_GP('search_field');
         $this->search_levels = (int)GeneralUtility::_GP('search_levels');
-        $this->showLimit = GeneralUtility::_GP('showLimit');
-        $this->returnUrl = GeneralUtility::sanitizeLocalUrl(GeneralUtility::_GP('returnUrl'));
-        $this->cmd = GeneralUtility::_GP('cmd');
-        $this->cmd_table = GeneralUtility::_GP('cmd_table');
+        $this->showLimit = (int)GeneralUtility::_GP('showLimit');
+        $this->returnUrl = GeneralUtility::sanitizeLocalUrl((string)GeneralUtility::_GP('returnUrl'));
+        $this->cmd = (array)GeneralUtility::_GP('cmd');
+        $this->cmd_table = (string)GeneralUtility::_GP('cmd_table');
         return [];
     }
 
@@ -121,11 +124,14 @@ class SettingsController extends AbstractController
         } elseif ($this->modTSconfig['properties']['enableLocalizationView'] === 'deactivated') {
             $this->MOD_SETTINGS['localization'] = false;
         }
-        /** @var $dblist DatabaseRecordList */
+        /** @var DatabaseRecordList $dblist */
         $dblist = GeneralUtility::makeInstance('TYPO3\\CMS\\Recordlist\\RecordList\\DatabaseRecordList');
         $dblist->backPath = $GLOBALS['BACK_PATH'];
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        $dblist->script = $uriBuilder->buildUriFromRoute('web_list');
+        try {
+            $dblist->script = $uriBuilder->buildUriFromRoute('web_list');
+        } catch (RouteNotFoundException $e) {
+        }
         $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
         $dblist->returnUrl = $this->returnUrl;
@@ -151,7 +157,7 @@ class SettingsController extends AbstractController
         $dblist->counter++;
         $dblist->MOD_MENU = ['bigControlPanel' => '', 'clipBoard' => '', 'localization' => ''];
         $dblist->modTSconfig = $this->modTSconfig;
-        $clickTitleMode = trim($this->modTSconfig['properties']['clickTitleMode']);
+        $clickTitleMode = trim((string)$this->modTSconfig['properties']['clickTitleMode']);
         $dblist->clickTitleMode = $clickTitleMode === '' ? 'edit' : $clickTitleMode;
         $dblist->clipObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Clipboard\\Clipboard');
         $dblist->clipObj->initializeClipboard();
@@ -174,7 +180,7 @@ class SettingsController extends AbstractController
         $dblist->dontShowClipControlPanels = (!$this->MOD_SETTINGS['bigControlPanel'] && $dblist->clipObj->current == 'normal' && !$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers']);
         if ($access || ($this->id === 0 && $this->search_levels > 0 && strlen($this->search_field) > 0)) {
             if ($this->cmd == 'delete') {
-                $items = $dblist->clipObj->cleanUpCBC(GeneralUtility::_POST('CBC'), $this->cmd_table, 1);
+                $items = $dblist->clipObj->cleanUpCBC(GeneralUtility::_POST('CBC'), $this->cmd_table, true);
                 if (count($items)) {
                     $cmd = [];
                     foreach ($items as $iK => $value) {
@@ -270,7 +276,7 @@ class SettingsController extends AbstractController
 					return list ? list : idList;
 				}
 
-				if (top.fsMod) top.fsMod.recentIds["web"] = ' . (int)$this->id . ';
+				if (top.fsMod) top.fsMod.recentIds["web"] = ' . $this->id . ';
 			'
             );
         }

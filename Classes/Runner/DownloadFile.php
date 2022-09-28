@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Runner;
 
 use Exception;
@@ -17,27 +19,27 @@ class DownloadFile
     /**
      * @var ApiCalls
      */
-    protected $api;
+    protected ApiCalls $api;
 
     /**
      * @var array
      */
-    protected $processFiles;
+    protected array $processFiles;
 
     /**
      * @var array
      */
-    protected $response = [];
+    protected array $response = [];
 
     /**
      * @var string
      */
-    protected $path = '';
+    protected string $path = '';
 
     /**
      * @param array $configuration
      */
-    public function init(array $configuration)
+    public function init(array $configuration): void
     {
         if (isset($configuration['processFiles'])) {
             $this->processFiles = $configuration['processFiles'];
@@ -86,29 +88,27 @@ class DownloadFile
         }
     }
 
-    public function run($configuration)
+    /**
+     * @param $configuration
+     */
+    public function run($configuration): void
     {
         $response = [];
         switch ($configuration['type']) {
             case '0':
                 foreach ($this->processFiles as $files) {
                     try {
-                        switch ($this->api->type) {
-                            default:
-                                $zip = new ZipArchive();
-                                $file = str_replace('\\', '', $files['hotfolder']);
-                                if ($configuration['plainxmlexports']) {
-                                    if (!copy($file, $files['local'])) {
-                                        throw new Exception('File could not successfully be copied');
-                                    }
-                                } else {
-                                    if ($zip->open($file) === true) {
-                                        $zip->extractTo(dirname($files['local']));
-                                        $zip->close();
-                                    } else {
-                                        throw new Exception('File could not successfully be unzipped');
-                                    }
-                                }
+                        $zip = new ZipArchive();
+                        $file = str_replace('\\', '', $files['hotfolder']);
+                        if ($configuration['plainxmlexports']) {
+                            if (!copy($file, $files['local'])) {
+                                throw new Exception('File could not successfully be copied');
+                            }
+                        } elseif ($zip->open($file) === true) {
+                            $zip->extractTo(dirname($files['local']));
+                            $zip->close();
+                        } else {
+                            throw new Exception('File could not successfully be unzipped');
                         }
                         $response[] = [
                             'http_status_code' => '200',
@@ -139,7 +139,7 @@ class DownloadFile
      * @param string $content
      * @param string $iso2
      */
-    protected function adjustContent(string &$content, string $iso2)
+    protected function adjustContent(string &$content, string $iso2): void
     {
         $search = '<t3_targetLang>';
         $position = strpos($content, $search);
@@ -150,7 +150,7 @@ class DownloadFile
     /**
      * @return array
      */
-    public function getResponse(): string
+    public function getResponse(): array
     {
         return $this->response;
     }

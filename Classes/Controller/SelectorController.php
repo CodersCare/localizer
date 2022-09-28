@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Controller;
 
 use Exception;
@@ -24,69 +26,69 @@ class SelectorController extends AbstractController
     /**
      * @var SelectorRepository
      */
-    protected $selectorRepository;
+    protected SelectorRepository $selectorRepository;
 
     /**
      * @var IconFactory
      */
-    protected $iconFactory;
+    protected IconFactory $iconFactory;
 
     /**
      * @var array
      */
-    protected $languages = [];
+    protected array $languages = [];
 
     /**
      * @var array
      */
-    protected $configuration = [];
+    protected array $configuration = [];
 
     /**
      * @var array
      */
-    protected $translatableTables = [];
+    protected array $translatableTables = [];
 
     /**
      * @var int
      */
-    protected $cartId;
+    protected int $cartId;
 
     /**
      * @var string
      */
-    protected $cshKey;
+    protected string $cshKey;
 
     /**
      * @var array
      */
-    protected $storedTriples = [];
+    protected array $storedTriples = [];
 
     /**
      * @var array
      */
-    protected $legend = [];
+    protected array $legend = [];
 
     /**
      * @var array
      */
-    protected $cartRecord = [];
+    protected array $cartRecord = [];
 
     /**
      * @var array
      */
-    protected $data = [];
+    protected array $data = [];
 
     /**
-     * @var array
+     * @var int
      */
-    protected $tableHeaderSpan = [];
+    protected int $tableHeaderSpan = 0;
 
     /**
      * The name of the module
      *
      * @var string
      */
-    protected $moduleName = 'localizer_localizerselector';
+    protected string $moduleName = 'localizer_localizerselector';
 
     /**
      * Constructor
@@ -103,7 +105,7 @@ class SelectorController extends AbstractController
         $this->getLanguageService()->includeLLFile(
             'EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf'
         );
-        $this->backPath = $GLOBALS['BACK_PATH'];
+        $this->backPath = (string)$GLOBALS['BACK_PATH'];
         $this->cshKey = '_MOD_' . $GLOBALS['MCONF']['name'];
     }
 
@@ -495,17 +497,15 @@ class SelectorController extends AbstractController
             '<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="localizerDropdownMenu3">';
-        if (!empty($availablePages)) {
-            foreach ($availablePages as $pid => $page) {
-                $id = (int)$pid;
-                $selected = '';
-                if ($id === $this->id) {
-                    $selected = ' class="active"';
-                }
-                $pageSelector .= '<li' . $selected . '>
-                    <a href="' . $url . '&id=' . $id . '&selected_localizer=' . $this->localizerId . '&selected_cart=' . $this->cartId . '">[' . $page['pid'] . '] ' . $page['title'] . '</a>
-                </li>';
+        foreach ($availablePages as $pid => $page) {
+            $id = (int)$pid;
+            $selected = '';
+            if ($id === $this->id) {
+                $selected = ' class="active"';
             }
+            $pageSelector .= '<li' . $selected . '>
+                <a href="' . $url . '&id=' . $id . '&selected_localizer=' . $this->localizerId . '&selected_cart=' . $this->cartId . '">[' . $page['pid'] . '] ' . $page['title'] . '</a>
+            </li>';
         }
         $pageSelector .= '</ul>
             </li>';

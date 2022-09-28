@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Model\Repository;
 
 use Localizationteam\Localizer\Constants;
@@ -20,11 +22,18 @@ class LocalizerSettingsRepository extends AbstractRepository
         return $this->fetchAssociative($result);
     }
 
+    /**
+     * @param $table
+     * @return Connection
+     */
     public static function getConnectionForTable($table): Connection
     {
         return self::getConnectionPool()->getConnectionForTable($table);
     }
 
+    /**
+     * @return array
+     */
     public function loadAvailableLocalizers(): array
     {
         $localizers = $this->findAll();
@@ -37,6 +46,9 @@ class LocalizerSettingsRepository extends AbstractRepository
         return $availableLocalizers;
     }
 
+    /**
+     * @return array
+     */
     public function findAll(): array
     {
         $connection = self::getConnectionForTable(Constants::TABLE_LOCALIZER_SETTINGS);
@@ -46,10 +58,9 @@ class LocalizerSettingsRepository extends AbstractRepository
 
     /**
      * @param int $localizerId
-     * @return array|false|null
-     * @todo Make the return type an array in any case to be able to add return type
+     * @return array
      */
-    public function getLocalizerLanguages(int $localizerId)
+    public function getLocalizerLanguages(int $localizerId): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
         $queryBuilder->getRestrictions()->removeAll();
@@ -60,7 +71,7 @@ class LocalizerSettingsRepository extends AbstractRepository
                 'settings',
                 Constants::TABLE_LOCALIZER_LANGUAGE_MM,
                 'sourceMM',
-                $queryBuilder->expr()->andX(
+                (string)$queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'settings.uid',
                         $queryBuilder->quoteIdentifier('sourceMM.uid_local')
@@ -83,7 +94,7 @@ class LocalizerSettingsRepository extends AbstractRepository
                 'sourceMM',
                 Constants::TABLE_STATIC_LANGUAGES,
                 'sourceLanguage',
-                $queryBuilder->expr()->eq(
+                (string)$queryBuilder->expr()->eq(
                     'sourceLanguage.uid',
                     $queryBuilder->quoteIdentifier('sourceMM.uid_foreign')
                 )
@@ -92,7 +103,7 @@ class LocalizerSettingsRepository extends AbstractRepository
                 'settings',
                 Constants::TABLE_LOCALIZER_LANGUAGE_MM,
                 'targetMM',
-                $queryBuilder->expr()->andX(
+                (string)$queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'settings.uid',
                         $queryBuilder->quoteIdentifier('targetMM.uid_local')
@@ -115,7 +126,7 @@ class LocalizerSettingsRepository extends AbstractRepository
                 'targetMM',
                 Constants::TABLE_STATIC_LANGUAGES,
                 'targetLanguage',
-                $queryBuilder->expr()->eq(
+                (string)$queryBuilder->expr()->eq(
                     'targetLanguage.uid',
                     $queryBuilder->quoteIdentifier('targetMM.uid_foreign')
                 )
@@ -128,6 +139,6 @@ class LocalizerSettingsRepository extends AbstractRepository
             )
             ->groupBy('settings.uid')
             ->execute();
-        return $this->fetchAssociative($result);
+        return (array)$this->fetchAssociative($result);
     }
 }

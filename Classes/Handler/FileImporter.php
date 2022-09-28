@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Handler;
 
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\File;
 use Localizationteam\Localizer\Language;
-use PDO;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\CommandUtility;
@@ -41,6 +43,10 @@ class FileImporter extends AbstractHandler
         }
     }
 
+    /**
+     * @return bool
+     * @throws DBALException
+     */
     protected function acquire(): bool
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
@@ -63,7 +69,7 @@ class FileImporter extends AbstractHandler
                     ),
                     $queryBuilder->expr()->eq(
                         'processid',
-                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter('')
                     )
                 )
             )
@@ -75,7 +81,10 @@ class FileImporter extends AbstractHandler
         return $affectedRows > 0;
     }
 
-    public function run()
+    /**
+     * @throws Exception
+     */
+    public function run(): void
     {
         if ($this->canRun() === true) {
             foreach ($this->data as $row) {
@@ -89,19 +98,17 @@ class FileImporter extends AbstractHandler
                             'Expected array but could not decode response. Must get status from Localizer',
                             Constants::HANDLER_FILEDOWNLOADER_ERROR_ACTION_RESET
                         );
+                    } elseif (isset($originalResponse['files'])) {
+                        $response = $this->processImport($row, $originalResponse['files']);
+                        $this->processResponse($row['uid'], $response);
                     } else {
-                        if (isset($originalResponse['files'])) {
-                            $response = $this->processImport($row, $originalResponse['files']);
-                            $this->processResponse($row['uid'], $response);
-                        } else {
-                            $this->addErrorResult(
-                                $row['uid'],
-                                Constants::STATUS_CART_ERROR,
-                                Constants::HANDLER_FILEDOWNLOADER_ERROR_STATUS_RESET,
-                                'No information about files found in response. Must get status from Localizer',
-                                Constants::HANDLER_FILEDOWNLOADER_ERROR_ACTION_RESET
-                            );
-                        }
+                        $this->addErrorResult(
+                            $row['uid'],
+                            Constants::STATUS_CART_ERROR,
+                            Constants::HANDLER_FILEDOWNLOADER_ERROR_STATUS_RESET,
+                            'No information about files found in response. Must get status from Localizer',
+                            Constants::HANDLER_FILEDOWNLOADER_ERROR_ACTION_RESET
+                        );
                     }
                 } else {
                     $this->addErrorResult(

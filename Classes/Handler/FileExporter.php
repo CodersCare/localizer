@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Handler;
 
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\AddFileToMatrix;
 use Localizationteam\Localizer\Constants;
@@ -29,32 +32,32 @@ class FileExporter extends AbstractCartHandler
     /**
      * @var int
      */
-    protected $id;
+    protected int $id;
 
     /**
      * @var string
      */
-    protected $uploadPath = '';
+    protected string $uploadPath = '';
 
     /**
      * @var SelectorRepository
      */
-    protected $selectorRepository;
+    protected SelectorRepository $selectorRepository;
 
     /**
      * @var array
      */
-    protected $content = [];
+    protected array $content = [];
 
     /**
      * @var array
      */
-    protected $triples = [];
+    protected array $triples = [];
 
     /**
      * @var array
      */
-    protected $exportTree = [];
+    protected array $exportTree = [];
 
     /**
      * @param int $id
@@ -74,6 +77,9 @@ class FileExporter extends AbstractCartHandler
         }
     }
 
+    /**
+     * @return bool
+     */
     protected function acquire(): bool
     {
         $time = time();
@@ -92,7 +98,7 @@ class FileExporter extends AbstractCartHandler
                     'action' => Constants::ACTION_EXPORT_FILE,
                     'last_error' => null,
                     'processid' => '',
-                    'uid' => (int)$this->id,
+                    'uid' => $this->id,
                 ],
                 [
                     Connection::PARAM_INT,
@@ -103,7 +109,10 @@ class FileExporter extends AbstractCartHandler
         return $affectedRows > 0;
     }
 
-    public function run()
+    /**
+     * @throws Exception
+     */
+    public function run(): void
     {
         if ($this->canRun() === true) {
             $row = $this->data[0];
@@ -271,16 +280,19 @@ class FileExporter extends AbstractCartHandler
         );
         $queryBuilder->getRestrictions()
             ->removeAll();
-        $result = $queryBuilder
-            ->select('uid', 'translation_lang', 'filename')
-            ->from(Constants::TABLE_L10NMGR_EXPORTDATA)
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'l10ncfg_id',
-                    (int)$configurationId
+        try {
+            $result = $queryBuilder
+                ->select('uid', 'translation_lang', 'filename')
+                ->from(Constants::TABLE_L10NMGR_EXPORTDATA)
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'l10ncfg_id',
+                        $configurationId
+                    )
                 )
-            )
-            ->execute();
+                ->execute();
+        } catch (DBALException $e) {
+        }
         $rows = $this->fetchAllAssociative($result);
         if (empty($rows) === false) {
             foreach ($rows as $row) {
@@ -335,7 +347,7 @@ class FileExporter extends AbstractCartHandler
 
     /**
      * @param $fileName
-     * @return bool|string
+     * @return false|string
      */
     protected function getFileAndPath($fileName)
     {

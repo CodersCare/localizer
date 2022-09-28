@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Handler;
 
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\Constants;
-use PDO;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -27,6 +29,10 @@ class ErrorResetter extends AbstractHandler
         }
     }
 
+    /**
+     * @return bool
+     * @throws DBALException
+     */
     protected function acquire(): bool
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
@@ -46,7 +52,7 @@ class ErrorResetter extends AbstractHandler
                     ),
                     $queryBuilder->expr()->eq(
                         'processid',
-                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter('')
                     )
                 )
             )
@@ -57,7 +63,10 @@ class ErrorResetter extends AbstractHandler
         return $affectedRows > 0;
     }
 
-    public function run()
+    /**
+     * @throws DBALException
+     */
+    public function run(): void
     {
         if ($this->canRun() === true) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
@@ -75,7 +84,7 @@ class ErrorResetter extends AbstractHandler
                     ),
                     $queryBuilder->expr()->eq(
                         'processid',
-                        $queryBuilder->createNamedParameter($this->getProcessId(), PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter($this->getProcessId())
                     )
                 )
                 ->set('status', $queryBuilder->quoteIdentifier('previous_status'))

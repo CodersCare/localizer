@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer\Handler;
 
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\File;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Runner\DownloadFile;
-use PDO;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -40,6 +42,10 @@ class FileDownloader extends AbstractHandler
         }
     }
 
+    /**
+     * @return bool
+     * @throws DBALException
+     */
     protected function acquire(): bool
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
@@ -62,7 +68,7 @@ class FileDownloader extends AbstractHandler
                     ),
                     $queryBuilder->expr()->eq(
                         'processid',
-                        $queryBuilder->createNamedParameter('', PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter('')
                     )
                 )
             )
@@ -83,52 +89,48 @@ class FileDownloader extends AbstractHandler
         if ($this->canRun() === true) {
             foreach ($this->data as $row) {
                 $localizerSettings = $this->getLocalizerSettings($row['uid_local']);
-                if ($localizerSettings === false) {
+                if (empty($localizerSettings)) {
                     $this->addErrorResult(
                         $row['uid'],
                         Constants::STATUS_CART_ERROR,
                         $row['status'],
                         'LOCALIZER settings (' . $row['uid_local'] . ') not found'
                     );
-                } else {
-                    if ($row['response'] !== '') {
-                        $originalResponse = json_decode($row['response'], true);
-                        if ($originalResponse === null) {
-                            $this->addErrorResult(
-                                $row['uid'],
-                                Constants::STATUS_CART_ERROR,
-                                Constants::HANDLER_FILEDOWNLOADER_ERROR_STATUS_RESET,
-                                'Expected array but could not decode response. Must get status from Localizer',
-                                Constants::HANDLER_FILEDOWNLOADER_ERROR_ACTION_RESET
-                            );
-                        } else {
-                            if (isset($originalResponse['files'])) {
-                                $response = $this->processDownload(
-                                    $localizerSettings,
-                                    $row['filename'],
-                                    $originalResponse['files'],
-                                    $row
-                                );
-                                $this->processResponse($row['uid'], $response);
-                            } else {
-                                $this->addErrorResult(
-                                    $row['uid'],
-                                    Constants::STATUS_CART_ERROR,
-                                    Constants::HANDLER_FILEDOWNLOADER_ERROR_STATUS_RESET,
-                                    'No information about files found in response. Must get status from Localizer',
-                                    Constants::HANDLER_FILEDOWNLOADER_ERROR_ACTION_RESET
-                                );
-                            }
-                        }
+                } elseif ($row['response'] !== '') {
+                    $originalResponse = json_decode($row['response'], true);
+                    if ($originalResponse === null) {
+                        $this->addErrorResult(
+                            $row['uid'],
+                            Constants::STATUS_CART_ERROR,
+                            Constants::HANDLER_FILEDOWNLOADER_ERROR_STATUS_RESET,
+                            'Expected array but could not decode response. Must get status from Localizer',
+                            Constants::HANDLER_FILEDOWNLOADER_ERROR_ACTION_RESET
+                        );
+                    } elseif (isset($originalResponse['files'])) {
+                        $response = $this->processDownload(
+                            $localizerSettings,
+                            $row['filename'],
+                            $originalResponse['files'],
+                            $row
+                        );
+                        $this->processResponse($row['uid'], $response);
                     } else {
                         $this->addErrorResult(
                             $row['uid'],
                             Constants::STATUS_CART_ERROR,
                             Constants::HANDLER_FILEDOWNLOADER_ERROR_STATUS_RESET,
-                            'No Localizer response found. Must get status from Localizer',
+                            'No information about files found in response. Must get status from Localizer',
                             Constants::HANDLER_FILEDOWNLOADER_ERROR_ACTION_RESET
                         );
                     }
+                } else {
+                    $this->addErrorResult(
+                        $row['uid'],
+                        Constants::STATUS_CART_ERROR,
+                        Constants::HANDLER_FILEDOWNLOADER_ERROR_STATUS_RESET,
+                        'No Localizer response found. Must get status from Localizer',
+                        Constants::HANDLER_FILEDOWNLOADER_ERROR_ACTION_RESET
+                    );
                 }
             }
         }
@@ -169,8 +171,7 @@ class FileDownloader extends AbstractHandler
         $runner = GeneralUtility::makeInstance(DownloadFile::class);
         $runner->init($configuration);
         $runner->run($configuration);
-        $response = $runner->getResponse();
-        return json_decode($response, true);
+        return $runner->getResponse();
     }
 
     /**

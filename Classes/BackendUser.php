@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Localizationteam\Localizer;
 
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
