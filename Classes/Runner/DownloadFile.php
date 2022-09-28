@@ -89,9 +89,9 @@ class DownloadFile
     }
 
     /**
-     * @param $configuration
+     * @param array $configuration
      */
-    public function run($configuration): void
+    public function run(array $configuration): void
     {
         $response = [];
         switch ($configuration['type']) {

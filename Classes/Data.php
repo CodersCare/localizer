@@ -120,20 +120,17 @@ trait Data
      * @param int $uid
      * @param int $status
      * @param int $action
-     * @param string $response
+     * @param array $response
      */
-    protected function addSuccessResult(int $uid, int $status, int $action = 0, string $response = ''): void
+    protected function addSuccessResult(int $uid, int $status, int $action = 0, array $response = []): void
     {
-        if (is_array($response)) {
-            $response = json_encode($response);
-        }
         $this->result['success'][$uid] = [
             'status' => $status,
             'last_error' => null,
             'action' => $action,
         ];
-        if ($response !== '') {
-            $this->result['success'][$uid]['response'] = (string)$response;
+        if (!empty($response)) {
+            $this->result['success'][$uid]['response'] = json_encode($response);
         }
     }
 

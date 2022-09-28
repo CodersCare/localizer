@@ -182,6 +182,9 @@ class SendFile
 
     protected function setResponse(): void
     {
-        $this->response[] = $this->api->getLastError();
+        $error = $this->api->getLastError();
+        if ($error) {
+            $this->response[] = $error;
+        }
     }
 }

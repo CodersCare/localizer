@@ -143,7 +143,7 @@ class StatusRequester extends AbstractHandler
             }
             $action = Constants::ACTION_REQUEST_STATUS;
             $status = Constants::STATUS_CART_TRANSLATION_IN_PROGRESS;
-            $originalResponse = '';
+            $originalResponse = [];
             switch ($translationStatus) {
                 case Constants::API_TRANSLATION_STATUS_IN_PROGRESS:
                 case Constants::API_TRANSLATION_STATUS_WAITING:

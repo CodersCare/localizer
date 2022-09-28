@@ -101,14 +101,14 @@ class SelectorRepository extends AbstractRepository
             ]
         );
 
-        $cartId = $databaseConnection->lastInsertId(Constants::TABLE_LOCALIZER_CART);
+        $cartId = (int)$databaseConnection->lastInsertId(Constants::TABLE_LOCALIZER_CART);
         self::getConnectionPool()
             ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
             ->insert(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
             ->values(
                 [
                     'pid' => $pageId,
-                    'uid_local' => (int)$cartId,
+                    'uid_local' => $cartId,
                     'uid_foreign' => (int)$localizerLanguages['source'],
                     'tablenames' => 'static_languages',
                     'source' => Constants::TABLE_LOCALIZER_CART,
@@ -335,7 +335,7 @@ class SelectorRepository extends AbstractRepository
                         PDO::PARAM_INT,
                     ]
                 );
-                return $databaseConnection->lastInsertId(Constants::TABLE_L10NMGR_CONFIGURATION);
+                return (int)$databaseConnection->lastInsertId(Constants::TABLE_L10NMGR_CONFIGURATION);
             }
         }
         return 0;

@@ -190,7 +190,7 @@ class CartRepository extends AbstractRepository
                             '_',
                             '-',
                             strtolower(
-                                $export['lg_collate_locale'] ?: $export['lg_iso_2']
+                                (string)($export['lg_collate_locale'] ?: $export['lg_iso_2'])
                             )
                         );
                         unset($export['lg_collate_locale']);

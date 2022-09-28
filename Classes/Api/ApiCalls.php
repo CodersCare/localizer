@@ -50,12 +50,12 @@ class ApiCalls
     /**
      * @var string
      */
-    protected string $projectKey;
+    protected string $projectKey = '';
 
     /**
      * @var string
      */
-    protected string $workflow;
+    protected string $workflow = '';
 
     /**
      * @var string

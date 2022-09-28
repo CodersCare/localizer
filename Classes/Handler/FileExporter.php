@@ -302,7 +302,7 @@ class FileExporter extends AbstractCartHandler
                     $row['uid'],
                     $configurationId,
                     $row['filename'],
-                    $row['translation_lang'],
+                    (int)$row['translation_lang'],
                     Constants::ACTION_SEND_FILE
                 );
             }
