@@ -169,8 +169,7 @@ class FileDownloader extends AbstractHandler
         $runner = GeneralUtility::makeInstance(DownloadFile::class);
         $runner->init($configuration);
         $runner->run($configuration);
-        $response = $runner->getResponse();
-        return json_decode($response, true);
+        return $runner->getResponse();
     }
 
     /**

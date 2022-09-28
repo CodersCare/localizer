@@ -137,8 +137,7 @@ class FileSender extends AbstractHandler
                             $runner->init($configuration);
                             $runner->run();
                             $response = $runner->getResponse();
-                            //fixme:: improve error handling
-                            if ($response === '') {
+                            if (empty($response)) {
                                 $this->addSuccessResult(
                                     $row['uid'],
                                     Constants::STATUS_CART_FILE_SENT,
