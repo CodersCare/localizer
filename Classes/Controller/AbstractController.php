@@ -111,7 +111,7 @@ abstract class AbstractController extends BaseModule
         if (empty($this->id)) {
             $this->id = hexdec(
                 ltrim(
-                    $this->getBackendUser()->uc['BackendComponents']['States']['Pagetree']->stateHash->lastSelectedNode,
+                    (string)$this->getBackendUser()->uc['BackendComponents']['States']['Pagetree']->stateHash->lastSelectedNode,
                     'p'
                 )
             );

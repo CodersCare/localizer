@@ -86,8 +86,12 @@ define(['jquery', 'bootstrap'], function ($) {
       $(this).find('.btn').click()
       $('[data-toggle="tooltip"]').tooltip('hide')
     })
-    $('.localizer-selector-matrix .language-record-marker .btn').mouseup(function (event) {
+    $('.localizer-selector-matrix .language-record-marker .btn').click(function(event) {
+      event.stopPropagation()
+      $(this).toggleClass('active')
+    }).mouseup(function (event) {
       event.preventDefault()
+      $(this).toggleClass('active')
       var children = null
       if ($(this).hasClass('active')) {
         children = $('.parent-' + $(this).closest('tr').find('.record-header .btn').data('tableid')).find('.language-record-marker:nth-child(' + ($(this).closest('.language-record-marker').index() + 1) + ') .btn.active').not(this)
@@ -124,11 +128,6 @@ define(['jquery', 'bootstrap'], function ($) {
         $('.language-record-marker').removeClass('hover')
       }
     )
-    if ($('.t3js-clearable').length) {
-      require(['TYPO3/CMS/Backend/Input/Clearable'], function () {
-        $('.t3js-clearable').clearable()
-      })
-    }
   }
 
   $(function () {

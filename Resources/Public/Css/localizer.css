@@ -17,7 +17,7 @@
 
 .localizer-matrix-configurator .input-group input,
 .localizer-matrix-configurator .input-group label {
-    display: inline-block!important;
+    display: inline-block !important;
 }
 
 .localizer-matrix-configurator .input-group .form-control-clearable {
@@ -89,12 +89,30 @@
 .localizer-selector-matrix .language-record-marker {
     padding: 1px !important;
     width: 64px;
+    border: 1px solid #ccc;
 }
 
-.localizer-selector-matrix .language-record-marker .btn-group,
+.localizer-selector-matrix .language-record-marker .btn-group {
+    width: 100%;
+    min-height: 32px;
+    margin: 0;
+    border-radius: unset;
+}
+
 .localizer-selector-matrix .language-record-marker .btn-group .btn:first-child {
     width: 100%;
     min-height: 32px;
+    margin: 0;
+}
+
+.localizer-selector-matrix .language-record-marker .btn-group .btn:first-child:hover {
+    border-color: rgba(0, 0, 0, 0);
+}
+
+.localizer-selector-matrix .language-record-marker .btn-group .btn:first-child input {
+    display: block;
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
 }
 
 .localizer-selector-matrix .language-record-marker .btn.active:after {
@@ -111,148 +129,157 @@
 }
 
 .changed-after-translation {
-    background: #d1bdd1;
+    background-color: #d1bdd1 !important;
 }
 
 .table-hover tr:hover > .changed-after-translation,
 .table-hover tr > .changed-after-translation.hover {
-    background: #c7a3c7;
+    background-color: #c7a3c7 !important;
 }
 
 .btn-changed-after-translation {
-    background: #c7a3c7;
+    background-color: #c7a3c7 !important;
 }
 
 .localizer-legend.btn-changed-after-translation {
-    background: #a76da7 !important;
+    background-color: #a76da7 !important;
 }
 
 .active.btn-changed-after-translation,
 .table-hover tr > .hover .btn-changed-after-translation,
 .table-hover tr:hover .btn-changed-after-translation {
-    background: #a76da7;
+    background-color: #a76da7 !important;
 }
 
 .table-hover tr .btn-changed-after-translation:hover,
 .table-hover tr > .hover .active.btn-changed-after-translation,
-.table-hover tr:hover .active.btn-changed-after-translation {
-    background: #965b96;
+.table-hover tr:hover .active.btn-changed-after-translation,
+.legend-item .active.btn-changed-after-translation {
+    background-color: #965b96 !important;
 }
 
 .not-translated {
-    background: #d4bbbb;
+    background-color: #d4bbbb !important;
 }
 
 .table-hover tr:hover > .not-translated,
 .table-hover tr > .not-translated.hover {
-    background: #cb9f9f;
+    background-color: #cb9f9f !important;
 }
 
 .btn-not-translated {
-    background: #cb9f9f;
+    background-color: #cb9f9f !important;
 }
 
 .localizer-legend.btn-not-translated {
-    background: #ad6767 !important;
+    background-color: #ad6767 !important;
 }
 
 .active.btn-not-translated,
 .table-hover tr > .hover .btn-not-translated,
 .table-hover tr:hover .btn-not-translated {
-    background: #ad6767;
+    background-color: #ad6767 !important;
 }
 
 .table-hover tr .btn-not-translated:hover,
 .table-hover tr > .hover .active.btn-not-translated,
-.table-hover tr:hover .active.btn-not-translated {
-    background: #9c5555;
+.table-hover tr:hover .active.btn-not-translated,
+.legend-item .active.btn-not-translated {
+    background-color: #9c5555 !important;
 }
 
 .sent-to-translation {
-    background: #dac1ae;
+    background-color: #dac1ae !important;
 }
 
 .table-hover tr:hover > .sent-to-translation,
 .table-hover tr > .sent-to-translation.hover {
-    background: #d8ad8a;
+    background-color: #d8ad8a !important;
 }
 
 .btn-sent-to-translation {
-    background: #d8ad8a;
+    background-color: #d8ad8a !important;
 }
 
 .localizer-legend.btn-sent-to-translation {
-    background: #c17c44 !important;
+    background-color: #c17c44 !important;
 }
 
 .active.btn-sent-to-translation,
 .table-hover tr > .hover .btn-sent-to-translation,
 .table-hover tr:hover .btn-sent-to-translation {
-    background: #c17c44;
+    background-color: #c17c44 !important;
 }
 
 .table-hover tr .btn-sent-to-translation:hover,
 .table-hover tr > .hover .active.btn-sent-to-translation,
-.table-hover tr:hover .active.btn-sent-to-translation {
-    background: #a86b38;
+.table-hover tr:hover .active.btn-sent-to-translation,
+.legend-item .active.btn-sent-to-translation {
+    background-color: #a86b38 !important;
 }
 
 .back-from-translation {
-    background: #d7cda6;
+    background-color: #d7cda6 !important;
 }
 
 .table-hover tr:hover > .back-from-translation,
 .table-hover tr > .back-from-translation.hover {
-    background: #d4c37e;
+    background-color: #d4c37e !important;
 }
 
 .btn-back-from-translation {
-    background: #d4c37e;
+    background-color: #d4c37e !important;
 }
 
 .localizer-legend.btn-back-from-translation {
-    background: #b0993b !important;
+    background-color: #b0993b !important;
 }
 
 .active.btn-back-from-translation,
 .table-hover tr > .hover .btn-back-from-translation,
 .table-hover tr:hover .btn-back-from-translation {
-    background: #b0993b;
+    background-color: #b0993b !important;
 }
 
 .table-hover tr .btn-back-from-translation:hover,
 .table-hover tr > .hover .active.btn-back-from-translation,
-.table-hover tr:hover .active.btn-back-from-translation {
-    background: #927f31;
+.table-hover tr:hover .active.btn-back-from-translation,
+.legend-item .active.btn-back-from-translation {
+    background-color: #927f31 !important;
 }
 
 .translated {
-    background: #b9cab2;
+    background-color: #b9cab2 !important;
 }
 
 .table-hover tr:hover > .translated,
 .table-hover tr > .translated.hover {
-    background: #a0be94;
+    background-color: #a0be94 !important;
 }
 
 .btn-translated {
-    background: #a0be94;
+    background-color: #a0be94 !important;
 }
 
 .localizer-legend.btn-translated {
-    background: #689258 !important;
+    background-color: #689258 !important;
 }
 
 .active.btn-translated,
 .table-hover tr > .hover .btn-translated,
 .table-hover tr:hover .btn-translated {
-    background: #689258;
+    background-color: #689258 !important;
 }
 
 .table-hover tr .btn-translated:hover,
 .table-hover tr > .hover .active.btn-translated,
-.table-hover tr:hover .active.btn-translated {
-    background: #567949;
+.table-hover tr:hover .active.btn-translated,
+.legend-item .active.btn-translated {
+    background-color: #567949 !important;
+}
+
+.legend-item .btn {
+    border-color: rgba(0, 0, 0, 0);
 }
 
 #recordlist-tx_localizer_cart .table-hover tr .col-control .btn {
@@ -303,6 +330,10 @@ label.localizer-legend {
     cursor: default;
 }
 
+.localizer-matrix-configurator .legend-item input {
+    display: none;
+}
+
 #t3-modal-finalizecart .modal,
 #t3-modal-finalizecart .modal-open,
 #t3-modal-finalizecart .modal-body {
@@ -326,3 +357,6 @@ label.localizer-legend {
     display: none !important;
 }
 
+#localizer_selector .btn-info {
+    color: #fff !important;
+}

@@ -181,7 +181,7 @@ class SelectorController extends AbstractController
                 foreach ($this->legend as $legendItem) {
                     $label = $GLOBALS['LANG']->sL($legendItem['label']);
                     $legendCells .= '
-                        <td class="' . $legendItem['cssClass'] . ' hover">
+                        <td class="' . $legendItem['cssClass'] . ' legend-item hover">
                             <div class="btn-group" data-toggle="buttons">
                                 <label class="btn btn-' . $legendItem['cssClass'] . ' localizer-legend">
                                     <input type="checkbox" disabled="disabled">' . $label . '
@@ -197,7 +197,7 @@ class SelectorController extends AbstractController
             }
             $this->content .= '
             <div class="table-responsive localizer-matrix-configurator">
-                <table class="table table-striped table-bordered table-hover">
+                <table class="table table-striped table-bordered">
                     <tr>' . $legendCells . '</tr>
                 </table>
             </div>
