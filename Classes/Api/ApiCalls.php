@@ -31,8 +31,8 @@ class ApiCalls
     protected string $workflow = '';
     protected string $username;
     protected string $password;
-    protected string $outFolder;
-    protected string $inFolder;
+    protected ?string $outFolder = null;
+    protected ?string $inFolder = null;
     protected bool $plainXmlExports;
     protected string $deadline = '';
     protected int $deadlineOffset = 0;
@@ -41,7 +41,7 @@ class ApiCalls
     protected array $locales = [];
     protected string $sourceLanguage = '';
     protected string $projectInformation = '';
-    protected array $folderInformation;
+    protected ?array $folderInformation = null;
     protected string $lastError = '';
 
     public function __construct(
