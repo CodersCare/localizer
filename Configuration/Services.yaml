@@ -6,3 +6,6 @@ services:
 
   Localizationteam\Localizer\:
     resource: '../Classes/*'
+
+  Localizationteam\Localizer\Controller\SettingsController:
+    tags: [ 'backend.controller' ]
