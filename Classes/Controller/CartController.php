@@ -394,7 +394,7 @@ class CartController extends AbstractController
                     $selected = ' class="active"';
                 }
                 $localizerSelector .= '<li' . $selected . '>
-                    <a href="' . $url . '&id=' . $this->id . '&selected_localizer=' . $id . '&selected_localizerPid=' . $pid . '">' . $localizer['title'] . '</a>
+                    <a class="dropdown-item" href="' . $url . '&id=' . $this->id . '&selected_localizer=' . $id . '&selected_localizerPid=' . $pid . '">' . $localizer['title'] . '</a>
                 </li>';
             }
         }
@@ -429,7 +429,7 @@ class CartController extends AbstractController
                     $selected = ' class="active"';
                 }
                 $userSelector .= '<li' . $selected . '>
-                    <a href="' . $url . '&id=' . $this->id . '&selected_user=' . $id . '&selected_localizer=' . $this->localizerId . '">' .
+                    <a class="dropdown-item" href="' . $url . '&id=' . $this->id . '&selected_user=' . $id . '&selected_localizer=' . $this->localizerId . '">' .
                     ($user['realName'] ?: $user['username']) .
                     '</a>
                 </li>';
