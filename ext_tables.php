@@ -75,6 +75,6 @@ if (!defined('TYPO3')) {
     ]
 );
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages(
-    'tx_localizer_settings,tx_localizer_cart,tx_localizer_settings_l10n_exportdata_mm'
-);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_localizer_settings');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_localizer_cart');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_localizer_settings_l10n_exportdata_mm');

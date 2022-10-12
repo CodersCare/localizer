@@ -1,16 +1,10 @@
 <?php
 
-if (!defined('TYPO3')) {
-    die('Access denied.');
-}
-
-$l10n = 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:';
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_localizer_cart');
+defined('TYPO3') or die();
 
 return [
     'ctrl' => [
-        'title' => $l10n . 'tx_localizer_cart',
+        'title' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_cart',
         'label' => 'uid_local',
         'label_alt' => 'uid_foreign',
         'label_alt_force' => '1',
@@ -27,16 +21,23 @@ return [
     'feInterface' => '',
     'columns' => [
         'hidden' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.hidden',
+            'exclude' => true,
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.visible',
             'config' => [
                 'type' => 'check',
-                'default' => '0',
-            ],
+                'renderType' => 'checkboxToggle',
+                'items' => [
+                    [
+                        0 => '',
+                        1 => '',
+                        'invertStateDisplay' => true
+                    ]
+                ],
+            ]
         ],
         'uid_local' => [
             'exclude' => 1,
-            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.uid_local',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.uid_local',
             'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -48,7 +49,7 @@ return [
         ],
         'uid_export' => [
             'exclude' => 1,
-            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.uid_export',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.uid_export',
             'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -60,7 +61,7 @@ return [
         ],
         'uid_foreign' => [
             'exclude' => 1,
-            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.uid_foreign',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.uid_foreign',
             'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -72,7 +73,7 @@ return [
         ],
         'description' => [
             'exclude' => 1,
-            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.description',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.description',
             'config' => [
                 'type' => 'input',
                 'size' => '48',
@@ -82,7 +83,7 @@ return [
         ],
         'localizer_path' => [
             'exclude' => 1,
-            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.localizer_path',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.localizer_path',
             'config' => [
                 'type' => 'text',
                 'cols' => 80,
@@ -92,49 +93,49 @@ return [
         ],
         'status' => [
             'exclude' => 1,
-            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.0', '0'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.0', '0'],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_ADDED,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_ADDED,
                         \Localizationteam\Localizer\Constants::STATUS_CART_ADDED,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FINALIZED,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FINALIZED,
                         \Localizationteam\Localizer\Constants::STATUS_CART_FINALIZED,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_EXPORTED,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_EXPORTED,
                         \Localizationteam\Localizer\Constants::STATUS_CART_FILE_EXPORTED,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_SENT,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_SENT,
                         \Localizationteam\Localizer\Constants::STATUS_CART_FILE_SENT,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_TRANSLATION_IN_PROGRESS,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_TRANSLATION_IN_PROGRESS,
                         \Localizationteam\Localizer\Constants::STATUS_CART_TRANSLATION_IN_PROGRESS,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_TRANSLATION_FINISHED,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_TRANSLATION_FINISHED,
                         \Localizationteam\Localizer\Constants::STATUS_CART_TRANSLATION_FINISHED,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_DOWNLOADED,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_DOWNLOADED,
                         \Localizationteam\Localizer\Constants::STATUS_CART_FILE_DOWNLOADED,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_IMPORTED,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_IMPORTED,
                         \Localizationteam\Localizer\Constants::STATUS_CART_FILE_IMPORTED,
                     ],
-                    [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.100', '100'],
-                    [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-1', '-1'],
-                    [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-900', '-900'],
-                    [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-901', '-901'],
-                    [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-902', '-902'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.100', '100'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.-1', '-1'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.-900', '-900'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.-901', '-901'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.-902', '-902'],
                 ],
                 'size' => 1,
                 'maxitems' => 1,
@@ -144,49 +145,49 @@ return [
         //will only hold value if error occured
         'previous_status' => [
             'exclude' => 1,
-            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.previous_status',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.previous_status',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.0', '0'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.0', '0'],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_ADDED,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_ADDED,
                         \Localizationteam\Localizer\Constants::STATUS_CART_ADDED,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FINALIZED,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FINALIZED,
                         \Localizationteam\Localizer\Constants::STATUS_CART_FINALIZED,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_EXPORTED,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_EXPORTED,
                         \Localizationteam\Localizer\Constants::STATUS_CART_FILE_EXPORTED,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_SENT,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_SENT,
                         \Localizationteam\Localizer\Constants::STATUS_CART_FILE_SENT,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_TRANSLATION_IN_PROGRESS,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_TRANSLATION_IN_PROGRESS,
                         \Localizationteam\Localizer\Constants::STATUS_CART_TRANSLATION_IN_PROGRESS,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_TRANSLATION_FINISHED,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_TRANSLATION_FINISHED,
                         \Localizationteam\Localizer\Constants::STATUS_CART_TRANSLATION_FINISHED,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_DOWNLOADED,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_DOWNLOADED,
                         \Localizationteam\Localizer\Constants::STATUS_CART_FILE_DOWNLOADED,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_IMPORTED,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . \Localizationteam\Localizer\Constants::STATUS_CART_FILE_IMPORTED,
                         \Localizationteam\Localizer\Constants::STATUS_CART_FILE_IMPORTED,
                     ],
-                    [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.100', '100'],
-                    [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-1', '-1'],
-                    [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-900', '-900'],
-                    [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-901', '-901'],
-                    [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.status.I.-902', '-902'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.100', '100'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.-1', '-1'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.-900', '-900'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.-901', '-901'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.-902', '-902'],
                 ],
                 'size' => 1,
                 'maxitems' => 1,
@@ -195,30 +196,30 @@ return [
         ],
         'action' => [
             'exclude' => 1,
-            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.action',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.action',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.action.I.0', '0'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.action.I.0', '0'],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.action.I.' . \Localizationteam\Localizer\Constants::ACTION_EXPORT_FILE,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.action.I.' . \Localizationteam\Localizer\Constants::ACTION_EXPORT_FILE,
                         \Localizationteam\Localizer\Constants::ACTION_EXPORT_FILE,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.action.I.' . \Localizationteam\Localizer\Constants::ACTION_SEND_FILE,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.action.I.' . \Localizationteam\Localizer\Constants::ACTION_SEND_FILE,
                         \Localizationteam\Localizer\Constants::ACTION_SEND_FILE,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.action.I.' . \Localizationteam\Localizer\Constants::ACTION_REQUEST_STATUS,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.action.I.' . \Localizationteam\Localizer\Constants::ACTION_REQUEST_STATUS,
                         \Localizationteam\Localizer\Constants::ACTION_REQUEST_STATUS,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.action.I.' . \Localizationteam\Localizer\Constants::ACTION_DOWNLOAD_FILE,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.action.I.' . \Localizationteam\Localizer\Constants::ACTION_DOWNLOAD_FILE,
                         \Localizationteam\Localizer\Constants::ACTION_DOWNLOAD_FILE,
                     ],
                     [
-                        $l10n . 'tx_localizer_settings_l10n_exportdata_mm.action.I.' . \Localizationteam\Localizer\Constants::ACTION_IMPORT_FILE,
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.action.I.' . \Localizationteam\Localizer\Constants::ACTION_IMPORT_FILE,
                         \Localizationteam\Localizer\Constants::ACTION_IMPORT_FILE,
                     ],
                 ],
@@ -228,7 +229,7 @@ return [
         ],
         'configuration' => [
             'exclude' => 1,
-            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.configuration',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.configuration',
             'config' => [
                 'type' => 'text',
                 'cols' => 80,
@@ -238,7 +239,7 @@ return [
         ],
         'last_error' => [
             'exclude' => 1,
-            'label' => $l10n . 'tx_localizer_settings.last_error',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.last_error',
             'config' => [
                 'type' => 'input',
                 'size' => '48',
@@ -249,7 +250,7 @@ return [
         ],
         'deadline' => [
             'exclude' => 1,
-            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.deadline',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.deadline',
             'config' => [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
@@ -259,7 +260,7 @@ return [
         ],
         'all_locale' => [
             'exclude' => 1,
-            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.all_locale',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.all_locale',
             'config' => [
                 'type' => 'check',
                 'default' => '0',
@@ -267,7 +268,7 @@ return [
         ],
         'source_locale' => [
             'exclude' => 1,
-            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.source_locale',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.source_locale',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -285,12 +286,12 @@ return [
         ],
         'target_locale' => [
             'exclude' => 1,
-            'label' => $l10n . 'tx_localizer_settings_l10n_exportdata_mm.target_locale',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.target_locale',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingleBox',
                 'items' => [
-                    [$l10n . 'tx_localizer_settings_l10n_exportdata_mm.all_languages', '0'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.all_languages', '0'],
                 ],
                 'foreign_table' => 'static_languages',
                 'itemsProcFunc' => 'Localizationteam\Localizer\Backend\Cart->filterList',

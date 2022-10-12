@@ -1,16 +1,10 @@
 <?php
 
-if (!defined('TYPO3')) {
-    die('Access denied.');
-}
-
-$l10n = 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf';
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_localizer_settings');
+defined('TYPO3') or die();
 
 return [
     'ctrl' => [
-        'title' => $l10n . ':tx_localizer_settings',
+        'title' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings',
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -26,21 +20,28 @@ return [
     'feInterface' => '',
     'columns' => [
         'hidden' => [
-            'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.hidden',
+            'exclude' => true,
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.visible',
             'config' => [
                 'type' => 'check',
-                'default' => '0',
-            ],
+                'renderType' => 'checkboxToggle',
+                'items' => [
+                    [
+                        0 => '',
+                        1 => '',
+                        'invertStateDisplay' => true
+                    ]
+                ],
+            ]
         ],
         'type' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.type',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.type',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    [$l10n . ':tx_localizer_settings.type.I.0', '0'],
+                    ['LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.type.I.0', '0'],
                 ],
                 'size' => 1,
                 'maxitems' => 1,
@@ -48,7 +49,7 @@ return [
         ],
         'title' => [
             'exclude' => 0,
-            'label' => $l10n . ':tx_localizer_settings.title',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.title',
             'config' => [
                 'type' => 'input',
                 'size' => '48',
@@ -58,7 +59,7 @@ return [
         ],
         'description' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.description',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.description',
             'config' => [
                 'type' => 'text',
                 'cols' => '30',
@@ -67,7 +68,7 @@ return [
         ],
         'url' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.url',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.url',
             'config' => [
                 'type' => 'input',
                 'size' => '48',
@@ -78,7 +79,7 @@ return [
         ],
         'out_folder' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.folder.out',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.folder.out',
             'config' => [
                 'type' => 'input',
                 'size' => '48',
@@ -89,7 +90,7 @@ return [
         ],
         'in_folder' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.folder.in',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.folder.in',
             'config' => [
                 'type' => 'input',
                 'size' => '48',
@@ -100,7 +101,7 @@ return [
         ],
         'workflow' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.workflow',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.workflow',
             'config' => [
                 'type' => 'input',
                 'size' => '48',
@@ -110,7 +111,7 @@ return [
         ],
         'projectkey' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.projectkey',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.projectkey',
             'config' => [
                 'type' => 'input',
                 'size' => '48',
@@ -120,7 +121,7 @@ return [
         ],
         'username' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.username',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.username',
             'config' => [
                 'type' => 'input',
                 'size' => '48',
@@ -130,7 +131,7 @@ return [
         ],
         'password' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.password',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.password',
             'config' => [
                 'type' => 'input',
                 'size' => '48',
@@ -140,7 +141,7 @@ return [
         ],
         'project_settings' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.project_settings',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.project_settings',
             'config' => [
                 'type' => 'text',
                 'cols' => '48',
@@ -150,7 +151,7 @@ return [
         ],
         'deadline' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.deadline',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.deadline',
             'config' => [
                 'type' => 'check',
                 'default' => '0',
@@ -158,7 +159,7 @@ return [
         ],
         'last_error' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.last_error',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.last_error',
             'config' => [
                 'type' => 'input',
                 'size' => '48',
@@ -169,7 +170,7 @@ return [
         ],
         'l10n_cfg' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.l10n_cfg',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.l10n_cfg',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
@@ -192,7 +193,7 @@ return [
         ],
         'sortexports' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.l10nmgr_sortexports',
+            'label'   => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.l10nmgr_sortexports',
             'config'  => [
                 'type'    => 'check',
                 'default' => 1,
@@ -200,7 +201,7 @@ return [
         ],
         'plainxmlexports' => [
             'exclude' => 1,
-            'label'   => $l10n . ':tx_localizer_settings.l10nmgr_plainxmlexports',
+            'label'   => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.l10nmgr_plainxmlexports',
             'config'  => [
                 'type'    => 'check',
                 'default' => 0,
@@ -208,12 +209,12 @@ return [
         ],
         'allow_adding_to_export' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.allow_adding_to_export',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.allow_adding_to_export',
             'config' => [
                 'type' => 'check',
                 'items' => [
                     [
-                        $l10n . ':tx_localizer_settings.allow_adding_to_export.allow',
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.allow_adding_to_export.allow',
                         '',
                     ],
                 ],
@@ -221,12 +222,12 @@ return [
         ],
         'collect_pages_marked_for_export' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.collect_pages_marked_for_export',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.collect_pages_marked_for_export',
             'config' => [
                 'type' => 'check',
                 'items' => [
                     [
-                        $l10n . ':tx_localizer_settings.collect_pages_marked_for_export.collect',
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.collect_pages_marked_for_export.collect',
                         '',
                     ],
                 ],
@@ -234,7 +235,7 @@ return [
         ],
         'automatic_export_minimum_age' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.automatic_export_minimum_age',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.automatic_export_minimum_age',
             'config' => [
                 'type' => 'input',
                 'size' => '10',
@@ -243,7 +244,7 @@ return [
         ],
         'automatic_export_pages' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.automatic_export_pages',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.automatic_export_pages',
             'config' => [
                 'type' => 'select',
                 'foreign_table' => 'pages',
@@ -256,7 +257,7 @@ return [
         ],
         'source_locale' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.source_locale',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.source_locale',
             'config' => [
                 'type' => 'select',
                 'foreign_table' => 'static_languages',
@@ -275,7 +276,7 @@ return [
         ],
         'target_locale' => [
             'exclude' => 1,
-            'label' => $l10n . ':tx_localizer_settings.target_locale',
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.target_locale',
             'config' => [
                 'type' => 'select',
                 'foreign_table' => 'static_languages',
