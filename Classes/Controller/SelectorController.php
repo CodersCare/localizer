@@ -165,12 +165,6 @@ class SelectorController extends AbstractController
             } elseif ($this->modTSconfig['properties']['enableLocalizationView'] === 'deactivated') {
                 $this->MOD_SETTINGS['localization'] = false;
             }
-            /** @var DatabaseRecordList $dblist */
-            $dblist = GeneralUtility::makeInstance('TYPO3\\CMS\\Recordlist\\RecordList\\DatabaseRecordList');
-            $dblist->backPath = $GLOBALS['BACK_PATH'];
-            $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-            $dblist->script = $uriBuilder->buildUriFromRoute('web_list', []);
-            $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
             $header = 'LOCALIZER Selector';
             if (isset($this->pageinfo['title'])) {
                 $header .= ': ';
@@ -203,7 +197,7 @@ class SelectorController extends AbstractController
             </div>
             ';
             if ($this->id > 0) {
-                $this->content .= '<form action="' . htmlspecialchars($dblist->listURL()) .
+                $this->content .= '<form action="' . htmlspecialchars($this->formUrl()) .
                     '" method="post" class="localizer_selector" id="localizer_selector">
                 <input type="hidden" name="selected_deadline" value="0" />
                 <input type="hidden" name="selected_localizer" value="' . $this->localizerId . '" />
@@ -220,7 +214,7 @@ class SelectorController extends AbstractController
                     $this->exportConfiguredRecords();
                     $this->cartId = 0;
                 }
-                $this->content .= $this->getLocalizerConfigurator($dblist->listURL());
+                $this->content .= $this->getLocalizerConfigurator($this->formUrl());
                 if ($this->cartId > 0 && !empty(GeneralUtility::_GP('configuratorStore'))
                     && empty(GeneralUtility::_GP('configuratorFinalize'))
                 ) {
@@ -298,6 +292,15 @@ class SelectorController extends AbstractController
                 </div>
             </div>';
         }
+    }
+
+    /**
+     * A URL pointing to this module used for the form action attribute.
+     */
+    protected function formUrl(): string
+    {
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        return (string)$uriBuilder->buildUriFromRoute('localizer_localizerselector');
     }
 
     /**
