@@ -10,6 +10,8 @@ use Localizationteam\Localizer\Model\Repository\CartRepository;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -159,7 +161,12 @@ class CartController extends AbstractController
             $dblist->script = $uriBuilder->buildUriFromRoute('web_list');
         } catch (RouteNotFoundException $e) {
         }
-        $dblist->calcPerms = $this->getBackendUser()->calcPerms($this->pageinfo);
+        $permissionBits = $this->getBackendUser()->calcPerms($this->pageinfo);
+        if ((new Typo3Version())->getMajorVersion() > 10) {
+            $dblist->calcPerms = new Permission($permissionBits);
+        } else {
+            $dblist->calcPerms = $permissionBits;
+        }
         $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
         $dblist->returnUrl = $this->returnUrl;
         $dblist->allFields = $this->MOD_SETTINGS['bigControlPanel'] || $this->table ? 1 : 0;
