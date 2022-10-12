@@ -185,6 +185,7 @@ class SettingsController extends AbstractController
         $dblist->clipObj->cleanCurrent();
         $dblist->clipObj->endClipboard();
         $dblist->dontShowClipControlPanels = (!$this->MOD_SETTINGS['bigControlPanel'] && $dblist->clipObj->current == 'normal' && !$this->modTSconfig['properties']['showClipControlPanelsDespiteOfCMlayers']);
+        $HTMLCode = '';
         if ($access || ($this->id === 0 && $this->search_levels > 0 && strlen($this->search_field) > 0)) {
             if ($this->cmd == 'delete') {
                 $items = $dblist->clipObj->cleanUpCBC(GeneralUtility::_POST('CBC'), $this->cmd_table, true);
@@ -293,10 +294,11 @@ class SettingsController extends AbstractController
         }
         $this->content = $this->moduleTemplate->header($header . $this->pageinfo['title']);
         if ($this->id > 0) {
+            $dbListHTMLcode = property_exists($dblist, 'HTMLcode') ? $dblist->HTMLcode : $HTMLCode;
             $this->content .= '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" name="dblistForm">';
-            $this->content .= $dblist->HTMLcode;
+            $this->content .= $dbListHTMLcode;
             $this->content .= '<input type="hidden" name="cmd_table" /><input type="hidden" name="cmd" /></form>';
-            if ($dblist->HTMLcode) {
+            if ($dbListHTMLcode) {
                 if ($dblist->table) {
                     $this->content .= $dblist->fieldSelectBox($dblist->table);
                 }
