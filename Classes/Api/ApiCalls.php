@@ -22,122 +22,28 @@ class ApiCalls
 {
     use BackendUser;
 
-    /**
-     * @var string
-     */
     public string $type;
-
-    /**
-     * @var string
-     */
     protected string $connectorName;
-
-    /**
-     * @var string
-     */
     protected string $connectorVersion;
-
-    /**
-     * @var string
-     */
     protected string $token = '';
-
-    /**
-     * @var string
-     */
     protected string $url;
-
-    /**
-     * @var string
-     */
     protected string $projectKey = '';
-
-    /**
-     * @var string
-     */
     protected string $workflow = '';
-
-    /**
-     * @var string
-     */
     protected string $username;
-
-    /**
-     * @var string
-     */
     protected string $password;
-
-    /**
-     * @var string
-     */
     protected string $outFolder;
-
-    /**
-     * @var string
-     */
     protected string $inFolder;
-
-    /**
-     * @var bool
-     */
     protected bool $plainXmlExports;
-
-    /**
-     * @var string
-     */
     protected string $deadline = '';
-
-    /**
-     * @var int
-     */
     protected int $deadlineOffset = 0;
-
-    /**
-     * @var array
-     */
     protected array $metaData = [];
-
-    /**
-     * @var array
-     */
     protected array $projectLanguages;
-
-    /**
-     * @var array
-     */
     protected array $locales = [];
-
-    /**
-     * @var string
-     */
     protected string $sourceLanguage = '';
-
-    /**
-     * @var string
-     */
     protected string $projectInformation = '';
-
-    /**
-     * @var array
-     */
     protected array $folderInformation;
-
-    /**
-     * @var string
-     */
     protected string $lastError = '';
 
-    /**
-     * @param string $type
-     * @param string $url
-     * @param string $workflow
-     * @param string $projectKey
-     * @param string $username
-     * @param string $password
-     * @param string $outFolder
-     * @param string $inFolder
-     * @param bool $plainXmlExports
-     */
     public function __construct(
         string $type,
         string $url = '',
@@ -162,9 +68,6 @@ class ApiCalls
         $this->setPlainXmlExports($plainXmlExports);
     }
 
-    /**
-     * @param string $url
-     */
     public function setUrl(string $url): void
     {
         if ($url !== '') {
@@ -172,9 +75,6 @@ class ApiCalls
         }
     }
 
-    /**
-     * @param string $workflow
-     */
     public function setWorkflow(string $workflow): void
     {
         if ($workflow !== '') {
@@ -182,9 +82,6 @@ class ApiCalls
         }
     }
 
-    /**
-     * @param string $projectKey
-     */
     public function setProjectKey(string $projectKey): void
     {
         if ($projectKey !== '') {
@@ -192,9 +89,6 @@ class ApiCalls
         }
     }
 
-    /**
-     * @param string $username
-     */
     public function setUsername(string $username): void
     {
         if ($username !== '') {
@@ -202,9 +96,6 @@ class ApiCalls
         }
     }
 
-    /**
-     * @param string $password
-     */
     public function setPassword(string $password): void
     {
         if ($password !== '') {
@@ -212,9 +103,6 @@ class ApiCalls
         }
     }
 
-    /**
-     * @param string $outFolder
-     */
     public function setOutFolder(string $outFolder): void
     {
         if ($outFolder !== '') {
@@ -222,9 +110,6 @@ class ApiCalls
         }
     }
 
-    /**
-     * @param string $inFolder
-     */
     public function setInFolder(string $inFolder): void
     {
         if ($inFolder !== '') {
@@ -232,9 +117,6 @@ class ApiCalls
         }
     }
 
-    /**
-     * @param bool $plainXmlExports
-     */
     public function setPlainXmlExports(bool $plainXmlExports): void
     {
         $this->plainXmlExports = $plainXmlExports;
@@ -242,8 +124,6 @@ class ApiCalls
 
     /**
      * Sets a different connector name.
-     *
-     * @param string $connectorName
      */
     public function setConnectorName(string $connectorName): void
     {
@@ -252,8 +132,6 @@ class ApiCalls
 
     /**
      * Sets a different version for the connector
-     *
-     * @param string $connectorVersion
      */
     public function setConnectorVersion(string $connectorVersion): void
     {
@@ -262,16 +140,12 @@ class ApiCalls
 
     /**
      * returns a valid token if connection is established
-     * @return string
      */
     public function getToken(): string
     {
         return $this->token;
     }
 
-    /**
-     * @param string $token
-     */
     public function setToken(string $token): void
     {
         if ($token !== '') {
@@ -296,7 +170,7 @@ class ApiCalls
      *
      * @param mixed|null $time
      */
-    public function setDeadline(mixed $time = null): void
+    public function setDeadline($time = null): void
     {
         if ($time == 0) { // only weak check as a string will cast to 0!!!
             $this->resetDeadline();
@@ -318,9 +192,6 @@ class ApiCalls
         $this->deadline = '';
     }
 
-    /**
-     * @return int
-     */
     protected function getDefaultDeadlineOffset(): int
     {
         if ($this->deadlineOffset == 0 || $this->deadlineOffset < 0) {
@@ -329,9 +200,6 @@ class ApiCalls
         return $this->deadlineOffset;
     }
 
-    /**
-     * @param int $offset
-     */
     public function setDefaultDeadlineOffset(int $offset = 0): void
     {
         $this->deadlineOffset = $offset;
@@ -365,9 +233,6 @@ class ApiCalls
         return $asJson === true ? json_encode($this->folderInformation) : $this->folderInformation;
     }
 
-    /**
-     * @param array $metaData
-     */
     public function setMetaData(array $metaData): void
     {
         $this->metaData = $metaData;
@@ -553,25 +418,16 @@ class ApiCalls
         return count($instructions) > 0 ? $instructions : false;
     }
 
-    /**
-     * @return bool
-     */
     protected function isDeadlineSet(): bool
     {
         return $this->deadline !== '';
     }
 
-    /**
-     * @return bool
-     */
     protected function isLocalesSet(): bool
     {
         return count($this->locales) > 0;
     }
 
-    /**
-     * @return bool
-     */
     protected function hasMetaData(): bool
     {
         return count($this->metaData) > 0;
@@ -596,9 +452,6 @@ class ApiCalls
      * Checks the localizer settings like url, project key, login and password.
      * By default will close connection after check.
      * If there is any existing connction at checktime this will be closed prior to check
-     *
-     * @return bool
-     * @throws Exception
      */
     public function areSettingsValid(): bool
     {
