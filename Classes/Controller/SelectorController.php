@@ -267,7 +267,7 @@ class SelectorController extends AbstractController
             }
             $this->content .= '</form>';
             // @todo Use TYPO3 Modal API for this.
-            $this->content .= '<div id="t3-modal-finalizecart" class="t3-modal t3-blr-modal t3-modal-finalizecart modal fade t3-modal-notice">
+            $this->content .= '<div id="t3-modal-finalizecart" class="modal-size-medium t3-modal t3-blr-modal t3-modal-finalizecart modal fade t3-modal-notice">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
