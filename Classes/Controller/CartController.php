@@ -195,7 +195,7 @@ class CartController extends AbstractController
             foreach ($this->legend as $legendItem) {
                 $label = $GLOBALS['LANG']->sL($legendItem['label']);
                 $legendCells .= '
-                        <td class="' . $legendItem['cssClass'] . ' hover">
+                        <td class="' . $legendItem['cssClass'] . ' legend-item hover">
                             <div class="btn-group" data-toggle="buttons">
                                 <label class="btn btn-' . $legendItem['cssClass'] . ' localizer-legend">
                                     <input type="checkbox" disabled="disabled">' . $label . '
