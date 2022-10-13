@@ -266,6 +266,7 @@ class SelectorController extends AbstractController
                     '</div>';
             }
             $this->content .= '</form>';
+            // @todo Use TYPO3 Modal API for this.
             $this->content .= '<div id="t3-modal-finalizecart" class="t3-modal t3-blr-modal t3-modal-finalizecart modal fade t3-modal-notice">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -285,7 +286,7 @@ class SelectorController extends AbstractController
                             <p>Press "Finalize" to proceed, otherwise press "Cancel".</p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>
                             <a id="finalize-cart-submit" class="btn btn-success success">Finalize</a>
                         </div>
                     </div>
@@ -392,7 +393,7 @@ class SelectorController extends AbstractController
             && empty(GeneralUtility::_GP('configuratorFinalize'))
         ) {
             $localizerConfigurator .= '<li><button class="btn btn-success" type="button"
-                data-toggle="modal" data-target="#t3-modal-finalizecart">' .
+                data-toggle="modal" data-bs-toggle="modal" data-target="#t3-modal-finalizecart" data-bs-target="#t3-modal-finalizecart">' .
                 $GLOBALS['LANG']->sL(
                     'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:finalize'
                 ) .

@@ -11,11 +11,13 @@ use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Console\CommandRegistry;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\CommandUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -141,10 +143,9 @@ class FileExporter extends AbstractCartHandler
                             );
                             if ($configuredLanguageExport) {
                                 $output = $this->processExport($configurationId, $language);
-
-                                if ($output['http_status_code'] > 0) {
+                                if ($output['exitCode'] > 0) {
                                     throw new Exception(
-                                        'Failed export to file with: ' . $output['response']['command'] . '. Output was: ' . $output['response']['output'],
+                                        'Failed export to file with: "' . $output['command'] . '". Exit code was: "' . $output['exitCode'] .'". Output was: "' . $output['output'] . '".',
                                         1625730835
                                     );
                                 }
@@ -235,36 +236,26 @@ class FileExporter extends AbstractCartHandler
         }
     }
 
-    /**
-     * @param int $configurationId
-     * @param int $language
-     * @return array
-     */
     protected function processExport(int $configurationId, int $language): array
     {
-        $context = Environment::getContext()->__toString();
-        $command = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
-            CommandUtility::getCommand('php') . ' ' .
-            Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3' .
-            ' l10nmanager:export' .
-            ' -c ' . CommandUtility::escapeShellArgument($configurationId) .
-            ' -t ' . CommandUtility::escapeShellArgument($language);
+        $commandRegistry = GeneralUtility::makeInstance(CommandRegistry::class);
+        $l10nmanagerExportCommand = $commandRegistry->getCommandByIdentifier('l10nmanager:export');
+        $arguments = [
+            '-c' => (string)$configurationId,
+            '-t' => (string)$language,
+        ];
         if ($this->getBackendUser()->user['realName']) {
-            $command .= ' --customer ' . CommandUtility::escapeShellArgument($this->getBackendUser()->user['realName']);
+            $arguments['--customer'] = $this->getBackendUser()->user['realName'];
         }
-        $command .= ' 2>&1';
-
-        $statusCode = 200;
-        $output = '';
-        $action = CommandUtility::exec($command, $output, $statusCode);
+        $input = new ArrayInput($arguments);
+        $input->setInteractive(false);
+        $output = new BufferedOutput();
+        $result = $l10nmanagerExportCommand->run($input, $output);
 
         return [
-            'http_status_code' => $statusCode,
-            'response' => [
-                'action' => $action,
-                'command' => $command,
-                'output' => $output,
-            ],
+            'exitCode' => $result,
+            'command' => 'l10nmanager:export ' . $input,
+            'output' => $output->fetch()
         ];
     }
 
