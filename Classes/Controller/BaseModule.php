@@ -17,7 +17,6 @@ namespace Localizationteam\Localizer\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Backend\Template\DocumentTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Exception;
@@ -133,11 +132,6 @@ class BaseModule
      * @var string
      */
     public string $content = '';
-
-    /**
-     * @var DocumentTemplate
-     */
-    public DocumentTemplate $doc;
 
     /**
      * May contain an instance of a 'Function menu module' which connects to this backend module.
