@@ -154,7 +154,7 @@ class CartController extends AbstractController
         $this->MOD_SETTINGS['clipBoard'] = false;
         $this->MOD_SETTINGS['localization'] = false;
         /** @var DatabaseRecordList $dblist */
-        $dblist = GeneralUtility::makeInstance('TYPO3\\CMS\\Recordlist\\RecordList\\DatabaseRecordList');
+        $dblist = GeneralUtility::makeInstance(DatabaseRecordList::class);
         $dblist->backPath = $GLOBALS['BACK_PATH'];
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         try {
@@ -219,98 +219,21 @@ class CartController extends AbstractController
 
         $this->content .= '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" name="dblistForm">';
         $this->content .= $this->getCartConfigurator($dblist->listURL());
+        $HTMLcode = '';
         if ($access || ($this->id === 0 && $this->search_levels > 0 && strlen($this->search_field) > 0)) {
             $this->pointer = MathUtility::forceIntegerInRange($this->pointer, 0, 100000);
             $dblist->start($this->id, $this->table, $this->pointer, $this->search_field, 999, $this->showLimit);
             $dblist->setDispFields();
-            $dblist->generateList();
-            $listUrl = substr($dblist->listURL(), strlen((string)$GLOBALS['BACK_PATH']));
-            $this->moduleTemplate->addJavaScriptCode(
-                'localizer_cart_list',
-                '
-				function jumpExt(URL,anchor) {	//
-					var anc = anchor?anchor:"";
-					window.location.href = URL+(T3_THIS_LOCATION?"&returnUrl="+T3_THIS_LOCATION:"")+anc;
-					return false;
-				}
-				function jumpSelf(URL) {	//
-					window.location.href = URL+(T3_RETURN_URL?"&returnUrl="+T3_RETURN_URL:"");
-					return false;
-				}
-
-				function setHighlight(id) {	//
-					top.fsMod.recentIds["web"]=id;
-					top.fsMod.navFrameHighlightedID["web"]="pages"+id+"_"+top.fsMod.currentBank;	// For highlighting
-
-					if (top.content && top.content.nav_frame && top.content.nav_frame.refresh_nav) {
-						top.content.nav_frame.refresh_nav();
-					}
-				}
-				' . $this->moduleTemplate->redirectUrls($listUrl) . '
-                    // checkOffCB()
-                function checkOffCB(listOfCBnames, link) {	//
-                    var checkBoxes, flag, i;
-                    var checkBoxes = listOfCBnames.split(",");
-                    if (link.rel === "") {
-                        link.rel = "allChecked";
-                        flag = true;
-                    } else {
-                        link.rel = "";
-                        flag = false;
-                    }
-                    for (i = 0; i < checkBoxes.length; i++) {
-                        setcbValue(checkBoxes[i], flag);
-                    }
-                }
-                    // cbValue()
-                function cbValue(CBname) {	//
-                    var CBfullName = "CBC["+CBname+"]";
-                    return (document.dblistForm[CBfullName] && document.dblistForm[CBfullName].checked ? 1 : 0);
-                }
-                    // setcbValue()
-                function setcbValue(CBname,flag) {	//
-                    CBfullName = "CBC["+CBname+"]";
-                    if(document.dblistForm[CBfullName]) {
-                        document.dblistForm[CBfullName].checked = flag ? "on" : 0;
-                    }
-                }
-				function editRecords(table,idList,addParams,CBflag) {	//
-					window.location.href="' . $GLOBALS['BACK_PATH'] . 'alt_doc.php?returnUrl=' . rawurlencode(
-                    GeneralUtility::getIndpEnv('REQUEST_URI')
-                ) . '&edit["+table+"]["+idList+"]=edit"+addParams;
-				}
-				function editList(table,idList) {	//
-					var list="";
-
-						// Checking how many is checked, how many is not
-					var pointer=0;
-					var pos = idList.indexOf(",");
-					while (pos!=-1) {
-						if (cbValue(table+"|"+idList.substr(pointer,pos-pointer))) {
-							list+=idList.substr(pointer,pos-pointer)+",";
-						}
-						pointer=pos+1;
-						pos = idList.indexOf(",",pointer);
-					}
-					if (cbValue(table+"|"+idList.substr(pointer))) {
-						list+=idList.substr(pointer)+",";
-					}
-
-					return list ? list : idList;
-				}
-
-				if (top.fsMod) top.fsMod.recentIds["web"] = ' . $this->id . ';
-			'
-            );
+            $HTMLcode = $dblist->generateList();
             $this->moduleTemplate->addJavaScriptCode(
                 'lcoalizer_cart_record_info',
                 $this->generateRecordInfo()
             );
         }
+        $HTMLcode = property_exists($dblist, 'HTMLcode') ? $dblist->HTMLcode : $HTMLcode;
         if ($this->localizerId) {
-            $this->content .= $dblist->HTMLcode;
+            $this->content .= $HTMLcode;
         } else {
-            $dblist->HTMLcode = '';
             $this->content .= '<div class="alert alert-warning">' .
                 $GLOBALS['LANG']->sL(
                     'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf:localizer.select'
@@ -320,10 +243,7 @@ class CartController extends AbstractController
         $this->content .= '<input type="hidden" name="selected_localizer" value="' . $this->localizerId . '" />
             <input type="hidden" name="selected_localizerPid" value="' . $this->localizerPid . '" />';
         $this->content .= '<input type="hidden" name="cmd_table" /><input type="hidden" name="cmd" /></form>';
-        if ($dblist->HTMLcode) {
-            if ($dblist->table) {
-                $this->content .= $dblist->fieldSelectBox($dblist->table);
-            }
+        if ($HTMLcode) {
             $this->content .= '
                     </form>
                 </div>';
