@@ -10,9 +10,11 @@ use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\File;
 use Localizationteam\Localizer\Language;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
+use TYPO3\CMS\Core\Console\CommandRegistry;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\CommandUtility;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -132,32 +134,30 @@ class FileImporter extends AbstractHandler
     protected function processImport(array $row, array $files): array
     {
         $response = [];
-        foreach ($files as $fileStatus) {
-            $instructionXmlPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/in/instruction.xml';
-            if (file_exists($instructionXmlPath)) {
-                unlink($instructionXmlPath);
-            }
-            $iso2 = $this->getIso2ForLocale($row);
-            $fileNameAndPath = $this->getLocalFilename($row['filename'], $iso2);
-            $context = Environment::getContext()->__toString();
-            $command = ($context ? ('TYPO3_CONTEXT=' . $context . ' ') : '') .
-                CommandUtility::getCommand('php') . ' ' .
-                Environment::getPublicPath() . '/typo3/sysext/core/bin/typo3 ' .
-                'l10nmanager:import' .
-                ' -t importFile' .
-                ' --file ' . CommandUtility::escapeShellArgument($fileNameAndPath) . ' 2>&1';
-            $statusCode = 200;
-            $output = '';
-            $action = CommandUtility::exec($command, $output, $statusCode);
-            $response[] = [
-                'http_status_code' => $statusCode,
-                'response' => [
-                    'action' => $action,
-                    'file' => $row['filename'],
-                    'locale' => $iso2,
-                ],
-            ];
+        $instructionXmlPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/in/instruction.xml';
+        if (file_exists($instructionXmlPath)) {
+            unlink($instructionXmlPath);
         }
+        $iso2 = $this->getIso2ForLocale($row);
+        $fileNameAndPath = $this->getLocalFilename($row['filename'], $iso2);
+        $commandRegistry = GeneralUtility::makeInstance(CommandRegistry::class);
+        $l10nmanagerImportCommand = $commandRegistry->getCommandByIdentifier('l10nmanager:import');
+        $arguments = [
+            '-t' => 'importFile',
+            '--file' => $fileNameAndPath,
+        ];
+        $input = new ArrayInput($arguments);
+        $input->setInteractive(false);
+        $output = new BufferedOutput();
+        $l10nmanagerImportCommand->run($input, $output);
+        $response[] = [
+            'http_status_code' => 200,
+            'response' => [
+                'action' => 'l10nmanager:import ' . $input,
+                'file' => $row['filename'],
+                'locale' => $iso2,
+            ],
+        ];
         return $response;
     }
 
