@@ -1,7 +1,7 @@
 /**
  * Module: TYPO3/CMS/Localizer/LocalizerCart
  */
-define(['jquery', 'bootstrap'], function ($) {
+define(['jquery', 'TYPO3/CMS/Backend/AjaxDataHandler', 'bootstrap'], function ($, AjaxDataHandler) {
   'use strict'
 
   /**
@@ -218,8 +218,7 @@ define(['jquery', 'bootstrap'], function ($) {
   }
 
   LocalizerCart.setSingleRecordImportAction = function (uid, importButton) {
-    var importOnClick = top.TYPO3.settings.FormEngine.moduleUrl + '&edit[tx_localizer_settings_l10n_exportdata_mm][' + uid + ']=edit&data[tx_localizer_settings_l10n_exportdata_mm][' + uid + '][action]=70&doSave=1&closeDoc=-1'
-    $.get(importOnClick, function () {
+    AjaxDataHandler.process('data[tx_localizer_settings_l10n_exportdata_mm][' + uid + '][action]=70').then(() => {
       var li = importButton.closest('li')
       li.find('.btn-group-import, .btn-group-preview, .btn-group-edit').remove()
       li.prepend('<div class="btn-group btn-group-scheduled" role="group">' +
@@ -236,7 +235,7 @@ define(['jquery', 'bootstrap'], function ($) {
       if (!ul.find('.toggle-status .btn-group-import').length) {
         ul.find('.btn-group-import').remove()
       }
-    })
+    });
   }
 
   LocalizerCart.initializeButtonClicks = function () {
