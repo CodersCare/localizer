@@ -167,7 +167,7 @@ class SelectorController extends AbstractController
             if (isset($this->pageinfo['title'])) {
                 $header .= ': ';
             }
-            $this->content = $this->moduleTemplate->header($header . $this->pageinfo['title']);
+            $this->content = $this->moduleTemplate->header($header . ($this->pageinfo['title'] ?? ''));
             $legendCells = '';
             if (!empty($this->legend)) {
                 foreach ($this->legend as $legendItem) {
@@ -273,7 +273,7 @@ class SelectorController extends AbstractController
                         </div>
                         <div class="modal-body">
                             <p>When you proceed, the cart can not be changed anymore and will be exported to be sent to the Localizer.</p>';
-            if ($this->availableLocalizers[$this->localizerId]['deadline']) {
+            if ($this->availableLocalizers[$this->localizerId]['deadline'] ?? false) {
                 $this->content .= '
                             <p>If necessary pick a deadline for this job here: </p>
                             <ul class="list-inline">' .

@@ -108,7 +108,7 @@ abstract class AbstractController extends BaseModule
         $this->localizerId = (int)GeneralUtility::_GP('selected_localizer');
         $this->localizerPid = (int)GeneralUtility::_GP('selected_localizerPid');
 
-        if (empty($this->id)) {
+        if (empty($this->id) && ($this->getBackendUser()->uc['BackendComponents']['States']['Pagetree'] ?? null)) {
             $this->id = hexdec(
                 ltrim(
                     (string)$this->getBackendUser()->uc['BackendComponents']['States']['Pagetree']->stateHash->lastSelectedNode,
