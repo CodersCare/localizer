@@ -105,8 +105,6 @@ class SelectorController extends AbstractController
         $this->getLanguageService()->includeLLFile(
             'EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf'
         );
-        $this->backPath = (string)$GLOBALS['BACK_PATH'];
-        $this->cshKey = '_MOD_' . $GLOBALS['MCONF']['name'];
     }
 
     /**
@@ -121,8 +119,8 @@ class SelectorController extends AbstractController
         $this->configuration['start'] = GeneralUtility::_GP('configured_start') ?: 0;
         $this->configuration['end'] = GeneralUtility::_GP('configured_end') ?: 0;
         $this->configuration['deadline'] = GeneralUtility::_GP('selected_deadline') ?: '';
-        $this->configuration['sortexports'] = $localizer['sortexports'];
-        $this->configuration['plainxmlexports'] = $localizer['plainxmlexports'];
+        $this->configuration['sortexports'] = (int)($localizer['sortexports'] ?? 0);
+        $this->configuration['plainxmlexports'] = (bool)($localizer['plainxmlexports'] ?? false);
 
         if (GeneralUtility::_GP('selected_cart') === 'new') {
             $this->cartId = (int)$this->selectorRepository->createNewCart($this->id, $this->localizerId);
@@ -155,14 +153,14 @@ class SelectorController extends AbstractController
             } elseif ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'deactivated') {
                 $this->MOD_SETTINGS['bigControlPanel'] = false;
             }
-            if ($this->modTSconfig['properties']['enableClipBoard'] === 'activated') {
+            if (($this->modTSconfig['properties']['enableClipBoard'] ?? '') === 'activated') {
                 $this->MOD_SETTINGS['clipBoard'] = true;
-            } elseif ($this->modTSconfig['properties']['enableClipBoard'] === 'deactivated') {
+            } elseif (($this->modTSconfig['properties']['enableClipBoard'] ?? '') === 'deactivated') {
                 $this->MOD_SETTINGS['clipBoard'] = false;
             }
-            if ($this->modTSconfig['properties']['enableLocalizationView'] === 'activated') {
+            if (($this->modTSconfig['properties']['enableLocalizationView'] ?? '') === 'activated') {
                 $this->MOD_SETTINGS['localization'] = true;
-            } elseif ($this->modTSconfig['properties']['enableLocalizationView'] === 'deactivated') {
+            } elseif (($this->modTSconfig['properties']['enableLocalizationView'] ?? '') === 'deactivated') {
                 $this->MOD_SETTINGS['localization'] = false;
             }
             $header = 'LOCALIZER Selector';
@@ -762,11 +760,11 @@ class SelectorController extends AbstractController
     {
         $cells = '';
         $GPvars = GeneralUtility::_GP('localizerSelectorCart');
-        $tableVars = $GPvars[$table];
+        $tableVars = $GPvars[$table] ?? [];
         foreach ($this->languages as $languageId => $languageInfo) {
             $checkBoxId = 'localizerSelectorCart[' . $table . '][' . $uid . '][' . $languageInfo['uid'] . ']';
             $identifier = md5($table . '.' . $uid . '.' . $languageInfo['uid']);
-            $checked = $tableVars[$uid][$languageId] || $this->storedTriples[$identifier] ? ' checked=checked' : '';
+            $checked = ($tableVars[$uid][$languageId] ?? false) || ($this->storedTriples[$identifier] ?? false) ? ' checked=checked' : '';
             $title = $GLOBALS['LANG']->sL(
                 $this->statusClasses[(int)$this->data['identifiedStatus'][$identifier]['status']]['label']
             );

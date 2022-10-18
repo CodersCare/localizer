@@ -709,7 +709,7 @@ class SelectorRepository extends AbstractRepository
                 'localizer_language',
                 $table . '.uid'
             );
-            if ($configuration['sortexports']) {
+            if ($configuration['sortexports'] ?? false) {
                 $sortBy = '';
                 if (isset($GLOBALS['TCA'][$table]['ctrl']['sortby'])) {
                     $sortBy = $GLOBALS['TCA'][$table]['ctrl']['sortby'];

@@ -30,7 +30,7 @@ class L10nMgrExportHandler implements PostSaveInterface
     {
         if ($params['data']['exportType'] == 1) { //XML
             if ($params['data']['source_lang'] != $params['data']['translation_lang']) {
-                if ($_REQUEST['export_xml_forcepreviewlanguage'] != $_REQUEST['SET']['lang']) {
+                if (($_REQUEST['export_xml_forcepreviewlanguage'] ?? null) != ($_REQUEST['SET']['lang'] ?? null)) {
                     $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
                         Constants::TABLE_LOCALIZER_SETTINGS
                     );

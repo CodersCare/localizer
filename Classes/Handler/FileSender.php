@@ -235,7 +235,7 @@ class FileSender extends AbstractHandler
     protected function addMetaData(array &$row): array
     {
         $metaData = [];
-        $hooks = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['localizer']['addMetaData'];
+        $hooks = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['localizer']['addMetaData'] ?? [];
         if (is_array($hooks)) {
             foreach ($hooks as $hookObj) {
                 $metaData = GeneralUtility::callUserFunction($hookObj, $row, $this);

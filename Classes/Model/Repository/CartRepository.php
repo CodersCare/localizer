@@ -199,7 +199,7 @@ class CartRepository extends AbstractRepository
                         $export['label'] = $GLOBALS['LANG']->sL(
                             'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . $export['status']
                         );
-                        if ((int)$export['status'] && ((int)$export['status'] < (int)$cart['status'] || !isset($cart['status']))) {
+                        if ((int)($export['status'] ?? 0) && ((int)($export['status'] ?? 0) < (int)($cart['status'] ?? 0) || !isset($cart['status']))) {
                             $cart['status'] = $export['status'];
                         }
                         $cart['exportCounters'][$export['status']]['cssClass'] = $classes[$export['status']]['cssClass'];
@@ -207,12 +207,13 @@ class CartRepository extends AbstractRepository
                         $cart['exportCounters'][$export['status']]['label'] = $GLOBALS['LANG']->sL(
                             'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . $export['status']
                         );
+                        $cart['exportCounters'][$export['status']]['counter'] ??= 0;
                         $cart['exportCounters'][$export['status']]['counter']++;
                     }
                 }
-                $cart['cssClass'] = $classes[$cart['status']]['cssClass'];
+                $cart['cssClass'] = $classes[$cart['status'] ?? 0]['cssClass'] ?? '';
                 $cart['label'] = $GLOBALS['LANG']->sL(
-                    'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . $cart['status']
+                    'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . ($cart['status'] ?? 0)
                 );
             }
         }

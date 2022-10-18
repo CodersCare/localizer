@@ -111,7 +111,7 @@ class DataHandler
         string $id,
         \TYPO3\CMS\Core\DataHandling\DataHandler $tceMain
     ): void {
-        if ($table === Constants::TABLE_EXPORTDATA_MM) {
+        if ($table === Constants::TABLE_EXPORTDATA_MM && isset($incomingFieldArray['target_locale'])) {
             // if all languages are selected we skip other languages
             $targetLanguagesUidList = $this->getAllTargetUids($id);
             $targetLanguages = ',' . $incomingFieldArray['target_locale'] . ',';

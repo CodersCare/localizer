@@ -155,7 +155,6 @@ class CartController extends AbstractController
         $this->MOD_SETTINGS['localization'] = false;
         /** @var DatabaseRecordList $dblist */
         $dblist = GeneralUtility::makeInstance(DatabaseRecordList::class);
-        $dblist->backPath = $GLOBALS['BACK_PATH'];
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         try {
             $dblist->script = $uriBuilder->buildUriFromRoute('web_list');
@@ -172,17 +171,16 @@ class CartController extends AbstractController
         $dblist->allFields = $this->MOD_SETTINGS['bigControlPanel'] || $this->table ? 1 : 0;
         $dblist->showClipboard = 0;
         $dblist->showIcon = 0;
-        $dblist->disableSingleTableView = $this->modTSconfig['properties']['disableSingleTableView'];
-        $dblist->listOnlyInSingleTableMode = $this->modTSconfig['properties']['listOnlyInSingleTableView'];
-        $dblist->hideTables = $this->modTSconfig['properties']['hideTables'];
-        $dblist->hideTranslations = $this->modTSconfig['properties']['hideTranslations'];
-        $dblist->tableTSconfigOverTCA = $this->modTSconfig['properties']['table.'];
-        $dblist->alternateBgColors = $this->modTSconfig['properties']['alternateBgColors'] ? 1 : 0;
+        $dblist->disableSingleTableView = $this->modTSconfig['properties']['disableSingleTableView'] ?? false;
+        $dblist->listOnlyInSingleTableMode = $this->modTSconfig['properties']['listOnlyInSingleTableView'] ?? false;
+        $dblist->hideTables = $this->modTSconfig['properties']['hideTables'] ?? false;
+        $dblist->hideTranslations = $this->modTSconfig['properties']['hideTranslations'] ?? false;
+        $dblist->tableTSconfigOverTCA = $this->modTSconfig['properties']['table.'] ?? [];
+        $dblist->alternateBgColors = ($this->modTSconfig['properties']['alternateBgColors'] ?? false) ? 1 : 0;
         $dblist->allowedNewTables = [];
         $dblist->deniedNewTables = [Constants::TABLE_LOCALIZER_CART];
         $dblist->setIsEditable(true);
         $dblist->pageRow = $this->pageinfo;
-        $dblist->counter++;
         $dblist->MOD_MENU = ['bigControlPanel' => '', 'clipBoard' => '', 'localization' => ''];
         $dblist->modTSconfig = $this->modTSconfig;
         $dblist->clickTitleMode = '';
