@@ -765,11 +765,12 @@ class SelectorController extends AbstractController
             $checkBoxId = 'localizerSelectorCart[' . $table . '][' . $uid . '][' . $languageInfo['uid'] . ']';
             $identifier = md5($table . '.' . $uid . '.' . $languageInfo['uid']);
             $checked = ($tableVars[$uid][$languageId] ?? false) || ($this->storedTriples[$identifier] ?? false) ? ' checked=checked' : '';
+            $identifiedStatus = (int)($this->data['identifiedStatus'][$identifier]['status'] ?? 0);
             $title = $GLOBALS['LANG']->sL(
-                $this->statusClasses[(int)$this->data['identifiedStatus'][$identifier]['status']]['label']
+                $this->statusClasses[$identifiedStatus]['label']
             );
-            $status = $this->statusClasses[(int)$this->data['identifiedStatus'][$identifier]['status']]['cssClass'];
-            $cells .= '<td class="' . $status . ' language-record-marker column-hover ' . (int)$this->data['identifiedStatus'][$identifier]['status'] . '">' .
+            $status = $this->statusClasses[$identifiedStatus]['cssClass'];
+            $cells .= '<td class="' . $status . ' language-record-marker column-hover ' . $identifiedStatus . '">' .
                 '<div class="btn-group" data-toggle="buttons">' .
                 '<label data-bs-toggle="tooltip"  data-toggle="tooltip" data-placement="' . $placement . '"  title="' . $title . '" class="btn btn-' . $status . ($checked ? ' active' : '') . '">' .
                 '<input type="checkbox" name="' . $checkBoxId . '" autocomplete="off"' . $checked . ' />&#160;' .
