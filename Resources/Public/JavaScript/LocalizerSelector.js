@@ -27,17 +27,22 @@ define(['jquery', 'bootstrap'], function ($) {
       $('#configuratorFinalize').val('finalize')
       $('#localizer_selector').submit()
     })
-    $('.localizer-matrix-configurator .dropdown-menu li .small').click(function () {
-      $(this).find('input').prop('checked', !$(this).find('input').prop('checked'))
-      return false
-    })
+    $('.localizer-matrix-configurator .dropdown-menu li').not('.select-all').find('.small').click(function () {
+      $(this).find('input').trigger('click');
+      return false;
+    });
     $('.localizer-matrix-configurator .dropdown-menu li.select-all .small').click(function () {
-      $(this).closest('ul').find('input:enabled').prop('checked', $(this).find('input').prop('checked'))
-      return false
-    })
-    $('.localizer-matrix-configurator .dropdown-menu li .small input').click(function (event) {
+      $(this).closest('ul').find('li').not('.select-all').find('input:enabled').trigger('click');
+      $(this).find('input').prop('checked', !$(this).find('input').prop('checked'));
+      return false;
+    });
+    $('.localizer-matrix-configurator .dropdown-menu li.select-all .small input').click(function (e) {
+      $(this).closest('ul').find('li').not('.select-all').find('input:enabled').trigger('click');
+      e.stopPropagation()
+    });
+    $('.localizer-matrix-configurator .dropdown-menu li').not('.select-all').find('.small input').click(function (event) {
       event.stopPropagation()
-    })
+    });
     $('.localizer-selector-matrix .language-header .btn').click(function (event) {
       event.stopPropagation()
       event.preventDefault()

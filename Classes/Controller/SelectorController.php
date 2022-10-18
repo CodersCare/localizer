@@ -550,7 +550,7 @@ class SelectorController extends AbstractController
             </button>
             <ul class="dropdown-menu" aria-labelledby="localizerDropdownMenu4">';
         if (count($languages) > 1) {
-            $languageSelector .= '<li class="select-all"><a class="dropdown-item" href="#" class="small" tabIndex="-1">
+            $languageSelector .= '<li class="select-all"><a href="#" class="small dropdown-item" tabIndex="-1">
                         <input type="checkbox" />&nbsp;' . $this->getLanguageService()->sL(
                 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:languages.selector.all'
             ) . '</a></li>';
@@ -565,7 +565,7 @@ class SelectorController extends AbstractController
                         $this->languages[$language['uid']] = $language;
                         $checked = ' checked="checked"';
                     }
-                    $languageSelector .= '<li><a class="dropdown-item" href="#" class="small" tabIndex="-1">
+                    $languageSelector .= '<li><a href="#" class="small dropdown-item" tabIndex="-1">
                             <input name="configured_languages[' . $language['uid'] . ']" type="checkbox" ' . $checked . ' />&nbsp;' .
                         $this->iconFactory->getIcon($language['flagIcon'], Icon::SIZE_SMALL) . ' ' .
                         $language['title'] . ' [' . $language['language_isocode'] . ']</a></li>';
@@ -602,12 +602,12 @@ class SelectorController extends AbstractController
             <ul class="dropdown-menu" aria-labelledby="localizerDropdownMenu5">';
         $tables = array_keys($GLOBALS['TCA']);
         if (count($tables) > 1) {
-            $tableSelector .= '<li class="select-all"><a class="dropdown-item" href="#" class="small" tabIndex="-1">
+            $tableSelector .= '<li class="select-all"><a href="#" class="small dropdown-item" tabIndex="-1">
                         <input type="checkbox" />&nbsp;' . $this->getLanguageService()->sL(
                 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:tables.selector.all'
             ) . '</a></li>';
         }
-        $tableSelector .= '<li><a class="dropdown-item" href="#" class="small" tabIndex="-1">
+        $tableSelector .= '<li><a href="#" class="small dropdown-item" tabIndex="-1">
             <input name="configured_tables[pages]-dummy" type="checkbox" checked="checked" disabled="disabled">
             <input name="configured_tables[pages]" type="hidden" value="1">&nbsp;' .
             $GLOBALS['LANG']->sL($GLOBALS['TCA']['pages']['ctrl']['title']) . ' ' .
@@ -632,7 +632,7 @@ class SelectorController extends AbstractController
                         $this->translatableTables[$table] = $GLOBALS['LANG']->sL($GLOBALS['TCA'][$table]['ctrl']['title']);
                         $checked = ' checked="checked"';
                     }
-                    $tableSelector .= '<li><a class="dropdown-item" href="#" class="small" tabIndex="-1"><input name="configured_tables[' . $table . ']" type="checkbox" ' . $checked . ' />&nbsp;' .
+                    $tableSelector .= '<li><a href="#" class="small dropdown-item" tabIndex="-1"><input name="configured_tables[' . $table . ']" type="checkbox" ' . $checked . ' />&nbsp;' .
                         $GLOBALS['LANG']->sL($GLOBALS['TCA'][$table]['ctrl']['title']) . '</a></li>';
                     if ($table === 'sys_file_reference') {
                         $checked = '';
@@ -640,7 +640,7 @@ class SelectorController extends AbstractController
                             $this->translatableTables['sys_file_metadata'] = $GLOBALS['LANG']->sL($GLOBALS['TCA']['sys_file_metadata']['ctrl']['title']);
                             $checked = ' checked="checked"';
                         }
-                        $tableSelector .= '<li><ul class="sys-file-metadata"><li><a class="dropdown-item" href="#" class="small" tabIndex="-1">+&nbsp;<input name="configured_tables[sys_file_metadata]" type="checkbox" ' . $checked . ' />&nbsp;' .
+                        $tableSelector .= '<li><ul class="sys-file-metadata"><li><a href="#" class="small dropdown-item" tabIndex="-1">+&nbsp;<input name="configured_tables[sys_file_metadata]" type="checkbox" ' . $checked . ' />&nbsp;' .
                             $GLOBALS['LANG']->sL($GLOBALS['TCA']['sys_file_metadata']['ctrl']['title']) . '</a></li></ul></li>';
                     }
                 }
