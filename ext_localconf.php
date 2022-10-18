@@ -6,12 +6,6 @@ if (!defined('TYPO3')) {
 
 $extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('localizer');
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-    'localizer',
-    'Configuration/TypoScript',
-    'Localizer for TYPO3'
-);
-
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig(
     '
 options.saveDocNew.tx_localizer_settings=1
