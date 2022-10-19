@@ -50,11 +50,6 @@ abstract class AbstractController extends BaseModule
     protected array $statusClasses = [];
 
     /**
-     * @var string
-     */
-    protected string $backPath;
-
-    /**
      * @var AbstractRepository
      */
     protected AbstractRepository $abstractRepository;
@@ -185,21 +180,5 @@ abstract class AbstractController extends BaseModule
             'clipBoard' => '',
             'localization' => '',
         ];
-    }
-
-    /**
-     * @return string
-     */
-    protected function getBackPath(): string
-    {
-        return $this->backPath;
-    }
-
-    /**
-     * Outputting the accumulated content to screen
-     */
-    protected function printContent()
-    {
-        echo $this->content;
     }
 }
