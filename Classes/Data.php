@@ -211,7 +211,7 @@ trait Data
                             )
                         )
                     )
-                    ->executeQuery();
+                    ->execute();
                 $sourceLocale = $this->fetchAssociative($result);
                 $this->apiPool[$uid] = [
                     'api' => $api,

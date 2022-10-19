@@ -56,7 +56,7 @@ class Cart
                     )
                 )
             )
-            ->executeQuery();
+            ->execute();
 
         if ($result->rowCount() > 0) {
             $keys = [];

@@ -81,7 +81,7 @@ class L10nMgrExportHandler implements PostSaveInterface
                 )
             )
             ->setMaxResults(1)
-            ->executeQuery();
+            ->execute();
         $row = $this->fetchAssociative($result);
         if ($row['pid'] !== null) {
             $this->addFileToMatrix(

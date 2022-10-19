@@ -247,7 +247,7 @@ class AutomaticExporter extends AbstractCartHandler
                             $pid
                         )
                     )
-                    ->executeQuery();
+                    ->execute();
                 $recordExists = $this->fetchOne($result);
                 if (!empty($recordExists)) {
                     $translatableTables[$table] = $GLOBALS['LANG']->sL($GLOBALS['TCA'][$table]['ctrl']['title']);
