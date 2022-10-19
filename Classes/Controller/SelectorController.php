@@ -14,7 +14,6 @@ use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
 
 /**
  * Module 'Selector' for the 'localizer' extension.
@@ -90,12 +89,8 @@ class SelectorController extends AbstractController
      */
     protected string $moduleName = 'localizer_localizerselector';
 
-    /**
-     * Constructor
-     */
     public function __construct()
     {
-        parent::__construct();
         $this->MCONF = [
             'name' => $this->moduleName,
         ];
@@ -137,11 +132,11 @@ class SelectorController extends AbstractController
      */
     protected function main()
     {
-        $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
-        $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/DateTimePicker');
-        $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerSelector');
-        $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/Input/Clearable');
-        $this->moduleTemplate->getPageRenderer()->addCssFile(
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/DateTimePicker');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerSelector');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Input/Clearable');
+        $this->pageRenderer->addCssFile(
             ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css'
         );
         $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);

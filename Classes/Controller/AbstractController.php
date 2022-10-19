@@ -8,6 +8,7 @@ use Localizationteam\Localizer\Model\Repository\AbstractRepository;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Http\HtmlResponse;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -59,13 +60,21 @@ abstract class AbstractController extends BaseModule
      */
     protected array $availableLocalizers;
 
-    /**
-     * Constructor
-     */
-    public function __construct()
+    protected PageRenderer $pageRenderer;
+
+    public function injectModuleTemplate(ModuleTemplate $moduleTemplate)
     {
-        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
-        $this->abstractRepository = GeneralUtility::makeInstance(AbstractRepository::class);
+        $this->moduleTemplate = $moduleTemplate;
+    }
+
+    public function injectAbstractRepository(AbstractRepository $abstractRepository)
+    {
+        $this->abstractRepository = $abstractRepository;
+    }
+
+    public function injectPageRenderer(PageRenderer $pageRenderer)
+    {
+        $this->pageRenderer = $pageRenderer;
     }
 
     /**

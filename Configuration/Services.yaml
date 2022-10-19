@@ -9,3 +9,9 @@ services:
 
   Localizationteam\Localizer\Controller\SettingsController:
     tags: [ 'backend.controller' ]
+
+  Localizationteam\Localizer\Controller\SelectorController:
+    tags: [ 'backend.controller' ]
+
+  Localizationteam\Localizer\Controller\CartController:
+    tags: [ 'backend.controller' ]

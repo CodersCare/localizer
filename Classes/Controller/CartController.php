@@ -88,12 +88,8 @@ class CartController extends AbstractController
      */
     protected int $userId;
 
-    /**
-     * Constructor
-     */
     public function __construct()
     {
-        parent::__construct();
         $this->MCONF = [
             'name' => $this->moduleName,
         ];
@@ -143,9 +139,9 @@ class CartController extends AbstractController
      */
     protected function main()
     {
-        $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
-        $this->moduleTemplate->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerCart');
-        $this->moduleTemplate->getPageRenderer()->addCssFile(
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerCart');
+        $this->pageRenderer->addCssFile(
             ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css'
         );
         $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
