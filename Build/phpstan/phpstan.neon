@@ -19,3 +19,9 @@ parameters:
     - ../../Configuration
     - ../../ext_localconf.php
     - ../../ext_tables.php
+
+  ignoreErrors:
+    -
+        message: "#^Property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$calcPerms \\(TYPO3\\\\CMS\\\\Core\\\\Type\\\\Bitmask\\\\Permission\\) does not accept int\\.$#"
+        count: 1
+        path: ../../Classes/Controller/CartController.php

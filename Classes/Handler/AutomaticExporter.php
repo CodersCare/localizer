@@ -155,6 +155,7 @@ class AutomaticExporter extends AbstractCartHandler
                         );
                         $configuration['languages'] = [];
                         foreach ($systemLanguages as $language) {
+                            // @todo The key 'static_lang_isocode' is not present anymore since TYPO3 v10.
                             if (isset($languageArray[(int)$language['static_lang_isocode']])) {
                                 $configuration['languages'][(int)$language['uid']] = 1;
                             }
