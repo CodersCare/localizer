@@ -1,12 +1,3 @@
 parameters:
-	ignoreErrors:
-		-
-			message: "#^Variable \\$configuration might not be defined\\.$#"
-			count: 2
-			path: ../../Classes/Handler/StatusRequester.php
-
-		-
-			message: "#^Variable \\$configuration might not be defined\\.$#"
-			count: 2
-			path: ../../Classes/Handler/SuccessReporter.php
+	ignoreErrors: []
 
