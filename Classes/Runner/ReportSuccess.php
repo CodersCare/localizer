@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Localizationteam\Localizer\Runner;
 
 use Exception;
+use Localizationteam\Localizer\Api\ApiCallsInterface;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -15,10 +16,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ReportSuccess
 {
-    /**
-     * @var mixed
-     */
-    protected $api;
+    protected ApiCallsInterface $api;
 
     /**
      * @var string

@@ -6,6 +6,7 @@ namespace Localizationteam\Localizer;
 
 use Doctrine\DBAL\Driver\ResultStatement;
 use Localizationteam\Localizer\Api\ApiCalls;
+use Localizationteam\Localizer\Api\ApiCallsInterface;
 use Localizationteam\Localizer\Messaging\FlashMessage;
 use Localizationteam\Localizer\Model\Repository\LocalizerSettingsRepository;
 use PDO;
@@ -176,7 +177,7 @@ trait Data
                 $row['in_folder'],
                 (bool)$row['plainxmlexports']
             );
-            if ($row['type'] !== '0' || $api->checkAndCreateFolders() === true) {
+            if ($api instanceof ApiCallsInterface && (!$api instanceof ApiCalls || $api->checkAndCreateFolders())) {
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
                 $result = $queryBuilder

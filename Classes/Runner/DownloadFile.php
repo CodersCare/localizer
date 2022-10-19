@@ -6,6 +6,7 @@ namespace Localizationteam\Localizer\Runner;
 
 use Exception;
 use Localizationteam\Localizer\Api\ApiCalls;
+use Localizationteam\Localizer\Api\ApiCallsInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use ZipArchive;
 
@@ -16,10 +17,7 @@ use ZipArchive;
  */
 class DownloadFile
 {
-    /**
-     * @var ApiCalls
-     */
-    protected ApiCalls $api;
+    protected ApiCallsInterface $api;
 
     /**
      * @var array

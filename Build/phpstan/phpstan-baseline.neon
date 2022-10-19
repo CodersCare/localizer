@@ -1,7 +1,3 @@
 parameters:
-	ignoreErrors:
-		-
-			message: "#^Call to an undefined method Localizationteam\\\\Localizer\\\\Api\\\\ApiCalls\\:\\:getFile\\(\\)\\.$#"
-			count: 1
-			path: ../../Classes/Runner/DownloadFile.php
+	ignoreErrors: []
 

@@ -18,7 +18,7 @@ use ZipArchive;
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  */
-class ApiCalls
+class ApiCalls implements ApiCallsInterface
 {
     use BackendUser;
 
@@ -153,12 +153,9 @@ class ApiCalls
         }
     }
 
-    /**
-     * @return false|string
-     */
-    public function getLastError()
+    public function getLastError(): string
     {
-        return $this->lastError ?: false;
+        return $this->lastError ?: '';
     }
 
     /**
@@ -461,7 +458,6 @@ class ApiCalls
     /**
      * Checks if the folders exist or can be created if they don't exist yet
      * @return bool True if the folders exist and are writable
-     * @throws Exception
      */
     public function checkAndCreateFolders(): bool
     {
@@ -472,5 +468,24 @@ class ApiCalls
             return false;
         }
         return true;
+    }
+
+    /**
+     * The methods below are not available for the default "hot-folder" approach
+     * and should be implemented for an explicit translation provider.
+     */
+    public function getFile(array $file): string
+    {
+        return '';
+    }
+
+    public function reportSuccess(array $files = [], string $target = ''): array
+    {
+        return [];
+    }
+
+    public function getWorkProgress(array $files = [], string $targetLocale = '', ?int $skip = null, ?int $count = null): array
+    {
+        return [];
     }
 }

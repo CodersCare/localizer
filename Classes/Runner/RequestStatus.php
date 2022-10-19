@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Localizationteam\Localizer\Runner;
 
 use Exception;
+use Localizationteam\Localizer\Api\ApiCallsInterface;
 use Localizationteam\Localizer\Constants;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -16,10 +17,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class RequestStatus
 {
-    /**
-     * @var mixed
-     */
-    protected $api;
+    protected ApiCallsInterface $api;
 
     /**
      * @var string
@@ -30,10 +28,6 @@ class RequestStatus
      * @var array
      */
     protected array $response = [];
-
-    public function __construct()
-    {
-    }
 
     /**
      * @param array $configuration

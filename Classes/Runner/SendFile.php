@@ -6,6 +6,7 @@ namespace Localizationteam\Localizer\Runner;
 
 use Exception;
 use Localizationteam\Localizer\Api\ApiCalls;
+use Localizationteam\Localizer\Api\ApiCallsInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -16,10 +17,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SendFile
 {
-    /**
-     * @var ApiCalls
-     */
-    protected ApiCalls $api;
+    protected ApiCallsInterface $api;
 
     /**
      * @var string
