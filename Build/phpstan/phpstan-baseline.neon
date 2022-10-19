@@ -1,6 +1,46 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
+			count: 1
+			path: ../../Classes/Controller/AbstractController.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between TYPO3\\\\CMS\\\\Core\\\\Page\\\\PageRenderer and null will always evaluate to false\\.$#"
+			count: 1
+			path: ../../Classes/Controller/BaseModule.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between object and null will always evaluate to false\\.$#"
+			count: 1
+			path: ../../Classes/Controller/BaseModule.php
+
+		-
+			message: "#^Elseif branch is unreachable because previous condition is always true\\.$#"
+			count: 1
+			path: ../../Classes/Controller/SelectorController.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between \\*NEVER\\* and 'deactivated' will always evaluate to false\\.$#"
+			count: 1
+			path: ../../Classes/Controller/SelectorController.php
+
+		-
+			message: "#^Property Localizationteam\\\\Localizer\\\\Handler\\\\AbstractHandler\\:\\:\\$limit is never read, only written\\.$#"
+			count: 1
+			path: ../../Classes/Handler/AbstractHandler.php
+
+		-
 			message: "#^Offset 'static_lang_isocode' does not exist on array\\{uid\\: int, title\\: string, ISOcode\\: string, flagIcon\\: string\\}\\.$#"
 			count: 1
 			path: ../../Classes/Handler/AutomaticExporter.php
+
+		-
+			message: "#^Right side of \\|\\| is always true\\.$#"
+			count: 1
+			path: ../../Classes/Model/Repository/CartRepository.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../Classes/Model/Repository/LanguageRepository.php
