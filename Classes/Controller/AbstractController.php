@@ -6,6 +6,7 @@ namespace Localizationteam\Localizer\Controller;
 
 use Localizationteam\Localizer\Model\Repository\AbstractRepository;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Page\PageRenderer;
@@ -83,19 +84,12 @@ abstract class AbstractController extends BaseModule
      *
      * @return ResponseInterface the response with the content
      */
-    public function mainAction(): ResponseInterface
+    public function mainAction(ServerRequestInterface $request): ResponseInterface
     {
-        /** @var ResponseInterface $response */
-        $response = func_num_args() === 2 ? func_get_arg(1) : null;
         $this->init();
         $this->main();
         $this->moduleTemplate->setContent($this->content);
-        if ($response !== null) {
-            $response->getBody()->write($this->moduleTemplate->renderContent());
-        } else {
-            $response = new HtmlResponse($this->moduleTemplate->renderContent());
-        }
-        return $response;
+        return new HtmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**

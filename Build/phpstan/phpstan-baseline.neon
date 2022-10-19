@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
-			count: 1
-			path: ../../Classes/Controller/AbstractController.php
-
-		-
 			message: "#^Elseif branch is unreachable because previous condition is always true\\.$#"
 			count: 1
 			path: ../../Classes/Controller/SelectorController.php
