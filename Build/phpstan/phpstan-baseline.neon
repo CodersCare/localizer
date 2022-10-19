@@ -1,36 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Comparison operation \"\\>\" between Doctrine\\\\DBAL\\\\Result\\|int and 0 results in an error\\.$#"
-			count: 1
-			path: ../../Classes/Handler/ErrorResetter.php
-
-		-
-			message: "#^Comparison operation \"\\>\" between Doctrine\\\\DBAL\\\\Result\\|int and 0 results in an error\\.$#"
-			count: 1
-			path: ../../Classes/Handler/FileDownloader.php
-
-		-
-			message: "#^Comparison operation \"\\>\" between Doctrine\\\\DBAL\\\\Result\\|int and 0 results in an error\\.$#"
-			count: 1
-			path: ../../Classes/Handler/FileImporter.php
-
-		-
-			message: "#^Comparison operation \"\\>\" between Doctrine\\\\DBAL\\\\Result\\|int and 0 results in an error\\.$#"
-			count: 1
-			path: ../../Classes/Handler/FileSender.php
-
-		-
-			message: "#^Comparison operation \"\\>\" between Doctrine\\\\DBAL\\\\Result\\|int and 0 results in an error\\.$#"
-			count: 1
-			path: ../../Classes/Handler/StatusRequester.php
-
-		-
-			message: "#^Comparison operation \"\\>\" between Doctrine\\\\DBAL\\\\Result\\|int and 0 results in an error\\.$#"
-			count: 1
-			path: ../../Classes/Handler/SuccessReporter.php
-
-		-
 			message: "#^PHPDoc tag @param for parameter \\$id with type mixed is not subtype of native type string\\.$#"
 			count: 1
 			path: ../../Classes/Hooks/DataHandler.php

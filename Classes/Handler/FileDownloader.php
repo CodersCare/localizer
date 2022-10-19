@@ -77,7 +77,7 @@ class FileDownloader extends AbstractHandler
             ->setMaxResults(Constants::HANDLER_FILEDOWNLOADER_MAX_FILES)
             ->execute();
 
-        return $affectedRows > 0;
+        return (int)$affectedRows > 0;
     }
 
     /**

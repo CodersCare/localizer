@@ -76,7 +76,7 @@ class FileSender extends AbstractHandler
             ->setMaxResults(Constants::HANDLER_FILESENDER_MAX_FILES)
             ->execute();
 
-        return $affectedRows > 0;
+        return (int)$affectedRows > 0;
     }
 
     /**

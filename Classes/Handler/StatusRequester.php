@@ -78,7 +78,7 @@ class StatusRequester extends AbstractHandler
             ->set('processid', $this->processId)
             ->execute();
 
-        return $affectedRows > 0;
+        return (int)$affectedRows > 0;
     }
 
     public function run()

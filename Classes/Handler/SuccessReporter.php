@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Handler;
 
-use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
@@ -40,10 +39,6 @@ class SuccessReporter extends AbstractHandler
         }
     }
 
-    /**
-     * @return bool
-     * @throws DBALException
-     */
     protected function acquire(): bool
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
@@ -78,7 +73,7 @@ class SuccessReporter extends AbstractHandler
             ->set('processid', $this->processId)
             ->execute();
 
-        return $affectedRows > 0;
+        return (int)$affectedRows > 0;
     }
 
     public function run()

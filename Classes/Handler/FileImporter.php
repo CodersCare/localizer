@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Handler;
 
-use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
@@ -45,15 +44,10 @@ class FileImporter extends AbstractHandler
         }
     }
 
-    /**
-     * @return bool
-     * @throws DBALException
-     */
     protected function acquire(): bool
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-            Constants::TABLE_EXPORTDATA_MM
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
         $affectedRows = $queryBuilder
             ->update(Constants::TABLE_EXPORTDATA_MM)
             ->where(
@@ -80,7 +74,7 @@ class FileImporter extends AbstractHandler
             ->setMaxResults(Constants::HANDLER_FILEIMPORTER_MAX_FILES)
             ->execute();
 
-        return $affectedRows > 0;
+        return (int)$affectedRows > 0;
     }
 
     /**
