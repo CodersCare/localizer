@@ -4,8 +4,3 @@ parameters:
 			message: "#^Offset 'static_lang_isocode' does not exist on array\\{uid\\: int, title\\: string, ISOcode\\: string, flagIcon\\: string\\}\\.$#"
 			count: 1
 			path: ../../Classes/Handler/AutomaticExporter.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: ../../Classes/Model/Repository/LanguageRepository.php

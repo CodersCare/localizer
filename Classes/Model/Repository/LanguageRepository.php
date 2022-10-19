@@ -26,7 +26,7 @@ class LanguageRepository extends AbstractRepository
         $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($pid);
         $languages = $site->getAllLanguages();
 
-        if ($languages[$localeId] instanceof SiteLanguage) {
+        if (($languages[$localeId] ?? null) instanceof SiteLanguage) {
             return $languages[$localeId]->getHreflang();
         }
 
