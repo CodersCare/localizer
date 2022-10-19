@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Handler;
 
-use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\AddFileToMatrix;
 use Localizationteam\Localizer\Constants;
@@ -266,24 +265,20 @@ class FileExporter extends AbstractCartHandler
      */
     protected function registerFilesForLocalizer(int $localizerId, int $configurationId, int $pid)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-            Constants::TABLE_L10NMGR_EXPORTDATA
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Constants::TABLE_L10NMGR_EXPORTDATA);
         $queryBuilder->getRestrictions()
             ->removeAll();
-        try {
-            $result = $queryBuilder
-                ->select('uid', 'translation_lang', 'filename')
-                ->from(Constants::TABLE_L10NMGR_EXPORTDATA)
-                ->where(
-                    $queryBuilder->expr()->eq(
-                        'l10ncfg_id',
-                        $configurationId
-                    )
+        $result = $queryBuilder
+            ->select('uid', 'translation_lang', 'filename')
+            ->from(Constants::TABLE_L10NMGR_EXPORTDATA)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'l10ncfg_id',
+                    $configurationId
                 )
-                ->execute();
-        } catch (DBALException $e) {
-        }
+            )
+            ->execute();
         $rows = $this->fetchAllAssociative($result);
         if (empty($rows) === false) {
             foreach ($rows as $row) {

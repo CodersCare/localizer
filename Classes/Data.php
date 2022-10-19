@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer;
 
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\ResultStatement;
 use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\Messaging\FlashMessage;
@@ -55,9 +54,6 @@ trait Data
         $this->canPersist = true;
     }
 
-    /**
-     * @throws DBALException
-     */
     protected function load(): void
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
@@ -76,9 +72,6 @@ trait Data
         $this->data = $this->fetchAllAssociative($result);
     }
 
-    /**
-     * @throws DBALException
-     */
     protected function loadCart(): void
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
@@ -184,45 +177,41 @@ trait Data
                 (bool)$row['plainxmlexports']
             );
             if ($row['type'] !== '0' || $api->checkAndCreateFolders() === true) {
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-                    Constants::TABLE_LOCALIZER_LANGUAGE_MM
-                );
-                try {
-                    $result = $queryBuilder
-                        ->select('*')
-                        ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-                        ->leftJoin(
-                            Constants::TABLE_LOCALIZER_LANGUAGE_MM,
-                            Constants::TABLE_STATIC_LANGUAGES,
-                            Constants::TABLE_STATIC_LANGUAGES,
-                            (string)$queryBuilder->expr()->eq(
-                                Constants::TABLE_STATIC_LANGUAGES . '.uid',
-                                $queryBuilder->quoteIdentifier(Constants::TABLE_LOCALIZER_LANGUAGE_MM . '.uid_foreign')
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
+                $result = $queryBuilder
+                    ->select('*')
+                    ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                    ->leftJoin(
+                        Constants::TABLE_LOCALIZER_LANGUAGE_MM,
+                        Constants::TABLE_STATIC_LANGUAGES,
+                        Constants::TABLE_STATIC_LANGUAGES,
+                        (string)$queryBuilder->expr()->eq(
+                            Constants::TABLE_STATIC_LANGUAGES . '.uid',
+                            $queryBuilder->quoteIdentifier(Constants::TABLE_LOCALIZER_LANGUAGE_MM . '.uid_foreign')
+                        )
+                    )
+                    ->where(
+                        $queryBuilder->expr()->andX(
+                            $queryBuilder->expr()->eq(
+                                'uid_local',
+                                (int)$row['uid']
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'ident',
+                                $queryBuilder->createNamedParameter('source')
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'tablenames',
+                                $queryBuilder->createNamedParameter('static_languages')
+                            ),
+                            $queryBuilder->expr()->eq(
+                                'source',
+                                $queryBuilder->createNamedParameter('tx_localizer_settings')
                             )
                         )
-                        ->where(
-                            $queryBuilder->expr()->andX(
-                                $queryBuilder->expr()->eq(
-                                    'uid_local',
-                                    (int)$row['uid']
-                                ),
-                                $queryBuilder->expr()->eq(
-                                    'ident',
-                                    $queryBuilder->createNamedParameter('source')
-                                ),
-                                $queryBuilder->expr()->eq(
-                                    'tablenames',
-                                    $queryBuilder->createNamedParameter('static_languages')
-                                ),
-                                $queryBuilder->expr()->eq(
-                                    'source',
-                                    $queryBuilder->createNamedParameter('tx_localizer_settings')
-                                )
-                            )
-                        )
-                        ->execute();
-                } catch (DBALException $e) {
-                }
+                    )
+                    ->executeQuery();
                 $sourceLocale = $this->fetchAssociative($result);
                 $this->apiPool[$uid] = [
                     'api' => $api,
@@ -283,10 +272,7 @@ trait Data
                 foreach ($fields as $key => $value) {
                     $queryBuilder->set($key, $value);
                 }
-                try {
-                    $queryBuilder->execute();
-                } catch (DBALException $e) {
-                }
+                $queryBuilder->execute();
             }
             foreach ($this->result['success'] as $uid => $fields) {
                 $fields['tstamp'] = $time;
@@ -304,10 +290,7 @@ trait Data
                 foreach ($fields as $key => $value) {
                     $queryBuilder->set($key, $value);
                 }
-                try {
-                    $queryBuilder->execute();
-                } catch (DBALException $e) {
-                }
+                $queryBuilder->execute();
             }
         }
     }

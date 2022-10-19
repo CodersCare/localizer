@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Handler;
 
-use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
@@ -46,10 +45,6 @@ class FileSender extends AbstractHandler
         }
     }
 
-    /**
-     * @return bool
-     * @throws DBALException
-     */
     protected function acquire(): bool
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
@@ -184,42 +179,35 @@ class FileSender extends AbstractHandler
         return $this->uploadPath;
     }
 
-    /**
-     * @param array $row
-     * @return int
-     */
     protected function addDeadline(array $row): int
     {
         $deadline = 0;
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-            Constants::TABLE_EXPORTDATA_MM
-        );
-        try {
-            $result = $queryBuilder
-                ->selectLiteral(
-                    'COALESCE (
-                    NULLIF(' . Constants::TABLE_EXPORTDATA_MM . '.deadline, 0), ' .
-                    Constants::TABLE_LOCALIZER_CART . '.deadline
-                ) deadline'
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+        $result = $queryBuilder
+            ->selectLiteral(
+                'COALESCE (
+                NULLIF(' . Constants::TABLE_EXPORTDATA_MM . '.deadline, 0), ' .
+                Constants::TABLE_LOCALIZER_CART . '.deadline
+            ) deadline'
+            )
+            ->from(Constants::TABLE_EXPORTDATA_MM)
+            ->leftJoin(
+                Constants::TABLE_EXPORTDATA_MM,
+                Constants::TABLE_LOCALIZER_CART,
+                Constants::TABLE_LOCALIZER_CART,
+                (string)$queryBuilder->expr()->eq(
+                    Constants::TABLE_LOCALIZER_CART . '.uid_foreign',
+                    $queryBuilder->quoteIdentifier(Constants::TABLE_EXPORTDATA_MM . '.uid_foreign')
                 )
-                ->from(Constants::TABLE_EXPORTDATA_MM)
-                ->leftJoin(
-                    Constants::TABLE_EXPORTDATA_MM,
-                    Constants::TABLE_LOCALIZER_CART,
-                    Constants::TABLE_LOCALIZER_CART,
-                    (string)$queryBuilder->expr()->eq(
-                        Constants::TABLE_LOCALIZER_CART . '.uid_foreign',
-                        $queryBuilder->quoteIdentifier(Constants::TABLE_EXPORTDATA_MM . '.uid_foreign')
-                    )
-                )->where(
-                    $queryBuilder->expr()->eq(
-                        Constants::TABLE_EXPORTDATA_MM . '.uid',
-                        (int)$row['uid']
-                    )
+            )
+            ->where(
+                $queryBuilder->expr()->eq(
+                    Constants::TABLE_EXPORTDATA_MM . '.uid',
+                    (int)$row['uid']
                 )
-                ->execute();
-        } catch (DBALException $e) {
-        }
+            )
+            ->execute();
         $carts = $this->fetchAssociative($result);
 
         if (!empty($carts['deadline'])) {

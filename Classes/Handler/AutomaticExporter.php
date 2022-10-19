@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Handler;
 
-use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\AddFileToMatrix;
 use Localizationteam\Localizer\Data;
@@ -239,19 +238,16 @@ class AutomaticExporter extends AbstractCartHandler
                 // $recordExists = $selectorRepository->findRecordByPid($pid, $table);
 
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
-                try {
-                    $result = $queryBuilder
-                        ->select('*')
-                        ->from($table)
-                        ->where(
-                            $queryBuilder->expr()->eq(
-                                'pid',
-                                $pid
-                            )
+                $result = $queryBuilder
+                    ->select('*')
+                    ->from($table)
+                    ->where(
+                        $queryBuilder->expr()->eq(
+                            'pid',
+                            $pid
                         )
-                        ->execute();
-                } catch (DBALException $e) {
-                }
+                    )
+                    ->executeQuery();
                 $recordExists = $this->fetchOne($result);
                 if (!empty($recordExists)) {
                     $translatableTables[$table] = $GLOBALS['LANG']->sL($GLOBALS['TCA'][$table]['ctrl']['title']);
