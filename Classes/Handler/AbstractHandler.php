@@ -25,10 +25,6 @@ abstract class AbstractHandler
      * @var bool
      */
     private bool $run = false;
-    /**
-     * @var int
-     */
-    private int $limit = 0;
 
     /**
      * @param int $id
@@ -100,14 +96,6 @@ abstract class AbstractHandler
     final protected function initRun(): void
     {
         $this->run = true;
-    }
-
-    /**
-     * @param int $limit
-     */
-    protected function setLimit(int $limit): void
-    {
-        $this->limit = $limit;
     }
 
     final protected function resetRun(): void

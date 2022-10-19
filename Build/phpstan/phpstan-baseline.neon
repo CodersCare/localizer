@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Property Localizationteam\\\\Localizer\\\\Handler\\\\AbstractHandler\\:\\:\\$limit is never read, only written\\.$#"
-			count: 1
-			path: ../../Classes/Handler/AbstractHandler.php
-
-		-
 			message: "#^Offset 'static_lang_isocode' does not exist on array\\{uid\\: int, title\\: string, ISOcode\\: string, flagIcon\\: string\\}\\.$#"
 			count: 1
 			path: ../../Classes/Handler/AutomaticExporter.php
