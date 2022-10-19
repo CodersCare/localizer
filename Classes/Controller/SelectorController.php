@@ -140,152 +140,149 @@ class SelectorController extends AbstractController
             ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css'
         );
         $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
-        $access = is_array($this->pageinfo) ? 1 : 0;
-        if ($access) {
-            $this->modTSconfig['properties']['enableDisplayBigControlPanel'] = 'activated';
-            if ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'activated') {
-                $this->MOD_SETTINGS['bigControlPanel'] = true;
-            } elseif ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'deactivated') {
-                $this->MOD_SETTINGS['bigControlPanel'] = false;
+        $this->modTSconfig['properties']['enableDisplayBigControlPanel'] = 'activated';
+        if ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'activated') {
+            $this->MOD_SETTINGS['bigControlPanel'] = true;
+        } elseif ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'deactivated') {
+            $this->MOD_SETTINGS['bigControlPanel'] = false;
+        }
+        if (($this->modTSconfig['properties']['enableClipBoard'] ?? '') === 'activated') {
+            $this->MOD_SETTINGS['clipBoard'] = true;
+        } elseif (($this->modTSconfig['properties']['enableClipBoard'] ?? '') === 'deactivated') {
+            $this->MOD_SETTINGS['clipBoard'] = false;
+        }
+        if (($this->modTSconfig['properties']['enableLocalizationView'] ?? '') === 'activated') {
+            $this->MOD_SETTINGS['localization'] = true;
+        } elseif (($this->modTSconfig['properties']['enableLocalizationView'] ?? '') === 'deactivated') {
+            $this->MOD_SETTINGS['localization'] = false;
+        }
+        $header = 'LOCALIZER Selector';
+        if (isset($this->pageinfo['title'])) {
+            $header .= ': ';
+        }
+        $this->content = $this->moduleTemplate->header($header . ($this->pageinfo['title'] ?? ''));
+        $legendCells = '';
+        if (!empty($this->legend)) {
+            foreach ($this->legend as $legendItem) {
+                $label = $GLOBALS['LANG']->sL($legendItem['label']);
+                $legendCells .= '
+                    <td class="' . $legendItem['cssClass'] . ' legend-item hover">
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-' . $legendItem['cssClass'] . ' localizer-legend">
+                                <input type="checkbox" disabled="disabled">' . $label . '
+                            </label>&nbsp;<label class="btn btn-' . $legendItem['cssClass'] . ' active">
+                            <input type="checkbox" disabled="disabled">' . $GLOBALS['LANG']->sL(
+                    'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.cart'
+                ) . '
+                        </label>
+                        </div>
+                    </td>
+                ';
             }
-            if (($this->modTSconfig['properties']['enableClipBoard'] ?? '') === 'activated') {
-                $this->MOD_SETTINGS['clipBoard'] = true;
-            } elseif (($this->modTSconfig['properties']['enableClipBoard'] ?? '') === 'deactivated') {
-                $this->MOD_SETTINGS['clipBoard'] = false;
+        }
+        $this->content .= '
+        <div class="table-responsive localizer-matrix-configurator">
+            <table class="table table-striped table-bordered">
+                <tr>' . $legendCells . '</tr>
+            </table>
+        </div>
+        ';
+        if ($this->id > 0) {
+            $this->content .= '<form action="' . htmlspecialchars($this->formUrl()) .
+                '" method="post" class="localizer_selector" id="localizer_selector">
+            <input type="hidden" name="selected_deadline" value="0" />
+            <input type="hidden" name="selected_localizer" value="' . $this->localizerId . '" />
+            <input type="hidden" name="selected_localizerPid" value="' . $this->localizerPid . '" />
+            <input type="hidden" name="selected_cart" value="' . $this->cartId . '" />
+            <input type="hidden" name="id" value="' . $this->id . '" />';
+            if ($this->cartId > 0 && empty(GeneralUtility::_GP('configuratorStore'))
+                && empty(GeneralUtility::_GP('configuratorFinalize'))
+            ) {
+                $this->loadConfigurationAndCart();
             }
-            if (($this->modTSconfig['properties']['enableLocalizationView'] ?? '') === 'activated') {
-                $this->MOD_SETTINGS['localization'] = true;
-            } elseif (($this->modTSconfig['properties']['enableLocalizationView'] ?? '') === 'deactivated') {
-                $this->MOD_SETTINGS['localization'] = false;
+            if ($this->cartId > 0 && !empty(GeneralUtility::_GP('configuratorFinalize'))) {
+                $this->finalizeCart();
+                $this->exportConfiguredRecords();
+                $this->cartId = 0;
             }
-            $header = 'LOCALIZER Selector';
-            if (isset($this->pageinfo['title'])) {
-                $header .= ': ';
+            $this->content .= $this->getLocalizerConfigurator($this->formUrl());
+            if ($this->cartId > 0 && !empty(GeneralUtility::_GP('configuratorStore'))
+                && empty(GeneralUtility::_GP('configuratorFinalize'))
+            ) {
+                $this->storeConfigurationAndCart();
             }
-            $this->content = $this->moduleTemplate->header($header . ($this->pageinfo['title'] ?? ''));
-            $legendCells = '';
-            if (!empty($this->legend)) {
-                foreach ($this->legend as $legendItem) {
-                    $label = $GLOBALS['LANG']->sL($legendItem['label']);
-                    $legendCells .= '
-                        <td class="' . $legendItem['cssClass'] . ' legend-item hover">
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-' . $legendItem['cssClass'] . ' localizer-legend">
-                                    <input type="checkbox" disabled="disabled">' . $label . '
-                                </label>&nbsp;<label class="btn btn-' . $legendItem['cssClass'] . ' active">
-                                <input type="checkbox" disabled="disabled">' . $GLOBALS['LANG']->sL(
-                        'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:legend.cart'
-                    ) . '
-                            </label>
-                            </div>
-                        </td>
-                    ';
-                }
-            }
-            $this->content .= '
-            <div class="table-responsive localizer-matrix-configurator">
-                <table class="table table-striped table-bordered">
-                    <tr>' . $legendCells . '</tr>
-                </table>
-            </div>
-            ';
-            if ($this->id > 0) {
-                $this->content .= '<form action="' . htmlspecialchars($this->formUrl()) .
-                    '" method="post" class="localizer_selector" id="localizer_selector">
-                <input type="hidden" name="selected_deadline" value="0" />
-                <input type="hidden" name="selected_localizer" value="' . $this->localizerId . '" />
-                <input type="hidden" name="selected_localizerPid" value="' . $this->localizerPid . '" />
-                <input type="hidden" name="selected_cart" value="' . $this->cartId . '" />
-                <input type="hidden" name="id" value="' . $this->id . '" />';
-                if ($this->cartId > 0 && empty(GeneralUtility::_GP('configuratorStore'))
-                    && empty(GeneralUtility::_GP('configuratorFinalize'))
-                ) {
-                    $this->loadConfigurationAndCart();
-                }
-                if ($this->cartId > 0 && !empty(GeneralUtility::_GP('configuratorFinalize'))) {
-                    $this->finalizeCart();
-                    $this->exportConfiguredRecords();
-                    $this->cartId = 0;
-                }
-                $this->content .= $this->getLocalizerConfigurator($this->formUrl());
-                if ($this->cartId > 0 && !empty(GeneralUtility::_GP('configuratorStore'))
-                    && empty(GeneralUtility::_GP('configuratorFinalize'))
-                ) {
-                    $this->storeConfigurationAndCart();
-                }
-                if ($this->localizerId) {
-                    if ($this->cartId) {
-                        if (empty($this->configuration)) {
-                            $this->content .= '<div class="alert alert-warning">' .
-                                $GLOBALS['LANG']->sL(
-                                    'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:cart.configure'
-                                ) .
-                                '</div>';
-                        } else {
-                            $pageIds = $this->selectorRepository->loadAvailablePages($this->id, 0);
-                            $this->data = $this->selectorRepository->getRecordsOnPages(
-                                $this->id,
-                                $pageIds,
-                                $this->translatableTables,
-                                $this->configuration
-                            );
-                            $this->content .= $this->getTranslationLocalizer();
-                        }
-                    } elseif (!empty(GeneralUtility::_GP('configuratorFinalize'))) {
-                        $this->content .= '<div class="alert alert-success">' .
+            if ($this->localizerId) {
+                if ($this->cartId) {
+                    if (empty($this->configuration)) {
+                        $this->content .= '<div class="alert alert-warning">' .
                             $GLOBALS['LANG']->sL(
-                                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:finalize.success'
+                                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:cart.configure'
                             ) .
                             '</div>';
                     } else {
-                        $this->content .= '<div class="alert alert-warning">' .
-                            $GLOBALS['LANG']->sL(
-                                'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:cart.select'
-                            ) .
-                            '</div>';
+                        $pageIds = $this->selectorRepository->loadAvailablePages($this->id, 0);
+                        $this->data = $this->selectorRepository->getRecordsOnPages(
+                            $this->id,
+                            $pageIds,
+                            $this->translatableTables,
+                            $this->configuration
+                        );
+                        $this->content .= $this->getTranslationLocalizer();
                     }
+                } elseif (!empty(GeneralUtility::_GP('configuratorFinalize'))) {
+                    $this->content .= '<div class="alert alert-success">' .
+                        $GLOBALS['LANG']->sL(
+                            'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:finalize.success'
+                        ) .
+                        '</div>';
                 } else {
                     $this->content .= '<div class="alert alert-warning">' .
                         $GLOBALS['LANG']->sL(
-                            'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:localizer.select'
+                            'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:cart.select'
                         ) .
                         '</div>';
                 }
             } else {
                 $this->content .= '<div class="alert alert-warning">' .
                     $GLOBALS['LANG']->sL(
-                        'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:page.select'
+                        'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:localizer.select'
                     ) .
                     '</div>';
             }
-            $this->content .= '</form>';
-            // @todo Use TYPO3 Modal API for this.
-            $this->content .= '<div id="t3-modal-finalizecart" class="modal-size-medium t3-modal t3-blr-modal t3-modal-finalizecart modal fade t3-modal-notice">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Please confirm cart finalization</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>When you proceed, the cart can not be changed anymore and will be exported to be sent to the Localizer.</p>';
-            if ($this->availableLocalizers[$this->localizerId]['deadline'] ?? false) {
-                $this->content .= '
-                            <p>If necessary pick a deadline for this job here: </p>
-                            <ul class="list-inline">' .
-                    $this->getDateTimeSelector('configured_deadline') .
-                    '</ul>';
-            }
+        } else {
+            $this->content .= '<div class="alert alert-warning">' .
+                $GLOBALS['LANG']->sL(
+                    'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:page.select'
+                ) .
+                '</div>';
+        }
+        $this->content .= '</form>';
+        // @todo Use TYPO3 Modal API for this.
+        $this->content .= '<div id="t3-modal-finalizecart" class="modal-size-medium t3-modal t3-blr-modal t3-modal-finalizecart modal fade t3-modal-notice">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Please confirm cart finalization</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>When you proceed, the cart can not be changed anymore and will be exported to be sent to the Localizer.</p>';
+        if ($this->availableLocalizers[$this->localizerId]['deadline'] ?? false) {
             $this->content .= '
-                            <p>Press "Finalize" to proceed, otherwise press "Cancel".</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>
-                            <a id="finalize-cart-submit" class="btn btn-success success">Finalize</a>
-                        </div>
+                        <p>If necessary pick a deadline for this job here: </p>
+                        <ul class="list-inline">' .
+                $this->getDateTimeSelector('configured_deadline') .
+                '</ul>';
+        }
+        $this->content .= '
+                        <p>Press "Finalize" to proceed, otherwise press "Cancel".</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>
+                        <a id="finalize-cart-submit" class="btn btn-success success">Finalize</a>
                     </div>
                 </div>
-            </div>';
-        }
+            </div>
+        </div>';
     }
 
     /**
