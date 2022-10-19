@@ -135,10 +135,8 @@ class BaseModule
 
     /**
      * May contain an instance of a 'Function menu module' which connects to this backend module.
-     *
-     * @var object
      */
-    public object $extObj;
+    public ?object $extObj = null;
 
     /**
      * @var PageRenderer
