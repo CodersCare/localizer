@@ -145,7 +145,7 @@ class FileExporter extends AbstractCartHandler
                                 $output = $this->processExport($configurationId, $language);
                                 if ($output['exitCode'] > 0) {
                                     throw new Exception(
-                                        'Failed export to file with: "' . $output['command'] . '". Exit code was: "' . $output['exitCode'] .'". Output was: "' . $output['output'] . '".',
+                                        'Failed export to file with: "' . $output['command'] . '". Exit code was: "' . $output['exitCode'] . '". Output was: "' . $output['output'] . '".',
                                         1625730835
                                     );
                                 }
@@ -255,7 +255,7 @@ class FileExporter extends AbstractCartHandler
         return [
             'exitCode' => $result,
             'command' => 'l10nmanager:export ' . $input,
-            'output' => $output->fetch()
+            'output' => $output->fetch(),
         ];
     }
 
