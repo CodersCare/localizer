@@ -19,6 +19,9 @@ nbproject
 # php-cs-fixer
 .php-cs-fixer.cache
 
+# phpstan cache
+.cache
+
 # composer
 composer.lock
 public
