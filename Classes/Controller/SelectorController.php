@@ -140,22 +140,6 @@ class SelectorController extends AbstractController
             ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css'
         );
         $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
-        $this->modTSconfig['properties']['enableDisplayBigControlPanel'] = 'activated';
-        if ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'activated') {
-            $this->MOD_SETTINGS['bigControlPanel'] = true;
-        } elseif ($this->modTSconfig['properties']['enableDisplayBigControlPanel'] === 'deactivated') {
-            $this->MOD_SETTINGS['bigControlPanel'] = false;
-        }
-        if (($this->modTSconfig['properties']['enableClipBoard'] ?? '') === 'activated') {
-            $this->MOD_SETTINGS['clipBoard'] = true;
-        } elseif (($this->modTSconfig['properties']['enableClipBoard'] ?? '') === 'deactivated') {
-            $this->MOD_SETTINGS['clipBoard'] = false;
-        }
-        if (($this->modTSconfig['properties']['enableLocalizationView'] ?? '') === 'activated') {
-            $this->MOD_SETTINGS['localization'] = true;
-        } elseif (($this->modTSconfig['properties']['enableLocalizationView'] ?? '') === 'deactivated') {
-            $this->MOD_SETTINGS['localization'] = false;
-        }
         $header = 'LOCALIZER Selector';
         if (isset($this->pageinfo['title'])) {
             $header .= ': ';
