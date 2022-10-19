@@ -1,3 +1,12 @@
 parameters:
-	ignoreErrors: []
+	ignoreErrors:
+		-
+			message: "#^Property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$calcPerms \\(TYPO3\\\\CMS\\\\Core\\\\Type\\\\Bitmask\\\\Permission\\) does not accept int\\.$#"
+			count: 1
+			path: ../../Classes/Controller/CartController.php
+
+		-
+			message: "#^Offset 'static_lang_isocode' does not exist on array\\{uid\\: int, title\\: string, ISOcode\\: string, flagIcon\\: string\\}\\.$#"
+			count: 1
+			path: ../../Classes/Handler/AutomaticExporter.php
 
