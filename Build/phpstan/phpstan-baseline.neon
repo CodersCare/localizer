@@ -1,3 +1,82 @@
 parameters:
-	ignoreErrors: []
+	ignoreErrors:
+		-
+			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$MOD_MENU\\.$#"
+			count: 1
+			path: ../../Classes/Controller/CartController.php
+
+		-
+			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$allFields\\.$#"
+			count: 1
+			path: ../../Classes/Controller/CartController.php
+
+		-
+			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$alternateBgColors\\.$#"
+			count: 1
+			path: ../../Classes/Controller/CartController.php
+
+		-
+			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$dontShowClipControlPanels\\.$#"
+			count: 1
+			path: ../../Classes/Controller/CartController.php
+
+		-
+			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$script\\.$#"
+			count: 1
+			path: ../../Classes/Controller/CartController.php
+
+		-
+			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$showClipboard\\.$#"
+			count: 1
+			path: ../../Classes/Controller/CartController.php
+
+		-
+			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$showIcon\\.$#"
+			count: 1
+			path: ../../Classes/Controller/CartController.php
+
+		-
+			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$thumbs\\.$#"
+			count: 1
+			path: ../../Classes/Controller/CartController.php
+
+		-
+			message: "#^Comparison operation \"\\>\" between Doctrine\\\\DBAL\\\\Result\\|int and 0 results in an error\\.$#"
+			count: 1
+			path: ../../Classes/Handler/ErrorResetter.php
+
+		-
+			message: "#^Comparison operation \"\\>\" between Doctrine\\\\DBAL\\\\Result\\|int and 0 results in an error\\.$#"
+			count: 1
+			path: ../../Classes/Handler/FileDownloader.php
+
+		-
+			message: "#^Comparison operation \"\\>\" between Doctrine\\\\DBAL\\\\Result\\|int and 0 results in an error\\.$#"
+			count: 1
+			path: ../../Classes/Handler/FileImporter.php
+
+		-
+			message: "#^Comparison operation \"\\>\" between Doctrine\\\\DBAL\\\\Result\\|int and 0 results in an error\\.$#"
+			count: 1
+			path: ../../Classes/Handler/FileSender.php
+
+		-
+			message: "#^Comparison operation \"\\>\" between Doctrine\\\\DBAL\\\\Result\\|int and 0 results in an error\\.$#"
+			count: 1
+			path: ../../Classes/Handler/StatusRequester.php
+
+		-
+			message: "#^Comparison operation \"\\>\" between Doctrine\\\\DBAL\\\\Result\\|int and 0 results in an error\\.$#"
+			count: 1
+			path: ../../Classes/Handler/SuccessReporter.php
+
+		-
+			message: "#^PHPDoc tag @param for parameter \\$id with type mixed is not subtype of native type string\\.$#"
+			count: 1
+			path: ../../Classes/Hooks/DataHandler.php
+
+		-
+			message: "#^Call to an undefined method Localizationteam\\\\Localizer\\\\Api\\\\ApiCalls\\:\\:getFile\\(\\)\\.$#"
+			count: 1
+			path: ../../Classes/Runner/DownloadFile.php
 
