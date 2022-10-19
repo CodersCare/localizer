@@ -1,46 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$MOD_MENU\\.$#"
-			count: 1
-			path: ../../Classes/Controller/CartController.php
-
-		-
-			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$allFields\\.$#"
-			count: 1
-			path: ../../Classes/Controller/CartController.php
-
-		-
-			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$alternateBgColors\\.$#"
-			count: 1
-			path: ../../Classes/Controller/CartController.php
-
-		-
-			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$dontShowClipControlPanels\\.$#"
-			count: 1
-			path: ../../Classes/Controller/CartController.php
-
-		-
-			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$script\\.$#"
-			count: 1
-			path: ../../Classes/Controller/CartController.php
-
-		-
-			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$showClipboard\\.$#"
-			count: 1
-			path: ../../Classes/Controller/CartController.php
-
-		-
-			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$showIcon\\.$#"
-			count: 1
-			path: ../../Classes/Controller/CartController.php
-
-		-
-			message: "#^Access to an undefined property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$thumbs\\.$#"
-			count: 1
-			path: ../../Classes/Controller/CartController.php
-
-		-
 			message: "#^Comparison operation \"\\>\" between Doctrine\\\\DBAL\\\\Result\\|int and 0 results in an error\\.$#"
 			count: 1
 			path: ../../Classes/Handler/ErrorResetter.php

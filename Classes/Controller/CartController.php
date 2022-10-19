@@ -151,36 +151,24 @@ class CartController extends AbstractController
         $this->MOD_SETTINGS['localization'] = false;
         /** @var DatabaseRecordList $dblist */
         $dblist = GeneralUtility::makeInstance(DatabaseRecordList::class);
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        try {
-            $dblist->script = $uriBuilder->buildUriFromRoute('web_list');
-        } catch (RouteNotFoundException $e) {
-        }
         $permissionBits = $this->getBackendUser()->calcPerms($this->pageinfo);
         if ((new Typo3Version())->getMajorVersion() > 10) {
             $dblist->calcPerms = new Permission($permissionBits);
         } else {
             $dblist->calcPerms = $permissionBits;
         }
-        $dblist->thumbs = $this->getBackendUser()->uc['thumbnailsByDefault'];
         $dblist->returnUrl = $this->returnUrl;
-        $dblist->allFields = $this->MOD_SETTINGS['bigControlPanel'] || $this->table ? 1 : 0;
-        $dblist->showClipboard = 0;
-        $dblist->showIcon = 0;
         $dblist->disableSingleTableView = $this->modTSconfig['properties']['disableSingleTableView'] ?? false;
         $dblist->listOnlyInSingleTableMode = $this->modTSconfig['properties']['listOnlyInSingleTableView'] ?? false;
         $dblist->hideTables = $this->modTSconfig['properties']['hideTables'] ?? false;
         $dblist->hideTranslations = $this->modTSconfig['properties']['hideTranslations'] ?? false;
         $dblist->tableTSconfigOverTCA = $this->modTSconfig['properties']['table.'] ?? [];
-        $dblist->alternateBgColors = ($this->modTSconfig['properties']['alternateBgColors'] ?? false) ? 1 : 0;
         $dblist->allowedNewTables = [];
         $dblist->deniedNewTables = [Constants::TABLE_LOCALIZER_CART];
         $dblist->setIsEditable(true);
         $dblist->pageRow = $this->pageinfo;
-        $dblist->MOD_MENU = ['bigControlPanel' => '', 'clipBoard' => '', 'localization' => ''];
         $dblist->modTSconfig = $this->modTSconfig;
         $dblist->clickTitleMode = '';
-        $dblist->dontShowClipControlPanels = true;
 
         $header = 'LOCALIZER Cart';
         $this->content = $this->moduleTemplate->header($header);
