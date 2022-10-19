@@ -13,7 +13,7 @@ options.saveDocNew.tx_localizer_settings=1
 );
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['localizer'] =
-    'Localizationteam\Localizer\Hooks\DataHandler';
+    'Localizationteam\Localizer\Hooks\DataHandlerHook';
 
 // Enable stats
 $enableStatHook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(

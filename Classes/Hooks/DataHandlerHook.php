@@ -14,6 +14,7 @@ use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\LanguageRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -24,7 +25,7 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  */
-class DataHandler
+class DataHandlerHook
 {
     use BackendUser;
     use Language;
@@ -36,16 +37,16 @@ class DataHandler
      *
      * @param string $status
      * @param string $table
-     * @param mixed $id
+     * @param string|int $id
      * @param array $fieldArray
-     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $tceMain
+     * @param DataHandler $tceMain
      */
     public function processDatamap_postProcessFieldArray(
         string $status,
         string $table,
-        string $id,
+        $id,
         array &$fieldArray,
-        \TYPO3\CMS\Core\DataHandling\DataHandler $tceMain
+        DataHandler $tceMain
     ): void {
         if ($table === Constants::TABLE_LOCALIZER_SETTINGS) {
             if ($this->isSaveAction()) {
@@ -103,13 +104,13 @@ class DataHandler
      * @param array $incomingFieldArray
      * @param string $table
      * @param string $id
-     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $tceMain
+     * @param DataHandler $tceMain
      */
     public function processDatamap_preProcessFieldArray(
         array &$incomingFieldArray,
         string $table,
         string $id,
-        \TYPO3\CMS\Core\DataHandling\DataHandler $tceMain
+        DataHandler $tceMain
     ): void {
         if ($table === Constants::TABLE_EXPORTDATA_MM && isset($incomingFieldArray['target_locale'])) {
             // if all languages are selected we skip other languages
