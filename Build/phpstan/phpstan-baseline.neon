@@ -6,11 +6,6 @@ parameters:
 			path: ../../Classes/Handler/AutomaticExporter.php
 
 		-
-			message: "#^Right side of \\|\\| is always true\\.$#"
-			count: 1
-			path: ../../Classes/Model/Repository/CartRepository.php
-
-		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: ../../Classes/Model/Repository/LanguageRepository.php

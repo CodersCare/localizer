@@ -83,7 +83,9 @@ class CartRepository extends AbstractRepository
      */
     public function getRecordInfo(int $id, array $classes, int $user): array
     {
-        $user = $user === 0 || $user ? $user : $this->getBackendUser()->user['uid'];
+        if ($user === 0) {
+            $user = (int)$this->getBackendUser()->user['uid'];
+        }
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
         $queryBuilder
             ->select('uid', 'uid_local', 'uid_foreign', 'previous_status', 'action')
