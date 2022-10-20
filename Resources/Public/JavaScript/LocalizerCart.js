@@ -16,6 +16,7 @@ define([
    * @exports TYPO3/CMS/Localizer/LocalizerCart
    */
   var LocalizerCart = {
+    icons: {},
     initialize: function () {
     },
     initializeTableRows: function () {
@@ -40,22 +41,36 @@ define([
    * Initialize
    */
   LocalizerCart.initialize = function () {
-    var list = $('#recordlist-tx_localizer_cart')
-    var localizerRecords = $.parseJSON(localizerRecordInfo)
+    const iconPromises = [];
+    iconPromises.push(Icons.getIcon('actions-upload', Icons.sizes.small));
+    iconPromises.push(Icons.getIcon('actions-document-view', Icons.sizes.small));
+    iconPromises.push(Icons.getIcon('actions-open', Icons.sizes.small));
+    iconPromises.push(Icons.getIcon('actions-history', Icons.sizes.small));
+    iconPromises.push(Icons.getIcon('actions-info', Icons.sizes.small));
+    Promise.all(iconPromises).then((icons) => {
+      this.icons['actions-upload'] = icons[0];
+      this.icons['actions-document-view'] = icons[1];
+      this.icons['actions-open'] = icons[2];
+      this.icons['actions-history'] = icons[3];
+      this.icons['actions-info'] = icons[4];
 
-    $('body').append($('#t3-modal-importscheduled'))
+      var list = $('#recordlist-tx_localizer_cart')
+      var localizerRecords = $.parseJSON(localizerRecordInfo)
 
-    $('.pagination-wrap', list).closest('tr').remove()
-    $('.icon-actions-edit-hide', list).closest('a').remove()
-    $('.icon-actions-edit-delete', list).closest('a').remove()
-    $('.icon-actions-document-history-open', list).closest('a').remove()
-    $('.icon-empty-empty', list).closest('.btn').remove()
-    $('tr', list).each(function () {
-      LocalizerCart.initializeTableRows($(this), Number($(this).attr('data-uid')), localizerRecords)
-    })
-    LocalizerCart.initializeImportButtons()
-    $('[data-toggle="tooltip"]', '.localizerCarts, .btn-group-import, .btn-group-preview, .btn-group-scheduled').tooltip('show').tooltip('hide')
-    LocalizerCart.initializeButtonClicks()
+      $('body').append($('#t3-modal-importscheduled'))
+
+      $('.pagination-wrap', list).closest('tr').remove()
+      $('.icon-actions-edit-hide', list).closest('a').remove()
+      $('.icon-actions-edit-delete', list).closest('a').remove()
+      $('.icon-actions-document-history-open', list).closest('a').remove()
+      $('.icon-empty-empty', list).closest('.btn').remove()
+      $('tr', list).each(function () {
+        LocalizerCart.initializeTableRows($(this), Number($(this).attr('data-uid')), localizerRecords)
+      })
+      LocalizerCart.initializeImportButtons()
+      $('[data-toggle="tooltip"]', '.localizerCarts, .btn-group-import, .btn-group-preview, .btn-group-scheduled').tooltip('show').tooltip('hide')
+      LocalizerCart.initializeButtonClicks()
+    });
   }
 
   LocalizerCart.initializeTableRows = function (row, uid, localizerRecords) {
@@ -118,12 +133,10 @@ define([
   }
 
   LocalizerCart.addImportButtonToCell = function (cell) {
-    Icons.getIcon('actions-upload', Icons.sizes.small).then((icon) => {
-      cell.find('ul li').prepend('' +
-        '<div class="btn-group btn-group-import" role="group">' +
-          '<a href="#" class="btn btn-warning" data-toggle="tooltip" data-placement="right" title="Import all returned files" onclick="" data-uid="">' + icon + '</a>' +
-        '</div>');
-    });
+    cell.prepend('' +
+      '<div class="btn-group btn-group-import" role="group">' +
+        '<a href="#" class="btn btn-warning" data-toggle="tooltip" data-placement="right" title="Import all returned files" onclick="" data-uid="">' + this.icons['actions-upload'] + '</a>' +
+      '</div>');
   }
 
   LocalizerCart.addButtonsForExportData = function (cell, id, values) {
@@ -139,56 +152,47 @@ define([
       previewOnClick = 'window.open(\'/uploads/tx_l10nmgr/jobs/out/' + values.filename + '\', \'Export File\', \'width=1024,height=768\'); return false;'
       previewTooltip = 'Preview this file'
     }
-
-    const iconPromises = [];
-    iconPromises.push(Icons.getIcon('actions-upload', Icons.sizes.small));
-    iconPromises.push(Icons.getIcon('actions-document-view', Icons.sizes.small));
-    iconPromises.push(Icons.getIcon('actions-open', Icons.sizes.small));
-    iconPromises.push(Icons.getIcon('actions-history', Icons.sizes.small));
-    iconPromises.push(Icons.getIcon('actions-info', Icons.sizes.small));
-    Promise.all(iconPromises).then((icons) => {
-      let appendString = '<li class="toggle-status toggle-' + values.status + ' action2-' + values.action + '">';
-      if (values.status === 70 && values.action === 0) {
-        appendString +=
-          '<div class="btn-group btn-group-import" role="group">' +
-            '<a href="#" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Import this file" data-uid="' + id + '">' +
-            icons[0] +
-            '</a>' +
-          '</div>';
-      }
-      if (values.status !== 90 && values.status !== 80 && values.action !== 70) {
-        appendString +=
-          '<div class="btn-group btn-group-preview" role="group">' +
-            '<a href="#" class="btn btn-info" onclick="' + previewOnClick + '" data-toggle="tooltip" data-placement="top" title="' + previewTooltip + '" data-uid="' + id + '">' +
-            icons[1] +
-            '</a>' +
-          '</div>' +
-          '<div class="btn-group btn-group-edit" role="group">' +
-            '<a href="#" class="btn btn-default" onclick="' + editOnClick + '"' + ' data-uid="' + id + '">' +
-            icons[2] +
-            '</a>' +
-          '</div>';
-      }
-
-      if (values.action === 70) {
-        appendString +=
-          '<div class="btn-group btn-group-scheduled" role="group">' +
-            '<a href="#" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Scheduled for import" data-uid="' + id + '">' +
-            icons[3] +
-            '</a>' +
-          '</div>';
-      }
-
+    let appendString = '<li class="toggle-status toggle-' + values.status + ' action2-' + values.action + '">';
+    if (values.status === 70 && values.action === 0) {
       appendString +=
-        '<div class="btn-group" role="group">' +
-          '<a href="#" class="btn btn-default" onclick="top.TYPO3.InfoWindow.showItem(\'tx_localizer_settings_l10n_exportdata_mm\', ' + id + '); return false;" data-uid="' + id + '">' +
-          icons[4] +
+        '<div class="btn-group btn-group-import" role="group">' +
+          '<a href="#" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Import this file" data-uid="' + id + '">' +
+          this.icons['actions-upload'] +
           '</a>' +
         '</div>';
+    }
+    if (values.status !== 90 && values.status !== 80 && values.action !== 70) {
+      appendString +=
+        '<div class="btn-group btn-group-preview" role="group">' +
+          '<a href="#" class="btn btn-info" onclick="' + previewOnClick + '" data-toggle="tooltip" data-placement="top" title="' + previewTooltip + '" data-uid="' + id + '">' +
+            this.icons['actions-document-view'] +
+          '</a>' +
+        '</div>' +
+        '<div class="btn-group btn-group-edit" role="group">' +
+          '<a href="#" class="btn btn-default" onclick="' + editOnClick + '"' + ' data-uid="' + id + '">' +
+            this.icons['actions-open'] +
+          '</a>' +
+        '</div>';
+    }
 
-      appendString += '</li>';
-      cell.find('ul').append(appendString);
-    });
+    if (values.action === 70) {
+      appendString +=
+        '<div class="btn-group btn-group-scheduled" role="group">' +
+          '<a href="#" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Scheduled for import" data-uid="' + id + '">' +
+            this.icons['actions-history'] +
+          '</a>' +
+        '</div>';
+    }
+
+    appendString +=
+      '<div class="btn-group" role="group">' +
+        '<a href="#" class="btn btn-default" onclick="top.TYPO3.InfoWindow.showItem(\'tx_localizer_settings_l10n_exportdata_mm\', ' + id + '); return false;" data-uid="' + id + '">' +
+          this.icons['actions-info'] +
+        '</a>' +
+      '</div>';
+
+    appendString += '</li>';
+    cell.append(appendString);
   }
 
   LocalizerCart.initializeImportButtons = function () {
