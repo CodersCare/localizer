@@ -293,7 +293,7 @@ class SelectorController extends AbstractController
             }
         }
         if (!empty($storedTables)) {
-            $this->configuration['tables'] = array_merge((array)$this->configuration['tables'], $storedTables);
+            $this->configuration['tables'] = array_merge((array)($this->configuration['tables'] ?? []), $storedTables);
         }
     }
 
