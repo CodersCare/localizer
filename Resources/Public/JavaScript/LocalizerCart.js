@@ -1,7 +1,12 @@
 /**
  * Module: TYPO3/CMS/Localizer/LocalizerCart
  */
-define(['jquery', 'TYPO3/CMS/Backend/AjaxDataHandler', 'bootstrap'], function ($, AjaxDataHandler) {
+define([
+  'jquery',
+  'TYPO3/CMS/Backend/AjaxDataHandler',
+  'TYPO3/CMS/Backend/Icons',
+  'bootstrap'
+], function ($, AjaxDataHandler, Icons) {
   'use strict'
 
   /**
@@ -113,18 +118,12 @@ define(['jquery', 'TYPO3/CMS/Backend/AjaxDataHandler', 'bootstrap'], function ($
   }
 
   LocalizerCart.addImportButtonToCell = function (cell) {
-    cell.prepend('<div class="btn-group btn-group-import" role="group">' +
-      '<a href="#" class="btn btn-warning" ' +
-      'data-toggle="tooltip" data-placement="right" ' +
-      ' title="Import all returned files"' +
-      'onclick=""' +
-      'data-uid="">' +
-      '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-upload" data-identifier="actions-upload">' +
-      '<span class="icon-markup"><svg class="icon-color" role="img">' +
-      '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-upload"></use>' +
-      '</svg></span>' +
-      '</span></a>' +
-      '</div> ')
+    Icons.getIcon('actions-upload', Icons.sizes.small).then((icon) => {
+      cell.find('ul li').prepend('' +
+        '<div class="btn-group btn-group-import" role="group">' +
+          '<a href="#" class="btn btn-warning" data-toggle="tooltip" data-placement="right" title="Import all returned files" onclick="" data-uid="">' + icon + '</a>' +
+        '</div>');
+    });
   }
 
   LocalizerCart.addButtonsForExportData = function (cell, id, values) {
@@ -140,64 +139,56 @@ define(['jquery', 'TYPO3/CMS/Backend/AjaxDataHandler', 'bootstrap'], function ($
       previewOnClick = 'window.open(\'/uploads/tx_l10nmgr/jobs/out/' + values.filename + '\', \'Export File\', \'width=1024,height=768\'); return false;'
       previewTooltip = 'Preview this file'
     }
-    cell.append('<li class="toggle-status toggle-' + values.status + ' action2-' + values.action + '">' +
-      (values.status === 70 && values.action === 0 ? (
-        '<div class="btn-group btn-group-import" role="group">' +
-        '<a href="#" class="btn btn-warning" ' +
-        'data-toggle="tooltip" data-placement="top" ' +
-        ' title="Import this file"' +
-        'data-uid="' + id + '">' +
-        '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-upload" data-identifier="actions-upload">' +
-        '<span class="icon-markup"><svg class="icon-color" role="img">' +
-        '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-upload"></use>' +
-        '</svg></span>' +
-        '</span></a>'
-      ) : '') +
-      (values.status !== 90 && values.status !== 80 && values.action !== 70 ? (
-        '</div> <div class="btn-group btn-group-preview" role="group">' +
-        '<a href="#" class="btn btn-info" ' +
-        'onclick="' + previewOnClick + '"' +
-        'data-toggle="tooltip" data-placement="top" ' +
-        ' title="' + previewTooltip + '"' +
-        'data-uid="' + id + '">' +
-        '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-document-view" data-identifier="actions-document-view">' +
-        '<span class="icon-markup"><svg class="icon-color" role="img">' +
-        '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-document-view"></use>' +
-        '</svg></span>' +
-        '</span></a>' +
-        '</div> <div class="btn-group btn-group-edit" role="group">' +
-        '<a href="#" class="btn btn-default" ' +
-        'onclick="' + editOnClick + '"' +
-        'data-uid="' + id + '">' +
-        '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-open" data-identifier="actions-open">' +
-        '<span class="icon-markup"><svg class="icon-color" role="img">' +
-        '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-open"></use>' +
-        '</svg></span>' +
-        '</span></a>'
-      ) : '') +
-      (values.action === 70 ? (
-        '</div> <div class="btn-group btn-group-scheduled" role="group">' +
-        '<a href="#" class="btn btn-success" ' +
-        'data-toggle="tooltip" data-placement="top" ' +
-        ' title="Scheduled for import"' +
-        'data-uid="' + id + '">' +
-        '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-document-history-open" data-identifier="actions-document-history-open">' +
-        '<span class="icon-markup"><svg class="icon-color" role="img">' +
-        '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-history"></use>' +
-        '</svg></span>' +
-        '</span></a>'
-      ) : '') +
-      '</div> <div class="btn-group" role="group">' +
-      '<a href="#" class="btn btn-default" ' +
-      'onclick="top.TYPO3.InfoWindow.showItem(\'tx_localizer_settings_l10n_exportdata_mm\', ' + id + '); return false;"' +
-      'data-uid="' + id + '">' +
-      '<span class="t3js-icon icon icon-size-small icon-state-default icon-actions-document-info" data-identifier="actions-document-info">' +
-      '<span class="icon-markup"><svg class="icon-color" role="img">' +
-      '<use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-info"></use>' +
-      '</svg></span>' +
-      '</span></a>' +
-      '</div>' +
-      '</li>')
+
+    const iconPromises = [];
+    iconPromises.push(Icons.getIcon('actions-upload', Icons.sizes.small));
+    iconPromises.push(Icons.getIcon('actions-document-view', Icons.sizes.small));
+    iconPromises.push(Icons.getIcon('actions-open', Icons.sizes.small));
+    iconPromises.push(Icons.getIcon('actions-history', Icons.sizes.small));
+    iconPromises.push(Icons.getIcon('actions-info', Icons.sizes.small));
+    Promise.all(iconPromises).then((icons) => {
+      let appendString = '<li class="toggle-status toggle-' + values.status + ' action2-' + values.action + '">';
+      if (values.status === 70 && values.action === 0) {
+        appendString +=
+          '<div class="btn-group btn-group-import" role="group">' +
+            '<a href="#" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Import this file" data-uid="' + id + '">' +
+            icons[0] +
+            '</a>' +
+          '</div>';
+      }
+      if (values.status !== 90 && values.status !== 80 && values.action !== 70) {
+        appendString +=
+          '<div class="btn-group btn-group-preview" role="group">' +
+            '<a href="#" class="btn btn-info" onclick="' + previewOnClick + '" data-toggle="tooltip" data-placement="top" title="' + previewTooltip + '" data-uid="' + id + '">' +
+            icons[1] +
+            '</a>' +
+          '</div>' +
+          '<div class="btn-group btn-group-edit" role="group">' +
+            '<a href="#" class="btn btn-default" onclick="' + editOnClick + '"' + ' data-uid="' + id + '">' +
+            icons[2] +
+            '</a>' +
+          '</div>';
+      }
+
+      if (values.action === 70) {
+        appendString +=
+          '<div class="btn-group btn-group-scheduled" role="group">' +
+            '<a href="#" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Scheduled for import" data-uid="' + id + '">' +
+            icons[3] +
+            '</a>' +
+          '</div>';
+      }
+
+      appendString +=
+        '<div class="btn-group" role="group">' +
+          '<a href="#" class="btn btn-default" onclick="top.TYPO3.InfoWindow.showItem(\'tx_localizer_settings_l10n_exportdata_mm\', ' + id + '); return false;" data-uid="' + id + '">' +
+          icons[4] +
+          '</a>' +
+        '</div>';
+
+      appendString += '</li>';
+      cell.find('ul').append(appendString);
+    });
   }
 
   LocalizerCart.initializeImportButtons = function () {
