@@ -196,8 +196,8 @@ class SelectorRepository extends AbstractRepository
                 }
             }
         }
-        $insertValues = array_diff_assoc($checkedValues, $storedTriples);
-        $deleteValues = array_diff_assoc($storedTriples, $checkedValues);
+        $insertValues = array_diff_key($checkedValues, $storedTriples);
+        $deleteValues = array_diff_key($storedTriples, $checkedValues);
         if (!empty($insertValues)) {
             self::getConnectionPool()
                 ->getConnectionForTable(Constants::TABLE_CARTDATA_MM)
