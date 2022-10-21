@@ -28,7 +28,7 @@ class SettingsController
 
     public function mainAction(ServerRequestInterface $request): ResponseInterface
     {
-        $id = (int)$request->getQueryParams()['id'];
+        $id = (int)($request->getQueryParams()['id'] ?? 0);
         $content = $this->moduleTemplate->header('LOCALIZER Settings');
         if ($id > 0) {
             $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
