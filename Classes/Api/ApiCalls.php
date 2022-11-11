@@ -484,7 +484,7 @@ class ApiCalls implements ApiCallsInterface
         return [];
     }
 
-    public function getWorkProgress(array $files = [], string $targetLocale = '', ?int $skip = null, ?int $count = null): array
+    public function getWorkProgress(array $files = [], string $target = '', ?int $skip = 0, ?int $count = 100): array
     {
         return [];
     }
