@@ -22,22 +22,22 @@ class ApiCalls implements ApiCallsInterface
 {
     use BackendUser;
 
-    public string $type;
-    protected string $connectorName;
-    protected string $connectorVersion;
+    public string $type = '';
+    protected string $connectorName = '';
+    protected string $connectorVersion = '';
     protected string $token = '';
-    protected string $url;
+    protected string $url = '';
     protected string $projectKey = '';
     protected string $workflow = '';
-    protected string $username;
-    protected string $password;
+    protected string $username = '';
+    protected string $password = '';
     protected ?string $outFolder = null;
     protected ?string $inFolder = null;
-    protected bool $plainXmlExports;
+    protected bool $plainXmlExports = false;
     protected string $deadline = '';
     protected int $deadlineOffset = 0;
     protected array $metaData = [];
-    protected array $projectLanguages;
+    protected array $projectLanguages = [];
     protected array $locales = [];
     protected string $sourceLanguage = '';
     protected string $projectInformation = '';
