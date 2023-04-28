@@ -17,7 +17,7 @@
 		"typo3/cms-extensionmanager": "^10.4 || ^11.5",
 		"typo3/cms-scheduler": "^10.4 || ^11.5",
 		"typo3/cms-install": "^10.4 || ^11.5",
-		"localizationteam/l10nmgr": "^11 || dev-master",
+		"localizationteam/l10nmgr": "^11.0",
 		"sjbr/static-info-tables": "*",
 		"ext-pdo": "*",
 		"ext-json": "*",
