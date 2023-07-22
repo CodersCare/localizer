@@ -238,7 +238,8 @@ class SelectorController extends AbstractController
                                 $this->id,
                                 $pageIds,
                                 $this->translatableTables,
-                                $this->configuration
+                                $this->configuration,
+                                array_keys($this->languages)
                             );
                             $this->content .= $this->getTranslationLocalizer();
                         }
