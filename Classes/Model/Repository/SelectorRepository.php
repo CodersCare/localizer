@@ -471,7 +471,8 @@ class SelectorRepository extends AbstractRepository
         int $id,
         array $pageIds,
         array $translatableTables,
-        array $configuration = []
+        array $configuration = [],
+        array $selectorLanguages = []
     ): array {
         $records = [];
         $referencedRecords = [];
@@ -490,7 +491,6 @@ class SelectorRepository extends AbstractRepository
                 continue;
             }
             $tstampField = $GLOBALS['TCA'][$table]['ctrl']['tstamp'];
-            $deleteField = $GLOBALS['TCA'][$table]['ctrl']['delete'];
             $languageField = $GLOBALS['TCA'][$table]['ctrl']['languageField'];
             $transOrigPointerField = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
             $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable($table);
@@ -503,8 +503,8 @@ class SelectorRepository extends AbstractRepository
                     triples.languageId localizer_language,
                     MAX(carts.status) localizer_status,
                     MAX(carts.tstamp) last_action,
-                    GROUP_CONCAT(DISTINCT translations.' . $transOrigPointerField . ') translated,
-                    GROUP_CONCAT(DISTINCT outdated.' . $transOrigPointerField . ') changed,
+                    GROUP_CONCAT(DISTINCT translations.' . $languageField . ') translated,
+                    GROUP_CONCAT(DISTINCT outdated.' . $languageField . ') changed,
                     MAX(outdated.tstamp) outdated'
                 )
                 ->from($table);
@@ -526,9 +526,9 @@ class SelectorRepository extends AbstractRepository
                             'translations.' . $tstampField,
                             $queryBuilder->quoteIdentifier($table . '.' . $tstampField)
                         ),
-                        $queryBuilder->expr()->eq(
-                            'translations.deleted',
-                            0
+                        $queryBuilder->expr()->in(
+                            'translations.sys_language_uid',
+                            $selectorLanguages
                         )
                     )
                 )->leftJoin(
@@ -551,10 +551,6 @@ class SelectorRepository extends AbstractRepository
                         $queryBuilder->expr()->eq(
                             'triples.cart',
                             $queryBuilder->quoteIdentifier('carts.uid')
-                        ),
-                        $queryBuilder->expr()->eq(
-                            'carts.deleted',
-                            0
                         )
                     )
                 )->leftJoin(
@@ -574,9 +570,9 @@ class SelectorRepository extends AbstractRepository
                             'outdated.' . $tstampField,
                             $queryBuilder->quoteIdentifier($table . '.tstamp')
                         ),
-                        $queryBuilder->expr()->eq(
-                            'outdated.deleted',
-                            0
+                        $queryBuilder->expr()->in(
+                            'outdated.sys_language_uid',
+                            $selectorLanguages
                         )
                     )
                 )->where(
@@ -609,10 +605,10 @@ class SelectorRepository extends AbstractRepository
                             'translations.' . $tstampField,
                             $queryBuilder->quoteIdentifier($table . '.' . $tstampField)
                         ),
-                        $deleteField ? $queryBuilder->expr()->eq(
-                            'translations.deleted',
-                            0
-                        ) : null
+                        $queryBuilder->expr()->in(
+                            'translations.sys_language_uid',
+                            $selectorLanguages
+                        )
                     )
                 )->leftJoin(
                     $table,
@@ -640,10 +636,6 @@ class SelectorRepository extends AbstractRepository
                         $queryBuilder->expr()->eq(
                             'triples.cart',
                             $queryBuilder->quoteIdentifier('carts.uid')
-                        ),
-                        $queryBuilder->expr()->eq(
-                            'carts.deleted',
-                            0
                         )
                     )
                 )->leftJoin(
@@ -663,10 +655,10 @@ class SelectorRepository extends AbstractRepository
                             'outdated.' . $tstampField,
                             $queryBuilder->quoteIdentifier($table . '.' . $tstampField)
                         ),
-                        $deleteField ? $queryBuilder->expr()->eq(
-                            'outdated.deleted',
-                            0
-                        ) : null
+                        $queryBuilder->expr()->in(
+                            'outdated.sys_language_uid',
+                            $selectorLanguages
+                        )
                     )
                 )->where(
                     $queryBuilder->expr()->andX(
