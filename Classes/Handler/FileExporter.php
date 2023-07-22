@@ -120,10 +120,11 @@ class FileExporter extends AbstractCartHandler
                 if (!empty($cartConfiguration['languages']) && !empty($cartConfiguration['tables'])) {
                     $tables = $cartConfiguration['tables'];
                     $pageIds = $this->selectorRepository->loadAvailablePages($pid, $cart);
-                    $this->content = $this->selectorRepository->getRecordsOnPages($pid, $pageIds, $tables);
+                    $languages = array_keys($cartConfiguration['languages']);
+                    $this->content = $this->selectorRepository->getRecordsOnPages($pid, $pageIds, $tables, [], $languages);
                     $this->triples = $this->selectorRepository->loadStoredTriples($pageIds, $cart);
                     if (!empty($this->content) && !empty($this->triples)) {
-                        foreach (array_keys($cartConfiguration['languages']) as $language) {
+                        foreach ($languages as $language) {
                             $configuredLanguageExport = $this->configureRecordsForLanguage(
                                 $localizer,
                                 $cart,
