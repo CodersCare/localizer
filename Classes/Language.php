@@ -37,9 +37,6 @@ trait Language
                 }
             }
         }
-        if ($iso2 === '') {
-            throw new Exception('ID ' . $row['target_locale'] . ' can not be found in static languages or TYPO3 SiteConfiguration or is missing the hreflang configuration. Please inform your admin!');
-        }
 
         return $iso2;
     }
