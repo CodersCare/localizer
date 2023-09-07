@@ -91,12 +91,16 @@ class StatusRequester extends AbstractHandler
                         'LOCALIZER settings (' . $row['uid_local'] . ') not found'
                     );
                 } else {
+                    $target = $this->getIso2ForLocale($row);
+                    if (empty($target)) {
+                        continue;
+                    }
                     $configuration = array_merge(
                         (array)$localizerSettings,
                         [
                             'uid' => $row['uid'],
                             'file' => $row['filename'],
-                            'target' => $this->getIso2ForLocale($row),
+                            'target' => $target,
                         ]
                     );
                     /** @var RequestStatus $runner */

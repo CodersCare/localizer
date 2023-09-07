@@ -23,6 +23,7 @@ trait Language
         /** @var LanguageRepository $languageRepository */
         $languageRepository = GeneralUtility::makeInstance(LanguageRepository::class);
         $targetLanguages = $languageRepository->getAllTargetLanguageUids($row['uid'], Constants::TABLE_EXPORTDATA_MM);
+        $iso2 = '';
         if (count($targetLanguages) > 0) {
             $collateLocale = $languageRepository->getStaticLanguagesCollateLocale($targetLanguages, true);
             if (count($collateLocale) > 0) {
@@ -33,9 +34,6 @@ trait Language
                     $iso2 = $languageRepository->getIsoTwoCodeBySystemLanguageId($systemLanguageId, $row['pid']);
                 }
             }
-        }
-        if ($iso2 === '') {
-            throw new Exception('ID ' . $row['target_locale'] . ' can not be found in static languages or TYPO3 SiteConfiguration or is missing the hreflang configuration. Please inform your admin!');
         }
 
         return $iso2;
