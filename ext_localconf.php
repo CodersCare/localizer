@@ -21,7 +21,7 @@ $enableStatHook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 )->get('localizer', 'enable_stat_hook');
 
 if ($enableStatHook) {
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks']['tx_localizer'] = 'Localizationteam\\Localizer\\Hooks\\DataHandler->recStatInfo';
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['recStatInfoHooks']['tx_localizer'] = 'Localizationteam\\Localizer\\Hooks\\DataHandlerHook->recStatInfo';
 }
 
 // register BE AJAX controller
