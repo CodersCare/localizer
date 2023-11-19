@@ -25,11 +25,16 @@ class L10nMgrExportHandler implements PostSaveInterface
     public function postExportAction(array $params): void
     {
         // XML
-        if ((int)$params['data']['exportType'] !== 1) {
+        if (empty($params) || empty($params['data'])) {
             return;
         }
 
-        if ($params['data']['source_lang'] == $params['data']['translation_lang']) {
+        // XML
+        if ((int)($params['data']['exportType'] ?? null) !== 1) {
+            return;
+        }
+
+        if (($params['data']['source_lang'] ?? null) == ($params['data']['translation_lang'] ?? null)) {
             return;
         }
 
@@ -70,7 +75,7 @@ class L10nMgrExportHandler implements PostSaveInterface
                     ),
                     $queryBuilder->expr()->eq(
                         'mm.uid_foreign',
-                        (int)$params['data']['l10ncfg_id']
+                        (int)($params['data']['l10ncfg_id'] ?? null)
                     ),
                     $queryBuilder->expr()->in(
                         Constants::TABLE_LOCALIZER_SETTINGS . '.pid',
@@ -83,14 +88,14 @@ class L10nMgrExportHandler implements PostSaveInterface
             ->setMaxResults(1)
             ->execute();
         $row = $this->fetchAssociative($result);
-        if ($row['pid'] !== null) {
+        if (!empty($row['pid'])) {
             $this->addFileToMatrix(
                 $row['pid'],
-                $row['uid'],
-                $params['uid'],
-                $params['data']['l10ncfg_id'],
-                $params['data']['filename'],
-                $params['data']['translation_lang']
+                $row['uid'] ?? 0,
+                $params['uid'] ?? 0,
+                $params['data']['l10ncfg_id'] ?? 0,
+                $params['data']['filename'] ?? '',
+                $params['data']['translation_lang'] ?? 0
             );
         }
     }
@@ -115,6 +120,6 @@ class L10nMgrExportHandler implements PostSaveInterface
      */
     protected function getSrcPid(): int
     {
-        return (int)$_GET['srcPID'];
+        return (int)($_GET['srcPID'] ?? null);
     }
 }
