@@ -11,7 +11,7 @@
 	"support": {
 		"issues": "https://gitlab.com/Coders.Care/localizer/issues"
 	},
-	"version": "11.1.0",
+	"version": "11.2.0",
 	"require": {
 		"typo3/cms-core": "^10.4 || ^11.5",
 		"typo3/cms-extensionmanager": "^10.4 || ^11.5",
