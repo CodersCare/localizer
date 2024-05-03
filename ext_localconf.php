@@ -25,7 +25,7 @@ if ($enableStatHook) {
 }
 
 // register BE AJAX controller
-$TYPO3_CONF_VARS['BE']['AJAX']['tx_localizer::controller'] =
+$GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['tx_localizer::controller'] =
     $extPath . 'Classes/Ajax/Controller.php:\\Localizationteam\\Localizer\\Ajax\\Controller->init';
 
 // Register l10nmgr hook
