@@ -41,7 +41,7 @@ class ErrorResetter extends AbstractHandler
         $affectedRows = $queryBuilder
             ->update(Constants::TABLE_EXPORTDATA_MM)
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->eq(
                         'status',
                         Constants::STATUS_CART_ERROR
@@ -58,9 +58,9 @@ class ErrorResetter extends AbstractHandler
             )
             ->set('tstamp', time())
             ->set('processid', $this->processId)
-            ->execute();
+            ->executeStatement();
 
-        return (int)$affectedRows > 0;
+        return $affectedRows > 0;
     }
 
     /**
@@ -90,7 +90,7 @@ class ErrorResetter extends AbstractHandler
                 ->set('status', $queryBuilder->quoteIdentifier('previous_status'))
                 ->set('previous_status', 0)
                 ->set('last_error', null)
-                ->execute();
+                ->executeStatement();
         }
     }
 

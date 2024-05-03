@@ -10,7 +10,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Abstract for modules of the 'localizer' extension.
@@ -62,19 +61,13 @@ abstract class AbstractController extends BaseModule
     protected array $availableLocalizers;
 
     protected PageRenderer $pageRenderer;
-
-    public function injectModuleTemplate(ModuleTemplate $moduleTemplate)
-    {
+    public function __construct(
+        ModuleTemplate $moduleTemplate,
+        AbstractRepository $abstractRepository,
+        PageRenderer $pageRenderer
+    ) {
         $this->moduleTemplate = $moduleTemplate;
-    }
-
-    public function injectAbstractRepository(AbstractRepository $abstractRepository)
-    {
         $this->abstractRepository = $abstractRepository;
-    }
-
-    public function injectPageRenderer(PageRenderer $pageRenderer)
-    {
         $this->pageRenderer = $pageRenderer;
     }
 
@@ -101,10 +94,10 @@ abstract class AbstractController extends BaseModule
     {
         $localizer = [];
         $this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
-        $this->id = (int)GeneralUtility::_GP('id');
+        $this->id = (int)($GLOBALS['TYPO3_REQUEST']->getParsedBody()['id'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['id'] ?? null);
         $this->availableLocalizers = $this->abstractRepository->loadAvailableLocalizers();
-        $this->localizerId = (int)GeneralUtility::_GP('selected_localizer');
-        $this->localizerPid = (int)GeneralUtility::_GP('selected_localizerPid');
+        $this->localizerId = (int)($GLOBALS['TYPO3_REQUEST']->getParsedBody()['selected_localizer'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['selected_localizer'] ?? null);
+        $this->localizerPid = (int)($GLOBALS['TYPO3_REQUEST']->getParsedBody()['selected_localizerPid'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['selected_localizerPid'] ?? null);
 
         $pageTree = $this->getBackendUser()->uc['BackendComponents']['States']['Pagetree'] ?? null;
         if (empty($this->id) && is_object($pageTree)) {

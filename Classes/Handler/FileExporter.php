@@ -279,7 +279,7 @@ class FileExporter extends AbstractCartHandler
                     $configurationId
                 )
             )
-            ->execute();
+            ->executeQuery();
         $rows = $this->fetchAllAssociative($result);
         if (empty($rows) === false) {
             foreach ($rows as $row) {

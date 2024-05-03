@@ -64,7 +64,7 @@ class L10nMgrExportHandler implements PostSaveInterface
                 Constants::TABLE_L10NMGR_CONFIGURATION
             )
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->eq(
                         Constants::TABLE_LOCALIZER_SETTINGS . '.uid',
                         $queryBuilder->quoteIdentifier('mm.uid_local')
@@ -86,7 +86,7 @@ class L10nMgrExportHandler implements PostSaveInterface
                 )
             )
             ->setMaxResults(1)
-            ->execute();
+            ->executeQuery();
         $row = $this->fetchAssociative($result);
         if (!empty($row['pid'])) {
             $this->addFileToMatrix(

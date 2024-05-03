@@ -190,7 +190,7 @@ class DataHandlerHook
                 ->select('*')
                 ->from('tx_l10nmgr_index')
                 ->where(
-                    $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(
                             'tablename',
                             $queryBuilder->createNamedParameter($p[0])
@@ -199,7 +199,7 @@ class DataHandlerHook
                             'recuid',
                             (int)$p[1]
                         ),
-                        $queryBuilder->expr()->orX(
+                        $queryBuilder->expr()->or(
                             $queryBuilder->expr()->in(
                                 'translation_lang',
                                 $languageValues
@@ -215,13 +215,13 @@ class DataHandlerHook
                         )
                     )
                 )
-                ->execute();
+                ->executeQuery();
         } else {
             $result = $queryBuilder
                 ->select('*')
                 ->from('tx_l10nmgr_index')
                 ->where(
-                    $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(
                             'tablename',
                             $queryBuilder->createNamedParameter($p[0])
@@ -230,7 +230,7 @@ class DataHandlerHook
                             'recpid',
                             (int)$p[1]
                         ),
-                        $queryBuilder->expr()->orX(
+                        $queryBuilder->expr()->or(
                             $queryBuilder->expr()->in(
                                 'translation_lang',
                                 $languageValues
@@ -246,7 +246,7 @@ class DataHandlerHook
                         )
                     )
                 )
-                ->execute();
+                ->executeQuery();
         }
         $records = $this->fetchAllAssociative($result);
         $flags = [];

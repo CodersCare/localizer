@@ -37,26 +37,15 @@ class Cart
             ->select('uid_foreign AS uid')
             ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
             ->where(
-                $queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->eq(
-                        'uid_local',
-                        (int)$params['row']['uid']
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'tablenames',
-                        $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES)
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'source',
-                        $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS)
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'ident',
-                        $queryBuilder->createNamedParameter('target')
+                $queryBuilder
+                    ->expr()
+                    ->and(
+                        $queryBuilder->expr()->eq('uid_local', (int)$params['row']['uid']),
+                        $queryBuilder->expr()->eq('tablenames', $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES)),
+                        $queryBuilder->expr()->eq('source', $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS)),
+                        $queryBuilder->expr()->eq('ident', $queryBuilder->createNamedParameter('target'))
                     )
-                )
-            )
-            ->execute();
+            )->executeQuery();
 
         if ($result->rowCount() > 0) {
             $keys = [];

@@ -48,7 +48,7 @@ class LanguageRepository extends AbstractRepository
             ->select('uid_foreign')
             ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->eq(
                         'uid_local',
                         $uidLocal
@@ -67,7 +67,7 @@ class LanguageRepository extends AbstractRepository
                     )
                 )
             )
-            ->execute();
+            ->executeQuery();
         $rows = $this->fetchAllAssociative($result);
         $languageUids = [];
         if (!empty($rows)) {
@@ -104,7 +104,7 @@ class LanguageRepository extends AbstractRepository
                         $queryBuilder->createNamedParameter($uidList, ConnectionAlias::PARAM_INT_ARRAY)
                     )
                 )
-                ->execute();
+                ->executeQuery();
             $rows = $this->fetchAllAssociative($result);
             if (!empty($rows)) {
                 $locale = [];
@@ -138,7 +138,7 @@ class LanguageRepository extends AbstractRepository
                     $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
                 )
             )
-            ->execute();
+            ->executeQuery();
 
         return (int)$this->fetchOne($result);
     }

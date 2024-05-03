@@ -47,7 +47,7 @@ class SuccessReporter extends AbstractHandler
         $affectedRows = $queryBuilder
             ->update(Constants::TABLE_EXPORTDATA_MM)
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->gte(
                         'status',
                         Constants::HANDLER_SUCCESSREPORTER_START
@@ -71,9 +71,9 @@ class SuccessReporter extends AbstractHandler
             )
             ->set('tstamp', time())
             ->set('processid', $this->processId)
-            ->execute();
+            ->executeStatement();
 
-        return (int)$affectedRows > 0;
+        return $affectedRows > 0;
     }
 
     public function run()

@@ -51,7 +51,7 @@ class FileImporter extends AbstractHandler
         $affectedRows = $queryBuilder
             ->update(Constants::TABLE_EXPORTDATA_MM)
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->eq(
                         'status',
                         Constants::HANDLER_FILEIMPORTER_START
@@ -72,9 +72,9 @@ class FileImporter extends AbstractHandler
             ->set('tstamp', time())
             ->set('processid', $this->processId)
             ->setMaxResults(Constants::HANDLER_FILEIMPORTER_MAX_FILES)
-            ->execute();
+            ->executeStatement();
 
-        return (int)$affectedRows > 0;
+        return $affectedRows > 0;
     }
 
     /**

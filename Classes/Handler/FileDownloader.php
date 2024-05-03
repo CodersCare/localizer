@@ -16,7 +16,7 @@ use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * FileDownloader $COMMENT$
+ * FileDownloader
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  */
@@ -54,7 +54,7 @@ class FileDownloader extends AbstractHandler
         $affectedRows = $queryBuilder
             ->update(Constants::TABLE_EXPORTDATA_MM)
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->eq(
                         'status',
                         Constants::HANDLER_FILEDOWNLOADER_START
@@ -75,9 +75,9 @@ class FileDownloader extends AbstractHandler
             ->set('tstamp', time())
             ->set('processid', $this->processId)
             ->setMaxResults(Constants::HANDLER_FILEDOWNLOADER_MAX_FILES)
-            ->execute();
+            ->executeStatement();
 
-        return (int)$affectedRows > 0;
+        return $affectedRows > 0;
     }
 
     /**

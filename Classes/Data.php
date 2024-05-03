@@ -69,7 +69,7 @@ trait Data
                     $queryBuilder->createNamedParameter($this->getProcessId())
                 )
             )
-            ->execute();
+            ->executeQuery();
         $this->data = $this->fetchAllAssociative($result);
     }
 
@@ -87,7 +87,7 @@ trait Data
                     $queryBuilder->createNamedParameter($this->getProcessId())
                 )
             )
-            ->execute();
+            ->executeQuery();
         $this->data = $this->fetchAllAssociative($result);
     }
 
@@ -193,7 +193,7 @@ trait Data
                         )
                     )
                     ->where(
-                        $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->and(
                             $queryBuilder->expr()->eq(
                                 'uid_local',
                                 (int)$row['uid']
@@ -212,7 +212,7 @@ trait Data
                             )
                         )
                     )
-                    ->execute();
+                    ->executeQuery();
                 $sourceLocale = $this->fetchAssociative($result);
                 $this->apiPool[$uid] = [
                     'api' => $api,
