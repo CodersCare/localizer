@@ -6,12 +6,15 @@ namespace Localizationteam\Localizer\Controller;
 
 use Exception;
 use Localizationteam\Localizer\Handler\FileExporter;
+use Localizationteam\Localizer\Model\Repository\AbstractRepository;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -91,6 +94,10 @@ class SelectorController extends AbstractController
 
     public function __construct()
     {
+        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
+        $this->abstractRepository = GeneralUtility::makeInstance(AbstractRepository::class);
+        $this->pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+
         $this->MCONF = [
             'name' => $this->moduleName,
         ];
@@ -118,7 +125,7 @@ class SelectorController extends AbstractController
         $this->configuration['plainxmlexports'] = (bool)($localizer['plainxmlexports'] ?? false);
 
         if (GeneralUtility::_GP('selected_cart') === 'new') {
-            $this->cartId = (int)$this->selectorRepository->createNewCart($this->id, $this->localizerId);
+            $this->cartId = $this->selectorRepository->createNewCart($this->id, $this->localizerId);
         } else {
             $this->cartId = (int)GeneralUtility::_GP('selected_cart');
         }
