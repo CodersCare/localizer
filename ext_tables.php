@@ -1,5 +1,6 @@
 <?php
 
+// TODO: Remove the file when upgrading to v13 as we removing v11 support
 if (!defined('TYPO3')) {
     die('Access denied.');
 }
