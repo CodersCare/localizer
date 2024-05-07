@@ -40,7 +40,6 @@ return [
             'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.uid_local',
             'config' => [
                 'type' => 'group',
-                'internal_type' => 'db',
                 'allowed' => 'tx_localizer_settings',
                 'size' => 1,
                 'maxitems' => 1,
@@ -52,7 +51,6 @@ return [
             'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.uid_export',
             'config' => [
                 'type' => 'group',
-                'internal_type' => 'db',
                 'allowed' => 'tx_l10nmgr_exportdata',
                 'size' => 1,
                 'maxitems' => 1,
@@ -64,7 +62,6 @@ return [
             'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.uid_foreign',
             'config' => [
                 'type' => 'group',
-                'internal_type' => 'db',
                 'allowed' => 'tx_l10nmgr_cfg',
                 'size' => 1,
                 'maxitems' => 1,
