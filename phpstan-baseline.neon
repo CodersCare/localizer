@@ -1,191 +1,186 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Backend\\\\Cart\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Backend\\\\Cart\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 2
-			path: ../../Classes/Backend/Cart.php
+			path: Classes/Backend/Cart.php
 
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Backend\\\\Cart\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Backend\\\\Cart\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 2
-			path: ../../Classes/Backend/Cart.php
+			path: Classes/Backend/Cart.php
+
+		-
+			message: "#^Access to constant ERROR on an unknown class TYPO3\\\\CMS\\\\Core\\\\Type\\\\ContextualFeedbackSeverity\\.$#"
+			count: 1
+			path: Classes/Controller/BaseModule.php
+
+		-
+			message: "#^Property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$calcPerms \\(TYPO3\\\\CMS\\\\Core\\\\Type\\\\Bitmask\\\\Permission\\) does not accept int\\.$#"
+			count: 1
+			path: Classes/Controller/CartController.php
+
+		-
+			message: "#^Expression in empty\\(\\) is not falsy\\.$#"
+			count: 1
+			path: Classes/Controller/SelectorController.php
 
 		-
 			message: "#^Offset 'static_lang_isocode' does not exist on array\\{uid\\: int, title\\: string, ISOcode\\: string, flagIcon\\: string\\}\\.$#"
 			count: 1
-			path: ../../Classes/Handler/AutomaticExporter.php
+			path: Classes/Handler/AutomaticExporter.php
 
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\AutomaticExporter\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\AutomaticExporter\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 3
-			path: ../../Classes/Handler/AutomaticExporter.php
+			path: Classes/Handler/AutomaticExporter.php
 
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\AutomaticExporter\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\AutomaticExporter\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 2
-			path: ../../Classes/Handler/AutomaticExporter.php
+			path: Classes/Handler/AutomaticExporter.php
 
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\AutomaticExporter\\:\\:fetchOne\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\AutomaticExporter\\:\\:fetchOne\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 1
-			path: ../../Classes/Handler/AutomaticExporter.php
+			path: Classes/Handler/AutomaticExporter.php
 
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$expressions of method TYPO3\\\\CMS\\\\Core\\\\Database\\\\Query\\\\Expression\\\\ExpressionBuilder\\:\\:andX\\(\\) expects string, TYPO3\\\\CMS\\\\Core\\\\Database\\\\Query\\\\Expression\\\\CompositeExpression given\\.$#"
-			count: 1
-			path: ../../Classes/Handler/AutomaticExporter.php
-
-		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileDownloader\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileDownloader\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 2
-			path: ../../Classes/Handler/FileDownloader.php
+			path: Classes/Handler/FileDownloader.php
 
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileDownloader\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileDownloader\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 1
-			path: ../../Classes/Handler/FileDownloader.php
+			path: Classes/Handler/FileDownloader.php
 
 		-
 			message: "#^Parameter \\#1 \\$var of static method TYPO3\\\\CMS\\\\Core\\\\Utility\\\\DebugUtility\\:\\:debug\\(\\) expects string, array given\\.$#"
 			count: 1
-			path: ../../Classes/Handler/FileDownloader.php
+			path: Classes/Handler/FileDownloader.php
 
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileExporter\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileExporter\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 4
-			path: ../../Classes/Handler/FileExporter.php
+			path: Classes/Handler/FileExporter.php
 
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileExporter\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileExporter\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 2
-			path: ../../Classes/Handler/FileExporter.php
+			path: Classes/Handler/FileExporter.php
 
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$expressions of method TYPO3\\\\CMS\\\\Core\\\\Database\\\\Query\\\\Expression\\\\ExpressionBuilder\\:\\:andX\\(\\) expects string, TYPO3\\\\CMS\\\\Core\\\\Database\\\\Query\\\\Expression\\\\CompositeExpression given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileImporter\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
+			count: 2
+			path: Classes/Handler/FileImporter.php
+
+		-
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileImporter\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 1
-			path: ../../Classes/Handler/FileExporter.php
+			path: Classes/Handler/FileImporter.php
 
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileImporter\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileSender\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 2
-			path: ../../Classes/Handler/FileImporter.php
+			path: Classes/Handler/FileSender.php
 
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileImporter\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileSender\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
+			count: 2
+			path: Classes/Handler/FileSender.php
+
+		-
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\StatusRequester\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
+			count: 2
+			path: Classes/Handler/StatusRequester.php
+
+		-
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\StatusRequester\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 1
-			path: ../../Classes/Handler/FileImporter.php
-
-		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileSender\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
-			count: 2
-			path: ../../Classes/Handler/FileSender.php
-
-		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\FileSender\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
-			count: 2
-			path: ../../Classes/Handler/FileSender.php
-
-		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\StatusRequester\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
-			count: 2
-			path: ../../Classes/Handler/StatusRequester.php
-
-		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\StatusRequester\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
-			count: 1
-			path: ../../Classes/Handler/StatusRequester.php
+			path: Classes/Handler/StatusRequester.php
 
 		-
 			message: "#^Parameter \\#1 \\$var of static method TYPO3\\\\CMS\\\\Core\\\\Utility\\\\DebugUtility\\:\\:debug\\(\\) expects string, array given\\.$#"
 			count: 2
-			path: ../../Classes/Handler/StatusRequester.php
+			path: Classes/Handler/StatusRequester.php
 
 		-
 			message: "#^Parameter \\#2 \\$header of static method TYPO3\\\\CMS\\\\Core\\\\Utility\\\\DebugUtility\\:\\:debug\\(\\) expects string, int given\\.$#"
 			count: 1
-			path: ../../Classes/Handler/StatusRequester.php
+			path: Classes/Handler/StatusRequester.php
 
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\SuccessReporter\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\SuccessReporter\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 2
-			path: ../../Classes/Handler/SuccessReporter.php
+			path: Classes/Handler/SuccessReporter.php
 
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\SuccessReporter\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Handler\\\\SuccessReporter\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 1
-			path: ../../Classes/Handler/SuccessReporter.php
+			path: Classes/Handler/SuccessReporter.php
 
 		-
 			message: "#^Parameter \\#1 \\$var of static method TYPO3\\\\CMS\\\\Core\\\\Utility\\\\DebugUtility\\:\\:debug\\(\\) expects string, array given\\.$#"
 			count: 2
-			path: ../../Classes/Handler/SuccessReporter.php
+			path: Classes/Handler/SuccessReporter.php
 
 		-
 			message: "#^Parameter \\#2 \\$header of static method TYPO3\\\\CMS\\\\Core\\\\Utility\\\\DebugUtility\\:\\:debug\\(\\) expects string, int given\\.$#"
 			count: 1
-			path: ../../Classes/Handler/SuccessReporter.php
+			path: Classes/Handler/SuccessReporter.php
 
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Hooks\\\\DataHandlerHook\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Hooks\\\\DataHandlerHook\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 3
-			path: ../../Classes/Hooks/DataHandlerHook.php
+			path: Classes/Hooks/DataHandlerHook.php
 
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Hooks\\\\DataHandlerHook\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Hooks\\\\DataHandlerHook\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 1
-			path: ../../Classes/Hooks/DataHandlerHook.php
+			path: Classes/Hooks/DataHandlerHook.php
 
 		-
-			message: "#^Parameter \\#3 \\.\\.\\.\\$expressions of method TYPO3\\\\CMS\\\\Core\\\\Database\\\\Query\\\\Expression\\\\ExpressionBuilder\\:\\:andX\\(\\) expects string, TYPO3\\\\CMS\\\\Core\\\\Database\\\\Query\\\\Expression\\\\CompositeExpression given\\.$#"
-			count: 2
-			path: ../../Classes/Hooks/DataHandlerHook.php
-
-		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Hooks\\\\L10nMgrExportHandler\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Hooks\\\\L10nMgrExportHandler\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 3
-			path: ../../Classes/Hooks/L10nMgrExportHandler.php
+			path: Classes/Hooks/L10nMgrExportHandler.php
 
 		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Hooks\\\\L10nMgrExportHandler\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Hooks\\\\L10nMgrExportHandler\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 3
-			path: ../../Classes/Hooks/L10nMgrExportHandler.php
-
-		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$expressions of method TYPO3\\\\CMS\\\\Core\\\\Database\\\\Query\\\\Expression\\\\ExpressionBuilder\\:\\:andX\\(\\) expects string, TYPO3\\\\CMS\\\\Core\\\\Database\\\\Query\\\\Expression\\\\CompositeExpression given\\.$#"
-			count: 1
-			path: ../../Classes/Hooks/L10nMgrExportHandler.php
-
-		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Model\\\\Repository\\\\AbstractRepository\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
-			count: 2
-			path: ../../Classes/Model/Repository/AbstractRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Model\\\\Repository\\\\AbstractRepository\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
-			count: 1
-			path: ../../Classes/Model/Repository/AbstractRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Model\\\\Repository\\\\AbstractRepository\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
-			count: 2
-			path: ../../Classes/Model/Repository/LanguageRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Model\\\\Repository\\\\AbstractRepository\\:\\:fetchOne\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result\\|int given\\.$#"
-			count: 1
-			path: ../../Classes/Model/Repository/LanguageRepository.php
+			path: Classes/Hooks/L10nMgrExportHandler.php
 
 		-
 			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Model\\\\Repository\\\\AbstractRepository\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
-			count: 1
-			path: ../../Classes/Model/Repository/LocalizerSettingsRepository.php
+			count: 2
+			path: Classes/Model/Repository/AbstractRepository.php
 
 		-
 			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Model\\\\Repository\\\\AbstractRepository\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
 			count: 1
-			path: ../../Classes/Model/Repository/LocalizerSettingsRepository.php
+			path: Classes/Model/Repository/AbstractRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Model\\\\Repository\\\\AbstractRepository\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
+			count: 2
+			path: Classes/Model/Repository/LanguageRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Model\\\\Repository\\\\AbstractRepository\\:\\:fetchOne\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
+			count: 1
+			path: Classes/Model/Repository/LanguageRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Model\\\\Repository\\\\AbstractRepository\\:\\:fetchAllAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
+			count: 1
+			path: Classes/Model/Repository/LocalizerSettingsRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\$result of method Localizationteam\\\\Localizer\\\\Model\\\\Repository\\\\AbstractRepository\\:\\:fetchAssociative\\(\\) expects Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement, Doctrine\\\\DBAL\\\\Result given\\.$#"
+			count: 1
+			path: Classes/Model/Repository/LocalizerSettingsRepository.php
 
 		-
 			message: "#^Parameter \\#2 \\$item of static method TYPO3\\\\CMS\\\\Core\\\\Utility\\\\GeneralUtility\\:\\:inList\\(\\) expects string, int given\\.$#"
 			count: 1
-			path: ../../Classes/Model/Repository/SelectorRepository.php
+			path: Classes/Model/Repository/SelectorRepository.php

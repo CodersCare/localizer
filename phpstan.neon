@@ -1,27 +1,23 @@
 includes:
   - phpstan-baseline.neon
-  - .Build/vendor/bnf/phpstan-psr-container/extension.neon
-  - .Build/vendor/friendsoftypo3/phpstan-typo3/extension.neon
 
 parameters:
-  # Use local .cache dir instead of /tmp
-  tmpDir: ../../.cache/phpstan
+  phpVersion: 70400
 
   parallel:
     # Don't be overly greedy on machines with more CPU's to be a good neighbor especially on CI
     maximumNumberOfProcesses: 5
 
+  # Use local .cache dir instead of /tmp
+  tmpDir: .cache/phpstan
+
   level: 5
 
   paths:
     - Classes
-    - Tests
-    - Configuration
-    - ext_localconf.php
-    - ext_tables.php
 
-  ignoreErrors:
-    -
-        message: "#^Property TYPO3\\\\CMS\\\\Recordlist\\\\RecordList\\\\DatabaseRecordList\\:\\:\\$calcPerms \\(TYPO3\\\\CMS\\\\Core\\\\Type\\\\Bitmask\\\\Permission\\) does not accept int\\.$#"
-        count: 1
-        path: ../../Classes/Controller/CartController.php
+  scanDirectories:
+    - .Build/vendor/typo3
+    - .Build/vendor/typo3fluid
+    - .Build/Web/typo3
+
