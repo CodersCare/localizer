@@ -91,9 +91,11 @@ class CartController extends AbstractController
 
     public function __construct()
     {
-        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
-        $this->abstractRepository = GeneralUtility::makeInstance(AbstractRepository::class);
-        $this->pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+        parent::__construct(
+            GeneralUtility::makeInstance(ModuleTemplate::class),
+            GeneralUtility::makeInstance(AbstractRepository::class),
+            GeneralUtility::makeInstance(PageRenderer::class),
+        );
 
         $this->MCONF = [
             'name' => $this->moduleName,
