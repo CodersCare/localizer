@@ -1,7 +1,7 @@
 includes:
   - phpstan-baseline.neon
-  - ../../.Build/vendor/bnf/phpstan-psr-container/extension.neon
-  - ../../.Build/vendor/friendsoftypo3/phpstan-typo3/extension.neon
+  - .Build/vendor/bnf/phpstan-psr-container/extension.neon
+  - .Build/vendor/friendsoftypo3/phpstan-typo3/extension.neon
 
 parameters:
   # Use local .cache dir instead of /tmp
@@ -14,11 +14,11 @@ parameters:
   level: 5
 
   paths:
-    - ../../Classes
-    - ../../Tests
-    - ../../Configuration
-    - ../../ext_localconf.php
-    - ../../ext_tables.php
+    - Classes
+    - Tests
+    - Configuration
+    - ext_localconf.php
+    - ext_tables.php
 
   ignoreErrors:
     -

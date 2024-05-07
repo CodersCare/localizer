@@ -51,9 +51,10 @@
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^3.0",
 		"typo3/testing-framework": "^6.8",
-		"phpstan/phpstan": "^1.8",
+		"phpstan/phpstan": "^1.10",
 		"friendsoftypo3/phpstan-typo3": "^0.9.0",
-		"bnf/phpstan-psr-container": "^1.0"
+		"bnf/phpstan-psr-container": "^1.0",
+		"ssch/typo3-rector": "^2.5"
 	},
 	"scripts": {
 		"ci:php:php-cs-fixer:dry": [
