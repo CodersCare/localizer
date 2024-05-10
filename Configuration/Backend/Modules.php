@@ -56,7 +56,7 @@ return [
         'navigationComponent' => '@typo3/backend/page-tree/page-tree-element',
         'routes' => [
             '_default' => [
-                'target' => SettingsController::class . '::mainAction',
+                'target' => SettingsController::class . '::handleRequest',
             ],
         ],
     ],

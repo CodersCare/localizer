@@ -1,0 +1,26 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+        data-namespace-typo3-fluid="true"
+        lang="en"
+>
+    <f:layout name="Module"/>
+
+    <f:section name="Content">
+
+        <f:variable name="lll" value="LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_settings.xlf:"/>
+
+        <h1>
+            <f:translate key="{lll}title"/>
+        </h1>
+
+        <f:if condition="{listViewLink}">
+            <f:then>
+                <a href="{listViewLink}" class="btn btn-primary">Switch to List Module</a>
+            </f:then>
+            <f:else>
+                <div class="error">Please select a page</div>
+            </f:else>
+        </f:if>
+    </f:section>
+</html>
+
