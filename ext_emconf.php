@@ -18,13 +18,13 @@ $EM_CONF['localizer'] = [
     'author_email' => 'jh@cybercraft.de, peter.russ@4many.net, info@arroba-it.de',
     'state' => 'stable',
     'clearCacheOnLoad' => 0, // TODO: Remove when dropping v11 support. See https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ExtensionArchitecture/FileStructure/ExtEmconf.html#file-ext-emconf-php
-    'version' => '11.2.0',
+    'version' => '12.0.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '10.4.0-11.5.99',
-            'scheduler' => '10.4.0-11.5.99',
+            'typo3' => '11.5.0-12.4.99',
+            'scheduler' => '11.5.0-12.4.99',
             'static_info_tables' => '6.9.0-0.0.0',
-            'l10nmgr' => '11.0.0-0.0.0',
+            'l10nmgr' => '12.0.0-0.0.0',
         ],
         'conflicts' => [],
         'suggests' => [],

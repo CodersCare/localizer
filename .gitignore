@@ -31,3 +31,4 @@ vendor
 /.Build
 /Build/.phpunit.result.cache
 /var/log
+/var/cache
