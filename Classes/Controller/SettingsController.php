@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Controller;
 
-use Localizationteam\L10nmgr\Traits\LanguageServiceTrait;
+use Localizationteam\Localizer\Traits\LanguageServiceTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\Controller;

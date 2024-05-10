@@ -5,18 +5,15 @@ declare(strict_types=1);
 namespace Localizationteam\Localizer\Tests\Functional\Repository;
 
 use Doctrine\DBAL\DBALException;
-use Localizationteam\Localizer\Model\Repository\LocalizerSettingsRepository;
+use Localizationteam\Localizer\Model\Repository\SettingsRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\TestingFramework\Core\Exception;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class LocalizerSettingsRepositoryTest extends FunctionalTestCase
 {
-    protected ObjectManagerInterface $objectManager;
 
-    protected LocalizerSettingsRepository $repository;
+    protected SettingsRepository $repository;
 
     protected $testExtensionsToLoad = [
         'typo3conf/ext/localizer',
@@ -39,8 +36,7 @@ class LocalizerSettingsRepositoryTest extends FunctionalTestCase
     {
         parent::setUp();
         $this->setUpBackendUserFromFixture(1);
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->repository = $this->objectManager->get(LocalizerSettingsRepository::class);
+        $this->repository = GeneralUtility::makeInstance(SettingsRepository::class);
 
         $this->importDataSet(__DIR__ . '/../Fixtures/tx_localizer_settings.xml');
     }
@@ -119,6 +115,5 @@ class LocalizerSettingsRepositoryTest extends FunctionalTestCase
     protected function tearDown(): void
     {
         unset($this->repository);
-        unset($this->objectManager);
     }
 }
