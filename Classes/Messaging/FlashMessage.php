@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Messaging;
 
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -19,7 +20,7 @@ class FlashMessage
     /**
      * @throws Exception
      */
-    public function __construct(string $message, int $severity = AbstractMessage::ERROR)
+    public function __construct(string $message, int $severity = ContextualFeedbackSeverity::ERROR)
     {
         /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
         $flashMessage = GeneralUtility::makeInstance(
