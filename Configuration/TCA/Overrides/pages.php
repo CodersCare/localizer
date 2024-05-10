@@ -1,6 +1,10 @@
 <?php
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
+declare(strict_types=1);
+
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
+ExtensionManagementUtility::addTCAcolumns(
     'pages',
     [
         'localizer_include_with_automatic_export' => [
@@ -32,7 +36,7 @@
     ]
 );
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
+ExtensionManagementUtility::addFieldsToPalette(
     'pages',
     'l10nmgr_configuration',
     'localizer_include_with_automatic_export, --linebreak--, localizer_include_with_specific_export'
