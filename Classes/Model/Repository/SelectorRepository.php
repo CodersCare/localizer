@@ -128,7 +128,7 @@ class SelectorRepository extends AbstractRepository
      * @param int $cartId
      * @param array $configuration
      */
-    public function storeConfiguration(int $pageId, int $cartId, array $configuration)
+    public function storeConfiguration(int $pageId, int $cartId, array $configuration): void
     {
         self::getConnectionPool()
             ->getConnectionForTable(Constants::TABLE_LOCALIZER_CART)
@@ -165,7 +165,7 @@ class SelectorRepository extends AbstractRepository
      * @param array $configuration
      * @param array $storedTriples
      */
-    public function storeCart(array $pageIds, int $cartId, array $configuration, array $storedTriples)
+    public function storeCart(array $pageIds, int $cartId, array $configuration, array $storedTriples): void
     {
         if (empty($storedTriples)) {
             $storedTriples = $this->loadStoredTriples($pageIds, $cartId);
@@ -356,7 +356,7 @@ class SelectorRepository extends AbstractRepository
         int $cartId,
         array $pageIds,
         string $excludeItems
-    ) {
+    ): void {
         if ($localizerId > 0 && $cartId > 0) {
             $pageIds = implode(',', GeneralUtility::intExplode(',', implode(',', array_keys($pageIds))));
             self::getConnectionPool()
@@ -388,7 +388,7 @@ class SelectorRepository extends AbstractRepository
      * @param int $configurationId
      * @param string $deadline
      */
-    public function finalizeCart(int $localizerId, int $cartId, int $configurationId, string $deadline = '')
+    public function finalizeCart(int $localizerId, int $cartId, int $configurationId, string $deadline = ''): void
     {
         if ($cartId > 0) {
             self::getConnectionPool()

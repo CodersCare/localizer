@@ -32,7 +32,7 @@ class FileImporter extends AbstractHandler
      * @param $id
      * @throws Exception
      */
-    public function init($id = 1)
+    public function init($id = 1): void
     {
         $this->initProcessId();
         if ($this->acquire()) {
@@ -184,10 +184,7 @@ class FileImporter extends AbstractHandler
         }
     }
 
-    /**
-     * @param int $time
-     */
-    public function finish(int $time)
+    public function finish(int $time): void
     {
         $this->dataFinish($time);
     }

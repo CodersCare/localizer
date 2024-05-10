@@ -65,7 +65,7 @@ class AutomaticExporter extends AbstractCartHandler
      * @param int $id
      * @throws Exception
      */
-    public function init(int $id = 0)
+    public function init(int $id = 0): void
     {
         $this->selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
         $this->automaticExportRepository = GeneralUtility::makeInstance(AutomaticExportRepository::class);
@@ -85,7 +85,7 @@ class AutomaticExporter extends AbstractCartHandler
     /**
      * @throws Exception
      */
-    public function run()
+    public function run(): void
     {
         if ($this->canRun() === true) {
             foreach ($this->availableLocalizers as $localizer) {

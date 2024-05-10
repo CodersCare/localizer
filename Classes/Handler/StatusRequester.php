@@ -28,7 +28,7 @@ class StatusRequester extends AbstractHandler
      * @param $id
      * @throws Exception
      */
-    public function init($id = 1)
+    public function init($id = 1): void
     {
         $this->initProcessId();
         if ($this->acquire()) {
@@ -81,7 +81,7 @@ class StatusRequester extends AbstractHandler
         return $affectedRows > 0;
     }
 
-    public function run()
+    public function run(): void
     {
         if (!$this->canRun()) {
             return;
@@ -158,10 +158,7 @@ class StatusRequester extends AbstractHandler
         }
     }
 
-    /**
-     * @param int $time
-     */
-    public function finish(int $time)
+    public function finish(int $time): void
     {
         $this->dataFinish($time);
     }

@@ -33,7 +33,7 @@ class FileSender extends AbstractHandler
      * @param $id
      * @throws Exception
      */
-    public function init($id = 1)
+    public function init($id = 1): void
     {
         $this->initProcessId();
         if ($this->acquire()) {
@@ -82,7 +82,7 @@ class FileSender extends AbstractHandler
     /**
      * @throws \TYPO3\CMS\Core\Exception
      */
-    public function run()
+    public function run(): void
     {
         if ($this->canRun() === true) {
             foreach ($this->data as $row) {
@@ -232,10 +232,7 @@ class FileSender extends AbstractHandler
         return $metaData;
     }
 
-    /**
-     * @param int $time
-     */
-    public function finish(int $time)
+    public function finish(int $time): void
     {
         $this->dataFinish($time);
     }

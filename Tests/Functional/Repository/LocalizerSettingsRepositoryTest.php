@@ -54,7 +54,7 @@ class LocalizerSettingsRepositoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function findRecordsByUid()
+    public function findRecordsByUid(): void
     {
         $localizerSettings = $this->repository->findByUid(1);
         self::assertEquals('Beebox', $localizerSettings['title']);

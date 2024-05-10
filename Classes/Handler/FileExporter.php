@@ -64,7 +64,7 @@ class FileExporter extends AbstractCartHandler
      * @param int $id
      * @throws Exception
      */
-    public function init(int $id = 1)
+    public function init(int $id = 1): void
     {
         $this->id = $id;
         $this->selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
@@ -296,10 +296,7 @@ class FileExporter extends AbstractCartHandler
         }
     }
 
-    /**
-     * @param int $time
-     */
-    public function finish(int $time)
+    public function finish(int $time): void
     {
         $this->dataFinish($time);
     }

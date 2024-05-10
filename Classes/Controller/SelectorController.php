@@ -289,7 +289,7 @@ class SelectorController extends AbstractController
     /**
      * Loads the configuration of the cart and the items that might already be in the cart
      */
-    protected function loadConfigurationAndCart()
+    protected function loadConfigurationAndCart(): void
     {
         $this->configuration = $this->selectorRepository->loadConfiguration($this->cartId);
         $pageIds = $this->selectorRepository->loadAvailablePages($this->id, $this->cartId);
@@ -308,7 +308,7 @@ class SelectorController extends AbstractController
     /**
      * Stores the configuration and selected items of the selected cart
      */
-    protected function finalizeCart()
+    protected function finalizeCart(): void
     {
         $this->storeConfigurationAndCart();
         $configurationId = $this->selectorRepository->storeL10nmgrConfiguration(
@@ -328,7 +328,7 @@ class SelectorController extends AbstractController
     /**
      * Stores the configuration and selected items of the selected cart
      */
-    protected function storeConfigurationAndCart()
+    protected function storeConfigurationAndCart(): void
     {
         $this->selectorRepository->storeConfiguration($this->id, $this->cartId, $this->configuration);
         $pageIds = [$this->id => $this->id];
@@ -339,7 +339,7 @@ class SelectorController extends AbstractController
      * Exports the records configured by the selector
      * @throws Exception
      */
-    protected function exportConfiguredRecords()
+    protected function exportConfiguredRecords(): void
     {
         /** @var FileExporter $fileExporter */
         $fileExporter = GeneralUtility::makeInstance(FileExporter::class);
