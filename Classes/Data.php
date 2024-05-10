@@ -9,7 +9,7 @@ use Doctrine\DBAL\Result;
 use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\Api\ApiCallsInterface;
 use Localizationteam\Localizer\Messaging\FlashMessage;
-use Localizationteam\Localizer\Model\Repository\LocalizerSettingsRepository;
+use Localizationteam\Localizer\Model\Repository\SettingsRepository;
 use PDO;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception;
@@ -109,8 +109,8 @@ trait Data
      */
     protected function getLocalizerSettings(int $uid): array
     {
-        /** @var LocalizerSettingsRepository $localizerSettingsRepository */
-        $localizerSettingsRepository = GeneralUtility::makeInstance(LocalizerSettingsRepository::class);
+        /** @var SettingsRepository $localizerSettingsRepository */
+        $localizerSettingsRepository = GeneralUtility::makeInstance(SettingsRepository::class);
 
         $fields = [
             'uid',
