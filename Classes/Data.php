@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Localizationteam\Localizer;
 
 use Doctrine\DBAL\Driver\ResultStatement;
+use Doctrine\DBAL\Result;
 use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\Api\ApiCallsInterface;
 use Localizationteam\Localizer\Messaging\FlashMessage;
@@ -277,7 +278,7 @@ trait Data
     /**
      * @return mixed
      */
-    public function fetchAssociative(ResultStatement $result)
+    public function fetchAssociative(Result $result)
     {
         if (method_exists($result, 'fetchAssociative')) {
             return $result->fetchAssociative();
@@ -288,7 +289,7 @@ trait Data
     /**
      * @return mixed
      */
-    public function fetchAllAssociative(ResultStatement $result)
+    public function fetchAllAssociative(Result $result)
     {
         if (method_exists($result, 'fetchAllAssociative')) {
             return $result->fetchAllAssociative();
