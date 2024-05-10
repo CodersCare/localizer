@@ -1,6 +1,12 @@
 <?php
 
 // TODO: Remove the file when upgrading to v13 as we removing v11 support
+use Localizationteam\Localizer\Controller\CartController;
+use Localizationteam\Localizer\Controller\LocalizerController;
+use Localizationteam\Localizer\Controller\SelectorController;
+use Localizationteam\Localizer\Controller\SettingsController;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 if (!defined('TYPO3')) {
     die('Access denied.');
 }
@@ -8,13 +14,13 @@ if (!defined('TYPO3')) {
 /**
  * Registers a Backend Module
  */
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+ExtensionManagementUtility::addModule(
     'localizer',
     '', // Submodule key
     '',    // Position
     '',
     [
-        'routeTarget' => \Localizationteam\Localizer\Controller\LocalizerController::class . '::mainAction',
+        'routeTarget' => LocalizerController::class . '::mainAction',
         'access' => 'user,group',
         'name' => 'localizer',
         'icon' => 'EXT:localizer/Resources/Public/Icons/module-localizer.svg',
@@ -25,13 +31,13 @@ if (!defined('TYPO3')) {
 /**
  * Registers a Backend Module
  */
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+ExtensionManagementUtility::addModule(
     'localizer', // Make module a submodule of 'Localizer'
     'localizerselector', // Submodule key
     '',    // Position
     '',
     [
-        'routeTarget' => \Localizationteam\Localizer\Controller\SelectorController::class . '::mainAction',
+        'routeTarget' => SelectorController::class . '::mainAction',
         'access' => 'user,group',
         'name' => 'localizer_localizerselector',
         'icon' => 'EXT:localizer/Resources/Public/Icons/module-localizer-selector.svg',
@@ -43,13 +49,13 @@ if (!defined('TYPO3')) {
 /**
  * Registers a Backend Module
  */
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+ExtensionManagementUtility::addModule(
     'localizer', // Make module a submodule of 'Localizer'
     'localizercart', // Submodule key
     '',    // Position
     '',
     [
-        'routeTarget' => \Localizationteam\Localizer\Controller\CartController::class . '::mainAction',
+        'routeTarget' => CartController::class . '::mainAction',
         'access' => 'user,group',
         'name' => 'localizer_localizercart',
         'icon' => 'EXT:localizer/Resources/Public/Icons/module-localizer-cart.svg',
@@ -61,13 +67,13 @@ if (!defined('TYPO3')) {
 /**
  * Registers a Backend Module
  */
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+ExtensionManagementUtility::addModule(
     'localizer', // Make module a submodule of 'Localizer'
     'localizersettings', // Submodule key
     '',    // Position
     '',
     [
-        'routeTarget' => \Localizationteam\Localizer\Controller\SettingsController::class . '::mainAction',
+        'routeTarget' => SettingsController::class . '::mainAction',
         'access' => 'user,group',
         'name' => 'localizer_localizersettings',
         'icon' => 'EXT:localizer/Resources/Public/Icons/module-localizer-settings.svg',
@@ -76,6 +82,7 @@ if (!defined('TYPO3')) {
     ]
 );
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_localizer_settings');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_localizer_cart');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_localizer_settings_l10n_exportdata_mm');
+
+ExtensionManagementUtility::allowTableOnStandardPages('tx_localizer_settings');
+ExtensionManagementUtility::allowTableOnStandardPages('tx_localizer_cart');
+ExtensionManagementUtility::allowTableOnStandardPages('tx_localizer_settings_l10n_exportdata_mm');
