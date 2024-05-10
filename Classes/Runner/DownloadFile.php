@@ -19,24 +19,12 @@ class DownloadFile
 {
     protected ApiCallsInterface $api;
 
-    /**
-     * @var array
-     */
     protected array $processFiles;
 
-    /**
-     * @var array
-     */
     protected array $response = [];
 
-    /**
-     * @var string
-     */
     protected string $path = '';
 
-    /**
-     * @param array $configuration
-     */
     public function init(array $configuration): void
     {
         if (isset($configuration['processFiles'])) {
@@ -86,9 +74,6 @@ class DownloadFile
         }
     }
 
-    /**
-     * @param array $configuration
-     */
     public function run(array $configuration): void
     {
         $response = [];
@@ -133,10 +118,6 @@ class DownloadFile
         $this->response = $response;
     }
 
-    /**
-     * @param string $content
-     * @param string $iso2
-     */
     protected function adjustContent(string &$content, string $iso2): void
     {
         $search = '<t3_targetLang translate="no">';
@@ -152,9 +133,6 @@ class DownloadFile
         $content = substr_replace($content, $iso2, $start, 0);
     }
 
-    /**
-     * @return array
-     */
     public function getResponse(): array
     {
         return $this->response;

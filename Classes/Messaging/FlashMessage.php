@@ -17,8 +17,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class FlashMessage
 {
     /**
-     * @param string $message
-     * @param int $severity
      * @throws Exception
      */
     public function __construct(string $message, int $severity = AbstractMessage::ERROR)

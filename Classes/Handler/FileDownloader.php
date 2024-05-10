@@ -43,7 +43,6 @@ class FileDownloader extends AbstractHandler
     }
 
     /**
-     * @return bool
      * @throws DBALException
      */
     protected function acquire(): bool
@@ -137,11 +136,6 @@ class FileDownloader extends AbstractHandler
     }
 
     /**
-     * @param array $localizerSettings
-     * @param string $originalFileName
-     * @param array $files
-     * @param array $row
-     * @return array
      * @throws Exception
      */
     protected function processDownload(
@@ -174,20 +168,11 @@ class FileDownloader extends AbstractHandler
         return $runner->getResponse();
     }
 
-    /**
-     * @param string $fileName
-     * @param string $locale
-     * @return string
-     */
     protected function getRemoteFilename(string $fileName, string $locale): string
     {
         return $locale . '\\' . $fileName;
     }
 
-    /**
-     * @param int $uid
-     * @param array $responses
-     */
     protected function processResponse(int $uid, array $responses)
     {
         $success = true;

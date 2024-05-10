@@ -30,7 +30,6 @@ class ErrorResetter extends AbstractHandler
     }
 
     /**
-     * @return bool
      * @throws DBALException
      */
     protected function acquire(): bool

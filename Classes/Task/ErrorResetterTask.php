@@ -13,8 +13,5 @@ use Localizationteam\Localizer\Handler\ErrorResetter;
  */
 class ErrorResetterTask extends AbstractTask
 {
-    /**
-     * @var string
-     */
     protected string $handlerClass = ErrorResetter::class;
 }

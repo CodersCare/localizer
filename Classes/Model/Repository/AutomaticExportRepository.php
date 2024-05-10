@@ -16,9 +16,6 @@ class AutomaticExportRepository extends AbstractRepository
 {
     /**
      * Loads available carts, which have not been finalized yet
-     *
-     * @param int $localizerId
-     * @return array
      */
     public function loadUnfinishedButSentCarts(int $localizerId): array
     {
@@ -52,10 +49,6 @@ class AutomaticExportRepository extends AbstractRepository
 
     /**
      * Loads pages that are configured to be exported autimatically based on a given age
-     *
-     * @param int $age
-     * @param array $excludedPages
-     * @return array
      */
     public function loadPagesConfiguredForAutomaticExport(int $age, array $excludedPages): array
     {
@@ -101,11 +94,6 @@ class AutomaticExportRepository extends AbstractRepository
 
     /**
      * Loads pages that are added to be exported autimatically with a specific localizer setting based on a given age
-     *
-     * @param int $localizer
-     * @param int $age
-     * @param array $excludedPages
-     * @return array
      */
     public function loadPagesAddedToSpecificAutomaticExport(int $localizer, int $age, array $excludedPages): array
     {
@@ -150,13 +138,8 @@ class AutomaticExportRepository extends AbstractRepository
 
     /**
      * Stores the items of the selected cart
-     *
-     * @param array $pageIds
-     * @param int $cartId
-     * @param array $configuration
-     * @param array $automaticTriples
      */
-    public function storeCart(array $pageIds, int $cartId, array $configuration, array $automaticTriples)
+    public function storeCart(array $pageIds, int $cartId, array $configuration, array $automaticTriples): void
     {
         $insertValues = [];
         $pageId = key($pageIds);

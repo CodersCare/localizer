@@ -16,9 +16,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class LanguageRepository extends AbstractRepository
 {
     /**
-     * @param int $localeId
-     * @param int $pid
-     * @return string
      * @throws SiteNotFoundException
      */
     public function getIsoTwoCodeBySystemLanguageId(int $localeId, int $pid = 1): string
@@ -33,11 +30,6 @@ class LanguageRepository extends AbstractRepository
         return '';
     }
 
-    /**
-     * @param int $uidLocal
-     * @param string $table
-     * @return array
-     */
     public function getAllTargetLanguageUids(int $uidLocal, string $table): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -76,11 +68,6 @@ class LanguageRepository extends AbstractRepository
         return $languageUids;
     }
 
-    /**
-     * @param array $uidList
-     * @param bool $fixUnderLine
-     * @return array
-     */
     public function getStaticLanguagesCollateLocale(array $uidList, bool $fixUnderLine = false): array
     {
         $collateLocale = [];

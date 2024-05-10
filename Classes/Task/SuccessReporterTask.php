@@ -13,8 +13,5 @@ use Localizationteam\Localizer\Handler\SuccessReporter;
  */
 class SuccessReporterTask extends AbstractTask
 {
-    /**
-     * @var string
-     */
     protected string $handlerClass = SuccessReporter::class;
 }

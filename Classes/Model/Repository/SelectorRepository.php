@@ -20,11 +20,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SelectorRepository extends AbstractRepository
 {
-    /**
-     * @param int $pid
-     * @param string $table
-     * @return bool
-     */
     public function checkForRecordsOnPage(int $pid, string $table): bool
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable($table);
@@ -42,8 +37,6 @@ class SelectorRepository extends AbstractRepository
     }
 
     /**
-     * @param int $pid
-     * @param string $table
      * @return mixed
      */
     public function findRecordByPid(int $pid, string $table)
@@ -67,10 +60,6 @@ class SelectorRepository extends AbstractRepository
 
     /**
      * Creates a new cart, when this option is selected in the cart selector
-     *
-     * @param int $pageId
-     * @param int $localizerId
-     * @return int
      */
     public function createNewCart(int $pageId, int $localizerId): int
     {
@@ -123,10 +112,6 @@ class SelectorRepository extends AbstractRepository
 
     /**
      * Stores the configuration of the selected cart
-     *
-     * @param int $pageId
-     * @param int $cartId
-     * @param array $configuration
      */
     public function storeConfiguration(int $pageId, int $cartId, array $configuration): void
     {
@@ -159,11 +144,6 @@ class SelectorRepository extends AbstractRepository
 
     /**
      * Stores the items of the selected cart
-     *
-     * @param array $pageIds
-     * @param int $cartId
-     * @param array $configuration
-     * @param array $storedTriples
      */
     public function storeCart(array $pageIds, int $cartId, array $configuration, array $storedTriples): void
     {
@@ -251,10 +231,6 @@ class SelectorRepository extends AbstractRepository
 
     /**
      * Loads all items that might already be in the cart
-     *
-     * @param array $pageIds
-     * @param int $cartId
-     * @return array
      */
     public function loadStoredTriples(array $pageIds, int $cartId): array
     {
@@ -289,12 +265,6 @@ class SelectorRepository extends AbstractRepository
 
     /**
      * Stores the configuration for the L10nmgr export
-     *
-     * @param int $pageId
-     * @param int $localizerId
-     * @param int $cartId
-     * @param array $configuration
-     * @return int
      */
     public function storeL10nmgrConfiguration(int $pageId, int $localizerId, int $cartId, array $configuration): int
     {
@@ -343,12 +313,6 @@ class SelectorRepository extends AbstractRepository
 
     /**
      * Stores the configuration for the L10nmgr export
-     *
-     * @param int $uid
-     * @param int $localizerId
-     * @param int $cartId
-     * @param array $pageIds
-     * @param string $excludeItems
      */
     public function updateL10nmgrConfiguration(
         int $uid,
@@ -382,11 +346,6 @@ class SelectorRepository extends AbstractRepository
 
     /**
      * Finalizes the selected cart and makes it unavailable for the selector
-     *
-     * @param int $localizerId
-     * @param int $cartId
-     * @param int $configurationId
-     * @param string $deadline
      */
     public function finalizeCart(int $localizerId, int $cartId, int $configurationId, string $deadline = ''): void
     {
@@ -460,12 +419,6 @@ class SelectorRepository extends AbstractRepository
      *
      * For performance reasons it is essential to collect as much of that information
      * within just one query or while generating the array of result rows
-     *
-     * @param int $id
-     * @param array $pageIds
-     * @param array $translatableTables
-     * @param array $configuration
-     * @return array
      */
     public function getRecordsOnPages(
         int $id,

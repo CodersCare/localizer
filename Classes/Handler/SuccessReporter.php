@@ -119,7 +119,6 @@ class SuccessReporter extends AbstractHandler
     }
 
     /**
-     * @param int $uid
      * @param mixed $response
      */
     protected function processResponse(int $uid, $response)

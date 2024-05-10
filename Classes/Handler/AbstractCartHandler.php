@@ -17,17 +17,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractCartHandler
 {
-    /**
-     * @var string
-     */
     protected string $processId = '';
-    /**
-     * @var bool
-     */
     private bool $run = false;
 
     /**
-     * @param int $id
      * @throws Exception
      */
     abstract public function init(int $id = 1);
@@ -44,14 +37,8 @@ abstract class AbstractCartHandler
         $this->releaseAcquiredItems($time);
     }
 
-    /**
-     * @param int $time
-     */
     abstract public function finish(int $time);
 
-    /**
-     * @param int $time
-     */
     protected function releaseAcquiredItems(int $time = 0): void
     {
         if ($time == 0) {
@@ -75,17 +62,11 @@ abstract class AbstractCartHandler
             );
     }
 
-    /**
-     * @return string
-     */
     final public function getProcessId(): string
     {
         return $this->processId;
     }
 
-    /**
-     * @return bool
-     */
     abstract protected function acquire(): bool;
 
     final protected function initProcessId(): void
@@ -103,9 +84,6 @@ abstract class AbstractCartHandler
         $this->run = false;
     }
 
-    /**
-     * @return bool
-     */
     final protected function canRun(): bool
     {
         return $this->run;

@@ -27,49 +27,22 @@ class CartController extends AbstractController
 {
     use BackendUser;
 
-    /**
-     * @var int
-     */
     protected int $pointer;
 
-    /**
-     * @var string
-     */
     protected string $imagemode;
 
-    /**
-     * @var string
-     */
     protected string $table;
 
-    /**
-     * @var string
-     */
     protected string $search_field;
 
-    /**
-     * @var int
-     */
     protected int $search_levels;
 
-    /**
-     * @var int
-     */
     protected int $showLimit;
 
-    /**
-     * @var string
-     */
     protected string $returnUrl;
 
-    /**
-     * @var array
-     */
     protected array $cmd;
 
-    /**
-     * @var string
-     */
     protected string $cmd_table;
 
     /**
@@ -83,10 +56,6 @@ class CartController extends AbstractController
      * @var string
      */
     protected string $moduleName = 'localizer_localizercart';
-
-    /**
-     * @var int
-     */
     protected int $userId;
 
     public function __construct()
@@ -258,9 +227,6 @@ class CartController extends AbstractController
 
     /**
      * Generates the configurator for the selector matrix form
-     *
-     * @param string $url
-     * @return string
      */
     protected function getCartConfigurator(string $url): string
     {
@@ -276,9 +242,6 @@ class CartController extends AbstractController
     /**
      * Generates the localizer selector for the configurator
      * which might be used to select one of the available localizer settings
-     *
-     * @param string $url
-     * @return string
      */
     protected function getLocalizerSelector(string $url): string
     {
@@ -315,9 +278,6 @@ class CartController extends AbstractController
     /**
      * Generates the user selector for the configurator
      * which might be used to select another backend user
-     *
-     * @param string $url
-     * @return string
      */
     protected function getUserSelector(string $url): string
     {
@@ -351,8 +311,6 @@ class CartController extends AbstractController
 
     /**
      * Generates the JSON data for the jQuery handler dealing with additional localizer information
-     *
-     * @return string
      */
     protected function generateRecordInfo(): string
     {

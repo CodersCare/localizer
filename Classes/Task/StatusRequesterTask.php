@@ -13,8 +13,5 @@ use Localizationteam\Localizer\Handler\StatusRequester;
  */
 class StatusRequesterTask extends AbstractTask
 {
-    /**
-     * @var string
-     */
     protected string $handlerClass = StatusRequester::class;
 }

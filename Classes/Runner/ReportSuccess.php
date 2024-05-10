@@ -18,23 +18,10 @@ class ReportSuccess
 {
     protected ApiCallsInterface $api;
 
-    /**
-     * @var string
-     */
     protected string $path = '';
 
-    /**
-     * @var array
-     */
     protected array $response = [];
 
-    public function __construct()
-    {
-    }
-
-    /**
-     * @param array $configuration
-     */
     public function init(array $configuration): void
     {
         switch ($configuration['type']) {
@@ -83,9 +70,6 @@ class ReportSuccess
         }
     }
 
-    /**
-     * @param array $configuration
-     */
     public function run(array $configuration): void
     {
         switch ($configuration['type']) {
@@ -105,9 +89,6 @@ class ReportSuccess
         }
     }
 
-    /**
-     * @return array
-     */
     public function getResponse(): array
     {
         return $this->response;

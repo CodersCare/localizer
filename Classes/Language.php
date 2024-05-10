@@ -16,8 +16,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 trait Language
 {
     /**
-     * @param array $row
-     * @return string
      * @throws Exception
      */
     protected function getIso2ForLocale(array $row): string
@@ -41,10 +39,6 @@ trait Language
         return $iso2;
     }
 
-    /**
-     * @param array $row
-     * @return bool
-     */
     protected function translateAll(array $row): bool
     {
         $translateAll = false;

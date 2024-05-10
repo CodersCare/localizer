@@ -18,9 +18,6 @@ use TYPO3\CMS\Core\Page\PageRenderer;
  */
 abstract class AbstractController extends BaseModule
 {
-    /**
-     * @var array
-     */
     protected array $pageinfo;
 
     /**
@@ -30,24 +27,12 @@ abstract class AbstractController extends BaseModule
      */
     protected $moduleTemplate;
 
-    /**
-     * @var int
-     */
     protected int $localizerId;
 
-    /**
-     * @var int
-     */
     protected int $localizerPid;
 
-    /**
-     * @var array
-     */
     protected array $legend = [];
 
-    /**
-     * @var array
-     */
     protected array $statusClasses = [];
 
     /**
@@ -55,9 +40,6 @@ abstract class AbstractController extends BaseModule
      */
     protected AbstractRepository $abstractRepository;
 
-    /**
-     * @var array
-     */
     protected array $availableLocalizers;
 
     protected PageRenderer $pageRenderer;
@@ -87,8 +69,6 @@ abstract class AbstractController extends BaseModule
 
     /**
      * Initializing the module
-     *
-     * @return array
      */
     public function init(): array
     {

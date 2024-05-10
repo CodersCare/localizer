@@ -24,9 +24,6 @@ class FileSender extends AbstractHandler
     use Data;
     use Language;
 
-    /**
-     * @var string
-     */
     protected string $uploadPath = '';
 
     /**
@@ -168,9 +165,6 @@ class FileSender extends AbstractHandler
         return file_exists($file) ? $file : false;
     }
 
-    /**
-     * @return string
-     */
     protected function getUploadPath(): string
     {
         if ($this->uploadPath === '') {
@@ -216,10 +210,6 @@ class FileSender extends AbstractHandler
         return $deadline;
     }
 
-    /**
-     * @param array $row
-     * @return array
-     */
     protected function addMetaData(array &$row): array
     {
         $metaData = [];

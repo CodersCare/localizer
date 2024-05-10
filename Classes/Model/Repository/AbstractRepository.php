@@ -25,8 +25,6 @@ class AbstractRepository
     use Data;
 
     /**
-     * @param int $localizerId
-     * @return array
      */
     public function getLocalizerLanguages(int $localizerId): array
     {
@@ -119,8 +117,6 @@ class AbstractRepository
     }
 
     /**
-     * @param array $systemLanguages
-     * @return array
      */
     public function getStaticLanguages(array $systemLanguages): array
     {
@@ -162,8 +158,6 @@ class AbstractRepository
     /**
      * Loads the configuration of the selected cart
      *
-     * @param int $cartId
-     * @return array
      */
     public function loadConfiguration(int $cartId): array
     {
@@ -202,7 +196,6 @@ class AbstractRepository
     /**
      * Loads available localizer settings
      *
-     * @return array
      */
     public function loadAvailableLocalizers(): array
     {
@@ -228,8 +221,6 @@ class AbstractRepository
     /**
      * Loads available carts, which have not been finalized yet
      *
-     * @param int $localizerId
-     * @return array
      */
     public function loadAvailableCarts(int $localizerId): array
     {
@@ -264,9 +255,6 @@ class AbstractRepository
     /**
      * Loads available pages for carts
      *
-     * @param int $pageId
-     * @param int $cartId
-     * @return array
      */
     public function loadAvailablePages(int $pageId, int $cartId): array
     {
@@ -333,8 +321,6 @@ class AbstractRepository
     /**
      * Loads available pages for carts
      *
-     * @param int $cartId
-     * @return array
      */
     public function loadAvailableLanguages(int $cartId): array
     {
@@ -372,8 +358,6 @@ class AbstractRepository
     /**
      * Loads available pages for carts
      *
-     * @param int $cartId
-     * @return array
      */
     public function loadAvailableTables(int $cartId): array
     {
@@ -404,11 +388,6 @@ class AbstractRepository
 
     /**
      * Gets all related child records of a parent record based on the reference index
-     *
-     * @param array $record
-     * @param string $table
-     * @param array $translatableTables
-     * @return array
      */
     protected function checkRelations(array $record, string $table, array $translatableTables): array
     {

@@ -14,11 +14,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 trait File
 {
-    /**
-     * @param string $fileName
-     * @param string $locale
-     * @return string
-     */
     protected function getLocalFilename(string $fileName, string $locale): string
     {
         $downloadPath = Environment::getPublicPath() . '/uploads/tx_l10nmgr/jobs/in/' . strtolower($locale);

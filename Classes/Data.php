@@ -24,24 +24,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 trait Data
 {
-    /**
-     * @var array
-     */
     protected array $apiPool;
 
-    /**
-     * @var array
-     */
     protected array $data;
 
-    /**
-     * @var array
-     */
     protected array $result;
 
-    /**
-     * @var bool
-     */
     private bool $canPersist = false;
 
     protected function initData(): void
@@ -91,13 +79,6 @@ trait Data
         $this->data = $this->fetchAllAssociative($result);
     }
 
-    /**
-     * @param int $uid
-     * @param int $status
-     * @param int $previousStatus
-     * @param string $lastError
-     * @param int $action
-     */
     protected function addErrorResult(int $uid, int $status, int $previousStatus, string $lastError, int $action = 0): void
     {
         $this->result['error'][$uid] = [
@@ -110,12 +91,6 @@ trait Data
         }
     }
 
-    /**
-     * @param int $uid
-     * @param int $status
-     * @param int $action
-     * @param array $response
-     */
     protected function addSuccessResult(int $uid, int $status, int $action = 0, array $response = []): void
     {
         $this->result['success'][$uid] = [
@@ -129,8 +104,6 @@ trait Data
     }
 
     /**
-     * @param int $uid
-     * @return array
      * @throws Exception
      */
     protected function getLocalizerSettings(int $uid): array
@@ -243,17 +216,11 @@ trait Data
             $this->apiPool[$uid]['settings'];
     }
 
-    /**
-     * @param int $time
-     */
     protected function dataFinish(int $time): void
     {
         $this->persistsResult($time);
     }
 
-    /**
-     * @param int $time
-     */
     protected function persistsResult(int $time): void
     {
         if ($this->canPersist === true) {
@@ -297,7 +264,6 @@ trait Data
     }
 
     /**
-     * @param ResultStatement $result
      * @return mixed
      */
     public function fetchOne(ResultStatement $result)
@@ -309,7 +275,6 @@ trait Data
     }
 
     /**
-     * @param ResultStatement $result
      * @return mixed
      */
     public function fetchAssociative(ResultStatement $result)
@@ -321,7 +286,6 @@ trait Data
     }
 
     /**
-     * @param ResultStatement $result
      * @return mixed
      */
     public function fetchAllAssociative(ResultStatement $result)

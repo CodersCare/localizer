@@ -13,8 +13,5 @@ use Localizationteam\Localizer\Handler\FileImporter;
  */
 class FileImporterTask extends AbstractTask
 {
-    /**
-     * @var string
-     */
     protected string $handlerClass = FileImporter::class;
 }

@@ -35,11 +35,7 @@ class DataHandlerHook
      * hook to post process TCA - Field Array
      * and to alter the configuration
      *
-     * @param string $status
-     * @param string $table
      * @param string|int $id
-     * @param array $fieldArray
-     * @param DataHandler $tceMain
      */
     public function processDatamap_postProcessFieldArray(
         string $status,
@@ -91,21 +87,12 @@ class DataHandlerHook
         }
     }
 
-    /**
-     * @return bool
-     */
     protected function isSaveAction(): bool
     {
         return
             isset($_REQUEST['doSave']) && $_REQUEST['doSave'];
     }
 
-    /**
-     * @param array $incomingFieldArray
-     * @param string $table
-     * @param string $id
-     * @param DataHandler $tceMain
-     */
     public function processDatamap_preProcessFieldArray(
         array &$incomingFieldArray,
         string $table,
@@ -132,10 +119,6 @@ class DataHandlerHook
         }
     }
 
-    /**
-     * @param string $settingsId
-     * @return array
-     */
     protected function getAllTargetUids(string $settingsId): array
     {
         $originalValues = BackendUtility::getRecord(Constants::TABLE_EXPORTDATA_MM, (int)$settingsId);
@@ -146,7 +129,6 @@ class DataHandlerHook
     /**
      * Hook for displaying small icon in page tree, web>List and page module.
      *
-     * @param array $p
      * @param mixed $pObj
      *
      * @return string [type]...
@@ -166,8 +148,6 @@ class DataHandlerHook
     /**
      * @param $p
      * @param $languageList
-     * @param bool $noLink
-     * @return string
      * @throws DBALException
      */
     public function calcStat($p, $languageList, bool $noLink = false): string

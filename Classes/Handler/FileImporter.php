@@ -120,9 +120,6 @@ class FileImporter extends AbstractHandler
     }
 
     /**
-     * @param array $row
-     * @param array $files
-     * @return array
      * @throws Exception
      */
     protected function processImport(array $row, array $files): array
@@ -155,10 +152,6 @@ class FileImporter extends AbstractHandler
         return $response;
     }
 
-    /**
-     * @param int $uid
-     * @param array $responses
-     */
     protected function processResponse(int $uid, array $responses)
     {
         $success = true;

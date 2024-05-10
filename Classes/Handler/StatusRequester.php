@@ -41,7 +41,6 @@ class StatusRequester extends AbstractHandler
     }
 
     /**
-     * @return bool
      * @throws DBALException
      */
     protected function acquire(): bool
@@ -128,7 +127,6 @@ class StatusRequester extends AbstractHandler
     }
 
     /**
-     * @param int $uid
      * @param mixed $response
      */
     protected function processResponse(int $uid, $response)

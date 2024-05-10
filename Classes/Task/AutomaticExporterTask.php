@@ -13,8 +13,5 @@ use Localizationteam\Localizer\Handler\AutomaticExporter;
  */
 class AutomaticExporterTask extends AbstractTask
 {
-    /**
-     * @var string
-     */
     protected string $handlerClass = AutomaticExporter::class;
 }

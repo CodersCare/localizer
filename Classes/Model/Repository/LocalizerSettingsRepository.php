@@ -10,11 +10,6 @@ use TYPO3\CMS\Core\Database\Connection;
 
 class LocalizerSettingsRepository extends AbstractRepository
 {
-    /**
-     * @param int $uid
-     * @param array $fields
-     * @return array
-     */
     public function findByUid(int $uid, array $fields = ['*']): array
     {
         $connection = self::getConnectionForTable(Constants::TABLE_LOCALIZER_SETTINGS);
@@ -22,18 +17,11 @@ class LocalizerSettingsRepository extends AbstractRepository
         return $this->fetchAssociative($result);
     }
 
-    /**
-     * @param $table
-     * @return Connection
-     */
-    public static function getConnectionForTable($table): Connection
+    public static function getConnectionForTable(string $table): Connection
     {
         return self::getConnectionPool()->getConnectionForTable($table);
     }
 
-    /**
-     * @return array
-     */
     public function loadAvailableLocalizers(): array
     {
         $localizers = $this->findAll();
@@ -46,9 +34,6 @@ class LocalizerSettingsRepository extends AbstractRepository
         return $availableLocalizers;
     }
 
-    /**
-     * @return array
-     */
     public function findAll(): array
     {
         $connection = self::getConnectionForTable(Constants::TABLE_LOCALIZER_SETTINGS);
@@ -56,10 +41,6 @@ class LocalizerSettingsRepository extends AbstractRepository
         return $this->fetchAllAssociative($result);
     }
 
-    /**
-     * @param int $localizerId
-     * @return array
-     */
     public function getLocalizerLanguages(int $localizerId): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);

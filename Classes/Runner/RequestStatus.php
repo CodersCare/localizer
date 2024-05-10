@@ -19,19 +19,10 @@ class RequestStatus
 {
     protected ApiCallsInterface $api;
 
-    /**
-     * @var string
-     */
     protected string $path = '';
 
-    /**
-     * @var array
-     */
     protected array $response = [];
 
-    /**
-     * @param array $configuration
-     */
     public function init(array $configuration): void
     {
         switch ($configuration['type']) {
@@ -80,9 +71,6 @@ class RequestStatus
         }
     }
 
-    /**
-     * @param array $configuration
-     */
     public function run(array $configuration): void
     {
         switch ($configuration['type']) {
@@ -122,9 +110,6 @@ class RequestStatus
         }
     }
 
-    /**
-     * @return array
-     */
     public function getResponse(): array
     {
         return $this->response;

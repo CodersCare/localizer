@@ -16,8 +16,6 @@ class CartRepository extends AbstractRepository
 {
     /**
      * Loads available backend users
-     *
-     * @return array
      */
     public function loadAvailableUsers(): array
     {
@@ -75,11 +73,6 @@ class CartRepository extends AbstractRepository
 
     /**
      * Loads additional information about the listed cart records
-     *
-     * @param int $id
-     * @param array $classes
-     * @param int $user
-     * @return array
      */
     public function getRecordInfo(int $id, array $classes, int $user): array
     {

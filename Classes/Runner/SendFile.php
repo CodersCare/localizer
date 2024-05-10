@@ -19,34 +19,16 @@ class SendFile
 {
     protected ApiCallsInterface $api;
 
-    /**
-     * @var string
-     */
     protected string $path = '';
 
-    /**
-     * @var int
-     */
     protected int $type;
 
-    /**
-     * @var string
-     */
     protected string $source = '';
 
-    /**
-     * @var string
-     */
     protected string $localFile = '';
 
-    /**
-     * @var array
-     */
     protected array $response = [];
 
-    /**
-     * @var array
-     */
     protected array $targetLocales = [];
 
     protected int $deadline = 0;
@@ -56,7 +38,6 @@ class SendFile
     protected bool $sendAttachment = false;
 
     /**
-     * @param array $configuration
      * @throws Exception
      */
     public function init(array $configuration): void
@@ -170,9 +151,6 @@ class SendFile
         );
     }
 
-    /**
-     * @return array
-     */
     public function getResponse(): array
     {
         return $this->response ?: [];

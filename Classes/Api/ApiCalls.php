@@ -206,7 +206,6 @@ class ApiCalls implements ApiCallsInterface
      * Specifies one or more target languages for translation.
      * If not specified, the system assumes that the file requires translation into ALL the project target languages.
      *
-     * @param array $locales
      * @throws Exception
      */
     public function setLocales(array $locales): void
@@ -215,7 +214,6 @@ class ApiCalls implements ApiCallsInterface
     }
 
     /**
-     * @param bool $asJson
      * @return array|false|string
      */
     public function getFolderInformation(bool $asJson = false)
@@ -266,7 +264,6 @@ class ApiCalls implements ApiCallsInterface
      *
      * @param string $fileContent The content of the file you wish to send
      * @param string $fileName Name the file will have in the Localizer
-     * @param bool $attachInstructions
      * @throws Exception This Exception contains details of an eventual error
      */
     public function sandboxSendContent(string $fileContent, string $fileName, bool $attachInstructions = true): void
@@ -280,7 +277,6 @@ class ApiCalls implements ApiCallsInterface
      * @param string $fileContent The content of the file you wish to send
      * @param string $fileName Name the file will have in the Localizer
      * @param string $source Source language of the file
-     * @param bool $attachInstruction
      * @throws Exception
      */
     public function sendFile(string $fileContent, string $fileName, string $source, bool $attachInstruction = true): void
@@ -294,7 +290,6 @@ class ApiCalls implements ApiCallsInterface
      * @param string $fileContent The content of the file you wish to send
      * @param string $fileName Name the file will have in the Localizer
      * @param string $source Source language of the file
-     * @param bool $attachInstruction
      * @throws Exception This Exception contains details of an eventual error
      */
     protected function storeFileIntoLocalHotfolder(
@@ -370,9 +365,6 @@ class ApiCalls implements ApiCallsInterface
 
     /**
      * Checks if the folders exist or can be created if they don't exist yet
-     * @param string $folder
-     * @param string $type
-     * @return bool
      * @throws Exception
      */
     protected function checkAndCreateFolder(string $folder, string $type): bool

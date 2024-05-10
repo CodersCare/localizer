@@ -13,8 +13,5 @@ use Localizationteam\Localizer\Handler\FileSender;
  */
 class FileSenderTask extends AbstractTask
 {
-    /**
-     * @var string
-     */
     protected string $handlerClass = FileSender::class;
 }

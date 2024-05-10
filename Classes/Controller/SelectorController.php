@@ -34,55 +34,24 @@ class SelectorController extends AbstractController
      * @var IconFactory
      */
     protected IconFactory $iconFactory;
-
-    /**
-     * @var array
-     */
     protected array $languages = [];
 
-    /**
-     * @var array
-     */
     protected array $configuration = [];
 
-    /**
-     * @var array
-     */
     protected array $translatableTables = [];
 
-    /**
-     * @var int
-     */
     protected int $cartId;
 
-    /**
-     * @var string
-     */
     protected string $cshKey;
 
-    /**
-     * @var array
-     */
     protected array $storedTriples = [];
 
-    /**
-     * @var array
-     */
     protected array $legend = [];
 
-    /**
-     * @var array
-     */
     protected array $cartRecord = [];
 
-    /**
-     * @var array
-     */
     protected array $data = [];
 
-    /**
-     * @var int
-     */
     protected int $tableHeaderSpan = 0;
 
     /**
@@ -111,7 +80,6 @@ class SelectorController extends AbstractController
 
     /**
      * Initializing the module
-     * @return array
      */
     public function init(): array
     {
@@ -349,9 +317,6 @@ class SelectorController extends AbstractController
 
     /**
      * Generates the configurator for the selector matrix form
-     *
-     * @param string $url
-     * @return string
      */
     protected function getLocalizerConfigurator(string $url): string
     {
@@ -388,9 +353,6 @@ class SelectorController extends AbstractController
     /**
      * Generates the localizer selector for the configurator
      * which might be used to select one of the available localizer settings
-     *
-     * @param string $url
-     * @return string
      */
     protected function getLocalizerSelector(string $url): string
     {
@@ -425,9 +387,6 @@ class SelectorController extends AbstractController
     /**
      * Generates the cart selector for the configurator
      * which might be used to create a new cart or select an existing cart
-     *
-     * @param string $url
-     * @return string
      */
     protected function getCartSelector(string $url): string
     {
@@ -465,9 +424,6 @@ class SelectorController extends AbstractController
     /**
      * Generates the page selector for the configurator
      * which might be used to select a page to be working on within this cart
-     *
-     * @param string $url
-     * @return string
      */
     protected function getPageSelector(string $url): string
     {
@@ -500,8 +456,6 @@ class SelectorController extends AbstractController
 
     /**
      * Generates the language selector based on information collected during cart generation
-     *
-     * @return string
      */
     protected function getLanguageSelector(): string
     {
@@ -570,8 +524,6 @@ class SelectorController extends AbstractController
 
     /**
      * Generates the table selector based on information collected during cart generation
-     *
-     * @return string
      */
     protected function getTableSelector(): string
     {
@@ -644,8 +596,6 @@ class SelectorController extends AbstractController
 
     /**
      * Generates the time frame selector based on information collected during cart generation
-     *
-     * @return string
      */
     protected function getTimeFrameSelector(): string
     {
@@ -658,7 +608,6 @@ class SelectorController extends AbstractController
      * Generates the date time input fields with a datepicker
      *
      * @param $variableName
-     * @return string
      */
     protected function getDateTimeSelector($variableName): string
     {
@@ -676,8 +625,6 @@ class SelectorController extends AbstractController
 
     /**
      * Generates the actual translation matrix for available records of the selected tables and selected languages
-     *
-     * @return string
      */
     protected function getTranslationLocalizer(): string
     {
@@ -734,11 +681,6 @@ class SelectorController extends AbstractController
 
     /**
      * Generates a single matrix cell containing information about the table, the record, the language and the status
-     *
-     * @param string $table
-     * @param int $uid
-     * @param string $placement
-     * @return string
      */
     protected function generateLocalizerCells(string $table, int $uid, string $placement = 'top'): string
     {
@@ -768,12 +710,6 @@ class SelectorController extends AbstractController
     /**
      * Generates the translation matrix for referenced records that are children of records in the main matrix
      * and puts them into a tree structure below their parent element
-     *
-     * @param string $referencedTable
-     * @param int $referencedUid
-     * @param string $level
-     * @param string $parents
-     * @return string
      */
     protected function getReferenceLocalizer(
         string $referencedTable,

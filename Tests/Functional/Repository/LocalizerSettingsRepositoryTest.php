@@ -14,14 +14,8 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class LocalizerSettingsRepositoryTest extends FunctionalTestCase
 {
-    /**
-     * @var ObjectManagerInterface
-     */
     protected ObjectManagerInterface $objectManager;
 
-    /**
-     * @var LocalizerSettingsRepository
-     */
     protected LocalizerSettingsRepository $repository;
 
     protected $testExtensionsToLoad = [

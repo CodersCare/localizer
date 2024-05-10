@@ -20,7 +20,6 @@ class Cart
     use Data;
 
     /**
-     * @param array $params
      * @param mixed $obj
      */
     public function filterList(array &$params, $obj): void

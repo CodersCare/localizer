@@ -26,43 +26,21 @@ class AutomaticExporter extends AbstractCartHandler
     use Language;
     use AddFileToMatrix;
 
-    /**
-     * @var string
-     */
     protected string $uploadPath = '';
 
-    /**
-     * @var SelectorRepository
-     */
     protected SelectorRepository $selectorRepository;
 
-    /**
-     * @var AutomaticExportRepository
-     */
     protected AutomaticExportRepository $automaticExportRepository;
 
-    /**
-     * @var array
-     */
     protected array $content = [];
 
-    /**
-     * @var array
-     */
     protected array $triples = [];
 
-    /**
-     * @var array
-     */
     protected array $exportTree = [];
 
-    /**
-     * @var array
-     */
     protected array $availableLocalizers = [];
 
     /**
-     * @param int $id
      * @throws Exception
      */
     public function init(int $id = 0): void
@@ -221,10 +199,6 @@ class AutomaticExporter extends AbstractCartHandler
         }
     }
 
-    /**
-     * @param int $pid
-     * @return array
-     */
     protected function findTranslatableTables(int $pid): array
     {
         $translatableTables = ['pages' => $GLOBALS['LANG']->sL($GLOBALS['TCA']['pages']['ctrl']['title'])];
@@ -265,9 +239,6 @@ class AutomaticExporter extends AbstractCartHandler
     {
     }
 
-    /**
-     * @return bool
-     */
     protected function acquire(): bool
     {
         return false;

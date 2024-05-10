@@ -20,13 +20,6 @@ trait AddFileToMatrix
     use BackendUser;
 
     /**
-     * @param int $pid
-     * @param int $localizerId
-     * @param int $exportDataId
-     * @param int $l10nConfigurationId
-     * @param string $fileName
-     * @param int $translationLanguage
-     * @param int $action
      * @throws DBALException
      */
     protected function addFileToMatrix(
@@ -110,7 +103,6 @@ trait AddFileToMatrix
     }
 
     /**
-     * @param int $uid
      * @return mixed
      */
     protected function getRootPath(int $uid)
@@ -118,10 +110,6 @@ trait AddFileToMatrix
         return BackendUtility::getRecordPath($uid, '', 0);
     }
 
-    /**
-     * @param int $sysLanguageId
-     * @return int
-     */
     protected function getLanguageIsoCode(int $sysLanguageId): int
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_language');

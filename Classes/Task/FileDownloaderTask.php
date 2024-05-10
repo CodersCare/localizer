@@ -13,8 +13,5 @@ use Localizationteam\Localizer\Handler\FileDownloader;
  */
 class FileDownloaderTask extends AbstractTask
 {
-    /**
-     * @var string
-     */
     protected string $handlerClass = FileDownloader::class;
 }

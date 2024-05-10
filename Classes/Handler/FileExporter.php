@@ -30,38 +30,19 @@ class FileExporter extends AbstractCartHandler
     use Data;
     use Language;
 
-    /**
-     * @var int
-     */
     protected int $id;
 
-    /**
-     * @var string
-     */
     protected string $uploadPath = '';
 
-    /**
-     * @var SelectorRepository
-     */
     protected SelectorRepository $selectorRepository;
 
-    /**
-     * @var array
-     */
     protected array $content = [];
 
-    /**
-     * @var array
-     */
     protected array $triples = [];
 
-    /**
-     * @var array
-     */
     protected array $exportTree = [];
 
     /**
-     * @param int $id
      * @throws Exception
      */
     public function init(int $id = 1): void
@@ -78,9 +59,6 @@ class FileExporter extends AbstractCartHandler
         }
     }
 
-    /**
-     * @return bool
-     */
     protected function acquire(): bool
     {
         $time = time();
@@ -173,13 +151,6 @@ class FileExporter extends AbstractCartHandler
         }
     }
 
-    /**
-     * @param int $localizer
-     * @param int $cart
-     * @param int $configurationId
-     * @param int $language
-     * @return bool
-     */
     protected function configureRecordsForLanguage(int $localizer, int $cart, int $configurationId, int $language): bool
     {
         $this->exportTree = [];
@@ -213,11 +184,6 @@ class FileExporter extends AbstractCartHandler
         return false;
     }
 
-    /**
-     * @param string $table
-     * @param int $uid
-     * @param int $language
-     */
     protected function checkReferences(string $table, int $uid, int $language)
     {
         foreach ($this->content['referencedRecords'][$table][$uid] as $referencedTable => $records) {
@@ -259,11 +225,6 @@ class FileExporter extends AbstractCartHandler
         ];
     }
 
-    /**
-     * @param int $localizerId
-     * @param int $configurationId
-     * @param int $pid
-     */
     protected function registerFilesForLocalizer(int $localizerId, int $configurationId, int $pid)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -301,10 +262,6 @@ class FileExporter extends AbstractCartHandler
         $this->dataFinish($time);
     }
 
-    /**
-     * @param int $uid
-     * @param array $responses
-     */
     protected function processResponses(int $uid, array $responses)
     {
         $success = true;
@@ -339,9 +296,6 @@ class FileExporter extends AbstractCartHandler
         return file_exists($file) ? $file : false;
     }
 
-    /**
-     * @return string
-     */
     protected function getUploadPath(): string
     {
         if ($this->uploadPath === '') {
