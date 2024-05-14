@@ -6,8 +6,8 @@ namespace Localizationteam\Localizer\Hooks;
 
 use Doctrine\DBAL\DBALException;
 use Exception;
+use Localizationteam\Localizer\Traits\BackendUserTrait;
 use Localizationteam\Localizer\Api\ApiCalls;
-use Localizationteam\Localizer\BackendUser;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  */
 class DataHandlerHook
 {
-    use BackendUser;
+    use BackendUserTrait;
     use Language;
     use Data;
 

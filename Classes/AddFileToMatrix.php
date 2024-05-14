@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Localizationteam\Localizer;
 
 use Doctrine\DBAL\DBALException;
+use Localizationteam\Localizer\Traits\BackendUserTrait;
 use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -17,7 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 trait AddFileToMatrix
 {
-    use BackendUser;
+    use BackendUserTrait;
 
     /**
      * @throws DBALException

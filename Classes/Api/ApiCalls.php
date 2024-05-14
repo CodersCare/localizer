@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Localizationteam\Localizer\Api;
 
 use Exception;
-use Localizationteam\Localizer\BackendUser;
+use Localizationteam\Localizer\Traits\BackendUserTrait;
 use Localizationteam\Localizer\Constants;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
@@ -20,7 +20,7 @@ use ZipArchive;
  */
 class ApiCalls implements ApiCallsInterface
 {
-    use BackendUser;
+    use BackendUserTrait;
 
     public string $type = '';
     protected string $connectorName = '';

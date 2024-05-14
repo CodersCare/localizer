@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Controller;
 
-use Localizationteam\Localizer\BackendUser;
+use Localizationteam\Localizer\Traits\BackendUserTrait;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Model\Repository\AbstractRepository;
 use Localizationteam\Localizer\Model\Repository\CartRepository;
@@ -25,7 +25,7 @@ use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
  */
 class CartController extends AbstractController
 {
-    use BackendUser;
+    use BackendUserTrait;
 
     protected int $pointer;
 

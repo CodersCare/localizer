@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Model\Repository;
 
-use Localizationteam\Localizer\BackendUser;
+use Localizationteam\Localizer\Traits\BackendUserTrait;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Data;
 use PDO;
@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class AbstractRepository
 {
-    use BackendUser;
+    use BackendUserTrait;
     use Data;
 
     /**
