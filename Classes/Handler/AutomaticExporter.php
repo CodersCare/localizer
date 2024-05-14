@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Localizationteam\Localizer\Handler;
 
 use Exception;
-use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\AutomaticExportRepository;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
 use Localizationteam\Localizer\Traits\AddFileToMatrix;
 use Localizationteam\Localizer\Traits\Data;
+use Localizationteam\Localizer\Traits\Language;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;

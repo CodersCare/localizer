@@ -6,10 +6,10 @@ namespace Localizationteam\Localizer\Handler;
 
 use Exception;
 use Localizationteam\Localizer\Constants;
-use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\LanguageRepository;
 use Localizationteam\Localizer\Runner\SendFile;
 use Localizationteam\Localizer\Traits\Data;
+use Localizationteam\Localizer\Traits\Language;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

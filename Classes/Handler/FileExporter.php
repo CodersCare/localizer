@@ -6,10 +6,10 @@ namespace Localizationteam\Localizer\Handler;
 
 use Exception;
 use Localizationteam\Localizer\Constants;
-use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
 use Localizationteam\Localizer\Traits\AddFileToMatrix;
 use Localizationteam\Localizer\Traits\Data;
+use Localizationteam\Localizer\Traits\Language;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use TYPO3\CMS\Backend\Utility\BackendUtility;

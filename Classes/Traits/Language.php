@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Localizationteam\Localizer;
+namespace Localizationteam\Localizer\Traits;
 
 use Exception;
+use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Model\Repository\LanguageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
