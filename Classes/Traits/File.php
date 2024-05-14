@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Localizationteam\Localizer;
+namespace Localizationteam\Localizer\Traits;
 
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
