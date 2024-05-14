@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Localizationteam\Localizer\Backend;
 
 use Localizationteam\Localizer\Constants;
-use Localizationteam\Localizer\Data;
+use Localizationteam\Localizer\Traits\Data;
 use TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

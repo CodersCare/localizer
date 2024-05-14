@@ -6,9 +6,9 @@ namespace Localizationteam\Localizer\Handler;
 
 use Exception;
 use Localizationteam\Localizer\Constants;
-use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\File;
 use Localizationteam\Localizer\Language;
+use Localizationteam\Localizer\Traits\Data;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use TYPO3\CMS\Core\Console\CommandRegistry;

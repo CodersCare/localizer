@@ -6,9 +6,9 @@ namespace Localizationteam\Localizer\Handler;
 
 use Exception;
 use Localizationteam\Localizer\Constants;
-use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Runner\ReportSuccess;
+use Localizationteam\Localizer\Traits\Data;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

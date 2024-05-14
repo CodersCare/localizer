@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Model\Repository;
 
-use Localizationteam\Localizer\Traits\BackendUserTrait;
 use Localizationteam\Localizer\Constants;
-use Localizationteam\Localizer\Data;
+use Localizationteam\Localizer\Traits\BackendUserTrait;
+use Localizationteam\Localizer\Traits\Data;
 use PDO;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;

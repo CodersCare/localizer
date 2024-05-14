@@ -6,12 +6,12 @@ namespace Localizationteam\Localizer\Hooks;
 
 use Doctrine\DBAL\DBALException;
 use Exception;
-use Localizationteam\Localizer\Traits\BackendUserTrait;
 use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\Constants;
-use Localizationteam\Localizer\Data;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\LanguageRepository;
+use Localizationteam\Localizer\Traits\BackendUserTrait;
+use Localizationteam\Localizer\Traits\Data;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;

@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Localizationteam\Localizer;
+namespace Localizationteam\Localizer\Traits;
 
 use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Result;
 use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\Api\ApiCallsInterface;
+use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Messaging\FlashMessage;
 use Localizationteam\Localizer\Model\Repository\SettingsRepository;
 use PDO;
