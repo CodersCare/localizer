@@ -96,8 +96,8 @@ class FileExporter extends AbstractCartHandler
         if ($this->canRun() === true) {
             $row = $this->data[0];
             if (isset($row['configuration'])) {
-                $localizer = (int)$row['uid_local'];
-                $cart = (int)$row['uid'];
+                $localizerId = (int)$row['uid_local'];
+                $cartId = (int)$row['uid'];
                 $configurationId = (int)$row['uid_foreign'];
                 $configurationData = BackendUtility::getRecord(
                     Constants::TABLE_L10NMGR_CONFIGURATION,
@@ -107,20 +107,20 @@ class FileExporter extends AbstractCartHandler
                 $cartConfiguration = json_decode($row['configuration'], true);
                 if (!empty($cartConfiguration['languages']) && !empty($cartConfiguration['tables'])) {
                     $tables = $cartConfiguration['tables'];
-                    $pageIds = $this->selectorRepository->loadAvailablePages($pid, $cart);
-                    $languages = array_keys($cartConfiguration['languages']);
-                    $this->content = $this->selectorRepository->getRecordsOnPages($pid, $pageIds, $tables, [], $languages);
-                    $this->triples = $this->selectorRepository->loadStoredTriples($pageIds, $cart);
+                    $pageIds = $this->selectorRepository->loadAvailablePages($pid, $cartId);
+                    $languageIds = array_keys($cartConfiguration['languages']);
+                    $this->content = $this->selectorRepository->getRecordsOnPages($pid, $pageIds, $tables, [], $languageIds);
+                    $this->triples = $this->selectorRepository->loadStoredTriples($pageIds, $cartId);
                     if (!empty($this->content) && !empty($this->triples)) {
-                        foreach ($languages as $language) {
+                        foreach ($languageIds as $languageId) {
                             $configuredLanguageExport = $this->configureRecordsForLanguage(
-                                $localizer,
-                                $cart,
+                                $localizerId,
+                                $cartId,
                                 $configurationId,
-                                $language
+                                $languageId
                             );
                             if ($configuredLanguageExport) {
-                                $output = $this->processExport($configurationId, $language);
+                                $output = $this->processExport($configurationId, $languageId);
                                 if ($output['exitCode'] > 0) {
                                     throw new Exception(
                                         'Failed export to file with: "' . $output['command'] . '". Exit code was: "' . $output['exitCode'] . '". Output was: "' . $output['output'] . '".',
@@ -131,12 +131,12 @@ class FileExporter extends AbstractCartHandler
                         }
                         $this->selectorRepository->updateL10nmgrConfiguration(
                             $configurationId,
-                            $localizer,
-                            $cart,
+                            $localizerId,
+                            $cartId,
                             $pageIds,
                             ''
                         );
-                        $this->registerFilesForLocalizer($localizer, $configurationId, $pid);
+                        $this->registerFilesForLocalizer($localizerId, $configurationId, $pid);
                     }
                 }
             } else {
@@ -202,13 +202,13 @@ class FileExporter extends AbstractCartHandler
         }
     }
 
-    protected function processExport(int $configurationId, int $language): array
+    protected function processExport(int $configurationId, int $languageId): array
     {
         $commandRegistry = GeneralUtility::makeInstance(CommandRegistry::class);
-        $l10nmanagerExportCommand = $commandRegistry->getCommandByIdentifier('l10nmanager:export');
+        $l10nManagerExportCommand = $commandRegistry->getCommandByIdentifier('l10nmanager:export');
         $arguments = [
             '-c' => (string)$configurationId,
-            '-t' => (string)$language,
+            '-t' => (string)$languageId,
         ];
         if ($this->getBackendUser()->user['realName']) {
             $arguments['--customer'] = $this->getBackendUser()->user['realName'];
@@ -216,7 +216,7 @@ class FileExporter extends AbstractCartHandler
         $input = new ArrayInput($arguments);
         $input->setInteractive(false);
         $output = new BufferedOutput();
-        $result = $l10nmanagerExportCommand->run($input, $output);
+        $result = $l10nManagerExportCommand->run($input, $output);
 
         return [
             'exitCode' => $result,
