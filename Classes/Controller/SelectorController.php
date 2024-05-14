@@ -7,12 +7,17 @@ namespace Localizationteam\Localizer\Controller;
 use Exception;
 use Localizationteam\Localizer\Handler\FileExporter;
 use Localizationteam\Localizer\Model\Repository\AbstractRepository;
+use Localizationteam\Localizer\Model\Repository\CartRepository;
+use Localizationteam\Localizer\Model\Repository\LanguageRepository;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\Controller;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Page\PageRenderer;
@@ -27,15 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[Controller]
 class SelectorController extends AbstractController
 {
-    /**
-     * @var SelectorRepository
-     */
-    protected SelectorRepository $selectorRepository;
-
-    /**
-     * @var IconFactory
-     */
-    protected IconFactory $iconFactory;
     protected array $languages = [];
 
     protected array $configuration = [];
@@ -57,47 +53,73 @@ class SelectorController extends AbstractController
     protected int $tableHeaderSpan = 0;
 
     /**
-     * The name of the module
-     *
-     * @var string
+     * @var null
      */
-    protected string $moduleName = 'localizer_localizerselector';
+    protected $configuratorStore;
 
-    public function __construct()
-    {
-        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
-        $this->abstractRepository = GeneralUtility::makeInstance(AbstractRepository::class);
-        $this->pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+    /**
+     * @var null
+     */
+    private $configuratorFinalize;
 
-        $this->MCONF = [
-            'name' => $this->moduleName,
-        ];
-        $this->selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
-        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-        $this->getBackendUser()->modAccess($this->MCONF);
+    public function __construct(
+        protected readonly ModuleTemplateFactory $moduleTemplateFactory,
+        public readonly AbstractRepository $abstractRepository,
+        public PageRenderer $pageRenderer,
+        public readonly SelectorRepository $selectorRepository,
+        public readonly IconFactory $iconFactory,
+        public readonly LanguageRepository $languageRepository,
+        public readonly CartRepository $cartRepository,
+    ) {
         $this->getLanguageService()->includeLLFile(
             'EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf'
         );
     }
 
     /**
+     * Injects the request object for the current request or subrequest
+     * Then checks for module functions that have hooked in, and renders menu etc.
+     *
+     * @throws Exception
+     */
+    public function handleRequest(ServerRequestInterface $request): ResponseInterface
+    {
+        $this->moduleTemplate = $this->moduleTemplateFactory->create($request);
+
+        $this->init($request);
+
+        $this->main($request);
+
+        //return $this->view->renderResponse('LocalizationModule/Index');
+        return new HtmlResponse($this->moduleTemplate->renderContent());
+    }
+
+    /**
      * Initializing the module
      */
-    public function init(): array
+    public function init(ServerRequestInterface $request): array
     {
-        $localizer = parent::init();
-        $this->configuration['languages'] = GeneralUtility::_GP('configured_languages') ?: [];
-        $this->configuration['tables'] = GeneralUtility::_GP('configured_tables') ?: [];
-        $this->configuration['start'] = GeneralUtility::_GP('configured_start') ?: 0;
-        $this->configuration['end'] = GeneralUtility::_GP('configured_end') ?: 0;
-        $this->configuration['deadline'] = GeneralUtility::_GP('selected_deadline') ?: '';
+        $localizer = parent::init($request);
+
+        $this->currentModule = $request->getAttribute('module');
+        $this->MCONF['name'] = $this->currentModule->getIdentifier();
+
+        $this->configuration['languages'] = $request->getParsedBody()['configured_languages'] ?? $request->getQueryParams()['configured_languages'] ?? null ?: [];
+        $this->configuration['tables'] = $request->getParsedBody()['configured_tables'] ?? $request->getQueryParams()['configured_tables'] ?? null ?: [];
+        $this->configuration['start'] = $request->getParsedBody()['configured_start'] ?? $request->getQueryParams()['configured_start'] ?? null ?: 0;
+        $this->configuration['end'] = $request->getParsedBody()['configured_end'] ?? $request->getQueryParams()['configured_end'] ?? null ?: 0;
+        $this->configuration['deadline'] = $request->getParsedBody()['selected_deadline'] ?? $request->getQueryParams()['selected_deadline'] ?? null ?: '';
         $this->configuration['sortexports'] = (int)($localizer['sortexports'] ?? 0);
         $this->configuration['plainxmlexports'] = (bool)($localizer['plainxmlexports'] ?? false);
 
-        if (GeneralUtility::_GP('selected_cart') === 'new') {
+        $this->configuratorStore = $request->getParsedBody()['configuratorStore'] ?? $request->getQueryParams()['configuratorStore'] ?? null;
+        $this->configuratorFinalize = $request->getParsedBody()['configuratorFinalize'] ?? $request->getQueryParams()['configuratorFinalize'] ?? null;
+
+
+        if (($request->getParsedBody()['selected_cart'] ?? $request->getQueryParams()['selected_cart'] ?? null) === 'new') {
             $this->cartId = $this->selectorRepository->createNewCart($this->id, $this->localizerId);
         } else {
-            $this->cartId = (int)GeneralUtility::_GP('selected_cart');
+            $this->cartId = (int)($request->getParsedBody()['selected_cart'] ?? $request->getQueryParams()['selected_cart'] ?? null);
         }
         return [];
     }
@@ -107,7 +129,7 @@ class SelectorController extends AbstractController
      *
      * @throws Exception
      */
-    protected function main()
+    protected function main(ServerRequestInterface $request): void
     {
         $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
         $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/DateTimePicker');
@@ -116,8 +138,12 @@ class SelectorController extends AbstractController
         $this->pageRenderer->addCssFile(
             ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css'
         );
-        $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
+
         $header = 'LOCALIZER Selector';
+        $this->moduleTemplate->setTitle($header);
+
+        $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
+
         if (isset($this->pageinfo['title'])) {
             $header .= ': ';
         }
@@ -141,6 +167,7 @@ class SelectorController extends AbstractController
                 ';
             }
         }
+
         $this->content .= '
         <div class="table-responsive localizer-matrix-configurator">
             <table class="table table-striped table-bordered">
@@ -148,6 +175,7 @@ class SelectorController extends AbstractController
             </table>
         </div>
         ';
+
         if ($this->id > 0) {
             $this->content .= '<form action="' . htmlspecialchars($this->formUrl()) .
                 '" method="post" class="localizer_selector" id="localizer_selector">
@@ -166,12 +194,15 @@ class SelectorController extends AbstractController
                 $this->exportConfiguredRecords();
                 $this->cartId = 0;
             }
+
             $this->content .= $this->getLocalizerConfigurator($this->formUrl());
             if ($this->cartId > 0 && !empty(GeneralUtility::_GP('configuratorStore'))
                 && empty(GeneralUtility::_GP('configuratorFinalize'))
             ) {
+
                 $this->storeConfigurationAndCart();
             }
+
             if ($this->localizerId) {
                 if ($this->cartId) {
                     if (empty($this->configuration)) {
@@ -219,6 +250,7 @@ class SelectorController extends AbstractController
                 '</div>';
         }
         $this->content .= '</form>';
+
         // @todo Use TYPO3 Modal API for this.
         $this->content .= '<div id="t3-modal-finalizecart" class="modal-size-medium t3-modal t3-blr-modal t3-modal-finalizecart modal fade t3-modal-notice">
             <div class="modal-dialog">
@@ -252,8 +284,9 @@ class SelectorController extends AbstractController
      */
     protected function formUrl(): string
     {
+        /** @var UriBuilder $uriBuilder */
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        return (string)$uriBuilder->buildUriFromRoute('localizer_localizerselector');
+        return (string)$uriBuilder->buildUriFromRoute($this->currentModule->getIdentifier());
     }
 
     /**
@@ -348,8 +381,7 @@ class SelectorController extends AbstractController
                 ) .
                 '</button><input type="hidden" name="configuratorFinalize" id="configuratorFinalize" /></li>';
         }
-        $localizerConfigurator .= '</ul></div>';
-        return $localizerConfigurator;
+        return $localizerConfigurator . '</ul></div>';
     }
 
     /**
@@ -381,9 +413,8 @@ class SelectorController extends AbstractController
                 </li>';
             }
         }
-        $localizerSelector .= '</ul>
+        return $localizerSelector . '</ul>
             </li>';
-        return $localizerSelector;
     }
 
     /**
@@ -418,9 +449,9 @@ class SelectorController extends AbstractController
                 </li>';
             }
         }
-        $cartSelector .= '</ul>
+
+        return $cartSelector . '</ul>
             </li>';
-        return $cartSelector;
     }
 
     /**
@@ -430,9 +461,11 @@ class SelectorController extends AbstractController
     protected function getPageSelector(string $url): string
     {
         $availablePages = $this->selectorRepository->loadAvailablePages($this->id, $this->cartId);
+
         if (empty($availablePages) || count($availablePages) === 1) {
             return '';
         }
+
         $pageSelector = '<li class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu3" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .
             $GLOBALS['LANG']->sL(
@@ -441,6 +474,7 @@ class SelectorController extends AbstractController
             '<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="localizerDropdownMenu3">';
+
         foreach ($availablePages as $pid => $page) {
             $id = (int)$pid;
             $selected = '';
@@ -451,9 +485,9 @@ class SelectorController extends AbstractController
                 <a class="dropdown-item" href="' . $url . '&id=' . $id . '&selected_localizer=' . $this->localizerId . '&selected_cart=' . $this->cartId . '">[' . $page['pid'] . '] ' . $page['title'] . '</a>
             </li>';
         }
-        $pageSelector .= '</ul>
+
+        return $pageSelector . '</ul>
             </li>';
-        return $pageSelector;
     }
 
     /**
@@ -489,6 +523,7 @@ class SelectorController extends AbstractController
             '<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="localizerDropdownMenu4">';
+
         if (count($languages) > 1) {
             $languageSelector .= '<li class="select-all"><a href="#" class="small dropdown-item" tabIndex="-1">
                         <input type="checkbox" />&nbsp;' . $this->getLanguageService()->sL(
@@ -514,6 +549,7 @@ class SelectorController extends AbstractController
         }
         $languageSelector .= '</ul>
         </li>';
+
         if (!empty($this->configuration['languages'])) {
             foreach ($this->configuration['languages'] as $key => $language) {
                 if (!isset($this->languages[(int)$key])) {
@@ -521,6 +557,7 @@ class SelectorController extends AbstractController
                 }
             }
         }
+
         return $languageSelector;
     }
 
@@ -530,6 +567,7 @@ class SelectorController extends AbstractController
     protected function getTableSelector(): string
     {
         $availableTables = $this->selectorRepository->loadAvailableTables($this->cartId);
+
         $tableSelector = '<li class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu5" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .
             $GLOBALS['LANG']->sL(
@@ -538,13 +576,16 @@ class SelectorController extends AbstractController
             '<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="localizerDropdownMenu5">';
+
         $tables = array_keys($GLOBALS['TCA']);
+
         if (count($tables) > 1) {
             $tableSelector .= '<li class="select-all"><a href="#" class="small dropdown-item" tabIndex="-1">
                         <input type="checkbox" />&nbsp;' . $this->getLanguageService()->sL(
                 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:tables.selector.all'
             ) . '</a></li>';
         }
+
         $tableSelector .= '<li><a href="#" class="small dropdown-item" tabIndex="-1">
             <input name="configured_tables[pages]-dummy" type="checkbox" checked="checked" disabled="disabled">
             <input name="configured_tables[pages]" type="hidden" value="1">&nbsp;' .
@@ -553,7 +594,9 @@ class SelectorController extends AbstractController
                 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:tables.selector.mandatory'
             ) .
             '</a></li>';
+
         $this->translatableTables = ['pages' => $GLOBALS['LANG']->sL($GLOBALS['TCA']['pages']['ctrl']['title'])];
+
         // TODO: Maybe we can use AutomaticExporter::findTranslatableTables($this->id)
         foreach (array_keys($GLOBALS['TCA']) as $table) {
             if ($table === 'pages') {
@@ -586,6 +629,7 @@ class SelectorController extends AbstractController
         }
         $tableSelector .= '</ul>
         </li>';
+
         if (!empty($this->configuration['tables'])) {
             foreach ($this->configuration['tables'] as $table) {
                 if (!isset($GLOBALS['TCA'][$table])) {
@@ -602,8 +646,7 @@ class SelectorController extends AbstractController
     protected function getTimeFrameSelector(): string
     {
         $timeFrameSelector = $this->getDateTimeSelector('start');
-        $timeFrameSelector .= $this->getDateTimeSelector('end');
-        return $timeFrameSelector;
+        return $timeFrameSelector . $this->getDateTimeSelector('end');
     }
 
     /**
@@ -621,8 +664,7 @@ class SelectorController extends AbstractController
         $dateTimeSelector = '<li class="input-group">';
         $dateTimeSelector .= '<input type="text" data-date-type="datetime" name="configured_' . $variableName . '" id="input-configured-' . $variableName . '"' . $value . ' class="t3js-datetimepicker form-control t3js-clearable" data-bs-toggle="tooltip"  data-toggle="tooltip" data-placement="top"  title="Pick ' . $variableName . ' date and time" />';
         $dateTimeSelector .= '<label class="btn btn-default" for="input-configured-' . $variableName . '">' . $icon . '</label>';
-        $dateTimeSelector .= '</li>';
-        return $dateTimeSelector;
+        return $dateTimeSelector . '</li>';
     }
 
     /**
@@ -661,10 +703,7 @@ class SelectorController extends AbstractController
                         '<button class="btn btn-default btn-sm" data-tableid="' . $table . '-' . $uid .
                         '" data-bs-toggle="tooltip"  data-toggle="tooltip" data-placement="top"  title="Select all languages for this record">' .
                         '<strong>' . $title . '</strong>: ' .
-                        GeneralUtility::fixed_lgd_cs(
-                            $record[$labelField],
-                            50
-                        ) . ' [' . $record['uid'] . ']</button></th>';
+                        GeneralUtility::fixed_lgd_cs((string) $record[$labelField], 50) . ' [' . $record['uid'] . ']</button></th>';
                     $translationLocalizer .= $this->generateLocalizerCells($table, $uid, $placement);
                     $translationLocalizer .= '</tr>';
                     $translationLocalizer .= $this->getReferenceLocalizer(
@@ -677,8 +716,7 @@ class SelectorController extends AbstractController
                 }
             }
         }
-        $translationLocalizer .= '</tbody></table></div>';
-        return $translationLocalizer;
+        return $translationLocalizer . '</tbody></table></div>';
     }
 
     /**

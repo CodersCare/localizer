@@ -125,10 +125,12 @@ class FileSender extends AbstractHandler
                             $additionalConfiguration['targetLocales'] =
                                 $languageRepository->getStaticLanguagesCollateLocale($targetLocalesUids, true);
                         }
+
                         $configuration = array_merge(
                             $localizerSettings,
                             $additionalConfiguration
                         );
+
                         if ((int)$row['action'] === Constants::ACTION_SEND_FILE) {
                             /** @var SendFile $runner */
                             $runner = GeneralUtility::makeInstance(SendFile::class);

@@ -17,6 +17,8 @@ namespace Localizationteam\Localizer\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Backend\Module\ModuleInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Exception;
@@ -128,22 +130,28 @@ class BaseModule
 
     protected PageRenderer $pageRenderer;
 
+    protected ModuleInterface $currentModule;
+
     /**
      * Initializes the backend module by setting internal variables, initializing the menu.
      *
      * @see menuConfig()
      */
-    public function init(): array
+    public function init(ServerRequestInterface $request): array
     {
+        $this->currentModule = $request->getAttribute('module');
+
         // Name might be set from outside
         if (!$this->MCONF['name']) {
-            $this->MCONF = $GLOBALS['MCONF'];
+            $this->MCONF['name'] = $this->currentModule->getIdentifier();
         }
-        $this->id = (int)GeneralUtility::_GP('id');
-        $this->CMD = GeneralUtility::_GP('CMD');
+
+        $this->id = (int)($request->getParsedBody()['id'] ?? $request->getQueryParams()['id'] ?? null);
+        $this->CMD = $request->getParsedBody()['CMD'] ?? $request->getQueryParams()['CMD'] ?? null;
         $this->perms_clause = $this->getBackendUser()->getPagePermsClause(Permission::PAGE_SHOW);
         $this->menuConfig();
         $this->handleExternalFunctionValue();
+
         return [];
     }
 

@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Controller;
 
-use Localizationteam\Localizer\Traits\BackendUserTrait;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Model\Repository\AbstractRepository;
 use Localizationteam\Localizer\Model\Repository\CartRepository;
-use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use Localizationteam\Localizer\Traits\BackendUserTrait;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\Controller;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Page\PageRenderer;
@@ -17,7 +18,6 @@ use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
 
 /**
  * Module 'Cart' for the 'localizer' extension.
@@ -47,32 +47,15 @@ class CartController extends AbstractController
 
     protected string $cmd_table;
 
-    /**
-     * @var CartRepository
-     */
-    protected CartRepository $cartRepository;
-
-    /**
-     * The name of the module
-     *
-     * @var string
-     */
-    protected string $moduleName = 'localizer_localizercart';
     protected int $userId;
 
-    public function __construct()
-    {
-        parent::__construct(
-            GeneralUtility::makeInstance(ModuleTemplate::class),
-            GeneralUtility::makeInstance(AbstractRepository::class),
-            GeneralUtility::makeInstance(PageRenderer::class),
-        );
-
-        $this->MCONF = [
-            'name' => $this->moduleName,
-        ];
-        $this->cartRepository = GeneralUtility::makeInstance(CartRepository::class);
-        $this->getBackendUser()->modAccess($this->MCONF);
+    public function __construct(
+        protected readonly ModuleTemplateFactory $moduleTemplateFactory,
+        public readonly AbstractRepository $abstractRepository,
+        public PageRenderer $pageRenderer,
+        public readonly CartRepository $cartRepository,
+        public readonly Typo3Version $typo3Version,
+    ) {
         $this->getLanguageService()->includeLLFile(
             'EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf'
         );
@@ -95,30 +78,32 @@ class CartController extends AbstractController
     /**
      * Initializing the module
      */
-    public function init(): array
+    public function init(ServerRequestInterface $request): array
     {
-        parent::init();
-        $this->userId = (int)GeneralUtility::_GP('selected_user');
-        $this->pointer = (int)GeneralUtility::_GP('pointer');
-        $this->imagemode = (string)GeneralUtility::_GP('imagemode');
+        parent::init($request);
+
+        $this->userId = (int)($request->getParsedBody()['selected_user'] ?? $request->getQueryParams()['selected_user'] ?? null);
+        $this->pointer = (int)($request->getParsedBody()['pointer'] ?? $request->getQueryParams()['pointer'] ?? null);
+        $this->imagemode = (string)($request->getParsedBody()['imagemode'] ?? $request->getQueryParams()['imagemode'] ?? null);
         $_GET['table'] = Constants::TABLE_LOCALIZER_CART;
-        $this->table = (string)GeneralUtility::_GP('table');
-        $this->search_field = (string)GeneralUtility::_GP('search_field');
-        $this->search_levels = (int)GeneralUtility::_GP('search_levels');
-        $this->showLimit = (int)GeneralUtility::_GP('showLimit');
-        $this->returnUrl = GeneralUtility::sanitizeLocalUrl((string)GeneralUtility::_GP('returnUrl'));
-        $this->cmd = (array)GeneralUtility::_GP('cmd');
-        $this->cmd_table = (string)GeneralUtility::_GP('cmd_table');
+        $this->table = (string)($request->getParsedBody()['table'] ?? $request->getQueryParams()['table'] ?? null);
+        $this->search_field = (string)($request->getParsedBody()['search_field'] ?? $request->getQueryParams()['search_field'] ?? null);
+        $this->search_levels = (int)($request->getParsedBody()['search_levels'] ?? $request->getQueryParams()['search_levels'] ?? null);
+        $this->showLimit = (int)($request->getParsedBody()['showLimit'] ?? $request->getQueryParams()['showLimit'] ?? null);
+        $this->returnUrl = GeneralUtility::sanitizeLocalUrl((string)($request->getParsedBody()['returnUrl'] ?? $request->getQueryParams()['returnUrl'] ?? null));
+        $this->cmd = (array)($request->getParsedBody()['cmd'] ?? $request->getQueryParams()['cmd'] ?? null);
+        $this->cmd_table = (string)($request->getParsedBody()['cmd_table'] ?? $request->getQueryParams()['cmd_table'] ?? null);
         return [];
     }
 
     /**
      * Main function, starting the rendering of the list.
      */
-    protected function main()
+    protected function main(ServerRequestInterface $request): void
     {
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerCart');
+        $this->pageRenderer->loadJavaScriptModule('TYPO3/CMS/Backend/Tooltip');
+        $this->pageRenderer->loadJavaScriptModule('TYPO3/CMS/Localizer/LocalizerCart');
+
         $this->pageRenderer->addCssFile(
             ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css'
         );
@@ -127,26 +112,28 @@ class CartController extends AbstractController
         $this->MOD_SETTINGS['bigControlPanel'] = true;
         $this->MOD_SETTINGS['clipBoard'] = false;
         $this->MOD_SETTINGS['localization'] = false;
-        /** @var DatabaseRecordList $dblist */
-        $dblist = GeneralUtility::makeInstance(DatabaseRecordList::class);
         $permissionBits = $this->getBackendUser()->calcPerms($this->pageinfo);
-        if ((new Typo3Version())->getMajorVersion() > 10) {
-            $dblist->calcPerms = new Permission($permissionBits);
-        } else {
-            $dblist->calcPerms = $permissionBits;
-        }
+
+        /** @var \TYPO3\CMS\Backend\RecordList\DatabaseRecordList $dblist */
+        $dblist = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\RecordList\DatabaseRecordList::class);
+        $dblist->setRequest($request);
+        $dblist->calcPerms = new Permission($permissionBits);
         $dblist->returnUrl = $this->returnUrl;
         $dblist->disableSingleTableView = $this->modTSconfig['properties']['disableSingleTableView'] ?? false;
         $dblist->listOnlyInSingleTableMode = $this->modTSconfig['properties']['listOnlyInSingleTableView'] ?? false;
         $dblist->hideTables = $this->modTSconfig['properties']['hideTables'] ?? false;
-        $dblist->hideTranslations = $this->modTSconfig['properties']['hideTranslations'] ?? false;
+        $dblist->hideTranslations = $this->modTSconfig['properties']['hideTranslations'] ?? '';
         $dblist->tableTSconfigOverTCA = $this->modTSconfig['properties']['table.'] ?? [];
-        $dblist->allowedNewTables = [];
+
+        if ($this->typo3Version->getMajorVersion() < 12) {
+            $dblist->allowedNewTables = [];
+            $dblist->clickTitleMode = '';
+        }
+
         $dblist->deniedNewTables = [Constants::TABLE_LOCALIZER_CART];
         $dblist->setIsEditable(true);
         $dblist->pageRow = $this->pageinfo;
         $dblist->modTSconfig = $this->modTSconfig;
-        $dblist->clickTitleMode = '';
 
         $header = 'LOCALIZER Cart';
         $this->content = $this->moduleTemplate->header($header);
@@ -180,15 +167,23 @@ class CartController extends AbstractController
         $this->content .= '<form action="' . htmlspecialchars($dblist->listURL()) . '" method="post" name="dblistForm">';
         $this->content .= $this->getCartConfigurator($dblist->listURL());
         $HTMLcode = '';
+
         if ($access || ($this->id === 0 && $this->search_levels > 0 && strlen($this->search_field) > 0)) {
             $this->pointer = MathUtility::forceIntegerInRange($this->pointer, 0, 100000);
             $dblist->start($this->id, $this->table, $this->pointer, $this->search_field, 999, $this->showLimit);
-            $dblist->setDispFields();
+
+            if ($this->typo3Version->getMajorVersion() < 12) {
+                $dblist->setDispFields();
+            }
+
             $HTMLcode = $dblist->generateList();
-            $this->moduleTemplate->addJavaScriptCode(
-                'lcoalizer_cart_record_info',
-                $this->generateRecordInfo()
-            );
+
+            if ($this->typo3Version->getMajorVersion() < 12) {
+                $this->moduleTemplate->addJavaScriptCode(
+                    'lcoalizer_cart_record_info',
+                    $this->generateRecordInfo()
+                );
+            }
         }
         $HTMLcode = property_exists($dblist, 'HTMLcode') ? $dblist->HTMLcode : $HTMLcode;
         if ($this->localizerId) {
@@ -237,8 +232,7 @@ class CartController extends AbstractController
         if ($this->localizerId) {
             $localizerConfigurator .= $this->getUserSelector($url);
         }
-        $localizerConfigurator .= '</ul></div>';
-        return $localizerConfigurator;
+        return $localizerConfigurator . '</ul></div>';
     }
 
     /**
@@ -272,9 +266,8 @@ class CartController extends AbstractController
                 </li>';
             }
         }
-        $localizerSelector .= '</ul>
-            </li>';
-        return $localizerSelector;
+
+        return $localizerSelector . '</ul></li>';
     }
 
     /**
@@ -306,9 +299,8 @@ class CartController extends AbstractController
                 </li>';
             }
         }
-        $userSelector .= '</ul>
-            </li>';
-        return $userSelector;
+        return $userSelector . '</ul>
+          </li>';
     }
 
     /**

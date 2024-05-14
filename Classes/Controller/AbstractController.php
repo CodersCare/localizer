@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Controller;
 
-use Localizationteam\Localizer\Model\Repository\AbstractRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Http\HtmlResponse;
-use TYPO3\CMS\Core\Page\PageRenderer;
 
 /**
  * Abstract for modules of the 'localizer' extension.
@@ -20,13 +18,6 @@ abstract class AbstractController extends BaseModule
 {
     protected array $pageinfo;
 
-    /**
-     * Document template object
-     *
-     * @var ModuleTemplate
-     */
-    protected $moduleTemplate;
-
     protected int $localizerId;
 
     protected int $localizerPid;
@@ -35,23 +26,9 @@ abstract class AbstractController extends BaseModule
 
     protected array $statusClasses = [];
 
-    /**
-     * @var AbstractRepository
-     */
-    protected AbstractRepository $abstractRepository;
-
     protected array $availableLocalizers;
 
-    protected PageRenderer $pageRenderer;
-    public function __construct(
-        ModuleTemplate $moduleTemplate,
-        AbstractRepository $abstractRepository,
-        PageRenderer $pageRenderer
-    ) {
-        $this->moduleTemplate = $moduleTemplate;
-        $this->abstractRepository = $abstractRepository;
-        $this->pageRenderer = $pageRenderer;
-    }
+    protected ModuleTemplate $moduleTemplate;
 
     /**
      * Injects the request object for the current request or subrequest
@@ -61,23 +38,27 @@ abstract class AbstractController extends BaseModule
      */
     public function mainAction(ServerRequestInterface $request): ResponseInterface
     {
-        $this->init();
-        $this->main();
+        $this->moduleTemplate = $this->moduleTemplateFactory->create($request);
+
+        $this->init($request);
+        $this->main($request);
+
         $this->moduleTemplate->setContent($this->content);
+
         return new HtmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
      * Initializing the module
      */
-    public function init(): array
+    public function init(ServerRequestInterface $request): array
     {
         $localizer = [];
         $this->perms_clause = $this->getBackendUser()->getPagePermsClause(1);
-        $this->id = (int)($GLOBALS['TYPO3_REQUEST']->getParsedBody()['id'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['id'] ?? null);
+        $this->id = (int)($request->getParsedBody()['id'] ?? $request->getQueryParams()['id'] ?? null);
         $this->availableLocalizers = $this->abstractRepository->loadAvailableLocalizers();
-        $this->localizerId = (int)($GLOBALS['TYPO3_REQUEST']->getParsedBody()['selected_localizer'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['selected_localizer'] ?? null);
-        $this->localizerPid = (int)($GLOBALS['TYPO3_REQUEST']->getParsedBody()['selected_localizerPid'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['selected_localizerPid'] ?? null);
+        $this->localizerId = (int)($request->getParsedBody()['selected_localizer'] ?? $request->getQueryParams()['selected_localizer'] ?? null);
+        $this->localizerPid = (int)($request->getParsedBody()['selected_localizerPid'] ?? $request->getQueryParams()['selected_localizerPid'] ?? null);
 
         $pageTree = $this->getBackendUser()->uc['BackendComponents']['States']['Pagetree'] ?? null;
         if (empty($this->id) && is_object($pageTree)) {
@@ -145,7 +126,7 @@ abstract class AbstractController extends BaseModule
     /**
      * Main function, starting the rendering of the list.
      */
-    abstract protected function main();
+    abstract protected function main(ServerRequestInterface $request);
 
     /**
      * Initialize function menu array
