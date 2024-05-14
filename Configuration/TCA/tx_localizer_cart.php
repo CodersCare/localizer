@@ -14,6 +14,7 @@ return [
         'label_alt_force' => '1',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
+        // TODO: Remove when dropping support for v11
         'cruser_id' => 'cruser_id',
         'default_sortby' => 'crdate DESC',
         'delete' => 'deleted',

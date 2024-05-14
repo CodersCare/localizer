@@ -10,6 +10,7 @@ return [
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
+        // TODO: Remove when dropping support for v11
         'cruser_id' => 'cruser_id',
         'sortby' => 'sorting',
         'delete' => 'deleted',
