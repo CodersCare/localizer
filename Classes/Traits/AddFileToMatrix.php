@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Localizationteam\Localizer;
+namespace Localizationteam\Localizer\Traits;
 
 use Doctrine\DBAL\DBALException;
-use Localizationteam\Localizer\Traits\BackendUserTrait;
+use Localizationteam\Localizer\Constants;
 use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Localizationteam\Localizer\Hooks;
 
 use Localizationteam\L10nmgr\View\PostSaveInterface;
-use Localizationteam\Localizer\AddFileToMatrix;
 use Localizationteam\Localizer\Constants;
+use Localizationteam\Localizer\Traits\AddFileToMatrix;
 use Localizationteam\Localizer\Traits\Data;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Localizationteam\Localizer\Handler;
 
 use Exception;
-use Localizationteam\Localizer\AddFileToMatrix;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Language;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
+use Localizationteam\Localizer\Traits\AddFileToMatrix;
 use Localizationteam\Localizer\Traits\Data;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
