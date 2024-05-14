@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Localizationteam\Localizer\Api;
 
 use Exception;
-use Localizationteam\Localizer\Traits\BackendUserTrait;
 use Localizationteam\Localizer\Constants;
+use Localizationteam\Localizer\Traits\BackendUserTrait;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
