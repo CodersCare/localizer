@@ -70,11 +70,11 @@ trait AddFileToMatrix
             );
 
         $uid = $databaseConnection->lastInsertId(Constants::TABLE_EXPORTDATA_MM);
+
         $isoCodeTargetLanguage = $this->getLanguageIsoCode($translationLanguage);
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
-        $queryBuilder->getRestrictions()
-            ->removeAll();
+        $queryBuilder->getRestrictions()->removeAll();
         $result = $queryBuilder
             ->select('uid_foreign', 'tablenames', 'ident', 'sorting')
             ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
@@ -114,8 +114,7 @@ trait AddFileToMatrix
     protected function getLanguageIsoCode(int $sysLanguageId): int
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_language');
-        $queryBuilder->getRestrictions()
-            ->removeAll();
+        $queryBuilder->getRestrictions()->removeAll();
         $result = $queryBuilder
             ->select('static_lang_isocode')
             ->from('sys_language')->where($queryBuilder->expr()->eq(

@@ -229,8 +229,7 @@ class FileExporter extends AbstractCartHandler
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable(Constants::TABLE_L10NMGR_EXPORTDATA);
-        $queryBuilder->getRestrictions()
-            ->removeAll();
+        $queryBuilder->getRestrictions()->removeAll();
         $result = $queryBuilder
             ->select('uid', 'translation_lang', 'filename')
             ->from(Constants::TABLE_L10NMGR_EXPORTDATA)

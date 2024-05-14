@@ -266,9 +266,9 @@ trait Data
     }
 
     /**
-     * @return mixed
+     * @return ResultStatement|Result
      */
-    public function fetchOne(ResultStatement $result)
+    public function fetchOne(ResultStatement|Result $result)
     {
         if (method_exists($result, 'fetchOne')) {
             return $result->fetchOne();
@@ -277,9 +277,9 @@ trait Data
     }
 
     /**
-     * @return mixed
+     * @return ResultStatement|Result
      */
-    public function fetchAssociative(Result $result)
+    public function fetchAssociative(ResultStatement|Result $result)
     {
         if (method_exists($result, 'fetchAssociative')) {
             return $result->fetchAssociative();
@@ -288,9 +288,9 @@ trait Data
     }
 
     /**
-     * @return mixed
+     * @return ResultStatement|Result
      */
-    public function fetchAllAssociative(Result $result)
+    public function fetchAllAssociative(ResultStatement|Result $result)
     {
         if (method_exists($result, 'fetchAllAssociative')) {
             return $result->fetchAllAssociative();

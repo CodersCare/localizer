@@ -263,11 +263,9 @@ return [
             'config' => [
                 'type' => 'select',
                 'foreign_table' => 'static_languages',
-                'renderType' => 'selectMultipleSideBySide',
-                'size' => 2,
-                'autoSizeMax' => 5,
+                'renderType' => 'selectSingle',
                 'minitems' => 1,
-                'maxitems' => 99,
+                'maxitems' => 1,
                 'MM' => 'tx_localizer_language_mm',
                 'MM_match_fields' => [
                     'tablenames' => 'static_languages',

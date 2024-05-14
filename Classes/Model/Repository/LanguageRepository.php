@@ -15,12 +15,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class LanguageRepository extends AbstractRepository
 {
+
+    public function __construct(public readonly SiteFinder $siteFinder)
+    {
+
+    }
+
     /**
      * @throws SiteNotFoundException
      */
     public function getIsoTwoCodeBySystemLanguageId(int $localeId, int $pid = 1): string
     {
-        $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($pid);
+        $site = $this->siteFinder->getSiteByPageId($pid);
         $languages = $site->getAllLanguages();
 
         if (($languages[$localeId] ?? null) instanceof SiteLanguage) {
@@ -28,6 +34,16 @@ class LanguageRepository extends AbstractRepository
         }
 
         return '';
+    }
+
+    /**
+     * @param int $pageId
+     * @return SiteLanguage[]
+     * @throws SiteNotFoundException
+     */
+    public function getStaticLanguages(int $pageId): array
+    {
+        return $this->siteFinder->getSiteByPageId($pageId)->getAvailableLanguages($this->getBackendUser());
     }
 
     public function getAllTargetLanguageUids(int $uidLocal, string $table): array

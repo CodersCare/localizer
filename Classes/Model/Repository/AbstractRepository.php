@@ -12,6 +12,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Database\RelationHandler;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -114,45 +115,6 @@ class AbstractRepository
     public static function getConnectionPool(): object
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);
-    }
-
-    /**
-     */
-    public function getStaticLanguages(array $systemLanguages): array
-    {
-        $systemLanguageUids = [];
-        $systemLanguageUids[] = '0';
-        foreach ($systemLanguages as $language) {
-            $systemLanguageUids[] = (int)$language['uid'];
-        }
-        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_SYS_LANGUAGE);
-        $queryBuilder->getRestrictions()->removeAll();
-        $result = $queryBuilder
-            ->select('*')
-            ->from(Constants::TABLE_SYS_LANGUAGE)
-            ->where(
-                $queryBuilder->expr()->in(
-                    'uid',
-                    $systemLanguageUids
-                )
-            )
-            ->execute();
-        $languages = $this->fetchAllAssociative($result);
-        $staticLanguages = [];
-        if (!empty($languages)) {
-            foreach ($languages as $language) {
-                $staticLanguages[$language['uid']] = $language;
-            }
-        }
-        if (!empty($staticLanguages)) {
-            foreach ($systemLanguages as $language) {
-                if (isset($staticLanguages[$language['uid']])) {
-                    $staticLanguages[$language['uid']]['flagIcon'] = $language['flagIcon'];
-                }
-            }
-        }
-
-        return $staticLanguages;
     }
 
     /**

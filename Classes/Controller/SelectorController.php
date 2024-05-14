@@ -17,10 +17,13 @@ use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -32,6 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[Controller]
 class SelectorController extends AbstractController
 {
+    /** @var SiteLanguage[] */
     protected array $languages = [];
 
     protected array $configuration = [];
@@ -492,29 +496,24 @@ class SelectorController extends AbstractController
 
     /**
      * Generates the language selector based on information collected during cart generation
+     *
+     * @throws SiteNotFoundException
      */
     protected function getLanguageSelector(): string
     {
-        $translationConfigurationProvider = GeneralUtility::makeInstance(TranslationConfigurationProvider::class);
-        $systemLanguages = $translationConfigurationProvider->getSystemLanguages();
-        $staticLanguages = $this->selectorRepository->getStaticLanguages($systemLanguages);
+        $staticLanguages = $this->languageRepository->getStaticLanguages($this->id);
         $localizerLanguages = $this->selectorRepository->getLocalizerLanguages($this->localizerId);
-        $targetLanguages = array_flip(GeneralUtility::intExplode(',', $localizerLanguages['target']));
+        array_flip(GeneralUtility::intExplode(',', $localizerLanguages['target']));
         $availableLanguages = $this->selectorRepository->loadAvailableLanguages($this->cartId);
         $this->languages = [];
         $languages = [];
-        if (!empty($staticLanguages)) {
-            foreach ($staticLanguages as $language) {
-                $languages[$language['title'] . '_' . $language['language_isocode'] . '_' . $language['uid']] = $language;
-            }
-            ksort($languages);
-        } elseif (!empty($systemLanguages)) {
-            foreach ($systemLanguages as $language) {
-                $language['language_isocode'] = $language['ISOcode'];
-                $languages[$language['title'] . '_' . $language['language_isocode'] . '_' . $language['uid']] = $language;
-            }
-            ksort($languages);
-        }
+
+        foreach ($staticLanguages as $language) {
+             $key = sprintf('%s_%s_%s', $language->getTitle(), $language->getLocale()->getLanguageCode(), $language->getLanguageId());
+             $languages[$key] = $language;
+         }
+         ksort($languages);
+
         $languageSelector = '<li class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="localizerDropdownMenu4" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .
             $GLOBALS['LANG']->sL(
@@ -530,22 +529,16 @@ class SelectorController extends AbstractController
                 'LLL:EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf:languages.selector.all'
             ) . '</a></li>';
         }
-        if (!empty($languages)) {
-            foreach ($languages as $language) {
-                if ($language['uid'] > 0 &&
-                    $this->getBackendUser()->checkLanguageAccess($language['uid'])
-                ) {
-                    $checked = '';
-                    if (isset($this->configuration['languages'][$language['uid']]) || isset($availableLanguages[$language['uid']])) {
-                        $this->languages[$language['uid']] = $language;
-                        $checked = ' checked="checked"';
-                    }
-                    $languageSelector .= '<li><a href="#" class="small dropdown-item" tabIndex="-1">
-                            <input name="configured_languages[' . $language['uid'] . ']" type="checkbox" ' . $checked . ' />&nbsp;' .
-                        $this->iconFactory->getIcon($language['flagIcon'], Icon::SIZE_SMALL) . ' ' .
-                        $language['title'] . ' [' . $language['language_isocode'] . ']</a></li>';
-                }
+        foreach ($languages as $language) {
+            $checked = '';
+            if (isset($this->configuration['languages'][$language->getLanguageId()]) || isset($availableLanguages[$language->getLanguageId()])) {
+                $this->languages[$language->getLanguageId()] = $language;
+                $checked = ' checked="checked"';
             }
+            $languageSelector .= '<li><a href="#" class="small dropdown-item" tabIndex="-1">
+                    <input name="configured_languages[' . $language->getLanguageId() . ']" type="checkbox" ' . $checked . ' />&nbsp;' .
+                $this->iconFactory->getIcon($language->getFlagIdentifier(), Icon::SIZE_SMALL) . ' ' .
+                $language->getTitle() . ' [' . $language->getLocale()->getLanguageCode() . ']</a></li>';
         }
         $languageSelector .= '</ul>
         </li>';
@@ -681,12 +674,12 @@ class SelectorController extends AbstractController
         }
         $translationLocalizer .= '<div class="table-responsive localizer-selector-matrix"><table class="table table-striped table-bordered table-hover">';
         $translationLocalizer .= '<thead><tr><th>&#160;</th>';
-        foreach ($this->languages as $languageId => $languageInfo) {
+        foreach ($this->languages as $languageId => $language) {
             $translationLocalizer .= '<th scope="col" class="text-center text-nowrap language-header column-hover">' .
                 '<button class="btn btn-default btn-sm" data-bs-toggle="tooltip"  data-toggle="tooltip" data-placement="top"
-                     title="Select all records for ' . $languageInfo['title'] . '&nbsp;[' . $languageInfo['language_isocode'] . ']"
-                >' . $this->iconFactory->getIcon($languageInfo['flagIcon'], Icon::SIZE_SMALL) . ' ' .
-                $languageInfo['language_isocode'] . '</button></th>';
+                     title="Select all records for ' . $language->getTitle() . '&nbsp;[' . $language->getLocale()->getLanguageCode() . ']"
+                >' . $this->iconFactory->getIcon($language->getFlagIdentifier(), Icon::SIZE_SMALL) . ' ' .
+                $language->getLocale()->getLanguageCode() . '</button></th>';
         }
         $translationLocalizer .= '</tr></thead><tbody>';
         $this->tableHeaderSpan = count($this->languages) + 2;
@@ -727,9 +720,9 @@ class SelectorController extends AbstractController
         $cells = '';
         $GPvars = GeneralUtility::_GP('localizerSelectorCart');
         $tableVars = $GPvars[$table] ?? [];
-        foreach ($this->languages as $languageId => $languageInfo) {
-            $checkBoxId = 'localizerSelectorCart[' . $table . '][' . $uid . '][' . $languageInfo['uid'] . ']';
-            $identifier = md5($table . '.' . $uid . '.' . $languageInfo['uid']);
+        foreach ($this->languages as $languageId => $language) {
+            $checkBoxId = 'localizerSelectorCart[' . $table . '][' . $uid . '][' . $language->getLanguageId() . ']';
+            $identifier = md5($table . '.' . $uid . '.' . $language->getLanguageId());
             $checked = ($tableVars[$uid][$languageId] ?? false) || ($this->storedTriples[$identifier] ?? false) ? ' checked=checked' : '';
             $identifiedStatus = (int)($this->data['identifiedStatus'][$identifier]['status'] ?? 0);
             $title = $GLOBALS['LANG']->sL(
