@@ -8,6 +8,7 @@ use Exception;
 use Localizationteam\Localizer\Handler\FileExporter;
 use Localizationteam\Localizer\Model\Repository\AbstractRepository;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
+use TYPO3\CMS\Backend\Attribute\Controller;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
@@ -23,6 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  */
+#[Controller]
 class SelectorController extends AbstractController
 {
     /**

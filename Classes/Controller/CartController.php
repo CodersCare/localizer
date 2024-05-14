@@ -9,6 +9,7 @@ use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Model\Repository\AbstractRepository;
 use Localizationteam\Localizer\Model\Repository\CartRepository;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Backend\Attribute\Controller;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Page\PageRenderer;
@@ -23,6 +24,7 @@ use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
  *
  * @author      Peter Russ<peter.russ@4many.net>, Jo Hasenau<jh@cybercraft.de>
  */
+#[Controller]
 class CartController extends AbstractController
 {
     use BackendUserTrait;
