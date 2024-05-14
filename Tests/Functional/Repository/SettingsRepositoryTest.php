@@ -10,7 +10,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Exception;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-class LocalizerSettingsRepositoryTest extends FunctionalTestCase
+class SettingsRepositoryTest extends FunctionalTestCase
 {
 
     protected SettingsRepository $repository;
