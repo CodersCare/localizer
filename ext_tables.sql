@@ -36,6 +36,8 @@ CREATE TABLE tx_localizer_settings
     automatic_export_minimum_age    int(11)       DEFAULT '0' NOT NULL,
     source_locale                   int(11)       DEFAULT '0' NOT NULL,
     target_locale                   int(11)       DEFAULT '0' NOT NULL,
+    source_language                 int(11)       DEFAULT '0' NOT NULL,
+    target_languages                varchar(30)   DEFAULT ''  NOT NULL,
     PRIMARY KEY (uid),
     KEY parent (pid),
     KEY titlet (title),

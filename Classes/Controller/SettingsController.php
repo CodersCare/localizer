@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Controller;
 
+use Localizationteam\L10nmgr\LanguagesService;
+use Localizationteam\Localizer\Traits\BackendUserTrait;
 use Localizationteam\Localizer\Traits\LanguageServiceTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -13,6 +15,7 @@ use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -23,6 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[Controller]
 class SettingsController
 {
+    use BackendUserTrait;
     use LanguageServiceTrait;
 
     protected ModuleTemplate $moduleTemplate;
@@ -38,8 +42,10 @@ class SettingsController
      */
     public int $id;
 
-    public function __construct(protected readonly ModuleTemplateFactory $moduleTemplateFactory)
-    {
+    public function __construct(
+        protected readonly ModuleTemplateFactory $moduleTemplateFactory,
+        protected readonly LanguagesService $languagesService,
+    ) {
         $this->getLanguageService()
             ->includeLLFile('EXT:localizer/Resources/Private/Language/locallang_localizer_settings.xlf');
     }
@@ -79,6 +85,31 @@ class SettingsController
             $this->moduleTemplate->assign('listViewLink', $listViewLink);
         } else {
             $this->moduleTemplate->assign('listViewLink', false);
+        }
+    }
+
+    public function populateLanguagesForTca(array &$fieldInformation): void
+    {
+        $allLanguages = $this->languagesService->getAll();
+
+        if ($allLanguages !== []) {
+            ksort($allLanguages);
+            foreach ($allLanguages as $item) {
+                $fieldInformation['items'][] = [$item['label'], $item['value'], $item['icon']];
+            }
+            return;
+        }
+
+        // Fallback if no site configuration exists
+        $recordPid = (int)($fieldInformation['row']['pid'] ?? 0);
+        $languages = (new NullSite())->getAvailableLanguages($this->getBackendUser(), false, $recordPid);
+
+        foreach ($languages as $languageId => $language) {
+            $fieldInformation['items'][] = [
+                'label' => $language->getTitle(),
+                'value' => $languageId,
+                'icon' => $language->getFlagIdentifier(),
+            ];
         }
     }
 }

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Localizationteam\Localizer\Controller\SettingsController;
+
 defined('TYPO3') or die();
 
 return [
@@ -293,9 +295,28 @@ return [
                 ],
             ],
         ],
+        'source_language' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.source_locale',
+            'config' => [
+                'type' => 'language',
+            ],
+        ],
+        'target_languages' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.target_locale',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectMultipleSideBySide',
+                'itemsProcFunc' => SettingsController::class . '->populateLanguagesForTca',
+                'minitems' => 1,
+                'relationship' => 'oneToMany'
+            ],
+        ],
     ],
     'types' => [
-        '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, deadline, projectkey, --palette--;;2, --palette--;;3, l10n_cfg, --palette--;;4, source_locale, target_locale'],
+        '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, deadline, projectkey, --palette--;;2, --palette--;;3, l10n_cfg, --palette--;;4, source_locale, target_locale, source_language, target_languages'],
+        //'0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, deadline, projectkey, --palette--;;2, --palette--;;3, l10n_cfg, --palette--;;4, source_locale, target_locale, source_language'],
     ],
     'palettes' => [
         '1' => ['showitem' => 'project_settings,last_error'],

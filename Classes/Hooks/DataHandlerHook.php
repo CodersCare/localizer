@@ -44,44 +44,42 @@ class DataHandlerHook
         array &$fieldArray,
         DataHandler $tceMain
     ): void {
-        if ($table === Constants::TABLE_LOCALIZER_SETTINGS) {
-            if ($this->isSaveAction()) {
-                $currentRecord = $tceMain->recordInfo($table, $id, '*');
-                if ($currentRecord === null) {
-                    $currentRecord = [];
-                }
-                $checkArray = array_merge($currentRecord, $fieldArray);
-                if ($checkArray['type'] === 0 || $checkArray['type'] === '0') {
-                    $localizerApi = new ApiCalls(
-                        (string)$checkArray['type'],
-                        (string)$checkArray['url'],
-                        (string)$checkArray['workflow'],
-                        (string)$checkArray['projectkey'],
-                        (string)$checkArray['username'],
-                        (string)$checkArray['password'],
-                        (string)$checkArray['out_folder'],
-                        (string)$checkArray['in_folder']
-                    );
-                    try {
-                        $valid = $localizerApi->areSettingsValid();
-                        if ($valid === false) {
-                            //should never arrive here as exception should occur!
-                            $fieldArray['hidden'] = 1;
-                        } else {
-                            $fieldArray['project_settings'] = $localizerApi->getFolderInformation(true);
-                            $fieldArray['last_error'] = null;
-                            new FlashMessage(
-                                'Localizer settings [' . $checkArray['title'] . '] successfully validated and saved',
-                                'Success',
-                                0
-                            );
-                        }
-                    } catch (Exception $e) {
-                        $fieldArray['last_error'] = $localizerApi->getLastError();
+        if (($table === Constants::TABLE_LOCALIZER_SETTINGS) && $this->isSaveAction()) {
+            $currentRecord = $tceMain->recordInfo($table, $id, '*');
+            if ($currentRecord === null) {
+                $currentRecord = [];
+            }
+            $checkArray = array_merge($currentRecord, $fieldArray);
+            if ($checkArray['type'] === 0 || $checkArray['type'] === '0') {
+                $localizerApi = new ApiCalls(
+                    (string)$checkArray['type'],
+                    (string)($checkArray['url'] ?? ''),
+                    (string)($checkArray['workflow'] ?? ''),
+                    (string)($checkArray['projectkey'] ?? ''),
+                    (string)($checkArray['username'] ?? ''),
+                    (string)($checkArray['password'] ?? ''),
+                    (string)($checkArray['out_folder'] ?? ''),
+                    (string)($checkArray['in_folder'] ?? '')
+                );
+                try {
+                    $valid = $localizerApi->areSettingsValid();
+                    if ($valid === false) {
+                        //should never arrive here as exception should occur!
                         $fieldArray['hidden'] = 1;
-                        new FlashMessage($e->getMessage());
-                        new FlashMessage('Localizer settings [' . $checkArray['title'] . '] set to hidden', 'Error', 1);
+                    } else {
+                        $fieldArray['project_settings'] = $localizerApi->getFolderInformation(true);
+                        $fieldArray['last_error'] = null;
+                        new FlashMessage(
+                            'Localizer settings [' . $checkArray['title'] . '] successfully validated and saved',
+                            'Success',
+                            0
+                        );
                     }
+                } catch (Exception $e) {
+                    $fieldArray['last_error'] = $localizerApi->getLastError();
+                    $fieldArray['hidden'] = 1;
+                    new FlashMessage($e->getMessage());
+                    new FlashMessage('Localizer settings [' . $checkArray['title'] . '] set to hidden', 'Error', 1);
                 }
             }
         }
@@ -89,8 +87,7 @@ class DataHandlerHook
 
     protected function isSaveAction(): bool
     {
-        return
-            isset($_REQUEST['doSave']) && $_REQUEST['doSave'];
+        return isset($_REQUEST['doSave']) && $_REQUEST['doSave'];
     }
 
     public function processDatamap_preProcessFieldArray(
