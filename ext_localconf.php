@@ -1,12 +1,16 @@
 <?php
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
-$extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('localizer');
+$extPath = ExtensionManagementUtility::extPath('localizer');
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig(
+ExtensionManagementUtility::addUserTSConfig(
     '
 options.saveDocNew.tx_localizer_settings=1
 '
@@ -16,8 +20,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
     'Localizationteam\Localizer\Hooks\DataHandlerHook';
 
 // Enable stats
-$enableStatHook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-    \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class
+$enableStatHook = GeneralUtility::makeInstance(
+    ExtensionConfiguration::class
 )->get('localizer', 'enable_stat_hook');
 
 if ($enableStatHook) {
