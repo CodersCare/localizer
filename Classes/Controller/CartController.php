@@ -289,7 +289,7 @@ class CartController extends AbstractController
             foreach ($availableUsers as $user) {
                 $id = (int)$user['uid'];
                 $selected = '';
-                if ($id === $this->userId || !$this->userId && $id === $this->getBackendUser()->user['uid']) {
+                if ($id === $this->userId || !$this->userId && $id === $this->getBackendUser()->getUserId()) {
                     $selected = ' class="active"';
                 }
                 $userSelector .= '<li' . $selected . '>

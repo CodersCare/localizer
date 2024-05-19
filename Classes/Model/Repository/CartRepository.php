@@ -74,11 +74,12 @@ class CartRepository extends AbstractRepository
     /**
      * Loads additional information about the listed cart records
      */
-    public function getRecordInfo(int $id, array $classes, int $user): array
+    public function getRecordInfo(int $id, array $classes, int $userId): array
     {
-        if ($user === 0) {
-            $user = (int)$this->getBackendUser()->user['uid'];
+        if ($userId === 0) {
+            $userId = (int)$this->getBackendUser()->getUserId();
         }
+
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
         $queryBuilder
             ->select('uid', 'uid_local', 'uid_foreign', 'previous_status', 'action')
@@ -98,13 +99,14 @@ class CartRepository extends AbstractRepository
             ->orderBy(
                 Constants::TABLE_LOCALIZER_CART . '.uid'
             );
-        if ($user > 0) {
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()->eq(
-                    Constants::TABLE_LOCALIZER_CART . '.cruser_id',
-                    $user
-                )
-            );
+
+        if ($userId > 0) {
+            $queryBuilder
+                ->andWhere(
+                    $queryBuilder
+                        ->expr()
+                        ->eq(Constants::TABLE_LOCALIZER_CART . '.cruser_id', $userId)
+                );
         }
         $result = $queryBuilder->execute();
         $carts = $this->fetchAllAssociative($result);

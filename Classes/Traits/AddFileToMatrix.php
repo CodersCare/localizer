@@ -42,7 +42,7 @@ trait AddFileToMatrix
                 [
                     'pid' => $pid,
                     'crdate' => $time,
-                    'cruser_id' => $this->getBackendUser()->user['uid'],
+                    'cruser_id' => $this->getBackendUser()->getUserId(),
                     'status' => Constants::STATUS_CART_FILE_EXPORTED,
                     'action' => $action,
                     'uid_local' => $localizerId,

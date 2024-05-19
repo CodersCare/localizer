@@ -198,7 +198,7 @@ class AbstractRepository
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq(
                         'cruser_id',
-                        (int)$this->getBackendUser()->user['uid']
+                        (int)$this->getBackendUser()->getUserId()
                     ),
                     $queryBuilder->expr()->eq(
                         'uid_local',
