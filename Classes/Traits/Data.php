@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Traits;
 
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Result;
 use Localizationteam\Localizer\Api\ApiCalls;
@@ -45,12 +46,18 @@ trait Data
         $this->canPersist = true;
     }
 
+    /**
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
+     */
     protected function load(): void
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
             Constants::TABLE_EXPORTDATA_MM
         );
-        $result = $queryBuilder
+
+        $this->data = $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_EXPORTDATA_MM)
             ->where(
@@ -59,8 +66,8 @@ trait Data
                     $queryBuilder->createNamedParameter($this->getProcessId())
                 )
             )
-            ->executeQuery();
-        $this->data = $this->fetchAllAssociative($result);
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     protected function loadCart(): void
@@ -179,7 +186,7 @@ trait Data
                             ),
                             $queryBuilder->expr()->eq(
                                 'tablenames',
-                                $queryBuilder->createNamedParameter('static_languages')
+                                $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES)
                             ),
                             $queryBuilder->expr()->eq(
                                 'source',
