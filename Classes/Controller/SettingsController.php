@@ -94,9 +94,9 @@ class SettingsController
 
         if ($allLanguages !== []) {
             ksort($allLanguages);
-            foreach ($allLanguages as $item) {
-                $fieldInformation['items'][] = [$item['label'], $item['value'], $item['icon']];
-            }
+            $fieldInformation['items'] = array_map(static function ($item) {
+                return  [$item['label'], $item['value'], $item['icon']];
+            }, $allLanguages);
             return;
         }
 
