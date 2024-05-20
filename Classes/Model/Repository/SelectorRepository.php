@@ -91,21 +91,24 @@ class SelectorRepository extends AbstractRepository
         );
 
         $cartId = (int)$databaseConnection->lastInsertId(Constants::TABLE_LOCALIZER_CART);
-        self::getConnectionPool()
-            ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-            ->insert(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-            ->values(
-                [
-                    'pid' => $pageId,
-                    'uid_local' => $cartId,
-                    'uid_foreign' => (int)$localizerLanguages['source'],
-                    'tablenames' => 'static_languages',
-                    'source' => Constants::TABLE_LOCALIZER_CART,
-                    'ident' => 'source',
-                    'sorting' => 1,
-                ]
-            )
-            ->execute();
+
+        if ($this->typo3Version->getMajorVersion() < 12) {
+            self::getConnectionPool()
+                ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                ->insert(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                ->values(
+                    [
+                        'pid' => $pageId,
+                        'uid_local' => $cartId,
+                        'uid_foreign' => (int)$localizerLanguages['source'],
+                        'tablenames' => Constants::TABLE_STATIC_LANGUAGES,
+                        'source' => Constants::TABLE_LOCALIZER_CART,
+                        'ident' => 'source',
+                        'sorting' => 1,
+                    ]
+                )
+                ->execute();
+        }
 
         return $cartId;
     }

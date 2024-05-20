@@ -75,6 +75,8 @@ class SelectorController extends AbstractController
         public readonly LanguageRepository $languageRepository,
         public readonly CartRepository $cartRepository,
     ) {
+        parent::__construct();
+
         $this->getLanguageService()->includeLLFile(
             'EXT:localizer/Resources/Private/Language/locallang_localizer_selector.xlf'
         );

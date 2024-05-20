@@ -16,9 +16,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class LanguageRepository extends AbstractRepository
 {
 
-    public function __construct(public readonly SiteFinder $siteFinder)
-    {
-
+    public function __construct(
+        public readonly SiteFinder $siteFinder,
+    ) {
+        parent::__construct();
     }
 
     /**
@@ -128,21 +129,36 @@ class LanguageRepository extends AbstractRepository
             return 0;
         }
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(Constants::TABLE_SYS_LANGUAGE);
-        $queryBuilder->getRestrictions()
-            ->removeAll();
-        $result = $queryBuilder
-            ->select('uid')
-            ->from(Constants::TABLE_SYS_LANGUAGE)
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'static_lang_isocode',
-                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
+        if ($this->typo3Version->getMajorVersion() < 12) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable(Constants::TABLE_SYS_LANGUAGE);
+            $queryBuilder->getRestrictions()->removeAll();
+            $result = $queryBuilder
+                ->select('uid')
+                ->from(Constants::TABLE_SYS_LANGUAGE)
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'static_lang_isocode',
+                        $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
+                    )
                 )
-            )
-            ->executeQuery();
+                ->executeQuery();
 
-        return (int)$this->fetchOne($result);
+            return (int)$this->fetchOne($result);
+        } else {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
+            $queryBuilder->getRestrictions()->removeAll();
+            $result = $queryBuilder
+                ->select('uid')
+                ->from(Constants::TABLE_LOCALIZER_SETTINGS)
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'static_lang_isocode',
+                        $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
+                    )
+                )
+                ->executeQuery();
+        }
     }
 }

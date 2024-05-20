@@ -12,7 +12,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Database\RelationHandler;
-use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -25,7 +25,13 @@ class AbstractRepository
     use BackendUserTrait;
     use Data;
 
-    /**
+    protected Typo3Version $typo3Version;
+
+    public function __construct()
+    {
+        $this->typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+    }
+
      */
     public function getLocalizerLanguages(int $localizerId): array
     {

@@ -12,7 +12,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\Controller;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -54,8 +53,9 @@ class CartController extends AbstractController
         public readonly AbstractRepository $abstractRepository,
         public PageRenderer $pageRenderer,
         public readonly CartRepository $cartRepository,
-        public readonly Typo3Version $typo3Version,
     ) {
+        parent::__construct();
+
         $this->getLanguageService()->includeLLFile(
             'EXT:localizer/Resources/Private/Language/locallang_localizer_cart.xlf'
         );
@@ -101,8 +101,14 @@ class CartController extends AbstractController
      */
     protected function main(ServerRequestInterface $request): void
     {
-        $this->pageRenderer->loadJavaScriptModule('TYPO3/CMS/Backend/Tooltip');
-        $this->pageRenderer->loadJavaScriptModule('TYPO3/CMS/Localizer/LocalizerCart');
+        //if ($this->typo3Version->getMajorVersion() < 12) {
+            $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
+            $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerCart');
+        //} else {
+        //    // TODO: Migrate to v12
+        //    //$this->pageRenderer->loadJavaScriptModule('TYPO3/CMS/Backend/Tooltip');
+        //    $this->pageRenderer->loadJavaScriptModule('@localizationteam/localizer/LocalizerCart.js');
+        //}
 
         $this->pageRenderer->addCssFile(
             ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css'
