@@ -71,7 +71,7 @@ class SelectorRepository extends AbstractRepository
             [
                 'pid' => $pageId,
                 'uid_local' => $localizerId,
-                'source_locale' => 1,
+                'source_locale' => (int)$localizerLanguages['source'],
                 'all_locale' => 1,
                 'crdate' => time(),
                 'cruser_id' => (int)$this->getBackendUser()->getUserId(),

@@ -134,6 +134,8 @@ class CartRepository extends AbstractRepository
                         Constants::TABLE_EXPORTDATA_MM . '.previous_status',
                         Constants::TABLE_EXPORTDATA_MM . '.action',
                         Constants::TABLE_EXPORTDATA_MM . '.filename',
+                        Constants::TABLE_EXPORTDATA_MM . '.source_language',
+                        Constants::TABLE_EXPORTDATA_MM . '.target_language',
                         Constants::TABLE_STATIC_LANGUAGES . '.lg_collate_locale',
                         Constants::TABLE_STATIC_LANGUAGES . '.lg_iso_2'
                     )

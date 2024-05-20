@@ -100,6 +100,8 @@ CREATE TABLE tx_localizer_settings_l10n_exportdata_mm
     configuration   text,
     last_error      text,
     response        text,
+    source_language int(11)       DEFAULT '0' NOT NULL,
+  	target_language int(11)       DEFAULT '0' NOT NULL,
     PRIMARY KEY (uid),
     KEY parent (pid),
     KEY processid (processid),

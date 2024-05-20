@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Handler;
 
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
@@ -225,13 +226,18 @@ class FileExporter extends AbstractCartHandler
         ];
     }
 
-    protected function registerFilesForLocalizer(int $localizerId, int $configurationId, int $pid)
+    /**
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
+     */
+    protected function registerFilesForLocalizer(int $localizerId, int $configurationId, int $pid): void
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable(Constants::TABLE_L10NMGR_EXPORTDATA);
         $queryBuilder->getRestrictions()->removeAll();
-        $result = $queryBuilder
-            ->select('uid', 'translation_lang', 'filename')
+        $rows = $queryBuilder
+            ->select('uid', 'translation_lang', 'source_lang', 'filename')
             ->from(Constants::TABLE_L10NMGR_EXPORTDATA)
             ->where(
                 $queryBuilder->expr()->eq(
@@ -251,10 +257,12 @@ class FileExporter extends AbstractCartHandler
                     $configurationId,
                     $row['filename'],
                     (int)$row['translation_lang'],
-                    Constants::ACTION_SEND_FILE
+                    (int)$row['source_lang'],
+                    Constants::ACTION_SEND_FILE,
+
                 );
             }
-        }
+
     }
 
     public function finish(int $time): void

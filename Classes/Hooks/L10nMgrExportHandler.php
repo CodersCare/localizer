@@ -103,7 +103,8 @@ class L10nMgrExportHandler implements PostSaveInterface
                 $params['uid'] ?? 0,
                 $params['data']['l10ncfg_id'] ?? 0,
                 $params['data']['filename'] ?? '',
-                $params['data']['translation_lang'] ?? 0
+                $params['data']['translation_lang'] ?? 0,
+                $params['data']['source_lang'] ?? 0
             );
         }
     }

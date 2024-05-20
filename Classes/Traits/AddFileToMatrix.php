@@ -10,6 +10,7 @@ use Localizationteam\Localizer\Constants;
 use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -31,6 +32,7 @@ trait AddFileToMatrix
         int $l10nConfigurationId,
         string $fileName,
         int $translationLanguage,
+        int $sourceLanguage,
         int $action = 0
     ): void {
         $time = time();
@@ -53,6 +55,8 @@ trait AddFileToMatrix
                     'filename' => $fileName,
                     'source_locale' => 1,
                     'target_locale' => 1,
+                    'source_language' => $sourceLanguage,
+                    'target_language' => $translationLanguage,
                 ],
                 [
                     PDO::PARAM_INT,
@@ -67,41 +71,49 @@ trait AddFileToMatrix
                     PDO::PARAM_STR,
                     PDO::PARAM_INT,
                     PDO::PARAM_INT,
+                    PDO::PARAM_INT,
+                    PDO::PARAM_INT,
                 ]
             );
 
         $uid = $databaseConnection->lastInsertId(Constants::TABLE_EXPORTDATA_MM);
 
-        $isoCodeTargetLanguage = $this->getLanguageIsoCode($translationLanguage);
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
-        $queryBuilder->getRestrictions()->removeAll();
-        $result = $queryBuilder
-            ->select('uid_foreign', 'tablenames', 'ident', 'sorting')
-            ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-            ->where(
-                $queryBuilder->expr()->and(
-                    $queryBuilder->expr()->eq('uid_local', $localizerId),
-                    $queryBuilder->expr()->or(
-                        $queryBuilder->expr()->eq('ident', $queryBuilder->createNamedParameter('source')),
-                        $queryBuilder->expr()->eq('uid_foreign', $isoCodeTargetLanguage)
-                    ),
-                    $queryBuilder->expr()->eq('source', $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS))
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if ($typo3Version->getMajorVersion() < 12) {
+            $isoCodeTargetLanguage = $this->getLanguageIsoCode($translationLanguage);
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
+            $queryBuilder->getRestrictions()->removeAll();
+            $result = $queryBuilder
+                ->select('uid_foreign', 'tablenames', 'ident', 'sorting')
+                ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                ->where(
+                    $queryBuilder->expr()->and(
+                        $queryBuilder->expr()->eq('uid_local', $localizerId),
+                        $queryBuilder->expr()->or(
+                            $queryBuilder->expr()->eq('ident', $queryBuilder->createNamedParameter('source')),
+                            $queryBuilder->expr()->eq('uid_foreign', $isoCodeTargetLanguage)
+                        ),
+                        $queryBuilder->expr()->eq('source', $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS))
+                    )
                 )
-            )
-            ->executeQuery();
-        $localizerLanguageRows = $this->fetchAllAssociative($result);
-        if (count($localizerLanguageRows) > 0) {
-            foreach ($localizerLanguageRows as $lRow) {
-                $lRow['uid_local'] = $uid;
-                $lRow['source'] = Constants::TABLE_EXPORTDATA_MM;
-                GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-                    ->insert(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-                    ->values($lRow)
-                    ->executeStatement();
+                ->executeQuery();
+            $localizerLanguageRows = $this->fetchAllAssociative($result);
+            if (count($localizerLanguageRows) > 0) {
+                foreach ($localizerLanguageRows as $lRow) {
+                    $lRow['uid_local'] = $uid;
+                    $lRow['source'] = Constants::TABLE_EXPORTDATA_MM;
+                    GeneralUtility::makeInstance(ConnectionPool::class)
+                        ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                        ->insert(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                        ->values($lRow)
+                        ->executeStatement();
+                }
             }
+        } else {
+
         }
+
     }
 
     /**

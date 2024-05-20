@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Model\Repository;
 
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Traits\BackendUserTrait;
 use Localizationteam\Localizer\Traits\Data;
@@ -32,78 +34,98 @@ class AbstractRepository
         $this->typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
     }
 
+    /**
+     * @throws DBALException
+     * @throws Exception
      */
     public function getLocalizerLanguages(int $localizerId): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
         $queryBuilder->getRestrictions()->removeAll();
+
+        if ($this->typo3Version->getMajorVersion() < 12) {
+            $result = $queryBuilder
+                ->selectLiteral('MAX(sourceLanguage.uid) source, GROUP_CONCAT(targetLanguage.uid) target')
+                ->from(Constants::TABLE_LOCALIZER_SETTINGS, 'settings')
+                ->leftJoin(
+                    'settings',
+                    Constants::TABLE_LOCALIZER_LANGUAGE_MM,
+                    'sourceMM',
+                    (string)$queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq(
+                            'settings.uid',
+                            $queryBuilder->quoteIdentifier('sourceMM.uid_local')
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'sourceMM.tablenames',
+                            $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES, PDO::PARAM_STR)
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'sourceMM.ident',
+                            $queryBuilder->createNamedParameter('source', PDO::PARAM_STR)
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'sourceMM.source',
+                            $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS, PDO::PARAM_STR)
+                        )
+                    )
+                )
+                ->leftJoin(
+                    'sourceMM',
+                    Constants::TABLE_STATIC_LANGUAGES,
+                    'sourceLanguage',
+                    (string)$queryBuilder->expr()->eq(
+                        'sourceLanguage.uid',
+                        $queryBuilder->quoteIdentifier('sourceMM.uid_foreign')
+                    )
+                )
+                ->leftJoin(
+                    'settings',
+                    Constants::TABLE_LOCALIZER_LANGUAGE_MM,
+                    'targetMM',
+                    (string)$queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq(
+                            'settings.uid',
+                            $queryBuilder->quoteIdentifier('targetMM.uid_local')
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'targetMM.tablenames',
+                            $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES, PDO::PARAM_STR)
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'targetMM.ident',
+                            $queryBuilder->createNamedParameter('target', PDO::PARAM_STR)
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'targetMM.source',
+                            $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS, PDO::PARAM_STR)
+                        )
+                    )
+                )
+                ->leftJoin(
+                    'targetMM',
+                    Constants::TABLE_STATIC_LANGUAGES,
+                    'targetLanguage',
+                    (string)$queryBuilder->expr()->eq(
+                        'targetLanguage.uid',
+                        $queryBuilder->quoteIdentifier('targetMM.uid_foreign')
+                    )
+                )
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'settings.uid',
+                        $localizerId
+                    )
+                )
+                ->groupBy('settings.uid')
+                ->execute();
+
+            return (array)$this->fetchAssociative($result);
+        }
+
         $result = $queryBuilder
-            ->selectLiteral('MAX(sourceLanguage.uid) source, GROUP_CONCAT(targetLanguage.uid) target')
+            ->select('source_language', 'target_languages')
             ->from(Constants::TABLE_LOCALIZER_SETTINGS, 'settings')
-            ->leftJoin(
-                'settings',
-                Constants::TABLE_LOCALIZER_LANGUAGE_MM,
-                'sourceMM',
-                (string)$queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->eq(
-                        'settings.uid',
-                        $queryBuilder->quoteIdentifier('sourceMM.uid_local')
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'sourceMM.tablenames',
-                        $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES, PDO::PARAM_STR)
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'sourceMM.ident',
-                        $queryBuilder->createNamedParameter('source', PDO::PARAM_STR)
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'sourceMM.source',
-                        $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS, PDO::PARAM_STR)
-                    )
-                )
-            )
-            ->leftJoin(
-                'sourceMM',
-                Constants::TABLE_STATIC_LANGUAGES,
-                'sourceLanguage',
-                (string)$queryBuilder->expr()->eq(
-                    'sourceLanguage.uid',
-                    $queryBuilder->quoteIdentifier('sourceMM.uid_foreign')
-                )
-            )
-            ->leftJoin(
-                'settings',
-                Constants::TABLE_LOCALIZER_LANGUAGE_MM,
-                'targetMM',
-                (string)$queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->eq(
-                        'settings.uid',
-                        $queryBuilder->quoteIdentifier('targetMM.uid_local')
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'targetMM.tablenames',
-                        $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES, PDO::PARAM_STR)
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'targetMM.ident',
-                        $queryBuilder->createNamedParameter('target', PDO::PARAM_STR)
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'targetMM.source',
-                        $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS, PDO::PARAM_STR)
-                    )
-                )
-            )
-            ->leftJoin(
-                'targetMM',
-                Constants::TABLE_STATIC_LANGUAGES,
-                'targetLanguage',
-                (string)$queryBuilder->expr()->eq(
-                    'targetLanguage.uid',
-                    $queryBuilder->quoteIdentifier('targetMM.uid_foreign')
-                )
-            )
             ->where(
                 $queryBuilder->expr()->eq(
                     'settings.uid',
@@ -111,8 +133,13 @@ class AbstractRepository
                 )
             )
             ->groupBy('settings.uid')
-            ->execute();
-        return (array)$this->fetchAssociative($result);
+            ->executeQuery()
+            ->fetchAssociative();
+
+        return [
+            'source' => $result['source_language'],
+            'target' => $result['target_languages'],
+        ];
     }
 
     /**
