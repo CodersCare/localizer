@@ -119,8 +119,9 @@ class DataHandlerHook
     protected function getAllTargetUids(string $settingsId): array
     {
         $originalValues = BackendUtility::getRecord(Constants::TABLE_EXPORTDATA_MM, (int)$settingsId);
-        $languageRepository = GeneralUtility::makeInstance(LanguageRepository::class);
-        return $languageRepository->getAllTargetLanguageUids($originalValues['uid_local'], Constants::TABLE_LOCALIZER_SETTINGS);
+
+        return GeneralUtility::makeInstance(LanguageRepository::class)
+            ->getAllTargetLanguageUids($originalValues['uid_local'], Constants::TABLE_LOCALIZER_SETTINGS);
     }
 
     /**

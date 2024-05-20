@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Hooks;
 
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception;
 use Localizationteam\L10nmgr\View\PostSaveInterface;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Traits\AddFileToMatrix;
@@ -22,6 +24,11 @@ class L10nMgrExportHandler implements PostSaveInterface
     use AddFileToMatrix;
     use Data;
 
+    /**
+     * @throws DBALException
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
+     */
     public function postExportAction(array $params): void
     {
         // XML
@@ -44,7 +51,7 @@ class L10nMgrExportHandler implements PostSaveInterface
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
-        $result = $queryBuilder
+        $row = $queryBuilder
             ->select(
                 Constants::TABLE_LOCALIZER_SETTINGS . '.uid',
                 Constants::TABLE_LOCALIZER_SETTINGS . '.pid',
@@ -86,8 +93,9 @@ class L10nMgrExportHandler implements PostSaveInterface
                 )
             )
             ->setMaxResults(1)
-            ->executeQuery();
-        $row = $this->fetchAssociative($result);
+            ->executeQuery()
+            ->fetchAssociative();
+
         if (!empty($row['pid'])) {
             $this->addFileToMatrix(
                 $row['pid'],

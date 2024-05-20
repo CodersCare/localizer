@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Model\Repository;
 
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Exception;
 use Localizationteam\Localizer\Constants;
 use PDO;
 
@@ -73,6 +75,9 @@ class CartRepository extends AbstractRepository
 
     /**
      * Loads additional information about the listed cart records
+     *
+     * @throws DBALException
+     * @throws Exception
      */
     public function getRecordInfo(int $id, array $classes, int $userId): array
     {
@@ -85,7 +90,7 @@ class CartRepository extends AbstractRepository
             ->select('uid', 'uid_local', 'uid_foreign', 'previous_status', 'action')
             ->from(Constants::TABLE_LOCALIZER_CART)
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->eq(
                         Constants::TABLE_LOCALIZER_CART . '.uid_local',
                         $id
@@ -108,18 +113,19 @@ class CartRepository extends AbstractRepository
                         ->eq(Constants::TABLE_LOCALIZER_CART . '.cruser_id', $userId)
                 );
         }
-        $result = $queryBuilder->execute();
-        $carts = $this->fetchAllAssociative($result);
+        $carts = $queryBuilder
+            ->executeQuery()
+            ->fetchAllAssociative();
+
         $availableCarts = [];
-        if (!empty($carts)) {
-            foreach ($carts as $cart) {
-                $availableCarts[$cart['uid']] = $cart;
-            }
+        foreach ($carts as $cart) {
+            $availableCarts[$cart['uid']] = $cart;
         }
+
         if (!empty($availableCarts)) {
             foreach ($availableCarts as $cartId => &$cart) {
                 $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
-                $result = $queryBuilder
+                $exportData = $queryBuilder
                     ->select(
                         Constants::TABLE_EXPORTDATA_MM . '.uid',
                         Constants::TABLE_EXPORTDATA_MM . '.uid_local',
@@ -159,7 +165,7 @@ class CartRepository extends AbstractRepository
                         'targetMM',
                         Constants::TABLE_STATIC_LANGUAGES,
                         Constants::TABLE_STATIC_LANGUAGES,
-                        (string)$queryBuilder->expr()->eq(
+                        $queryBuilder->expr()->eq(
                             Constants::TABLE_STATIC_LANGUAGES . '.uid',
                             $queryBuilder->quoteIdentifier('targetMM.uid_foreign')
                         )
@@ -173,14 +179,15 @@ class CartRepository extends AbstractRepository
                     ->orderBy(
                         Constants::TABLE_EXPORTDATA_MM . '.status'
                     )
-                    ->execute();
-                $exportData = $this->fetchAllAssociative($result);
+                    ->executeQuery()
+                    ->fetchAllAssociative();
+
                 $cart['exportData'] = [];
-                if (!empty($exportData)) {
-                    foreach ($exportData as $data) {
-                        $cart['exportData'][$data['uid']] = $data;
-                    }
+
+                foreach ($exportData as $data) {
+                    $cart['exportData'][$data['uid']] = $data;
                 }
+
                 if (!empty($cart['exportData'])) {
                     foreach ($cart['exportData'] as $exportId => &$export) {
                         $export['locale'] = str_replace(

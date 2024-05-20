@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Localizationteam\Localizer\Traits;
 
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Exception;
 use Localizationteam\Localizer\Constants;
 use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -111,20 +112,28 @@ trait AddFileToMatrix
         return BackendUtility::getRecordPath($uid, '', 0);
     }
 
+    /**
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @throws DBALException
+     */
     protected function getLanguageIsoCode(int $sysLanguageId): int
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_language');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_SYS_LANGUAGE);
         $queryBuilder->getRestrictions()->removeAll();
-        $result = $queryBuilder
+        $row = $queryBuilder
             ->select('static_lang_isocode')
-            ->from('sys_language')->where($queryBuilder->expr()->eq(
-            'uid',
-            $sysLanguageId
-        ))->executeQuery();
-        $row = $this->fetchAssociative($result);
+            ->from(Constants::TABLE_SYS_LANGUAGE)
+            ->where(
+                $queryBuilder->expr()->eq('uid', $sysLanguageId)
+            )
+            ->executeQuery()
+            ->fetchAssociative();
+
         if (!empty($row)) {
             return $row['static_lang_isocode'];
         }
+
         return 0;
     }
 }

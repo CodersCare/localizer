@@ -44,9 +44,9 @@ class FileSender extends AbstractHandler
 
     protected function acquire(): bool
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-            Constants::TABLE_EXPORTDATA_MM
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
+
         $affectedRows = $queryBuilder
             ->update(Constants::TABLE_EXPORTDATA_MM)
             ->where(
@@ -192,9 +192,12 @@ class FileSender extends AbstractHandler
                 Constants::TABLE_EXPORTDATA_MM,
                 Constants::TABLE_LOCALIZER_CART,
                 Constants::TABLE_LOCALIZER_CART,
-                (string)$queryBuilder->expr()->eq(
-                    Constants::TABLE_LOCALIZER_CART . '.uid_foreign',
-                    $queryBuilder->quoteIdentifier(Constants::TABLE_EXPORTDATA_MM . '.uid_foreign')
+                $queryBuilder
+                    ->expr()
+                    ->eq(
+                        Constants::TABLE_LOCALIZER_CART . '.uid_foreign',
+                        $queryBuilder->quoteIdentifier(Constants::TABLE_EXPORTDATA_MM . '.uid_foreign'
+                    )
                 )
             )
             ->where(

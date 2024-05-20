@@ -239,9 +239,10 @@ class FileExporter extends AbstractCartHandler
                     $configurationId
                 )
             )
-            ->executeQuery();
-        $rows = $this->fetchAllAssociative($result);
-        if (empty($rows) === false) {
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+
             foreach ($rows as $row) {
                 $this->addFileToMatrix(
                     $pid,

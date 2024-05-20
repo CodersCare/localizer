@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Localizationteam\Localizer\Model\Repository;
 
 use Doctrine\DBAL\Connection as ConnectionAlias;
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Exception;
 use Localizationteam\Localizer\Constants;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -47,13 +49,18 @@ class LanguageRepository extends AbstractRepository
         return $this->siteFinder->getSiteByPageId($pageId)->getAvailableLanguages($this->getBackendUser());
     }
 
+    /**
+     * @throws Exception
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function getAllTargetLanguageUids(int $uidLocal, string $table): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
-        $queryBuilder->getRestrictions()
-            ->removeAll();
-        $result = $queryBuilder
+        $queryBuilder->getRestrictions()->removeAll();
+
+        $rows = $queryBuilder
             ->select('uid_foreign')
             ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
             ->where(
@@ -76,8 +83,9 @@ class LanguageRepository extends AbstractRepository
                     )
                 )
             )
-            ->executeQuery();
-        $rows = $this->fetchAllAssociative($result);
+            ->executeQuery()
+            ->fetchAllAssociative();
+
         $languageUids = [];
         if (!empty($rows)) {
             $languageUids = array_column($rows, 'uid_foreign');
