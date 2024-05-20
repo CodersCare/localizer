@@ -13,7 +13,6 @@ use Localizationteam\Localizer\Model\Repository\SelectorRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\Controller;
-use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -23,7 +22,6 @@ use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
-use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -139,7 +137,12 @@ class SelectorController extends AbstractController
     {
         $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
         $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/DateTimePicker');
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerSelector');
+        if ($this->typo3Version->getMajorVersion() < 12) {
+            $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerSelector');
+        } else {
+            $this->pageRenderer->loadJavaScriptModule('@localizationteam/localizer/LocalizerSelector.js');
+        }
+
         $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Input/Clearable');
         $this->pageRenderer->addCssFile(
             ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css'
