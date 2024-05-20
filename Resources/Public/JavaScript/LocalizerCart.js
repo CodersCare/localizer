@@ -54,8 +54,8 @@ define([
       this.icons['actions-history'] = icons[3];
       this.icons['actions-info'] = icons[4];
 
-      var list = $('#recordlist-tx_localizer_cart')
-      var localizerRecords = $.parseJSON(localizerRecordInfo)
+      var list = $('#recordlist-tx_localizer_cart');
+      var localizerRecords = JSON.parse(document.querySelector('#dataRecordInfo').dataset.recordInfoJson);
 
       $('body').append($('#t3-modal-importscheduled'))
 

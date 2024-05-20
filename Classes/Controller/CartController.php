@@ -184,12 +184,7 @@ class CartController extends AbstractController
 
             $HTMLcode = $dblist->generateList();
 
-            if ($this->typo3Version->getMajorVersion() < 12) {
-                $this->moduleTemplate->addJavaScriptCode(
-                    'lcoalizer_cart_record_info',
-                    $this->generateRecordInfo()
-                );
-            }
+            $this->content .= '<input type="hidden" id="dataRecordInfo" data-record-info-json="' . $this->generateRecordInfo() . '">';
         }
         $HTMLcode = property_exists($dblist, 'HTMLcode') ? $dblist->HTMLcode : $HTMLcode;
         if ($this->localizerId) {
@@ -315,6 +310,6 @@ class CartController extends AbstractController
     protected function generateRecordInfo(): string
     {
         $recordInfo = $this->cartRepository->getRecordInfo($this->localizerId, $this->statusClasses, $this->userId);
-        return 'var localizerRecordInfo = \'' . json_encode($recordInfo) . '\';';
+        return htmlspecialchars(json_encode($recordInfo, JSON_THROW_ON_ERROR), ENT_QUOTES, 'UTF-8');
     }
 }
