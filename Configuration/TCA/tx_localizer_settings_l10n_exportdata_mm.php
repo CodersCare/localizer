@@ -10,8 +10,8 @@ return [
     'ctrl' => [
         'title' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm',
         'label' => 'uid_local',
-        'label_alt' => 'uid_foreign',
-        'label_alt_force' => '1',
+        //'label_alt' => 'uid_foreign',
+        //'label_alt_force' => '1',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         // TODO: Remove when dropping support for v11
