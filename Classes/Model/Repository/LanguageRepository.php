@@ -64,7 +64,7 @@ class LanguageRepository extends AbstractRepository
                     ),
                     $queryBuilder->expr()->eq(
                         'tablenames',
-                        $queryBuilder->createNamedParameter('static_languages', Connection::PARAM_STR)
+                        $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES, Connection::PARAM_STR)
                     ),
                     $queryBuilder->expr()->eq(
                         'source',
