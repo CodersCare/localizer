@@ -19,7 +19,7 @@ class FlashMessage
     /**
      * @throws Exception
      */
-    public function __construct(string $message, int $severity = ContextualFeedbackSeverity::ERROR)
+    public function __construct(string $message, int|ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::ERROR)
     {
         /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
         $flashMessage = GeneralUtility::makeInstance(
