@@ -307,7 +307,6 @@ class SelectorRepository extends AbstractRepository
                         'crdate' => time(),
                         'tstamp' => time(),
                         'cruser_id' => $this->getBackendUser()->getUserId(),
-                        'pretranslatecontent' => 0,
                         'overrideexistingtranslations' => 1,
                         'sortexports' => (int)$configuration['sortexports'],
                         'tx_localizer_id' => $localizerId,
