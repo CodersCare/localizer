@@ -299,7 +299,11 @@ return [
             'exclude' => 1,
             'label' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings.source_locale',
             'config' => [
-                'type' => 'language',
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'itemsProcFunc' => SettingsController::class . '->getDefaultLanguage',
+                'minitems' => 1,
+                'readOnly' => true,
             ],
         ],
         'target_languages' => [

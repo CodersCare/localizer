@@ -16,6 +16,7 @@ use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -111,5 +112,17 @@ class SettingsController
                 'icon' => $language->getFlagIdentifier(),
             ];
         }
+    }
+
+    public function getDefaultLanguage(array &$fieldInformation): void
+    {
+        $recordPid = (int)($fieldInformation['row']['pid'] ?? 0);
+        $defaultLanguage = $this->languagesService->getDefault($recordPid);
+
+        $fieldInformation['items'][] = [
+            'label' => $defaultLanguage->getTitle(),
+            'value' => $defaultLanguage->getLanguageId(),
+            'icon' => $defaultLanguage->getFlagIdentifier(),
+        ];
     }
 }
