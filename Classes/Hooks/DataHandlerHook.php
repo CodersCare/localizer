@@ -48,7 +48,7 @@ class DataHandlerHook
         DataHandler $tceMain
     ): void {
         if ($table === Constants::TABLE_LOCALIZER_SETTINGS && $this->isSaveAction()) {
-            $currentRecord = $tceMain->recordInfo($table, $id, '*');
+            $currentRecord = $tceMain->recordInfo($table, $id);
             if ($currentRecord === null) {
                 $currentRecord = [];
             }

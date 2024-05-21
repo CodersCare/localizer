@@ -119,7 +119,6 @@ class SelectorController extends AbstractController
         $this->configuratorStore = $request->getParsedBody()['configuratorStore'] ?? $request->getQueryParams()['configuratorStore'] ?? null;
         $this->configuratorFinalize = $request->getParsedBody()['configuratorFinalize'] ?? $request->getQueryParams()['configuratorFinalize'] ?? null;
 
-
         if (($request->getParsedBody()['selected_cart'] ?? $request->getQueryParams()['selected_cart'] ?? null) === 'new') {
             $this->cartId = $this->selectorRepository->createNewCart($this->id, $this->localizerId);
         } else {
