@@ -25,6 +25,7 @@ trait AddFileToMatrix
 
     /**
      * @throws DBALException
+     * @throws Exception
      */
     protected function addFileToMatrix(
         int $pid,
@@ -85,7 +86,7 @@ trait AddFileToMatrix
             $queryBuilder = self::getConnectionPool()
                 ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
             $queryBuilder->getRestrictions()->removeAll();
-            $result = $queryBuilder
+            $localizerLanguageRows = $queryBuilder
                 ->select('uid_foreign', 'tablenames', 'ident', 'sorting')
                 ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
                 ->where(
@@ -98,18 +99,17 @@ trait AddFileToMatrix
                         $queryBuilder->expr()->eq('source', $queryBuilder->createNamedParameter(Constants::TABLE_LOCALIZER_SETTINGS))
                     )
                 )
-                ->executeQuery();
-            $localizerLanguageRows = $this->fetchAllAssociative($result);
-            if (count($localizerLanguageRows) > 0) {
-                foreach ($localizerLanguageRows as $lRow) {
-                    $lRow['uid_local'] = $uid;
-                    $lRow['source'] = Constants::TABLE_EXPORTDATA_MM;
-                    self::getConnectionPool()
-                        ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-                        ->insert(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-                        ->values($lRow)
-                        ->executeStatement();
-                }
+                ->executeQuery()
+                ->fetchAllAssociative();
+
+            foreach ($localizerLanguageRows as $lRow) {
+                $lRow['uid_local'] = $uid;
+                $lRow['source'] = Constants::TABLE_EXPORTDATA_MM;
+                self::getConnectionPool()
+                    ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                    ->insert(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
+                    ->values($lRow)
+                    ->executeStatement();
             }
         } else {
 

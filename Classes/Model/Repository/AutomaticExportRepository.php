@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Model\Repository;
 
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Exception;
 use Localizationteam\Localizer\Constants;
 use PDO;
 
@@ -14,13 +16,17 @@ use PDO;
  */
 class AutomaticExportRepository extends AbstractRepository
 {
+
     /**
      * Loads available carts, which have not been finalized yet
+     *
+     * @throws DBALException
+     * @throws Exception
      */
     public function loadUnfinishedButSentCarts(int $localizerId): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_CART);
-        $result = $queryBuilder
+        return $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_LOCALIZER_CART)
             ->where(
@@ -43,12 +49,15 @@ class AutomaticExportRepository extends AbstractRepository
                     )
                 )
             )
-            ->execute();
-        return $this->fetchAllAssociative($result);
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     /**
      * Loads pages that are configured to be exported autimatically based on a given age
+     *
+     * @throws DBALException
+     * @throws Exception
      */
     public function loadPagesConfiguredForAutomaticExport(int $age, array $excludedPages): array
     {
@@ -81,24 +90,29 @@ class AutomaticExportRepository extends AbstractRepository
                 )
             );
         }
-        $result = $queryBuilder->execute();
-        $pages = $this->fetchAllAssociative($result);
+        $pages = $queryBuilder
+            ->executeQuery()
+            ->fetchAllAssociative();
+
         $pagesConfiguredForAutomaticExport = [];
-        if (!empty($pages)) {
-            foreach ($pages as $page) {
-                $pagesConfiguredForAutomaticExport[$page['uid']] = $page;
-            }
+
+        foreach ($pages as $page) {
+            $pagesConfiguredForAutomaticExport[$page['uid']] = $page;
         }
+
         return $pagesConfiguredForAutomaticExport;
     }
 
     /**
      * Loads pages that are added to be exported autimatically with a specific localizer setting based on a given age
+     *
+     * @throws DBALException
+     * @throws Exception
      */
     public function loadPagesAddedToSpecificAutomaticExport(int $localizer, int $age, array $excludedPages): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable('pages');
-        $result = $queryBuilder
+        $pages = $queryBuilder
             ->select('pages.*')
             ->from('pages')
             ->leftJoin(
@@ -125,14 +139,15 @@ class AutomaticExportRepository extends AbstractRepository
                     $queryBuilder->expr()->isNotNull('mm.uid')
                 )
             )
-            ->execute();
-        $pages = $this->fetchAllAssociative($result);
+            ->executeQuery()
+            ->fetchAllAssociative();
+
         $pagesAddedToSpecificAutomaticExport = [];
-        if (!empty($pages)) {
-            foreach ($pages as $page) {
-                $pagesAddedToSpecificAutomaticExport[$page['uid']] = $page;
-            }
+
+        foreach ($pages as $page) {
+            $pagesAddedToSpecificAutomaticExport[$page['uid']] = $page;
         }
+
         return $pagesAddedToSpecificAutomaticExport;
     }
 

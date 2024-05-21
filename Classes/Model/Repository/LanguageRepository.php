@@ -93,6 +93,11 @@ class LanguageRepository extends AbstractRepository
         return $languageUids;
     }
 
+    /**
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @throws DBALException
+     */
     public function getStaticLanguagesCollateLocale(array $uidList, bool $fixUnderLine = false): array
     {
         $collateLocale = [];
@@ -105,9 +110,8 @@ class LanguageRepository extends AbstractRepository
             }
             $queryBuilder = self::getConnectionPool()
                 ->getQueryBuilderForTable(Constants::TABLE_STATIC_LANGUAGES);
-            $queryBuilder->getRestrictions()
-                ->removeAll();
-            $result = $queryBuilder
+            $queryBuilder->getRestrictions()->removeAll();
+            $rows = $queryBuilder
                 ->selectLiteral($field)
                 ->from(Constants::TABLE_STATIC_LANGUAGES)
                 ->where(
@@ -116,8 +120,9 @@ class LanguageRepository extends AbstractRepository
                         $queryBuilder->createNamedParameter($uidList, ConnectionAlias::PARAM_INT_ARRAY)
                     )
                 )
-                ->executeQuery();
-            $rows = $this->fetchAllAssociative($result);
+                ->executeQuery()
+                ->fetchAllAssociative();
+
             if (!empty($rows)) {
                 $locale = [];
                 foreach ($rows as $row) {
@@ -131,6 +136,10 @@ class LanguageRepository extends AbstractRepository
         return $collateLocale;
     }
 
+    /**
+     * @throws DBALException
+     * @throws Exception
+     */
     public function getSystemLanguageIdByTargetLanguage(int $uid): int
     {
         if ($uid <= 0) {
@@ -138,9 +147,9 @@ class LanguageRepository extends AbstractRepository
         }
 
         if ($this->typo3Version->getMajorVersion() < 12) {
-            $queryBuilder = self::getConnectionPool()
-                ->getQueryBuilderForTable(Constants::TABLE_SYS_LANGUAGE);
+            $queryBuilder = self::getQueryBuilderForTable(Constants::TABLE_SYS_LANGUAGE);
             $queryBuilder->getRestrictions()->removeAll();
+
             $result = $queryBuilder
                 ->select('uid')
                 ->from(Constants::TABLE_SYS_LANGUAGE)
@@ -150,13 +159,14 @@ class LanguageRepository extends AbstractRepository
                         $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
                     )
                 )
-                ->executeQuery();
+                ->executeQuery()
+                ->fetchOne();
 
-            return (int)$this->fetchOne($result);
+            return (int)$result;
         } else {
-            $queryBuilder = self::getConnectionPool()
-                ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
+            $queryBuilder = self::getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
             $queryBuilder->getRestrictions()->removeAll();
+
             $result = $queryBuilder
                 ->select('uid')
                 ->from(Constants::TABLE_LOCALIZER_SETTINGS)

@@ -4,17 +4,25 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Model\Repository;
 
+use Doctrine\DBAL\Exception;
 use Localizationteam\Localizer\Constants;
 use PDO;
 use TYPO3\CMS\Core\Database\Connection;
 
 class SettingsRepository extends AbstractRepository
 {
+
+    /**
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
+     */
     public function findByUid(int $uid, array $fields = ['*']): array
     {
         $connection = self::getConnectionForTable(Constants::TABLE_LOCALIZER_SETTINGS);
-        $result = $connection->select($fields, Constants::TABLE_LOCALIZER_SETTINGS, ['uid' => $uid]);
-        return $this->fetchAssociative($result);
+
+        return $connection
+            ->select($fields, Constants::TABLE_LOCALIZER_SETTINGS, ['uid' => $uid])
+            ->fetchAllAssociative();
     }
 
     public function loadAvailableLocalizers(): array
@@ -29,11 +37,16 @@ class SettingsRepository extends AbstractRepository
         return $availableLocalizers;
     }
 
+    /**
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws Exception
+     */
     public function findAll(): array
     {
         $connection = self::getConnectionForTable(Constants::TABLE_LOCALIZER_SETTINGS);
-        $result = $connection->select(['*'], Constants::TABLE_LOCALIZER_SETTINGS);
-        return $this->fetchAllAssociative($result);
+        return $connection
+            ->select(['*'], Constants::TABLE_LOCALIZER_SETTINGS)
+            ->fetchAllAssociative();
     }
 
     public function getLocalizerLanguages(int $localizerId): array
@@ -88,8 +101,10 @@ class SettingsRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq('settings.uid', $localizerId)
             )
-            ->groupBy('settings.uid')->executeQuery();
+            ->groupBy('settings.uid')
+            ->executeQuery()
+            ->fetchAssociative();
 
-        return (array) $this->fetchAssociative($result);
+        return (array) $result;
     }
 }

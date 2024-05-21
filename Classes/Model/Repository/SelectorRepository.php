@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Localizationteam\Localizer\Model\Repository;
 
 use Doctrine\DBAL\Connection as ConnectionAlias;
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception;
 use Localizationteam\Localizer\Constants;
 use PDO;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -20,6 +22,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SelectorRepository extends AbstractRepository
 {
+
+    /**
+     * @throws Exception
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\Driver\Exception
+     */
     public function checkForRecordsOnPage(int $pid, string $table): bool
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable($table);
@@ -27,17 +35,24 @@ class SelectorRepository extends AbstractRepository
             ->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
-        $result = $queryBuilder->count('*')->from($table)->where($queryBuilder->expr()->eq(
-            'pid',
-            $pid
-        ))->execute();
-        $count = $this->fetchOne($result);
+        $count = $queryBuilder
+            ->count('*')
+            ->from($table)
+            ->where(
+                $queryBuilder
+                    ->expr()
+                    ->eq('pid', $pid)
+            )
+            ->executeQuery()
+            ->fetchOne();
 
         return $count > 0;
     }
 
     /**
      * @return mixed
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function findRecordByPid(int $pid, string $table)
     {
@@ -48,18 +63,20 @@ class SelectorRepository extends AbstractRepository
             ->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
-        $result = $queryBuilder
+        return $queryBuilder
             ->select('*')
             ->from($table)
             ->where(
                 $queryBuilder->expr()->eq('pid', $pid)
             )
-            ->execute();
-        return $this->fetchAssociative($result);
+            ->executeQuery()
+            ->fetchAssociative();
     }
 
     /**
      * Creates a new cart, when this option is selected in the cart selector
+     *
+     * @throws DBALException
      */
     public function createNewCart(int $pageId, int $localizerId): int
     {
@@ -107,7 +124,7 @@ class SelectorRepository extends AbstractRepository
                         'sorting' => 1,
                     ]
                 )
-                ->execute();
+                ->executeStatement();
         }
 
         return $cartId;
@@ -147,6 +164,8 @@ class SelectorRepository extends AbstractRepository
 
     /**
      * Stores the items of the selected cart
+     *
+     * @throws DBALException
      */
     public function storeCart(array $pageIds, int $cartId, array $configuration, array $storedTriples): void
     {
@@ -228,7 +247,7 @@ class SelectorRepository extends AbstractRepository
                         )
                     )
                 )
-                ->execute();
+                ->executeStatement();
         }
     }
 
@@ -240,7 +259,7 @@ class SelectorRepository extends AbstractRepository
         $pageIds = implode(',', GeneralUtility::intExplode(',', implode(',', array_keys($pageIds))));
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
         $queryBuilder->getRestrictions()->removeAll();
-        $result = $queryBuilder
+        $triples = $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_CARTDATA_MM)
             ->where(
@@ -255,14 +274,15 @@ class SelectorRepository extends AbstractRepository
                     )
                 )
             )
-            ->execute();
-        $triples = $this->fetchAllAssociative($result);
+            ->executeQuery()
+            ->fetchAllAssociative();
+
         $storedTriples = [];
-        if (!empty($triples)) {
-            foreach ($triples as $triple) {
-                $storedTriples[$triple['identifier']] = $triple;
-            }
+
+        foreach ($triples as $triple) {
+            $storedTriples[$triple['identifier']] = $triple;
         }
+
         return $storedTriples;
     }
 
@@ -349,6 +369,9 @@ class SelectorRepository extends AbstractRepository
 
     /**
      * Finalizes the selected cart and makes it unavailable for the selector
+     *
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function finalizeCart(int $localizerId, int $cartId, int $configurationId, string $deadline = ''): void
     {
@@ -384,9 +407,9 @@ class SelectorRepository extends AbstractRepository
                         'uid_foreign' => $configurationId,
                     ]
                 )
-                ->execute();
+                ->executeStatement();
             $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_L10NMGR_MM);
-            $result = $queryBuilder
+            $countConfigurations = $queryBuilder
                 ->count('*')
                 ->from(Constants::TABLE_LOCALIZER_L10NMGR_MM)
                 ->where(
@@ -395,8 +418,9 @@ class SelectorRepository extends AbstractRepository
                         $localizerId
                     )
                 )
-                ->execute();
-            $countConfigurations = $this->fetchOne($result);
+                ->executeQuery()
+                ->fetchOne();
+
             self::getConnectionPool()
                 ->getConnectionForTable(Constants::TABLE_LOCALIZER_SETTINGS)
                 ->update(
@@ -422,6 +446,9 @@ class SelectorRepository extends AbstractRepository
      *
      * For performance reasons it is essential to collect as much of that information
      * within just one query or while generating the array of result rows
+     *
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function getRecordsOnPages(
         int $id,
@@ -676,11 +703,11 @@ class SelectorRepository extends AbstractRepository
                 }
             }
 
-            $result = $queryBuilder->execute();
+            $result = $queryBuilder->executeQuery();
 
             $records[$table] = [];
             $checkedRecords = [];
-            while ($record = $this->fetchAssociative($result)) {
+            while ($record = $result->fetchAssociative()) {
                 if ($record['localizer_status'] && $record['outdated'] > $record['last_action']
                     && GeneralUtility::inList($record['changed'], 0)) {
                     $record['localizer_status'] = 71;

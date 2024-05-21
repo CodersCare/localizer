@@ -13,7 +13,6 @@ use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Messaging\FlashMessage;
 use Localizationteam\Localizer\Model\Repository\SettingsRepository;
 use PDO;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -70,12 +69,17 @@ trait Data
             ->fetchAllAssociative();
     }
 
+    /**
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
     protected function loadCart(): void
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(
             Constants::TABLE_LOCALIZER_CART
         );
-        $result = $queryBuilder
+        $this->data = $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_LOCALIZER_CART)
             ->where(
@@ -84,8 +88,8 @@ trait Data
                     $queryBuilder->createNamedParameter($this->getProcessId())
                 )
             )
-            ->executeQuery();
-        $this->data = $this->fetchAllAssociative($result);
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     protected function addErrorResult(int $uid, int $status, int $previousStatus, string $lastError, int $action = 0): void
@@ -114,6 +118,8 @@ trait Data
 
     /**
      * @throws Exception
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     protected function getLocalizerSettings(int $uid): array
     {
@@ -162,7 +168,7 @@ trait Data
             if ($api instanceof ApiCallsInterface && (!$api instanceof ApiCalls || $api->checkAndCreateFolders())) {
                 $queryBuilder = self::getConnectionPool()
                     ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
-                $result = $queryBuilder
+                $sourceLocale = $queryBuilder
                     ->select('*')
                     ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
                     ->leftJoin(
@@ -194,8 +200,9 @@ trait Data
                             )
                         )
                     )
-                    ->executeQuery();
-                $sourceLocale = $this->fetchAssociative($result);
+                    ->executeQuery()
+                    ->fetchAssociative();
+
                 $this->apiPool[$uid] = [
                     'api' => $api,
                     'settings' => [
@@ -230,6 +237,9 @@ trait Data
         $this->persistsResult($time);
     }
 
+    /**
+     * @throws DBALException
+     */
     protected function persistsResult(int $time): void
     {
         if ($this->canPersist === true) {
@@ -249,7 +259,7 @@ trait Data
                 foreach ($fields as $key => $value) {
                     $queryBuilder->set($key, $value);
                 }
-                $queryBuilder->execute();
+                $queryBuilder->executeStatement();
             }
             foreach ($this->result['success'] as $uid => $fields) {
                 $fields['tstamp'] = $time;
@@ -264,44 +274,13 @@ trait Data
                             (int)$uid
                         )
                     );
+
                 foreach ($fields as $key => $value) {
                     $queryBuilder->set($key, $value);
                 }
-                $queryBuilder->execute();
+
+                $queryBuilder->executeStatement();
             }
         }
-    }
-
-    /**
-     * @return ResultStatement|Result
-     */
-    public function fetchOne(ResultStatement|Result $result)
-    {
-        if (method_exists($result, 'fetchOne')) {
-            return $result->fetchOne();
-        }
-        return $result->fetchColumn();
-    }
-
-    /**
-     * @return ResultStatement|Result
-     */
-    public function fetchAssociative(ResultStatement|Result $result)
-    {
-        if (method_exists($result, 'fetchAssociative')) {
-            return $result->fetchAssociative();
-        }
-        return $result->fetch(PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * @return ResultStatement|Result
-     */
-    public function fetchAllAssociative(ResultStatement|Result $result)
-    {
-        if (method_exists($result, 'fetchAllAssociative')) {
-            return $result->fetchAllAssociative();
-        }
-        return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 }

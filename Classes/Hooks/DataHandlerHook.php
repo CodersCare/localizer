@@ -150,6 +150,7 @@ class DataHandlerHook
      * @param $p
      * @param $languageList
      * @throws DBALException
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function calcStat($p, $languageList, bool $noLink = false): string
     {
@@ -227,7 +228,7 @@ class DataHandlerHook
                 )
                 ->executeQuery();
         }
-        $records = $this->fetchAllAssociative($result);
+        $records = $result->fetchAllAssociative();
         $flags = [];
         if (is_array($records)) {
             foreach ($records as $r) {

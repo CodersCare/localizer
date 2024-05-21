@@ -119,9 +119,10 @@ class AbstractRepository
                     )
                 )
                 ->groupBy('settings.uid')
-                ->execute();
+                ->executeQuery()
+                ->fetchAssociative();
 
-            return (array)$this->fetchAssociative($result);
+            return (array)$result;
         }
 
         $result = $queryBuilder
@@ -146,6 +147,8 @@ class AbstractRepository
     /**
      * Loads the configuration of the selected cart
      *
+     * @throws DBALException
+     * @throws Exception
      */
     public function loadConfiguration(int $cartId): array
     {
@@ -154,7 +157,7 @@ class AbstractRepository
             ->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
             ->add(GeneralUtility::makeInstance(HiddenRestriction::class));
-        $result = $queryBuilder
+        $selectedCart = $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_LOCALIZER_CART)
             ->where(
@@ -163,8 +166,9 @@ class AbstractRepository
                     $cartId
                 )
             )
-            ->execute();
-        $selectedCart = $this->fetchAssociative($result);
+            ->executeQuery()
+            ->fetchAssociative();
+
         if (!empty($selectedCart['configuration'])) {
             $configuration = json_decode($selectedCart['configuration'], true);
             if (!empty($configuration)) {
@@ -184,6 +188,8 @@ class AbstractRepository
     /**
      * Loads available localizer settings
      *
+     * @throws DBALException
+     * @throws Exception
      */
     public function loadAvailableLocalizers(): array
     {
@@ -192,16 +198,15 @@ class AbstractRepository
             ->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
             ->add(GeneralUtility::makeInstance(HiddenRestriction::class));
-        $result = $queryBuilder
+        $localizers = $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_LOCALIZER_SETTINGS)
-            ->execute();
-        $localizers = $this->fetchAllAssociative($result);
+            ->executeQuery()
+            ->fetchAllAssociative();
+
         $availableLocalizers = [];
-        if (!empty($localizers)) {
-            foreach ($localizers as $localizer) {
-                $availableLocalizers[$localizer['uid']] = $localizer;
-            }
+        foreach ($localizers as $localizer) {
+            $availableLocalizers[$localizer['uid']] = $localizer;
         }
         return $availableLocalizers;
     }
@@ -209,6 +214,8 @@ class AbstractRepository
     /**
      * Loads available carts, which have not been finalized yet
      *
+     * @throws DBALException
+     * @throws Exception
      */
     public function loadAvailableCarts(int $localizerId): array
     {
@@ -217,7 +224,8 @@ class AbstractRepository
             ->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
             ->add(GeneralUtility::makeInstance(HiddenRestriction::class));
-        $result = $queryBuilder
+
+        return $queryBuilder
             ->select('*')
             ->from(Constants::TABLE_LOCALIZER_CART)
             ->where(
@@ -236,18 +244,20 @@ class AbstractRepository
                     )
                 )
             )
-            ->execute();
-        return $this->fetchAllAssociative($result);
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     /**
      * Loads available pages for carts
      *
+     * @throws DBALException
+     * @throws Exception
      */
     public function loadAvailablePages(int $pageId, int $cartId): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_CARTDATA_MM);
-        $result = $queryBuilder
+        $pages = $queryBuilder
             ->select('pid')
             ->from(Constants::TABLE_CARTDATA_MM)
             ->where(
@@ -263,14 +273,15 @@ class AbstractRepository
                 )
             )
             ->groupBy('pid')
-            ->execute();
-        $pages = $this->fetchAllAssociative($result);
+            ->executeQuery()
+            ->fetchAllAssociative();
+
         $availablePages = [];
-        if (!empty($pages)) {
-            foreach ($pages as $page) {
-                $availablePages[$page['pid']] = $page;
-            }
+
+        foreach ($pages as $page) {
+            $availablePages[$page['pid']] = $page;
         }
+
         if ($pageId > 0) {
             $availablePages[$pageId] = [
                 'pid' => $pageId,
@@ -281,7 +292,7 @@ class AbstractRepository
             $queryBuilder->getRestrictions()
                 ->removeAll()
                 ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
-            $result = $queryBuilder
+            $titles = $queryBuilder
                 ->select('uid', 'title')
                 ->from('pages')
                 ->where(
@@ -290,14 +301,15 @@ class AbstractRepository
                         implode(',', array_keys($availablePages))
                     )
                 )
-                ->execute();
-            $titles = $this->fetchAllAssociative($result);
+                ->executeQuery()
+                ->fetchAllAssociative();
+
             $pageTitles = [];
-            if (!empty($titles)) {
-                foreach ($titles as $title) {
-                    $pageTitles[$title['uid']] = $title;
-                }
+
+            foreach ($titles as $title) {
+                $pageTitles[$title['uid']] = $title;
             }
+
             foreach ($availablePages as $pageId => &$pageData) {
                 $pageData['cart'] = $cartId;
                 $pageData['title'] = $pageTitles[$pageId]['title'];
@@ -316,7 +328,7 @@ class AbstractRepository
         $queryBuilder->getRestrictions()
             ->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
-        $result = $queryBuilder
+        $languages = $queryBuilder
             ->select('languageId')
             ->from(Constants::TABLE_CARTDATA_MM)
             ->where(
@@ -332,14 +344,15 @@ class AbstractRepository
                 )
             )
             ->groupBy('languageId')
-            ->execute();
-        $languages = $this->fetchAllAssociative($result);
+            ->executeQuery()
+            ->fetchAllAssociative();
+
         $availableLanguages = [];
-        if (!empty($languages)) {
-            foreach ($languages as $language) {
-                $availableLanguages[$language['languageId']] = $language;
-            }
+
+        foreach ($languages as $language) {
+            $availableLanguages[$language['languageId']] = $language;
         }
+
         return $availableLanguages;
     }
 
@@ -353,7 +366,7 @@ class AbstractRepository
         $queryBuilder->getRestrictions()
             ->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
-        $result = $queryBuilder
+        $tables = $queryBuilder
             ->select('tableName')
             ->from(Constants::TABLE_CARTDATA_MM)
             ->where(
@@ -363,14 +376,15 @@ class AbstractRepository
                 )
             )
             ->groupBy('tableName')
-            ->execute();
-        $tables = $this->fetchAllAssociative($result);
+            ->executeQuery()
+            ->fetchAllAssociative();
+
         $availableTables = [];
-        if (!empty($tables)) {
-            foreach ($tables as $table) {
-                $availableTables[$table['tableName']] = $table;
-            }
+
+        foreach ($tables as $table) {
+            $availableTables[$table['tableName']] = $table;
         }
+
         return $availableTables;
     }
 

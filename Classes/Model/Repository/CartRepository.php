@@ -22,7 +22,7 @@ class CartRepository extends AbstractRepository
     public function loadAvailableUsers(): array
     {
         $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_BACKEND_USERS);
-        $result = $queryBuilder
+        $users = $queryBuilder
             ->select(Constants::TABLE_BACKEND_USERS . '.*')
             ->from(Constants::TABLE_BACKEND_USERS)
             ->leftJoin(
@@ -62,14 +62,15 @@ class CartRepository extends AbstractRepository
             ->addOrderBy(
                 Constants::TABLE_BACKEND_USERS . '.username'
             )
-            ->execute();
-        $users = $this->fetchAllAssociative($result);
+            ->executeQuery()
+            ->fetchAllAssociative();
+
         $availableUsers = [];
-        if (!empty($users)) {
-            foreach ($users as $user) {
-                $availableUsers[$user['uid']] = $user;
-            }
+
+        foreach ($users as $user) {
+            $availableUsers[$user['uid']] = $user;
         }
+
         return $availableUsers;
     }
 

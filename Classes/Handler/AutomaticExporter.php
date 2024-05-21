@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Handler;
 
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\Model\Repository\AutomaticExportRepository;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
@@ -201,6 +202,11 @@ class AutomaticExporter extends AbstractCartHandler
         }
     }
 
+    /**
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
+     */
     protected function findTranslatableTables(int $pid): array
     {
         $translatableTables = ['pages' => $GLOBALS['LANG']->sL($GLOBALS['TCA']['pages']['ctrl']['title'])];
@@ -215,17 +221,17 @@ class AutomaticExporter extends AbstractCartHandler
                 // $recordExists = $selectorRepository->findRecordByPid($pid, $table);
 
                 $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable($table);
-                $result = $queryBuilder
+                $recordExists = $queryBuilder
                     ->select('*')
                     ->from($table)
                     ->where(
-                        $queryBuilder->expr()->eq(
-                            'pid',
-                            $pid
-                        )
+                        $queryBuilder
+                            ->expr()
+                            ->eq('pid', $pid)
                     )
-                    ->executeQuery();
-                $recordExists = $this->fetchOne($result);
+                    ->executeQuery()
+                    ->fetchOne();
+
                 if (!empty($recordExists)) {
                     $translatableTables[$table] = $GLOBALS['LANG']->sL($GLOBALS['TCA'][$table]['ctrl']['title']);
                 }

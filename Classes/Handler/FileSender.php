@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Localizationteam\Localizer\Handler;
 
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Model\Repository\LanguageRepository;
@@ -175,12 +176,17 @@ class FileSender extends AbstractHandler
         return $this->uploadPath;
     }
 
+    /**
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
+     */
     protected function addDeadline(array $row): int
     {
         $deadline = 0;
         $queryBuilder = self::getConnectionPool()
             ->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
-        $result = $queryBuilder
+        $carts = $queryBuilder
             ->selectLiteral(
                 'COALESCE (
                 NULLIF(' . Constants::TABLE_EXPORTDATA_MM . '.deadline, 0), ' .
@@ -206,8 +212,8 @@ class FileSender extends AbstractHandler
                     (int)$row['uid']
                 )
             )
-            ->executeQuery();
-        $carts = $this->fetchAssociative($result);
+            ->executeQuery()
+            ->fetchAssociative();
 
         if (!empty($carts['deadline'])) {
             $deadline = (int)$carts['deadline'];
