@@ -210,7 +210,7 @@ class SelectorRepository extends AbstractRepository
             $queryBuilder
                 ->delete(Constants::TABLE_CARTDATA_MM)
                 ->where(
-                    $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(
                             'pid',
                             (int)$pageId
@@ -244,7 +244,7 @@ class SelectorRepository extends AbstractRepository
             ->select('*')
             ->from(Constants::TABLE_CARTDATA_MM)
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->in(
                         'pid',
                         $pageIds
@@ -469,7 +469,7 @@ class SelectorRepository extends AbstractRepository
                     $table,
                     $table,
                     'translations',
-                    (string)$queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(
                             $table . '.uid',
                             $queryBuilder->quoteIdentifier('translations.l10n_parent')
@@ -499,7 +499,7 @@ class SelectorRepository extends AbstractRepository
                     'triples',
                     Constants::TABLE_LOCALIZER_CART,
                     'carts',
-                    (string)$queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->and(
                         $queryBuilder->expr()->gt(
                             'carts.status',
                             10
@@ -513,7 +513,7 @@ class SelectorRepository extends AbstractRepository
                     $table,
                     $table,
                     'outdated',
-                    (string)$queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(
                             'outdated.l10n_parent',
                             $queryBuilder->quoteIdentifier($table . '.uid')
@@ -532,7 +532,7 @@ class SelectorRepository extends AbstractRepository
                         )
                     )
                 )->where(
-                    $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->and(
                         $queryBuilder->expr()->in(
                             $table . '.pid',
                             $pageIds
@@ -548,7 +548,7 @@ class SelectorRepository extends AbstractRepository
                     $table,
                     $table,
                     'translations',
-                    (string)$queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->and(
                         $queryBuilder->expr()->in(
                             'translations.pid',
                             $pageIds
@@ -570,7 +570,7 @@ class SelectorRepository extends AbstractRepository
                     $table,
                     Constants::TABLE_CARTDATA_MM,
                     'triples',
-                    (string)$queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(
                             'triples.tablename',
                             $queryBuilder->createNamedParameter($table, PDO::PARAM_STR)
@@ -584,7 +584,7 @@ class SelectorRepository extends AbstractRepository
                     'triples',
                     Constants::TABLE_LOCALIZER_CART,
                     'carts',
-                    (string)$queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->and(
                         $queryBuilder->expr()->gt(
                             'carts.status',
                             10
@@ -598,7 +598,7 @@ class SelectorRepository extends AbstractRepository
                     $table,
                     $table,
                     'outdated',
-                    (string)$queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->and(
                         $queryBuilder->expr()->in(
                             'outdated.pid',
                             $pageIds
@@ -617,7 +617,7 @@ class SelectorRepository extends AbstractRepository
                         )
                     )
                 )->where(
-                    $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->and(
                         $queryBuilder->expr()->in(
                             $table . '.pid',
                             $pageIds

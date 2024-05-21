@@ -24,7 +24,7 @@ class AutomaticExportRepository extends AbstractRepository
             ->select('*')
             ->from(Constants::TABLE_LOCALIZER_CART)
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->eq(
                         'cruser_id',
                         (int)$this->getBackendUser()->getUserId()
@@ -58,7 +58,7 @@ class AutomaticExportRepository extends AbstractRepository
             ->select('*')
             ->from('pages')
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->gt(
                         'localizer_include_with_automatic_export',
                         0
@@ -105,7 +105,7 @@ class AutomaticExportRepository extends AbstractRepository
                 'pages',
                 Constants::TABLE_LOCALIZER_SETTINGS_PAGES_MM,
                 'mm',
-                (string)$queryBuilder->expr()->andX(
+                (string)$queryBuilder->expr()->and(
                     $queryBuilder->expr()->eq(
                         'mm.uid_local',
                         $queryBuilder->quoteIdentifier('pages.uid')
@@ -117,7 +117,7 @@ class AutomaticExportRepository extends AbstractRepository
                 )
             )
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->notIn(
                         'pages.uid',
                         $excludedPages

@@ -29,7 +29,7 @@ class CartRepository extends AbstractRepository
                 Constants::TABLE_BACKEND_USERS,
                 Constants::TABLE_LOCALIZER_CART,
                 'cart',
-                (string)$queryBuilder->expr()->andX(
+                (string)$queryBuilder->expr()->and(
                     $queryBuilder->expr()->eq(
                         Constants::TABLE_BACKEND_USERS . '.uid',
                         $queryBuilder->quoteIdentifier('cart.cruser_id')
@@ -45,7 +45,7 @@ class CartRepository extends AbstractRepository
                 )
             )
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->isNotNull('cart.uid'),
                     $queryBuilder->expr()->gt(
                         Constants::TABLE_BACKEND_USERS . '.uid',
@@ -144,7 +144,7 @@ class CartRepository extends AbstractRepository
                         Constants::TABLE_EXPORTDATA_MM,
                         Constants::TABLE_LOCALIZER_LANGUAGE_MM,
                         'targetMM',
-                        (string)$queryBuilder->expr()->andX(
+                        (string)$queryBuilder->expr()->and(
                             $queryBuilder->expr()->eq(
                                 Constants::TABLE_EXPORTDATA_MM . '.uid',
                                 $queryBuilder->quoteIdentifier('targetMM.uid_local')

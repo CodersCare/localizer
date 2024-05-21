@@ -52,7 +52,7 @@ class AbstractRepository
                     'settings',
                     Constants::TABLE_LOCALIZER_LANGUAGE_MM,
                     'sourceMM',
-                    (string)$queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(
                             'settings.uid',
                             $queryBuilder->quoteIdentifier('sourceMM.uid_local')
@@ -84,7 +84,7 @@ class AbstractRepository
                     'settings',
                     Constants::TABLE_LOCALIZER_LANGUAGE_MM,
                     'targetMM',
-                    (string)$queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(
                             'settings.uid',
                             $queryBuilder->quoteIdentifier('targetMM.uid_local')
@@ -221,7 +221,7 @@ class AbstractRepository
             ->select('*')
             ->from(Constants::TABLE_LOCALIZER_CART)
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->eq(
                         'cruser_id',
                         (int)$this->getBackendUser()->getUserId()
@@ -251,7 +251,7 @@ class AbstractRepository
             ->select('pid')
             ->from(Constants::TABLE_CARTDATA_MM)
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->gt(
                         'pid',
                         0
@@ -320,7 +320,7 @@ class AbstractRepository
             ->select('languageId')
             ->from(Constants::TABLE_CARTDATA_MM)
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->gt(
                         'languageId',
                         0
