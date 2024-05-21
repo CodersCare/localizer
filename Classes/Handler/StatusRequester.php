@@ -45,7 +45,7 @@ class StatusRequester extends AbstractHandler
      */
     protected function acquire(): bool
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(
             Constants::TABLE_EXPORTDATA_MM
         );
         $affectedRows = $queryBuilder

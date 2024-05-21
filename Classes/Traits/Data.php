@@ -53,7 +53,7 @@ trait Data
      */
     protected function load(): void
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(
             Constants::TABLE_EXPORTDATA_MM
         );
 
@@ -72,7 +72,7 @@ trait Data
 
     protected function loadCart(): void
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(
             Constants::TABLE_LOCALIZER_CART
         );
         $result = $queryBuilder
@@ -160,7 +160,7 @@ trait Data
                 (bool)$row['plainxmlexports']
             );
             if ($api instanceof ApiCallsInterface && (!$api instanceof ApiCalls || $api->checkAndCreateFolders())) {
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                $queryBuilder = self::getConnectionPool()
                     ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
                 $result = $queryBuilder
                     ->select('*')
@@ -235,7 +235,7 @@ trait Data
         if ($this->canPersist === true) {
             foreach ($this->result['error'] as $uid => $fields) {
                 $fields['tstamp'] = $time;
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+                $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(
                     Constants::TABLE_LOCALIZER_CART
                 );
                 $queryBuilder
@@ -253,7 +253,7 @@ trait Data
             }
             foreach ($this->result['success'] as $uid => $fields) {
                 $fields['tstamp'] = $time;
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+                $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(
                     Constants::TABLE_EXPORTDATA_MM
                 );
                 $queryBuilder

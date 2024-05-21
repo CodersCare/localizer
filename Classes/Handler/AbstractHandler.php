@@ -6,6 +6,7 @@ namespace Localizationteam\Localizer\Handler;
 
 use Exception;
 use Localizationteam\Localizer\Constants;
+use Localizationteam\Localizer\Traits\ConnectionPoolTrait;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -17,6 +18,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractHandler
 {
+    use ConnectionPoolTrait;
+
     protected string $processId = '';
     private bool $run = false;
 
@@ -44,7 +47,7 @@ abstract class AbstractHandler
         if ($time == 0) {
             $time = time();
         }
-        GeneralUtility::makeInstance(ConnectionPool::class)
+        self::getConnectionPool()
             ->getConnectionForTable(Constants::TABLE_EXPORTDATA_MM)
             ->update(
                 Constants::TABLE_EXPORTDATA_MM,

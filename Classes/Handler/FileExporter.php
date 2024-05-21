@@ -63,7 +63,7 @@ class FileExporter extends AbstractCartHandler
     protected function acquire(): bool
     {
         $time = time();
-        $affectedRows = GeneralUtility::makeInstance(ConnectionPool::class)
+        $affectedRows = self::getConnectionPool()
             ->getConnectionForTable(Constants::TABLE_LOCALIZER_CART)
             ->update(
                 Constants::TABLE_LOCALIZER_CART,
@@ -233,7 +233,7 @@ class FileExporter extends AbstractCartHandler
      */
     protected function registerFilesForLocalizer(int $localizerId, int $configurationId, int $pid): void
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+        $queryBuilder = self::getConnectionPool()
             ->getQueryBuilderForTable(Constants::TABLE_L10NMGR_EXPORTDATA);
         $queryBuilder->getRestrictions()->removeAll();
         $rows = $queryBuilder

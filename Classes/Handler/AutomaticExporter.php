@@ -8,6 +8,7 @@ use Exception;
 use Localizationteam\Localizer\Model\Repository\AutomaticExportRepository;
 use Localizationteam\Localizer\Model\Repository\SelectorRepository;
 use Localizationteam\Localizer\Traits\AddFileToMatrix;
+use Localizationteam\Localizer\Traits\ConnectionPoolTrait;
 use Localizationteam\Localizer\Traits\Data;
 use Localizationteam\Localizer\Traits\Language;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
@@ -22,9 +23,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class AutomaticExporter extends AbstractCartHandler
 {
+    use AddFileToMatrix;
+    use ConnectionPoolTrait;
     use Data;
     use Language;
-    use AddFileToMatrix;
 
     protected string $uploadPath = '';
 
@@ -212,7 +214,7 @@ class AutomaticExporter extends AbstractCartHandler
                 // $selectorRepository = GeneralUtility::makeInstance(SelectorRepository::class);
                 // $recordExists = $selectorRepository->findRecordByPid($pid, $table);
 
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
+                $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable($table);
                 $result = $queryBuilder
                     ->select('*')
                     ->from($table)

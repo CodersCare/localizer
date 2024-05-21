@@ -46,7 +46,7 @@ class FileImporter extends AbstractHandler
 
     protected function acquire(): bool
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+        $queryBuilder = self::getConnectionPool()
             ->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
         $affectedRows = $queryBuilder
             ->update(Constants::TABLE_EXPORTDATA_MM)

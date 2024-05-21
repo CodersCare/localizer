@@ -49,7 +49,7 @@ class L10nMgrExportHandler implements PostSaveInterface
             return;
         }
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+        $queryBuilder = self::getConnectionPool()
             ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
         $row = $queryBuilder
             ->select(

@@ -10,8 +10,10 @@ use Localizationteam\Localizer\Api\ApiCalls;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Model\Repository\LanguageRepository;
 use Localizationteam\Localizer\Traits\BackendUserTrait;
+use Localizationteam\Localizer\Traits\ConnectionPoolTrait;
 use Localizationteam\Localizer\Traits\Data;
 use Localizationteam\Localizer\Traits\Language;
+use Symfony\Component\Lock\Store\DatabaseTableTrait;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -28,6 +30,7 @@ use TYPO3\CMS\Core\Utility\PathUtility;
 class DataHandlerHook
 {
     use BackendUserTrait;
+    use ConnectionPoolTrait;
     use Language;
     use Data;
 
@@ -151,11 +154,9 @@ class DataHandlerHook
     public function calcStat($p, $languageList, bool $noLink = false): string
     {
         $output = '';
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-            'tx_l10nmgr_index'
-        );
-        $queryBuilder->getRestrictions()
-            ->removeAll();
+        $queryBuilder = self::getQueryBuilderForTable(Constants::TABLE_L10NMGR_INDEX);
+        $queryBuilder->getRestrictions()->removeAll();
+
         if ($languageList === 0) {
             $noLanguage = '0';
             $languageValues = [];
@@ -166,7 +167,7 @@ class DataHandlerHook
         if ($p[0] != 'pages') {
             $result = $queryBuilder
                 ->select('*')
-                ->from('tx_l10nmgr_index')
+                ->from(Constants::TABLE_L10NMGR_INDEX)
                 ->where(
                     $queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(
@@ -197,7 +198,7 @@ class DataHandlerHook
         } else {
             $result = $queryBuilder
                 ->select('*')
-                ->from('tx_l10nmgr_index')
+                ->from(Constants::TABLE_L10NMGR_INDEX)
                 ->where(
                     $queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(

@@ -8,9 +8,9 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Traits\BackendUserTrait;
+use Localizationteam\Localizer\Traits\ConnectionPoolTrait;
 use Localizationteam\Localizer\Traits\Data;
 use PDO;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Database\RelationHandler;
@@ -25,6 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class AbstractRepository
 {
     use BackendUserTrait;
+    use ConnectionPoolTrait;
     use Data;
 
     protected Typo3Version $typo3Version;
@@ -140,14 +141,6 @@ class AbstractRepository
             'source' => $result['source_language'],
             'target' => $result['target_languages'],
         ];
-    }
-
-    /**
-     * @return object
-     */
-    public static function getConnectionPool(): object
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 
     /**

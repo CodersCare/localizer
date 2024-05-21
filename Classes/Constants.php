@@ -78,5 +78,6 @@ class Constants
     public const TABLE_STATIC_LANGUAGES = 'static_languages';
     public const TABLE_SYS_LANGUAGE = 'sys_language';
     public const TABLE_L10NMGR_CONFIGURATION = 'tx_l10nmgr_cfg';
+    public const TABLE_L10NMGR_INDEX = 'tx_l10nmgr_index';
     public const TABLE_L10NMGR_EXPORTDATA = 'tx_l10nmgr_exportdata';
 }

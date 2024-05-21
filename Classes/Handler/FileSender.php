@@ -44,7 +44,7 @@ class FileSender extends AbstractHandler
 
     protected function acquire(): bool
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+        $queryBuilder = self::getConnectionPool()
             ->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
 
         $affectedRows = $queryBuilder
@@ -178,7 +178,7 @@ class FileSender extends AbstractHandler
     protected function addDeadline(array $row): int
     {
         $deadline = 0;
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+        $queryBuilder = self::getConnectionPool()
             ->getQueryBuilderForTable(Constants::TABLE_EXPORTDATA_MM);
         $result = $queryBuilder
             ->selectLiteral(

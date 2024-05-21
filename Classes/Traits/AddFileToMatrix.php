@@ -21,6 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 trait AddFileToMatrix
 {
     use BackendUserTrait;
+    use ConnectionPoolTrait;
 
     /**
      * @throws DBALException
@@ -36,7 +37,7 @@ trait AddFileToMatrix
         int $action = 0
     ): void {
         $time = time();
-        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(
+        $databaseConnection = self::getConnectionPool()->getConnectionForTable(
             Constants::TABLE_EXPORTDATA_MM
         );
         $databaseConnection
@@ -81,7 +82,7 @@ trait AddFileToMatrix
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() < 12) {
             $isoCodeTargetLanguage = $this->getLanguageIsoCode($translationLanguage);
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            $queryBuilder = self::getConnectionPool()
                 ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
             $queryBuilder->getRestrictions()->removeAll();
             $result = $queryBuilder
@@ -103,7 +104,7 @@ trait AddFileToMatrix
                 foreach ($localizerLanguageRows as $lRow) {
                     $lRow['uid_local'] = $uid;
                     $lRow['source'] = Constants::TABLE_EXPORTDATA_MM;
-                    GeneralUtility::makeInstance(ConnectionPool::class)
+                    self::getConnectionPool()
                         ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
                         ->insert(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
                         ->values($lRow)
@@ -131,7 +132,7 @@ trait AddFileToMatrix
      */
     protected function getLanguageIsoCode(int $sysLanguageId): int
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::TABLE_SYS_LANGUAGE);
+        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(Constants::TABLE_SYS_LANGUAGE);
         $queryBuilder->getRestrictions()->removeAll();
         $row = $queryBuilder
             ->select('static_lang_isocode')

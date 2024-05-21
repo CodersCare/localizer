@@ -34,7 +34,7 @@ class ErrorResetter extends AbstractHandler
      */
     protected function acquire(): bool
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(
             Constants::TABLE_EXPORTDATA_MM
         );
         $affectedRows = $queryBuilder
@@ -68,7 +68,7 @@ class ErrorResetter extends AbstractHandler
     public function run(): void
     {
         if ($this->canRun() === true) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
+            $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(
                 Constants::TABLE_EXPORTDATA_MM
             );
             $queryBuilder

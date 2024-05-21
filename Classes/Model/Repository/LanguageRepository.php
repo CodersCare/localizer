@@ -56,7 +56,7 @@ class LanguageRepository extends AbstractRepository
      */
     public function getAllTargetLanguageUids(int $uidLocal, string $table): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+        $queryBuilder = self::getConnectionPool()
             ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
         $queryBuilder->getRestrictions()->removeAll();
 
@@ -103,7 +103,7 @@ class LanguageRepository extends AbstractRepository
             if ($fixUnderLine === true) {
                 $field = 'REPLACE(' . $field . ', "_", "-") as ' . $field;
             }
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            $queryBuilder = self::getConnectionPool()
                 ->getQueryBuilderForTable(Constants::TABLE_STATIC_LANGUAGES);
             $queryBuilder->getRestrictions()
                 ->removeAll();
@@ -138,7 +138,7 @@ class LanguageRepository extends AbstractRepository
         }
 
         if ($this->typo3Version->getMajorVersion() < 12) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            $queryBuilder = self::getConnectionPool()
                 ->getQueryBuilderForTable(Constants::TABLE_SYS_LANGUAGE);
             $queryBuilder->getRestrictions()->removeAll();
             $result = $queryBuilder
@@ -154,7 +154,7 @@ class LanguageRepository extends AbstractRepository
 
             return (int)$this->fetchOne($result);
         } else {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            $queryBuilder = self::getConnectionPool()
                 ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_SETTINGS);
             $queryBuilder->getRestrictions()->removeAll();
             $result = $queryBuilder

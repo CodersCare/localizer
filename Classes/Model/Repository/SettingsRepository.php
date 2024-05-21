@@ -17,11 +17,6 @@ class SettingsRepository extends AbstractRepository
         return $this->fetchAssociative($result);
     }
 
-    public static function getConnectionForTable(string $table): Connection
-    {
-        return self::getConnectionPool()->getConnectionForTable($table);
-    }
-
     public function loadAvailableLocalizers(): array
     {
         $localizers = $this->findAll();
