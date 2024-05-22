@@ -1,5 +1,6 @@
 <?php
 
+use Localizationteam\Localizer\Upgrades\LanguagesUpgradeWizard;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -76,3 +77,5 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Localizationtea
     'title' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:successReporterTask_title',
     'description' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:successReporterTask_desc',
 ];
+
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['localizerBeebox_languagesUpgradeWizard'] = LanguagesUpgradeWizard::class;
