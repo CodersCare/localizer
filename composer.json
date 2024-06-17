@@ -73,6 +73,7 @@
 		"ci:php:php-cs-fixer:dry": [
 			"php-cs-fixer fix --allow-risky=yes --dry-run -vvv --diff"
 		],
+		"ci:tests:unit": ".Build/bin/phpunit -c Build/UnitTests.xml Tests/Unit/ -v",
 		"ci:tests:functional": "XDEBUG_MODE=coverage typo3DatabaseDriver=pdo_sqlite .Build/bin/phpunit --log-junit functional-test-report.xml --coverage-cobertura=functional-tests-coverage.xml -c Build/FunctionalTests.xml Tests/Functional/ -v",
 		"ci:tests": [
 			"@ci:tests:functional"
