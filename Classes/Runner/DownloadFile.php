@@ -139,17 +139,11 @@ class DownloadFile
      */
     protected function adjustContent(string &$content, string $iso2): void
     {
-        $search = '<t3_targetLang translate="no">';
-        $position = strpos($content, $search);
-
-        // Fallback to without translate="no" parameter.
-        if ($position === false) {
-            $search = '<t3_targetLang>';
-            $position = strpos($content, $search);
-        }
-
-        $start = $position + strlen($search);
-        $content = substr_replace($content, $iso2, $start, 0);
+        $content = preg_replace(
+            '#(<t3_targetLang(?: translate="no")?>)[^<]*(</t3_targetLang>)#',
+            '$1' . $iso2 . '$2',
+            $content,
+        );
     }
 
     /**
