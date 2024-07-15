@@ -7,6 +7,10 @@ services:
   Localizationteam\Localizer\:
     resource: '../Classes/*'
 
+  Localizationteam\Localizer\Handler\:
+    resource: '../Classes/Handler/*'
+    public: true
+
   Localizationteam\Localizer\Controller\SettingsController:
     tags: [ 'backend.controller' ]
 

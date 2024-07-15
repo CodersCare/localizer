@@ -132,6 +132,8 @@ class FileDownloader extends AbstractHandler
                 }
             }
         }
+
+        $this->result = $this->dispatchHandlerRunHasFinishedEvent($this->result);
     }
 
     /**

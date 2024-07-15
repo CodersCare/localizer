@@ -116,6 +116,8 @@ class FileImporter extends AbstractHandler
                 }
             }
         }
+
+        $this->result = $this->dispatchHandlerRunHasFinishedEvent($this->result);
     }
 
     /**

@@ -123,6 +123,8 @@ class StatusRequester extends AbstractHandler
                 }
             }
         }
+
+        $this->result = $this->dispatchHandlerRunHasFinishedEvent($this->result);
     }
 
     /**

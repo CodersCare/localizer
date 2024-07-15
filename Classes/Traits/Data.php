@@ -30,7 +30,7 @@ trait Data
 
     protected array $data;
 
-    protected array $result;
+    protected ?array $result = null;
 
     private bool $canPersist = false;
 

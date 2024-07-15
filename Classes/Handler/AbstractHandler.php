@@ -6,9 +6,11 @@ namespace Localizationteam\Localizer\Handler;
 
 use Exception;
 use Localizationteam\Localizer\Constants;
+use Localizationteam\Localizer\Events\HandlerRunHasFinished;
 use Localizationteam\Localizer\Traits\ConnectionPoolTrait;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -20,8 +22,14 @@ abstract class AbstractHandler
 {
     use ConnectionPoolTrait;
 
+    protected EventDispatcher $eventDispatcher;
     protected string $processId = '';
     private bool $run = false;
+
+    public function injectEventDispatcher(EventDispatcher $eventDispatcher): void
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
     /**
      * @throws Exception
@@ -90,5 +98,12 @@ abstract class AbstractHandler
     final protected function canRun(): bool
     {
         return $this->run;
+    }
+
+    protected function dispatchHandlerRunHasFinishedEvent(?array $result): array
+    {
+        $event = GeneralUtility::makeInstance(HandlerRunHasFinished::class, $this, $result ?? []);
+        $this->eventDispatcher->dispatch($event);
+        return $event->getResult();
     }
 }
