@@ -266,7 +266,7 @@ return [
                 'type' => 'select',
                 'foreign_table' => 'static_languages',
                 'renderType' => 'selectSingle',
-                'minitems' => 1,
+                'minitems' => 0,
                 'maxitems' => 1,
                 'MM' => 'tx_localizer_language_mm',
                 'MM_match_fields' => [
@@ -285,7 +285,7 @@ return [
                 'renderType' => 'selectMultipleSideBySide',
                 'size' => 3,
                 'autoSizeMax' => 10,
-                'minitems' => 1,
+                'minitems' => 0,
                 'maxitems' => 99,
                 'MM' => 'tx_localizer_language_mm',
                 'MM_match_fields' => [
@@ -320,7 +320,6 @@ return [
     ],
     'types' => [
         '0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, deadline, projectkey, --palette--;;2, --palette--;;3, l10n_cfg, --palette--;;4, source_locale, target_locale, source_language, target_languages'],
-        //'0' => ['showitem' => 'hidden, --palette--;;1, type, title, description, out_folder, in_folder, workflow, deadline, projectkey, --palette--;;2, --palette--;;3, l10n_cfg, --palette--;;4, source_locale, target_locale, source_language'],
     ],
     'palettes' => [
         '1' => ['showitem' => 'project_settings,last_error'],

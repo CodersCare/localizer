@@ -37,7 +37,7 @@ CREATE TABLE tx_localizer_settings
     source_locale                   int(11)       DEFAULT '0' NOT NULL,
     target_locale                   int(11)       DEFAULT '0' NOT NULL,
     source_language                 int(11)       DEFAULT '0' NOT NULL,
-    target_languages                varchar(30)   DEFAULT ''  NOT NULL,
+    target_languages                varchar(1024)   DEFAULT ''  NOT NULL,
     PRIMARY KEY (uid),
     KEY parent (pid),
     KEY titlet (title),
