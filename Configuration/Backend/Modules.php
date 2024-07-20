@@ -16,14 +16,14 @@ $lll = 'LLL:EXT:localizer/Resources/Private/Language/';
 return [
     'localizer' => [
         'labels' => $lll . 'locallang_localizer.xlf',
-        'access' => 'user,group',
+        'access' => 'user',
         'iconIdentifier' => 'extensionIcon',
         'position' => ['after' => 'l10nmgr'],
         'navigationComponent' => '@typo3/backend/page-tree/page-tree-element',
     ],
     'localizer_selector' => [
         'parent' => 'localizer',
-        'access' => 'user,group', // user, admin or systemMaintainer
+        'access' => 'user', // user, admin or systemMaintainer
         'path' => '/module/localizer/selector',
         'iconIdentifier' => 'module-selector',
         'labels' => $lll . 'locallang_localizer_selector.xlf',
@@ -36,7 +36,7 @@ return [
     ],
     'localizer_cart' => [
         'parent' => 'localizer',
-        'access' => 'user,group', // user, admin or systemMaintainer
+        'access' => 'user', // user, admin or systemMaintainer
         'path' => '/module/localizer/cart',
         'iconIdentifier' => 'module-cart',
         'labels' => $lll . 'locallang_localizer_cart.xlf',
@@ -49,7 +49,7 @@ return [
     ],
     'localizer_settings' => [
         'parent' => 'localizer',
-        'access' => 'user,group', // user, admin or systemMaintainer
+        'access' => 'user', // user, admin or systemMaintainer
         'path' => '/module/localizer/settings',
         'iconIdentifier' => 'module-settings',
         'labels' => $lll . 'locallang_localizer_settings.xlf',
