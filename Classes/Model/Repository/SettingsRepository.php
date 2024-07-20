@@ -22,7 +22,7 @@ class SettingsRepository extends AbstractRepository
 
         return $connection
             ->select($fields, Constants::TABLE_LOCALIZER_SETTINGS, ['uid' => $uid])
-            ->fetchAllAssociative();
+            ->fetchAssociative();
     }
 
     public function loadAvailableLocalizers(): array

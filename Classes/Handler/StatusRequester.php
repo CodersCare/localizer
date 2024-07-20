@@ -10,7 +10,6 @@ use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Runner\RequestStatus;
 use Localizationteam\Localizer\Traits\Data;
 use Localizationteam\Localizer\Traits\Language;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

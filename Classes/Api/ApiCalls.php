@@ -328,9 +328,9 @@ class ApiCalls implements ApiCallsInterface
                     $targetLanguage = strtolower($targetLocale[0]);
                     $targetCountry = $targetLocale[1] ? strtolower($targetLocale[1]) : strtolower($targetLocale[0]);
                     $markContentArray = [
-                        'DEADLINE' => $instructions['deadline'],
+                        'DEADLINE' => $instructions['deadline'] ?? '',
                         'FILE_NAME' => $fileName,
-                        'PROJECT_CONTACT' => $this->getBackendUser()->user['email'],
+                        'PROJECT_CONTACT' => $this->getBackendUser()->user['email'] ?? '',
                         'PROJECT_NAME' => date('Y-m-d') . '_Typo3CMS_' . strtoupper($sourceLanguage) . '-' . strtoupper($targetLanguage),
                         'PROJECT_SETTINGS' => $this->projectKey,
                         'SOURCE_COUNTRY' => $sourceCountry,

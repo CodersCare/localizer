@@ -12,7 +12,8 @@ use Localizationteam\Localizer\Runner\SendFile;
 use Localizationteam\Localizer\Traits\Data;
 use Localizationteam\Localizer\Traits\Language;
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -83,6 +84,9 @@ class FileSender extends AbstractHandler
     public function run(): void
     {
         if ($this->canRun() === true) {
+            /** @var Typo3Version $typo3Version */
+            $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+
             foreach ($this->data as $row) {
                 $file = $this->getFileAndPath($row['filename']);
                 if ($file === false) {
@@ -117,14 +121,19 @@ class FileSender extends AbstractHandler
                         }
                         $translateAll = $this->translateAll($row);
                         if ($translateAll === false) {
-                            /** @var LanguageRepository $languageRepository */
-                            $languageRepository = GeneralUtility::makeInstance(LanguageRepository::class);
-                            $targetLocalesUids = $languageRepository->getAllTargetLanguageUids(
-                                $row['uid'],
-                                Constants::TABLE_EXPORTDATA_MM
-                            );
-                            $additionalConfiguration['targetLocales'] =
-                                $languageRepository->getStaticLanguagesCollateLocale($targetLocalesUids, true);
+                            if ($typo3Version->getMajorVersion() < 12) {
+                                /** @var LanguageRepository $languageRepository */
+                                $languageRepository = GeneralUtility::makeInstance(LanguageRepository::class, GeneralUtility::makeInstance(SiteFinder::class));
+                                $targetLocalesUids = $languageRepository->getAllTargetLanguageUids(
+                                    $row['uid'],
+                                    Constants::TABLE_EXPORTDATA_MM
+                                );
+                                $additionalConfiguration['targetLocales'] =
+                                    $languageRepository->getStaticLanguagesCollateLocale($targetLocalesUids, true);
+                            } else {
+                                $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($row['pid']);
+                                $additionalConfiguration['targetLocales'][] = $site->getLanguageById($row['target_locale'])->getLocale()->__toString();
+                            }
                         }
 
                         $configuration = array_merge(

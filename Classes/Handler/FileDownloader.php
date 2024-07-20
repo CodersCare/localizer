@@ -11,7 +11,6 @@ use Localizationteam\Localizer\Runner\DownloadFile;
 use Localizationteam\Localizer\Traits\Data;
 use Localizationteam\Localizer\Traits\File;
 use Localizationteam\Localizer\Traits\Language;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

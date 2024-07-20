@@ -26,7 +26,7 @@ trait Language
         /** @var Typo3Version $typo3Version */
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
 
-        //if ($typo3Version->getMajorVersion() < 12) {
+        if ($typo3Version->getMajorVersion() < 12) {
             /** @var LanguageRepository $languageRepository */
             $languageRepository = GeneralUtility::makeInstance(LanguageRepository::class);
             $targetLanguages = $languageRepository->getAllTargetLanguageUids($row['uid'], Constants::TABLE_EXPORTDATA_MM);
@@ -42,11 +42,10 @@ trait Language
                     }
                 }
             }
-        //} else {
-        //    $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($row['pid']);
-        //
-        //    return $site->getLanguageById($languageId)
-        //}
+        } else {
+            $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($row['pid']);
+            return $site->getLanguageById($row['source_language'])->getLocale()->__toString();
+        }
 
         return $iso2;
     }

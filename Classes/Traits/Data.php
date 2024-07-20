@@ -12,7 +12,6 @@ use Localizationteam\Localizer\Api\ApiCallsInterface;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Messaging\FlashMessage;
 use Localizationteam\Localizer\Model\Repository\SettingsRepository;
-use PDO;
 use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -26,6 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 trait Data
 {
+    use Language;
     protected array $apiPool;
 
     protected array $data;
@@ -128,6 +128,7 @@ trait Data
 
         $fields = [
             'uid',
+            'pid',
             'type',
             'title',
             'url',
@@ -140,12 +141,14 @@ trait Data
             'in_folder',
             'source_locale',
             'target_locale',
+            'source_language',
+            'target_languages',
             'plainxmlexports',
         ];
 
         $row = $localizerSettingsRepository->findByUid($uid, $fields);
 
-        if ($row['type'] === '0' || ExtensionManagementUtility::isLoaded($row['type'])) {
+        if (isset($row['type']) && ($row['type'] === '0' || ExtensionManagementUtility::isLoaded($row['type'] ?? ''))) {
             if ($row['type'] === '0') {
                 $apiClass = ApiCalls::class;
             } else {
@@ -155,7 +158,7 @@ trait Data
             }
             $api = GeneralUtility::makeInstance(
                 $apiClass,
-                0,
+                '0',
                 $row['url'],
                 $row['workflow'],
                 $row['projectkey'],
@@ -166,43 +169,6 @@ trait Data
                 (bool)$row['plainxmlexports']
             );
             if ($api instanceof ApiCallsInterface && (!$api instanceof ApiCalls || $api->checkAndCreateFolders())) {
-                $queryBuilder = self::getConnectionPool()
-                    ->getQueryBuilderForTable(Constants::TABLE_LOCALIZER_LANGUAGE_MM);
-                $sourceLocale = $queryBuilder
-                    ->select('*')
-                    ->from(Constants::TABLE_LOCALIZER_LANGUAGE_MM)
-                    ->leftJoin(
-                        Constants::TABLE_LOCALIZER_LANGUAGE_MM,
-                        Constants::TABLE_STATIC_LANGUAGES,
-                        Constants::TABLE_STATIC_LANGUAGES,
-                        (string)$queryBuilder->expr()->eq(
-                            Constants::TABLE_STATIC_LANGUAGES . '.uid',
-                            $queryBuilder->quoteIdentifier(Constants::TABLE_LOCALIZER_LANGUAGE_MM . '.uid_foreign')
-                        )
-                    )
-                    ->where(
-                        $queryBuilder->expr()->and(
-                            $queryBuilder->expr()->eq(
-                                'uid_local',
-                                (int)$row['uid']
-                            ),
-                            $queryBuilder->expr()->eq(
-                                'ident',
-                                $queryBuilder->createNamedParameter('source')
-                            ),
-                            $queryBuilder->expr()->eq(
-                                'tablenames',
-                                $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES)
-                            ),
-                            $queryBuilder->expr()->eq(
-                                'source',
-                                $queryBuilder->createNamedParameter('tx_localizer_settings')
-                            )
-                        )
-                    )
-                    ->executeQuery()
-                    ->fetchAssociative();
-
                 $this->apiPool[$uid] = [
                     'api' => $api,
                     'settings' => [
@@ -215,7 +181,7 @@ trait Data
                         'username' => $row['username'],
                         'password' => $row['password'],
                         'workflow' => $row['workflow'],
-                        'source' => str_replace('_', '-', $sourceLocale['lg_collate_locale']),
+                        'source' => $this->getIso2ForLocale($row),
                         'plainxmlexports' => (bool)$row['plainxmlexports'],
                     ],
                 ];
