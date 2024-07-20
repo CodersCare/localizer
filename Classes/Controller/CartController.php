@@ -14,6 +14,7 @@ use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -85,8 +86,7 @@ class CartController extends AbstractController
         $this->userId = (int)($request->getParsedBody()['selected_user'] ?? $request->getQueryParams()['selected_user'] ?? null);
         $this->pointer = (int)($request->getParsedBody()['pointer'] ?? $request->getQueryParams()['pointer'] ?? null);
         $this->imagemode = (string)($request->getParsedBody()['imagemode'] ?? $request->getQueryParams()['imagemode'] ?? null);
-        $_GET['table'] = Constants::TABLE_LOCALIZER_CART;
-        $this->table = (string)($request->getParsedBody()['table'] ?? $request->getQueryParams()['table'] ?? null);
+        $this->table = Constants::TABLE_LOCALIZER_CART;
         $this->search_field = (string)($request->getParsedBody()['search_field'] ?? $request->getQueryParams()['search_field'] ?? null);
         $this->search_levels = (int)($request->getParsedBody()['search_levels'] ?? $request->getQueryParams()['search_levels'] ?? null);
         $this->showLimit = (int)($request->getParsedBody()['showLimit'] ?? $request->getQueryParams()['showLimit'] ?? null);
