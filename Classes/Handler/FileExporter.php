@@ -18,6 +18,7 @@ use TYPO3\CMS\Core\Console\CommandRegistry;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -106,6 +107,7 @@ class FileExporter extends AbstractCartHandler
                 );
                 $pid = (int)$configurationData['pid'];
                 $cartConfiguration = json_decode($row['configuration'], true);
+                DebugUtility::debug($cartConfiguration);
                 if (!empty($cartConfiguration['languages']) && !empty($cartConfiguration['tables'])) {
                     $tables = $cartConfiguration['tables'];
                     $pageIds = $this->selectorRepository->loadAvailablePages($pid, $cartId);
@@ -114,6 +116,9 @@ class FileExporter extends AbstractCartHandler
                     $this->triples = $this->selectorRepository->loadStoredTriples($pageIds, $cartId);
                     if (!empty($this->content) && !empty($this->triples)) {
                         foreach ($languageIds as $languageId) {
+                            if ($languageId === 0) {
+                                continue;
+                            }
                             $configuredLanguageExport = $this->configureRecordsForLanguage(
                                 $localizerId,
                                 $cartId,
