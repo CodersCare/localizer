@@ -183,7 +183,6 @@ return [
                 'size' => 5,
                 'autoSizeMax' => 10,
                 'minitems' => 0,
-                'maxitems' => 99,
                 'MM' => 'tx_localizer_settings_l10n_cfg_mm',
                 'fieldControl' => [
                     'addRecord' => [
