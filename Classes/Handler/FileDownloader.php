@@ -84,52 +84,54 @@ class FileDownloader extends AbstractHandler
      */
     public function run(): void
     {
-        if ($this->canRun() === true) {
-            foreach ($this->data as $row) {
-                $localizerSettings = $this->getLocalizerSettings($row['uid_local']);
-                if (empty($localizerSettings)) {
+        if (!$this->canRun()) {
+            return;
+        }
+
+        foreach ($this->data as $row) {
+            $localizerSettings = $this->getLocalizerSettings($row['uid_local']);
+            if (empty($localizerSettings)) {
+                $this->addErrorResult(
+                    $row['uid'],
+                    Constants::STATUS_CART_ERROR,
+                    $row['status'],
+                    'LOCALIZER settings (' . $row['uid_local'] . ') not found'
+                );
+            } elseif ($row['response'] !== '') {
+                $originalResponse = json_decode($row['response'], true);
+                if ($originalResponse === null) {
                     $this->addErrorResult(
                         $row['uid'],
                         Constants::STATUS_CART_ERROR,
-                        $row['status'],
-                        'LOCALIZER settings (' . $row['uid_local'] . ') not found'
+                        Constants::HANDLER_FILEDOWNLOADER_ERROR_STATUS_RESET,
+                        'Expected array but could not decode response. Must get status from Localizer',
+                        Constants::HANDLER_FILEDOWNLOADER_ERROR_ACTION_RESET
                     );
-                } elseif ($row['response'] !== '') {
-                    $originalResponse = json_decode($row['response'], true);
-                    if ($originalResponse === null) {
-                        $this->addErrorResult(
-                            $row['uid'],
-                            Constants::STATUS_CART_ERROR,
-                            Constants::HANDLER_FILEDOWNLOADER_ERROR_STATUS_RESET,
-                            'Expected array but could not decode response. Must get status from Localizer',
-                            Constants::HANDLER_FILEDOWNLOADER_ERROR_ACTION_RESET
-                        );
-                    } elseif (isset($originalResponse['files'])) {
-                        $response = $this->processDownload(
-                            $localizerSettings,
-                            $row['filename'],
-                            $originalResponse['files'],
-                            $row
-                        );
-                        $this->processResponse($row['uid'], $response);
-                    } else {
-                        $this->addErrorResult(
-                            $row['uid'],
-                            Constants::STATUS_CART_ERROR,
-                            Constants::HANDLER_FILEDOWNLOADER_ERROR_STATUS_RESET,
-                            'No information about files found in response. Must get status from Localizer',
-                            Constants::HANDLER_FILEDOWNLOADER_ERROR_ACTION_RESET
-                        );
-                    }
+                } elseif (isset($originalResponse['files'])) {
+                    $response = $this->processDownload(
+                        $localizerSettings,
+                        $row['filename'],
+                        $originalResponse['files'],
+                        $row
+                    );
+                    $this->processResponse($row['uid'], $response);
                 } else {
                     $this->addErrorResult(
                         $row['uid'],
                         Constants::STATUS_CART_ERROR,
                         Constants::HANDLER_FILEDOWNLOADER_ERROR_STATUS_RESET,
-                        'No Localizer response found. Must get status from Localizer',
+                        'No information about files found in response. Must get status from Localizer',
                         Constants::HANDLER_FILEDOWNLOADER_ERROR_ACTION_RESET
                     );
                 }
+            } else {
+                $this->addErrorResult(
+                    $row['uid'],
+                    Constants::STATUS_CART_ERROR,
+                    Constants::HANDLER_FILEDOWNLOADER_ERROR_STATUS_RESET,
+                    'No Localizer response found. Must get status from Localizer',
+                    Constants::HANDLER_FILEDOWNLOADER_ERROR_ACTION_RESET
+                );
             }
         }
 

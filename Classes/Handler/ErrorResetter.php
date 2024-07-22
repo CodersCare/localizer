@@ -67,30 +67,32 @@ class ErrorResetter extends AbstractHandler
      */
     public function run(): void
     {
-        if ($this->canRun() === true) {
-            $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(
-                Constants::TABLE_EXPORTDATA_MM
-            );
-            $queryBuilder
-                ->update(Constants::TABLE_EXPORTDATA_MM)
-                ->where(
-                    $queryBuilder->expr()->isNull(
-                        'last_error'
-                    ),
-                    $queryBuilder->expr()->gt(
-                        'previous_status',
-                        0
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'processid',
-                        $queryBuilder->createNamedParameter($this->getProcessId())
-                    )
-                )
-                ->set('status', $queryBuilder->quoteIdentifier('previous_status'))
-                ->set('previous_status', 0)
-                ->set('last_error', null)
-                ->executeStatement();
+        if (!$this->canRun()) {
+            return;
         }
+
+        $queryBuilder = self::getConnectionPool()->getQueryBuilderForTable(
+            Constants::TABLE_EXPORTDATA_MM
+        );
+        $queryBuilder
+            ->update(Constants::TABLE_EXPORTDATA_MM)
+            ->where(
+                $queryBuilder->expr()->isNull(
+                    'last_error'
+                ),
+                $queryBuilder->expr()->gt(
+                    'previous_status',
+                    0
+                ),
+                $queryBuilder->expr()->eq(
+                    'processid',
+                    $queryBuilder->createNamedParameter($this->getProcessId())
+                )
+            )
+            ->set('status', $queryBuilder->quoteIdentifier('previous_status'))
+            ->set('previous_status', 0)
+            ->set('last_error', null)
+            ->executeStatement();
     }
 
     public function finish(int $time): void

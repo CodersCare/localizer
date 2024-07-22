@@ -84,6 +84,7 @@ class StatusRequester extends AbstractHandler
         if (!$this->canRun()) {
             return;
         }
+
         foreach ($this->data as $row) {
             $localizerSettings = $this->getLocalizerSettings($row['uid_local']);
             if (empty($localizerSettings)) {

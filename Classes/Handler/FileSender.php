@@ -83,86 +83,92 @@ class FileSender extends AbstractHandler
      */
     public function run(): void
     {
-        if ($this->canRun() === true) {
-            /** @var Typo3Version $typo3Version */
-            $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if (!$this->canRun()) {
+            return;
+        }
 
-            foreach ($this->data as $row) {
-                $file = $this->getFileAndPath($row['filename']);
-                if ($file === false) {
-                    $this->addErrorResult(
+        /** @var Typo3Version $typo3Version */
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+
+        foreach ($this->data as $row) {
+            if ((int)$row['action'] !== Constants::ACTION_SEND_FILE) {
+                continue;
+            }
+
+            $file = $this->getFileAndPath($row['filename']);
+            if ($file === false) {
+                $this->addErrorResult(
+                    $row['uid'],
+                    Constants::STATUS_CART_ERROR,
+                    $row['status'],
+                    'File ' . $row['filename'] . ' not found'
+                );
+                continue;
+            }
+
+            $localizerSettings = $this->getLocalizerSettings($row['uid_local']);
+            if (empty($localizerSettings)) {
+                $this->addErrorResult(
+                    $row['uid'],
+                    Constants::STATUS_CART_ERROR,
+                    $row['status'],
+                    'LOCALIZER settings (' . $row['uid_local'] . ') not found'
+                );
+                continue;
+            }
+
+            $additionalConfiguration = [
+                'uid' => $row['uid'],
+                'localFile' => $file,
+                'file' => $row['filename'],
+            ];
+            $deadline = $this->addDeadline($row);
+            if (!empty($deadline)) {
+                $additionalConfiguration['deadline'] = $deadline;
+            }
+            $metadata = $this->addMetaData($row);
+            if (!empty($metadata)) {
+                $additionalConfiguration['metadata'] = $metadata;
+            }
+            $translateAll = $this->translateAll($row);
+            if ($translateAll === false) {
+                if ($typo3Version->getMajorVersion() < 12) {
+                    /** @var LanguageRepository $languageRepository */
+                    $languageRepository = GeneralUtility::makeInstance(LanguageRepository::class, GeneralUtility::makeInstance(SiteFinder::class));
+                    $targetLocalesUids = $languageRepository->getAllTargetLanguageUids(
                         $row['uid'],
-                        Constants::STATUS_CART_ERROR,
-                        $row['status'],
-                        'File ' . $row['filename'] . ' not found'
+                        Constants::TABLE_EXPORTDATA_MM
                     );
+                    $additionalConfiguration['targetLocales'] =
+                        $languageRepository->getStaticLanguagesCollateLocale($targetLocalesUids, true);
                 } else {
-                    $localizerSettings = $this->getLocalizerSettings($row['uid_local']);
-                    if (empty($localizerSettings)) {
-                        $this->addErrorResult(
-                            $row['uid'],
-                            Constants::STATUS_CART_ERROR,
-                            $row['status'],
-                            'LOCALIZER settings (' . $row['uid_local'] . ') not found'
-                        );
-                    } else {
-                        $additionalConfiguration = [
-                            'uid' => $row['uid'],
-                            'localFile' => $file,
-                            'file' => $row['filename'],
-                        ];
-                        $deadline = $this->addDeadline($row);
-                        if (!empty($deadline)) {
-                            $additionalConfiguration['deadline'] = $deadline;
-                        }
-                        $metadata = $this->addMetaData($row);
-                        if (!empty($metadata)) {
-                            $additionalConfiguration['metadata'] = $metadata;
-                        }
-                        $translateAll = $this->translateAll($row);
-                        if ($translateAll === false) {
-                            if ($typo3Version->getMajorVersion() < 12) {
-                                /** @var LanguageRepository $languageRepository */
-                                $languageRepository = GeneralUtility::makeInstance(LanguageRepository::class, GeneralUtility::makeInstance(SiteFinder::class));
-                                $targetLocalesUids = $languageRepository->getAllTargetLanguageUids(
-                                    $row['uid'],
-                                    Constants::TABLE_EXPORTDATA_MM
-                                );
-                                $additionalConfiguration['targetLocales'] =
-                                    $languageRepository->getStaticLanguagesCollateLocale($targetLocalesUids, true);
-                            } else {
-                                $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($row['pid']);
-                                $additionalConfiguration['targetLocales'][] = $site->getLanguageById($row['target_locale'])->getLocale()->__toString();
-                            }
-                        }
-
-                        $configuration = array_merge(
-                            $localizerSettings,
-                            $additionalConfiguration
-                        );
-
-                        if ((int)$row['action'] === Constants::ACTION_SEND_FILE) {
-                            /** @var SendFile $runner */
-                            $runner = GeneralUtility::makeInstance(SendFile::class);
-                            try {
-                                $runner->init($configuration);
-                            } catch (Exception $e) {
-                            }
-                            try {
-                                $runner->run();
-                            } catch (Exception $e) {
-                            }
-                            $response = $runner->getResponse();
-                            if (empty($response)) {
-                                $this->addSuccessResult(
-                                    $row['uid'],
-                                    Constants::STATUS_CART_FILE_SENT,
-                                    Constants::ACTION_REQUEST_STATUS
-                                );
-                            }
-                        }
-                    }
+                    $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($row['pid']);
+                    $additionalConfiguration['targetLocales'][] = $site->getLanguageById($row['target_locale'])->getLocale()->__toString();
                 }
+            }
+
+            $configuration = array_merge(
+                $localizerSettings,
+                $additionalConfiguration
+            );
+
+            /** @var SendFile $runner */
+            $runner = GeneralUtility::makeInstance(SendFile::class);
+            try {
+                $runner->init($configuration);
+            } catch (Exception $e) {
+            }
+            try {
+                $runner->run();
+            } catch (Exception $e) {
+            }
+            $response = $runner->getResponse();
+            if (empty($response)) {
+                $this->addSuccessResult(
+                    $row['uid'],
+                    Constants::STATUS_CART_FILE_SENT,
+                    Constants::ACTION_REQUEST_STATUS
+                );
             }
         }
 

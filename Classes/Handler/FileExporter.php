@@ -93,64 +93,69 @@ class FileExporter extends AbstractCartHandler
      */
     public function run(): void
     {
-        if ($this->canRun() === true) {
-            $row = $this->data[0];
-            if (isset($row['configuration'])) {
-                $localizerId = (int)$row['uid_local'];
-                $cartId = (int)$row['uid'];
-                $configurationId = (int)$row['uid_foreign'];
-                $configurationData = BackendUtility::getRecord(
-                    Constants::TABLE_L10NMGR_CONFIGURATION,
-                    $configurationId
+        if (!$this->canRun()) {
+            return;
+        }
+
+        $row = $this->data[0];
+        if (!isset($row['configuration'])) {
+            $this->addErrorResult(
+                $row['uid'],
+                Constants::STATUS_CART_ERROR,
+                Constants::HANDLER_FILEEXPORTER_ERROR_STATUS_RESET,
+                'Insufficient information found in cart entry.',
+                Constants::HANDLER_FILEEXPORTER_ERROR_ACTION_RESET
+            );
+            return;
+        }
+
+        $cartConfiguration = json_decode($row['configuration'], true);
+        if (empty($cartConfiguration['languages']) || empty($cartConfiguration['tables'])) {
+            return;
+        }
+
+        $localizerId = (int)$row['uid_local'];
+        $cartId = (int)$row['uid'];
+        $configurationId = (int)$row['uid_foreign'];
+        $configurationData = BackendUtility::getRecord(
+            Constants::TABLE_L10NMGR_CONFIGURATION,
+            $configurationId
+        );
+        $pid = (int)$configurationData['pid'];
+        $tables = $cartConfiguration['tables'];
+        $pageIds = $this->selectorRepository->loadAvailablePages($pid, $cartId);
+        $languageIds = array_keys($cartConfiguration['languages']);
+        $this->content = $this->selectorRepository->getRecordsOnPages($pid, $pageIds, $tables, [], $languageIds);
+        $this->triples = $this->selectorRepository->loadStoredTriples($pageIds, $cartId);
+        if (!empty($this->content) && !empty($this->triples)) {
+            foreach ($languageIds as $languageId) {
+                if ($languageId === 0) {
+                    continue;
+                }
+                $configuredLanguageExport = $this->configureRecordsForLanguage(
+                    $localizerId,
+                    $cartId,
+                    $configurationId,
+                    $languageId
                 );
-                $pid = (int)$configurationData['pid'];
-                $cartConfiguration = json_decode($row['configuration'], true);
-                if (!empty($cartConfiguration['languages']) && !empty($cartConfiguration['tables'])) {
-                    $tables = $cartConfiguration['tables'];
-                    $pageIds = $this->selectorRepository->loadAvailablePages($pid, $cartId);
-                    $languageIds = array_keys($cartConfiguration['languages']);
-                    $this->content = $this->selectorRepository->getRecordsOnPages($pid, $pageIds, $tables, [], $languageIds);
-                    $this->triples = $this->selectorRepository->loadStoredTriples($pageIds, $cartId);
-                    if (!empty($this->content) && !empty($this->triples)) {
-                        foreach ($languageIds as $languageId) {
-                            if ($languageId === 0) {
-                                continue;
-                            }
-                            $configuredLanguageExport = $this->configureRecordsForLanguage(
-                                $localizerId,
-                                $cartId,
-                                $configurationId,
-                                $languageId
-                            );
-                            if ($configuredLanguageExport) {
-                                $output = $this->processExport($configurationId, $languageId);
-                                if ($output['exitCode'] > 0) {
-                                    throw new Exception(
-                                        'Failed export to file with: "' . $output['command'] . '". Exit code was: "' . $output['exitCode'] . '". Output was: "' . $output['output'] . '".',
-                                        1625730835
-                                    );
-                                }
-                            }
-                        }
-                        $this->selectorRepository->updateL10nmgrConfiguration(
-                            $configurationId,
-                            $localizerId,
-                            $cartId,
-                            $pageIds,
-                            ''
+                if ($configuredLanguageExport) {
+                    $output = $this->processExport($configurationId, $languageId);
+                    if ($output['exitCode'] > 0) {
+                        throw new Exception(
+                            'Failed export to file with: "' . $output['command'] . '". Exit code was: "' . $output['exitCode'] . '". Output was: "' . $output['output'] . '".',
+                            1625730835
                         );
-                        $this->registerFilesForLocalizer($localizerId, $configurationId, $pid);
                     }
                 }
-            } else {
-                $this->addErrorResult(
-                    $row['uid'],
-                    Constants::STATUS_CART_ERROR,
-                    Constants::HANDLER_FILEEXPORTER_ERROR_STATUS_RESET,
-                    'Insufficient information found in cart entry.',
-                    Constants::HANDLER_FILEEXPORTER_ERROR_ACTION_RESET
-                );
             }
+            $this->selectorRepository->updateL10nmgrConfiguration(
+                $configurationId,
+                $localizerId,
+                $cartId,
+                $pageIds,
+                ''
+            );
+            $this->registerFilesForLocalizer($localizerId, $configurationId, $pid);
         }
     }
 

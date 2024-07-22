@@ -68,10 +68,12 @@ class AutomaticExporter extends AbstractCartHandler
      */
     public function run(): void
     {
-        if ($this->canRun() === true) {
-            foreach ($this->availableLocalizers as $localizer) {
-                $this->exportScheduledRecords($localizer);
-            }
+        if (!$this->canRun()) {
+            return;
+        }
+
+        foreach ($this->availableLocalizers as $localizer) {
+            $this->exportScheduledRecords($localizer);
         }
     }
 
