@@ -20,6 +20,7 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
+        'ignorePageTypeRestriction' => true,
         'iconfile' => 'EXT:localizer/Resources/Public/Icons/module-localizer-settings.svg',
     ],
     'feInterface' => '',
