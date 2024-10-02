@@ -78,4 +78,4 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Localizationtea
     'description' => 'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:successReporterTask_desc',
 ];
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['localizerBeebox_languagesUpgradeWizard'] = LanguagesUpgradeWizard::class;
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['localizer_languagesUpgradeWizard'] = LanguagesUpgradeWizard::class;

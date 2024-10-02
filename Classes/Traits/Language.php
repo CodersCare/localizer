@@ -44,7 +44,7 @@ trait Language
             }
         } else {
             $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($row['pid']);
-            return $site->getLanguageById($row['source_language'])->getLocale()->__toString();
+            return $site->getLanguageById($row['target_language'])->getLocale()->__toString();
         }
 
         return $iso2;

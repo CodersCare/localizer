@@ -71,15 +71,15 @@ class LanguageRepository extends AbstractRepository
                     ),
                     $queryBuilder->expr()->eq(
                         'tablenames',
-                        $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES, Connection::PARAM_STR)
+                        $queryBuilder->createNamedParameter(Constants::TABLE_STATIC_LANGUAGES)
                     ),
                     $queryBuilder->expr()->eq(
                         'source',
-                        $queryBuilder->createNamedParameter($table, Connection::PARAM_STR)
+                        $queryBuilder->createNamedParameter($table)
                     ),
                     $queryBuilder->expr()->eq(
                         'ident',
-                        $queryBuilder->createNamedParameter('target', Connection::PARAM_STR)
+                        $queryBuilder->createNamedParameter('target')
                     )
                 )
             )
@@ -177,6 +177,7 @@ class LanguageRepository extends AbstractRepository
                     )
                 )
                 ->executeQuery();
+            return (int)$result;
         }
     }
 }

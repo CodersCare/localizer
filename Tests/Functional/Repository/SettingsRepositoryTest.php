@@ -15,13 +15,13 @@ class SettingsRepositoryTest extends FunctionalTestCase
 
     protected SettingsRepository $repository;
 
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/localizer',
         'typo3conf/ext/l10nmgr',
         'typo3conf/ext/static_info_tables',
     ];
 
-    protected $coreExtensionsToLoad = [
+    protected array $coreExtensionsToLoad = [
         'install',
         'scheduler',
         'extensionmanager',
