@@ -181,7 +181,7 @@ trait Data
                         'username' => $row['username'],
                         'password' => $row['password'],
                         'workflow' => $row['workflow'],
-                        'source' => $this->getIso2ForLocale($row),
+                        'source' => $this->getIso2ForLocale($row, 'source_language'),
                         'plainxmlexports' => (bool)$row['plainxmlexports'],
                     ],
                 ];

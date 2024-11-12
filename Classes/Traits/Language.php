@@ -19,9 +19,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 trait Language
 {
     /**
-     * @throws Exception
+     * @param array $row
+     * @param string $field
+     * @return string
      */
-    protected function getIso2ForLocale(array $row): string
+    protected function getIso2ForLocale(array $row, string $field = 'target_language'): string
     {
         /** @var Typo3Version $typo3Version */
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
@@ -44,7 +46,7 @@ trait Language
             }
         } else {
             $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($row['pid']);
-            return $site->getLanguageById($row['target_language'])->getLocale()->__toString();
+            return $site->getLanguageById($row[$field] ?? 0)->getLocale()->__toString();
         }
 
         return $iso2;
