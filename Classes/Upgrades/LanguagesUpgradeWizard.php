@@ -18,7 +18,7 @@ use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\ChattyInterface;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
-#[UpgradeWizard('localizerBeebox_languagesUpgradeWizard')]
+#[UpgradeWizard('localizer_languagesUpgradeWizard')]
 final class LanguagesUpgradeWizard implements UpgradeWizardInterface, ChattyInterface
 {
 
@@ -133,7 +133,7 @@ final class LanguagesUpgradeWizard implements UpgradeWizardInterface, ChattyInte
      */
     public function getIdentifier() : string
     {
-        return 'localizerBeebox_languagesUpgradeWizard';
+        return 'localizer_languagesUpgradeWizard';
     }
 
     /**
