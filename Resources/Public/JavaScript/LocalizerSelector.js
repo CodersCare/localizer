@@ -1,7 +1,7 @@
 /**
  * Module: TYPO3/CMS/Localizer/LocalizerSelector
  */
-define(['jquery', 'bootstrap'], function ($) {
+define('TYPO3/CMS/Localizer/LocalizerSelector', ['jquery', 'bootstrap'], function ($) {
   'use strict'
 
   /**

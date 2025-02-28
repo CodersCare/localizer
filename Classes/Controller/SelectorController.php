@@ -136,12 +136,7 @@ class SelectorController extends AbstractController
     {
         $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
         $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/DateTimePicker');
-        if ($this->typo3Version->getMajorVersion() < 12) {
-            $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerSelector');
-        } else {
-            $this->pageRenderer->loadJavaScriptModule('@localizationteam/localizer/LocalizerSelector.js');
-        }
-
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerSelector');
         $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Input/Clearable');
         $this->pageRenderer->addCssFile(
             ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css'

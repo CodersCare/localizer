@@ -1,7 +1,7 @@
 /**
  * Module: TYPO3/CMS/Localizer/LocalizerCart
  */
-define([
+define('TYPO3/CMS/Localizer/LocalizerCart', [
   'jquery',
   'TYPO3/CMS/Backend/AjaxDataHandler',
   'TYPO3/CMS/Backend/Icons',

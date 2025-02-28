@@ -53,6 +53,7 @@
 }
 
 .localizer-matrix-configurator .list-inline > li > .dropdown-menu > li.active > a {
+    color: #fff;
     background: #424242;
 }
 

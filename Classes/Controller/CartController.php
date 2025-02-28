@@ -100,15 +100,8 @@ class CartController extends AbstractController
      */
     protected function main(ServerRequestInterface $request): void
     {
-        //if ($this->typo3Version->getMajorVersion() < 12) {
-            $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
-            $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerCart');
-        //} else {
-        //    // TODO: Migrate to v12
-        //    //$this->pageRenderer->loadJavaScriptModule('TYPO3/CMS/Backend/Tooltip');
-        //    $this->pageRenderer->loadJavaScriptModule('@localizationteam/localizer/LocalizerCart.js');
-        //}
-
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Localizer/LocalizerCart');
         $this->pageRenderer->addCssFile(
             ExtensionManagementUtility::extPath('localizer') . 'Resources/Public/Css/localizer.css'
         );
