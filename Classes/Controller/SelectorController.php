@@ -529,7 +529,9 @@ class SelectorController extends AbstractController
             ) . '</a></li>';
         }
         foreach ($languages as $language) {
-            $checked = '';
+            if ($language->getLanguageId() === 0) {
+               continue;
+            }
             if (isset($this->configuration['languages'][$language->getLanguageId()]) || isset($availableLanguages[$language->getLanguageId()])) {
                 $this->languages[$language->getLanguageId()] = $language;
                 $checked = ' checked="checked"';
