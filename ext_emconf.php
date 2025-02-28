@@ -12,7 +12,7 @@
 
 $EM_CONF['localizer'] = [
     'title' => 'Localizer for TYPO3',
-    'description' => 'This extension provides a fully automated workflow and a graphical user interface for the well known Localization Manager (l10nmgr). While the L10nmgr still provides exports and imports of records and files, the Localizer will take care of all the necessary steps in between. Editors responsible for translations won\'t have to deal with any L10nmgr configurations anymore and as an administrator you create just one configuration per Localizer Project.',
+    'description' => 'This extension provides a fully automated workflow and GUI for the well known Localization Manager (l10nmgr). While L10nmgr still provides exports and imports, Localizer will take care of all necessary steps in between. Editors responsible for translations won\'t have to deal with L10nmgr configurations anymore and administrators just create one configuration per Localizer Project. Sponsor us here: https://coders.care/for/crowdfunding/l10nmgr-and-localizer',
     'category' => 'module',
     'author' => 'Jo Hasenau, Peter Russ, Stefano Kowalke',
     'author_email' => 'jh@cybercraft.de, peter.russ@4many.net, info@arroba-it.de',
