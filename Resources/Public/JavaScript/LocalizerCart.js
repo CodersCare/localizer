@@ -140,60 +140,70 @@ define('TYPO3/CMS/Localizer/LocalizerCart', [
   }
 
   LocalizerCart.addButtonsForExportData = function (cell, id, values) {
-    var editOnClick = 'window.location.href=\'' + top.TYPO3.settings.FormEngine.moduleUrl + '&edit[tx_localizer_settings_l10n_exportdata_mm][' + id + ']=edit&returnUrl=\'+T3_THIS_LOCATION; return false;'
-    editOnClick = editOnClick.replace(/\//g, '\\/')
-    editOnClick = editOnClick.replace(/&/g, '\\u0026')
-    var previewOnClick = ''
-    var previewTooltip = ''
-    if (values.status === 70) {
-      previewOnClick = 'window.open(\'/uploads/tx_l10nmgr/jobs/in/' + values.locale + '/' + values.filename + '\', \'Import File\', \'width=1024,height=768\'); window.open(\'/uploads/tx_l10nmgr/jobs/out/' + values.filename + '\', \'Export File\', \'width=1024,height=768\'); return false;'
-      previewTooltip = 'Click twice to preview both files'
-    } else {
-      previewOnClick = 'window.open(\'/uploads/tx_l10nmgr/jobs/out/' + values.filename + '\', \'Export File\', \'width=1024,height=768\'); return false;'
-      previewTooltip = 'Preview this file'
-    }
+    // Edit URL (FormEngine)
+    const editUrl = top.TYPO3.settings.FormEngine.moduleUrl +
+      '&edit[tx_localizer_settings_l10n_exportdata_mm][' + id + ']=edit&returnUrl=' + encodeURIComponent(window.T3_THIS_LOCATION);
+    const previewUrl =
+      values.status === 70
+        ? {
+          in: '/uploads/tx_l10nmgr/jobs/in/' + values.locale + '/' + values.filename,
+          out: '/uploads/tx_l10nmgr/jobs/out/' + values.filename,
+          previewTooltip: 'Click twice to preview both files'
+        }
+        : {
+          out: '/uploads/tx_l10nmgr/jobs/out/' + values.filename,
+          previewTooltip: 'Preview this file'
+        };
+
     let appendString = '<li class="toggle-status toggle-' + values.status + ' action2-' + values.action + '">';
+
     if (values.status === 70 && values.action === 0) {
       appendString +=
         '<div class="btn-group btn-group-import" role="group">' +
-          '<a href="#" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Import this file" data-uid="' + id + '">' +
-          this.icons['actions-upload'] +
-          '</a>' +
+        '<a href="#" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Import this file" data-uid="' + id + '">' +
+        this.icons['actions-upload'] +
+        '</a>' +
         '</div>';
     }
     if (values.status !== 90 && values.status !== 80 && values.action !== 70) {
       appendString +=
         '<div class="btn-group btn-group-preview" role="group">' +
-          '<a href="#" class="btn btn-info" onclick="' + previewOnClick + '" data-toggle="tooltip" data-placement="top" title="' + previewTooltip + '" data-uid="' + id + '">' +
-            this.icons['actions-document-view'] +
-          '</a>' +
+        // Button: PREVIEW (no inline onclick, just data attributes!)
+        '<a href="#" class="btn btn-info btn-export-preview" ' +
+        (previewUrl.in ? ('data-file-url-in="' + previewUrl.in + '" ') : '') +
+        'data-file-url-out="' + previewUrl.out + '" ' +
+        'data-toggle="tooltip" data-placement="top" title="' + previewUrl.previewTooltip + '" data-uid="' + id + '">' +
+        this.icons['actions-document-view'] +
+        '</a>' +
         '</div>' +
+
+        // Button: EDIT (no inline onclick)
         '<div class="btn-group btn-group-edit" role="group">' +
-          '<a href="#" class="btn btn-default" onclick="' + editOnClick + '"' + ' data-uid="' + id + '">' +
-            this.icons['actions-open'] +
-          '</a>' +
+        '<a href="#" class="btn btn-default btn-export-edit" data-edit-url="' + editUrl + '" data-uid="' + id + '">' +
+        this.icons['actions-open'] +
+        '</a>' +
         '</div>';
     }
 
     if (values.action === 70) {
       appendString +=
         '<div class="btn-group btn-group-scheduled" role="group">' +
-          '<a href="#" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Scheduled for import" data-uid="' + id + '">' +
-            this.icons['actions-history'] +
-          '</a>' +
+        '<a href="#" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Scheduled for import" data-uid="' + id + '">' +
+        this.icons['actions-history'] +
+        '</a>' +
         '</div>';
     }
 
     appendString +=
       '<div class="btn-group" role="group">' +
-        '<a href="#" class="btn btn-default" onclick="top.TYPO3.InfoWindow.showItem(\'tx_localizer_settings_l10n_exportdata_mm\', ' + id + '); return false;" data-uid="' + id + '">' +
-          this.icons['actions-info'] +
-        '</a>' +
+      '<a href="#" class="btn btn-default btn-export-info" data-uid="' + id + '">' +
+      this.icons['actions-info'] +
+      '</a>' +
       '</div>';
 
     appendString += '</li>';
     cell.append(appendString);
-  }
+  };
 
   LocalizerCart.initializeImportButtons = function () {
     $('.btn-group-import a').click(function () {
@@ -249,11 +259,54 @@ define('TYPO3/CMS/Localizer/LocalizerCart', [
     })
   }
 
+  LocalizerCart.initializeButtonClicks = function () {
+    $('.localizerCarts button').off('click').on('click', function () {
+      $('[data-toggle="tooltip"]').tooltip('hide');
+      var tr = $(this).closest('tr');
+      if ($(this).hasClass('clicked')) {
+        tr.find('button').removeClass('clicked');
+        tr.removeClass('expanded');
+      } else {
+        tr.find('button').removeClass('clicked');
+        $(this).addClass('clicked');
+        tr.addClass('expanded');
+      }
+      tr.find('.toggle-status').removeClass('explicitely-hide').not('.toggle-' + $(this).data('status')).addClass('explicitely-hide');
+    });
+
+    $(document).off('click', '.btn-export-preview').on('click', '.btn-export-preview', function (e) {
+      e.preventDefault();
+      const urlIn = $(this).attr('data-file-url-in');
+      const urlOut = $(this).attr('data-file-url-out');
+      if (urlIn) {
+        window.open(urlIn, 'Import File', 'width=1024,height=768');
+        window.open(urlOut, 'Export File', 'width=1024,height=768');
+      } else if (urlOut) {
+        window.open(urlOut, 'Export File', 'width=1024,height=768');
+      }
+    });
+
+    $(document).off('click', '.btn-export-edit').on('click', '.btn-export-edit', function (e) {
+      e.preventDefault();
+      const url = $(this).attr('data-edit-url');
+      if (url) {
+        window.location.href = url;
+      }
+    });
+
+    $(document).off('click', '.btn-export-info').on('click', '.btn-export-info', function (e) {
+      e.preventDefault();
+      const id = $(this).data('uid');
+      if (top.TYPO3 && top.TYPO3.InfoWindow && typeof top.TYPO3.InfoWindow.showItem === 'function') {
+        top.TYPO3.InfoWindow.showItem('tx_localizer_settings_l10n_exportdata_mm', id);
+      }
+    });
+  };
+
   $(function () {
     LocalizerCart.initialize()
   })
 
-  // expose as global object
   TYPO3.LocalizerCart = LocalizerCart
 
   return LocalizerCart
