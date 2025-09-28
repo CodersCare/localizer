@@ -7,8 +7,10 @@ namespace Localizationteam\Localizer\Traits;
 use Exception;
 use Localizationteam\Localizer\Constants;
 use Localizationteam\Localizer\Model\Repository\LanguageRepository;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -45,7 +47,11 @@ trait Language
                 }
             }
         } else {
-            $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($row['pid']);
+            try {
+                $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($row['pid']);
+            } catch (SiteNotFoundException $e) {
+                return '';
+            }
             return $site->getLanguageById($row[$field] ?? 0)->getLocale()->__toString();
         }
 
