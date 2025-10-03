@@ -7,7 +7,10 @@ namespace Localizationteam\Localizer\Model\Repository;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Exception;
 use Localizationteam\Localizer\Constants;
+use Localizationteam\Localizer\Traits\Language;
 use PDO;
+use TYPO3\CMS\Core\Utility\DebugUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Repository for the module 'Cart' for the 'localizer' extension.
@@ -16,6 +19,8 @@ use PDO;
  */
 class CartRepository extends AbstractRepository
 {
+    use Language;
+
     /**
      * Loads available backend users
      */
@@ -129,6 +134,7 @@ class CartRepository extends AbstractRepository
                 $exportData = $queryBuilder
                     ->select(
                         Constants::TABLE_EXPORTDATA_MM . '.uid',
+                        Constants::TABLE_EXPORTDATA_MM . '.pid',
                         Constants::TABLE_EXPORTDATA_MM . '.uid_local',
                         Constants::TABLE_EXPORTDATA_MM . '.uid_foreign',
                         Constants::TABLE_EXPORTDATA_MM . '.status',
@@ -188,20 +194,14 @@ class CartRepository extends AbstractRepository
                 $cart['exportData'] = [];
 
                 foreach ($exportData as $data) {
+                    $data['locale'] = strtolower($this->getIso2ForLocale($data));
+                    unset($data['lg_collate_locale']);
+                    unset($data['lg_iso_2']);
                     $cart['exportData'][$data['uid']] = $data;
                 }
 
                 if (!empty($cart['exportData'])) {
                     foreach ($cart['exportData'] as $exportId => &$export) {
-                        $export['locale'] = str_replace(
-                            '_',
-                            '-',
-                            strtolower(
-                                (string)($export['lg_collate_locale'] ?: $export['lg_iso_2'])
-                            )
-                        );
-                        unset($export['lg_collate_locale']);
-                        unset($export['lg_iso_2']);
                         $export['cssClass'] = $classes[$export['status']]['cssClass'];
                         $export['label'] = $GLOBALS['LANG']->sL(
                             'LLL:EXT:localizer/Resources/Private/Language/locallang_db.xlf:tx_localizer_settings_l10n_exportdata_mm.status.I.' . $export['status']
